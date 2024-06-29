@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="12"/>
+    <BuildModes Active="Linux"/>
+    <Units>
+      <Unit>
+        <Filename Value="GraxaimBanca.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="47" Y="22"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formPrincipal"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="7" Y="10"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untNA.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formNovaAposta"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="30" Y="9"/>
+        <UsageCount Value="25"/>
+      </Unit>
+      <Unit>
+        <Filename Value="untNA.pas"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="2"/>
+        <CursorPos X="55" Y="268"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../projetoSistemaGestaoBanca/synapse-master/Crypt32.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="80"/>
+        <CursorPos X="16" Y="94"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untNA.lfm"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="442"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="untMain.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="33" Y="13"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../../.lazarus/bin/components/lazdebuggers/cmdlinedebuggerbase/debuginstructions.pas"/>
+        <UnitName Value="DebugInstructions"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="194"/>
+        <CursorPos X="27" Y="209"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../../.lazarus/bin/components/lazdebuggers/cmdlinedebuggerbase/debugprocess.pas"/>
+        <UnitName Value="DebugProcess"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="339"/>
+        <CursorPos X="8" Y="353"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="28">
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Column="26"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="33" Column="35" TopLine="19"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="234" Column="29" TopLine="214"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="825" Column="28" TopLine="816"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="257" TopLine="247"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="297" Column="6" TopLine="285"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="259" Column="9" TopLine="240"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="26"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="25" Column="18"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="13" Column="44"/>
+      </Position>
+      <Position>
+        <Filename Value="untNA.pas"/>
+        <Caret Line="447" TopLine="421"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="26"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="259" Column="9" TopLine="234"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="26"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="259" Column="9" TopLine="234"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="26"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="13" Column="58"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="26"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="17" Column="14"/>
+      </Position>
+      <Position>
+        <Filename Value="GraxaimBanca.pas"/>
+        <Caret Line="19" Column="23"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="242" Column="17" TopLine="235"/>
+      </Position>
+      <Position>
+        <Filename Value="untNA.pas"/>
+        <Caret Line="431" Column="22" TopLine="421"/>
+      </Position>
+      <Position>
+        <Filename Value="untNA.pas"/>
+        <Caret Line="450" TopLine="422"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="844" Column="5" TopLine="40"/>
+      </Position>
+      <Position>
+        <Filename Value="untNA.pas"/>
+        <Caret Line="270" Column="3" TopLine="256"/>
+      </Position>
+      <Position>
+        <Filename Value="untNA.pas"/>
+        <Caret Line="269" Column="4" TopLine="263"/>
+      </Position>
+      <Position>
+        <Filename Value="untNA.pas"/>
+        <Caret Line="268" Column="55" TopLine="255"/>
+      </Position>
+      <Position>
+        <Filename Value="../../../.lazarus/bin/components/lazdebuggers/cmdlinedebuggerbase/debuginstructions.pas"/>
+        <Caret Line="209" Column="3" TopLine="194"/>
+      </Position>
+      <Position>
+        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Caret Line="294" Column="11" TopLine="268"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>
