@@ -11,7 +11,7 @@ uses
   DBExtCtrls, Menus, ActnList, CheckLst, Buttons, ExtCtrls, JSONPropStorage,
   TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
   TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
-  Iphttpbroker, DateUtils, Math;
+  Iphttpbroker, DateUtils, {VTHeaderPopup,} Math;
 
 type
 
@@ -169,7 +169,6 @@ type
     dsTimesMenosLucrativos: TDataSource;
     dsTodosTimes: TDataSource;
     lbListaTimes1: TLabel;
-    conectBancoDados: TSQLConnector;
     qrCompeticoes: TSQLQuery;
     qrOutros: TSQLQuery;
     qrCampeonatos: TSQLQuery;
@@ -201,7 +200,8 @@ type
     qrGrafLucroEstr: TSQLQuery;
     qrBancaAtual: TSQLQuery;
     qrSituacao: TSQLQuery;
-    SQLTransaction1: TSQLTransaction;
+    conectBancoDados: TSQLite3Connection;
+    transactionBancoDAdos: TSQLTransaction;
     Graficos: TTabSheet;
     ResumodoMes: TTabSheet;
     ResumodoAno: TTabSheet;
@@ -222,6 +222,8 @@ type
     procedure Button1Click(Sender: TObject);
     procedure grdApostasColExit(Sender: TObject);
     procedure grdApostasExit(Sender: TObject);
+    procedure MenuItem8Click(Sender: TObject);
+    procedure MenuItem9Click(Sender: TObject);
     procedure MudarCorLucro;
     procedure btnSalvarBancaInicialClick(Sender: TObject);
     procedure btnNovaApostaClick(Sender: TObject);
@@ -241,7 +243,7 @@ type
     procedure ReiniciarTodosOsQueries;
    // procedure dsGraficoEstrategiaDataChange(Sender: TObject; Field: TField);
    // procedure FormCreate(Sender: TObject);
-   //function VerificarAtualizacoes (currentVersion: string): string;
+   function VerificarAtualizacoes (currentVersion: string): string;
   private
       contadorCliques: Integer;
   public
@@ -249,6 +251,7 @@ type
   end;
 
 var
+  currentVersion: String;
   formPrincipal: TformPrincipal;
   perfilInvestidor: String;
   stakeAposta: Double;
@@ -256,30 +259,72 @@ var
   mesSelecionado, anoSelecionado: Integer;
 implementation
 uses
-  untNA; //fpjson, HTTPDefs, fphttpclient, httpsend, synautil, jsonparser;
+  untNA, fpjson, HTTPDefs, fphttpclient, httpsend, synautil, jsonparser, LCLIntf, IdSSLOpenSSLHeaders, ssl_openssl3;
 
 {$R *.lfm}
 
 { TformPrincipal }
-{function TformPrincipal.VerificarAtualizacoes(currentVersion: string): string;
+function CompareVersion(version1, version2: string): Integer;
 var
-  response: TStringList;
-  apiUrl, latestVersion: String;
-  json: TJSONObject;
+  ver1, ver2: TStringDynArray;
+  i: Integer;
 begin
+  // Dividir as versões em partes
+  ver1 := version1.Split(['.']);
+  ver2 := version2.Split(['.']);
+
+  // Comparar cada parte da versão
+  for i := Low(ver1) to High(ver1) do
+  begin
+    if i > High(ver2) then
+      Exit(1); // ver1 tem mais partes que ver2
+
+    if StrToInt(ver1[i]) < StrToInt(ver2[i]) then
+      Exit(-1)
+    else if StrToInt(ver1[i]) > StrToInt(ver2[i]) then
+      Exit(1);
+  end;
+
+  // Se todas as partes comparadas forem iguais até aqui
+  if Length(ver1) < Length(ver2) then
+    Result := -1 // ver2 tem mais partes que ver1
+  else
+    Result := 0; // Versões são iguais até onde foram comparadas
+end;
+
+function TformPrincipal.VerificarAtualizacoes(currentVersion: string): string;
+var
+  response: TStringStream;
+  apiUrl, latestVersion: string;
+  json: TJSONObject;
+  userResponse: Integer;
+begin
+  currentVersion := ('0.0.0.2');
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
-  response := TStringList.Create; // Create a TStringList to hold the response
+  response := TStringStream.Create('');
   try
-    if HttpGetText(apiUrl, response) then
+    if HttpGetBinary(apiUrl, response) then
     begin
-      json := TJSONObject(GetJSON(response.Text)); // Convert TStringList to JSON
+      //ShowMessage('Requisição bem-sucedida. Resposta recebida: ' + response.DataString);
+      json := TJSONObject(GetJSON(response.DataString));
       try
         latestVersion := json.Get('tag_name', '');
         if latestVersion <> '' then
         begin
-          if CompareStr(currentVersion, latestVersion) < 0 then
-            Result := latestVersion;
+          if CompareText(currentVersion, latestVersion) < 0 then
+          begin
+            userResponse := MessageDlg('Nova versão disponível: ' + latestVersion + sLineBreak +
+                                       'Deseja instalar agora?', mtConfirmation, [mbYes, mbNo], 0);
+            if userResponse = mrYes then
+            begin
+              OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest');
+            end;
+          end;
+        end
+        else
+        begin
+          ShowMessage('Versão não encontrada no JSON.');
         end;
       finally
         json.Free;
@@ -287,27 +332,15 @@ begin
     end
     else
     begin
-      ShowMessage('Falha ao coletar informações de atualização.');
+      ShowMessage('Falha ao obter informações de atualização. Resposta: ' + response.DataString);
     end;
   except
     on E: Exception do
-      ShowMessage('Erro: ' + E.Message);
+    begin
+      ShowMessage('Erro: ' + E.Message + sLineBreak + 'Resposta: ' + response.DataString);
+    end;
   end;
   response.Free;
-end;}
-
-
-procedure TformPrincipal.btnNovaApostaClick(Sender: TObject);
-  var
-    formNovaAposta: TformNovaAposta; // Declare uma variável para o novo formulário
-  begin
-    formNovaAposta := TformNovaAposta.Create(Self); // Crie uma instância do novo formulário
-    try
-      qrApostas.Close;
-      formNovaAposta.ShowModal; // Exiba o formulário como modal (bloqueando o formulário principal)
-    finally
-      formNovaAposta.Free; // Libere a memória ocupada pelo formulário após fechar
-    end;
 end;
 
 procedure TformPrincipal.cbMesChange(Sender: TObject);
@@ -321,7 +354,7 @@ begin
   qrSelecionarPerfil.SQL.Text := 'UPDATE "Selecionar Perfil" SET "Perfil Selecionado" = :perfilInvestidor WHERE "Perfil Selecionado" = :perfilSelecionado';
   perfilInvestidor := cbPerfil.Text;
   qrSelecionarPerfil.ExecSQL;
-  SQLTransaction1.Commit;
+  transactionBancoDAdos.Commit;
 
   if perfilInvestidor = 'Conservador' then
      stakeAposta := RoundTo(valorInicial / 100, -2)
@@ -393,7 +426,7 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
        end;
 
        valorInicial := novoValor;
-       SQLTransaction1.Commit;
+       transactionBancoDAdos.Commit;
        // Define o valor de stakeAposta com base no perfil selecionado
        if perfilInvestidor = 'Conservador' then
           stakeAposta := RoundTo(valorInicial / 100, -2)
@@ -410,7 +443,7 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
        begin
          // Em caso de erro, mostra uma mensagem de erro
          ShowMessage('Erro ao salvar: ' + E.Message);
-         SQLTransaction1.Rollback; // Desfaz as alterações no banco de dados
+         transactionBancoDAdos.Rollback; // Desfaz as alterações no banco de dados
        end;
      end;
    end
@@ -433,6 +466,11 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
   MudarCorLucro;
 end;
 
+procedure TformPrincipal.btnNovaApostaClick(Sender: TObject);
+begin
+
+end;
+
 procedure TformPrincipal.FormCreate(Sender: TObject);
 var
   i: Integer;
@@ -444,6 +482,7 @@ var
   query: TSQLQuery;
 begin
  MudarCorLucro;
+ VerificarAtualizacoes(currentVersion);
  // Carrega os perfis disponíveis no ComboBox
   qrPerfis.Open;
   try
@@ -751,8 +790,8 @@ begin
   try
      qrApostas.Post;
      qrApostas.ApplyUpdates;
-     SQLTransaction1.Commit;
-     SQLTransaction1.StartTransaction;
+     transactionBancoDAdos.Commit;
+     transactionBancoDAdos.StartTransaction;
      ShowMessage ('Aposta Removida!');
   except
     on E: Exception do
@@ -768,7 +807,7 @@ begin
   try
     qrApostas.Post;
     qrApostas.ApplyUpdates;
-    SQLTransaction1.Commit;
+    transactionBancoDAdos.Commit;
     MudarCorLucro;
   except
     On E: Exception do
@@ -789,9 +828,19 @@ begin
    MudarCorLucro;
 end;
 
+procedure TformPrincipal.MenuItem8Click(Sender: TObject);
+begin
+    VerificarAtualizacoes(currentVersion);
+end;
+
+procedure TformPrincipal.MenuItem9Click(Sender: TObject);
+begin
+
+end;
+
 procedure TformPrincipal.ReiniciarTodosOsQueries;
 begin
-  SQLTransaction1.Commit;
+  transactionBancoDAdos.Commit;
       qrApostas.Open;
       qrTodosTimes.Close;
       qrTodosTimes.Open;

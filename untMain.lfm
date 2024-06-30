@@ -1,9 +1,9 @@
 object formPrincipal: TformPrincipal
-  Left = 2118
+  Left = 1836
   Height = 874
-  Top = 135
+  Top = 142
   Width = 1301
-  Caption = 'Graxaim Gestão de Banca'
+  Caption = 'Graxaim Gestão de Banca [ALPHA]'
   ClientHeight = 847
   ClientWidth = 1301
   DesignTimePPI = 125
@@ -90,7 +90,7 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object Graficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 774
+          ClientHeight = 777
           ClientWidth = 1012
           object chrtLucroMes: TChart
             Left = 0
@@ -261,7 +261,43 @@ object formPrincipal: TformPrincipal
         Anchors = [akTop, akLeft, akBottom]
         AutoFillColumns = True
         Color = clWindow
-        Columns = <>
+        Columns = <        
+          item
+            MaxSize = 50
+            Title.Caption = 'Time'
+            Width = 82
+            FieldName = 'Time'
+          end        
+          item
+            Title.Caption = 'País'
+            Width = 82
+            FieldName = 'País'
+          end        
+          item
+            Title.Caption = 'Mandante'
+            Width = 82
+            FieldName = 'Mandante'
+          end        
+          item
+            Title.Caption = 'Visitante'
+            Width = 82
+            FieldName = 'Visitante'
+          end        
+          item
+            Title.Caption = 'Greens'
+            Width = 82
+            FieldName = 'Greens'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 82
+            FieldName = 'P/L'
+          end        
+          item
+            Title.Caption = 'Reds'
+            Width = 86
+            FieldName = 'Reds'
+          end>
         DataSource = dsTodosTimes
         Scrollbars = ssAutoBoth
         TabOrder = 0
@@ -275,7 +311,17 @@ object formPrincipal: TformPrincipal
         Width = 200
         Anchors = [akTop, akLeft, akBottom]
         Color = clWindow
-        Columns = <>
+        Columns = <        
+          item
+            Title.Caption = 'Time'
+            Width = 110
+            FieldName = 'Time'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 50
+            FieldName = 'P/L'
+          end>
         DataSource = dsTimesMaisLucrativos
         Scrollbars = ssAutoBoth
         TabOrder = 1
@@ -311,7 +357,17 @@ object formPrincipal: TformPrincipal
         Width = 200
         Anchors = [akTop, akLeft, akBottom]
         Color = clWindow
-        Columns = <>
+        Columns = <        
+          item
+            Title.Caption = 'Time'
+            Width = 110
+            FieldName = 'Time'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 50
+            FieldName = 'P/L'
+          end>
         DataSource = dsTimesMenosLucrativos
         Scrollbars = ssAutoBoth
         TabOrder = 2
@@ -793,17 +849,7 @@ object formPrincipal: TformPrincipal
       end
     end
   end
-  object conectBancoDados: TSQLConnector
-    Connected = True
-    LoginPrompt = False
-    DatabaseName = '/home/ferox/Documentos/Programacao/projetoSistemaGestaoBanca/Software/dbApostas.db'
-    KeepConnection = True
-    Transaction = SQLTransaction1
-    ConnectorType = 'SQLite3'
-    Left = 920
-    Top = 696
-  end
-  object SQLTransaction1: TSQLTransaction
+  object transactionBancoDAdos: TSQLTransaction
     Active = True
     Database = conectBancoDados
     Left = 768
@@ -827,17 +873,17 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Mandante'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
         Name = 'Visitante'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
         Name = 'Greens'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
@@ -847,12 +893,12 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Reds'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT * FROM Times;'
     )
@@ -864,6 +910,7 @@ object formPrincipal: TformPrincipal
     )
     Params = <>
     Macros = <>
+    ServerFiltered = True
     Left = 640
     Top = 712
   end
@@ -894,7 +941,7 @@ object formPrincipal: TformPrincipal
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT Time, "P/L"'
       'FROM Times'
@@ -908,9 +955,23 @@ object formPrincipal: TformPrincipal
     Top = 696
   end
   object qrTimesMenosLucrativos: TSQLQuery
-    FieldDefs = <>
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Time'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'P/L'
+        DataType = ftLargeint
+        Precision = -1
+      end>
+    Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT Time, "P/L"'
       'FROM Times'
@@ -946,17 +1007,17 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Mercados'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
         Name = 'Green'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
         Name = 'Red'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
@@ -971,7 +1032,7 @@ object formPrincipal: TformPrincipal
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT * FROM Competições'
     )
@@ -997,7 +1058,7 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Mercados_Estr'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
@@ -1007,7 +1068,7 @@ object formPrincipal: TformPrincipal
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT Estratégia, Mercados_Estr, Profit_Estr FROM Estratégias;'
     )
@@ -1150,7 +1211,7 @@ object formPrincipal: TformPrincipal
     AfterOpen = qrApostasAfterOpen
     AfterRefresh = qrApostasAfterRefresh
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT Cod_Aposta,'
       '       Data,'
@@ -1208,7 +1269,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Over 1.5"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1254,7 +1315,7 @@ object formPrincipal: TformPrincipal
     Active = True
     Filter = '''Estratégia_Escolhida = "Back Favorito"'''
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1306,7 +1367,7 @@ object formPrincipal: TformPrincipal
     Active = True
     Filter = '''Estratégia_Escolhida = "Zebra Favorito"'''
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1352,7 +1413,7 @@ object formPrincipal: TformPrincipal
     Active = True
     Filter = '''Estratégia_Escolhida = "Cantos"'''
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1398,7 +1459,7 @@ object formPrincipal: TformPrincipal
     Active = True
     Filter = '''Estratégia_Escolhida = "Handicap Asiático"'''
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1444,7 +1505,7 @@ object formPrincipal: TformPrincipal
     Active = True
     Filter = '''Estratégia_Escolhida = "Handicap Europeu"'''
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1497,7 +1558,7 @@ object formPrincipal: TformPrincipal
     Active = True
     Filter = '''Estratégia_Escolhida = "Cartões"'''
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1532,7 +1593,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Bilhete Personalizado"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1579,7 +1640,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Over "2.5"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1626,7 +1687,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Under 2.5"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1673,7 +1734,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Under 3.5"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1720,7 +1781,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Total de Gols da Equipe"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1772,7 +1833,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Empate Anula"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1819,7 +1880,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Chance Dupla"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1868,7 +1929,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Aposta Múltipla"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1920,7 +1981,7 @@ object formPrincipal: TformPrincipal
     Filter = '''Estratégia_Escolhida = "Outras"'''
     Filtered = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT "Data", "Estratégia_Escolhida", "Profit_L" FROM Apostas ORDER BY "Data";'
     )
@@ -1941,12 +2002,12 @@ object formPrincipal: TformPrincipal
     FieldDefs = <    
       item
         Name = 'Mês'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
         Name = 'Ano'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
@@ -1982,7 +2043,7 @@ object formPrincipal: TformPrincipal
     Active = True
     OnCalcFields = qrBancaAtualCalcFields
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       ' Select * from Banca'
     )
@@ -2107,12 +2168,12 @@ object formPrincipal: TformPrincipal
     FieldDefs = <    
       item
         Name = 'Mês'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
         Name = 'Ano'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
@@ -2130,7 +2191,7 @@ object formPrincipal: TformPrincipal
     Active = True
     OnCalcFields = qrBancaInicialCalcFields
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT Mês, Ano, Valor_Inicial, Stake'
       'FROM "Banca"'
@@ -2240,9 +2301,18 @@ object formPrincipal: TformPrincipal
     end
   end
   object qrCompeticoes: TSQLQuery
-    FieldDefs = <>
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Competição'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'Select Competição from Competições;'
     )
@@ -2261,13 +2331,14 @@ object formPrincipal: TformPrincipal
     MaxIndexesCount = 4
     FieldDefs = <    
       item
-        Name = 'Descrição'
+        Name = 'Status'
         DataType = ftString
         Precision = -1
         Size = 255
       end>
+    Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'select Status from Status_Aposta;'
     )
@@ -2291,9 +2362,8 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'select Unidade from Unidades'
     )
@@ -2342,7 +2412,7 @@ object formPrincipal: TformPrincipal
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'Select "Data", Profit_L from Apostas'
       'where strftime (''%m'', "Data") = (Select (Mês) from Banca);'
@@ -2370,7 +2440,7 @@ object formPrincipal: TformPrincipal
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'Select "Data", Profit_L from Apostas'
       'where strftime (''%Y'', "Data") = (Select (Ano) from Banca);'
@@ -2411,7 +2481,7 @@ object formPrincipal: TformPrincipal
       end>
     Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'Select Perfil from Perfis'
     )
@@ -2431,6 +2501,8 @@ object formPrincipal: TformPrincipal
     end
   end
   object qrSelecionarPerfil: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
     FieldDefs = <    
       item
         Name = 'Perfil Selecionado'
@@ -2438,8 +2510,9 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
+    Active = True
     Database = conectBancoDados
-    Transaction = SQLTransaction1
+    Transaction = transactionBancoDAdos
     SQL.Strings = (
       'Select "Perfil Selecionado" from "Selecionar Perfil"'
     )
@@ -2471,5 +2544,18 @@ object formPrincipal: TformPrincipal
     Formatted = False
     Left = 8
     Top = 8
+  end
+  object conectBancoDados: TSQLite3Connection
+    Connected = True
+    LoginPrompt = False
+    DatabaseName = 'database.db'
+    KeepConnection = True
+    Params.Strings = (
+      'AlwaysUseBigint=1'
+    )
+    Transaction = transactionBancoDAdos
+    AlwaysUseBigint = True
+    Left = 128
+    Top = 40
   end
 end

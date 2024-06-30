@@ -272,8 +272,7 @@ object formNovaAposta: TformNovaAposta
         DataType = ftLargeint
         Precision = -1
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select * from Apostas;'
     )
@@ -304,8 +303,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Competição from Competições;'
     )
@@ -342,8 +340,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Time from Times;'
       ''
@@ -364,8 +361,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Time from Times;'
       ''
@@ -390,8 +386,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Estratégia from Estratégias;'
       ''
@@ -420,8 +415,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Unidade from Unidades;'
       ''
@@ -446,8 +440,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.SQLTransaction1
+    Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Status from Status_Aposta;'
     )

@@ -17,7 +17,7 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <BuildNr Value="1"/>
+      <BuildNr Value="2"/>
       <Language Value="0416"/>
       <StringTable CompanyName="Graxaim Software"/>
     </VersionInfo>
@@ -31,7 +31,8 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+            <OtherUnitFiles Value="Indy;/usr/lib/x86_64-linux-gnu/;/usr/lib/"/>
+            <UnitOutputDirectory Value="/home/ferox/Documentos/Programacao/GraxaimGestaoDeBanca"/>
           </SearchPaths>
           <CodeGeneration>
             <TargetOS Value="linux"/>
@@ -129,13 +130,17 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="/home/ferox/Documentos/Programacao/Graxaim Gestão de Banca"/>
+      <DestinationDirectory Value="/home/ferox/Documentos/Programacao/GraxaimBanca FInal"/>
+      <CompressFinally Value="False"/>
       <UseFileFilters Value="True"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages>
+      <Item>
+        <PackageName Value="indylaz"/>
+      </Item>
       <Item>
         <PackageName Value="laz_synapse"/>
       </Item>
@@ -170,25 +175,45 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="../projetoSistemaGestaoBanca/Software/untMain.pas"/>
+        <Filename Value="untNA.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formNovaAposta"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="untMain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="formPrincipal"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
-        <Filename Value="../projetoSistemaGestaoBanca/Software/untNA.pas"/>
+        <Filename Value="GraxaimBanca.lpi"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="formNovaAposta"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="GraxaimBanca.lps"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="untMain.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="untNA.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="database.db"/>
+        <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="Graxaim"/>
+      <Filename Value="GraxaimBanca"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

@@ -10,8 +10,8 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, tachartlazaruspkg, datetimectrls, untMain, untNA
-  { you can add units after this };
+  Forms, untMain, untNA, indylaz,
+  tachartlazaruspkg, datetimectrls;
 
 {$R *.res}
 
