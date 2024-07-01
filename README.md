@@ -5,7 +5,7 @@ Sistema de gestão de banca para apostas esportivas
 
 ### Linux: 
 
-Baixe a última versão no link https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases, e execute o instalador SH. 
+Baixe a última versão no link https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases, e execute o arquivo DEB ou RPM dependendo da sua distribuição.
 
 ### Windows: 
 
