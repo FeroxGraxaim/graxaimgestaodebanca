@@ -1,7 +1,7 @@
 object formNovaAposta: TformNovaAposta
-  Left = 222
+  Left = 84
   Height = 149
-  Top = 781
+  Top = 659
   Width = 1323
   BorderIcons = []
   BorderStyle = bsDialog
@@ -12,24 +12,6 @@ object formNovaAposta: TformNovaAposta
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '2.2.0.4'
-  object deAposta: TDBDateEdit
-    Left = 16
-    Height = 33
-    Top = 40
-    Width = 134
-    CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
-    DefaultToday = True
-    DateOrder = doNone
-    DateFormat = 'yyyy-mm-dd'
-    ButtonWidth = 30
-    NumGlyphs = 1
-    MaxLength = 0
-    OnChange = deApostaChange
-    TabOrder = 0
-    Text = 'FormatDateTime(''dd/mm/yyyy'')'
-    DataField = 'Data'
-    DataSource = dsNovaAposta
-  end
   object btnOk: TButton
     Left = 552
     Height = 33
@@ -38,7 +20,7 @@ object formNovaAposta: TformNovaAposta
     Caption = 'Ok'
     Enabled = False
     OnClick = btnOkClick
-    TabOrder = 1
+    TabOrder = 0
   end
   object btnCancelar: TButton
     Left = 680
@@ -47,7 +29,7 @@ object formNovaAposta: TformNovaAposta
     Width = 98
     Caption = 'Cancelar'
     OnClick = btnCancelarClick
-    TabOrder = 2
+    TabOrder = 1
   end
   object Label1: TLabel
     Left = 16
@@ -118,7 +100,8 @@ object formNovaAposta: TformNovaAposta
     Top = 40
     Width = 130
     OnChange = edtOddChange
-    TabOrder = 3
+    OnKeyPress = edtOddKeyPress
+    TabOrder = 2
   end
   object edtValor: TEdit
     Left = 1032
@@ -127,8 +110,9 @@ object formNovaAposta: TformNovaAposta
     Width = 130
     Color = clInactiveBorder
     OnChange = edtValorChange
+    OnKeyPress = edtValorKeyPress
     ReadOnly = True
-    TabOrder = 4
+    TabOrder = 3
   end
   object cbCompeticao: TComboBox
     Left = 168
@@ -139,7 +123,7 @@ object formNovaAposta: TformNovaAposta
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 0
     OnChange = cbCompeticaoChange
-    TabOrder = 5
+    TabOrder = 4
   end
   object cbMandante: TComboBox
     Left = 312
@@ -150,7 +134,7 @@ object formNovaAposta: TformNovaAposta
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 0
     OnChange = cbMandanteChange
-    TabOrder = 6
+    TabOrder = 5
   end
   object cbVisitante: TComboBox
     Left = 456
@@ -161,7 +145,7 @@ object formNovaAposta: TformNovaAposta
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 0
     OnChange = cbVisitanteChange
-    TabOrder = 7
+    TabOrder = 6
   end
   object cbEstrategia: TComboBox
     Left = 600
@@ -171,7 +155,7 @@ object formNovaAposta: TformNovaAposta
     ItemHeight = 0
     OnChange = cbEstrategiaChange
     Style = csDropDownList
-    TabOrder = 8
+    TabOrder = 7
   end
   object cbUnidade: TComboBox
     Left = 888
@@ -181,7 +165,7 @@ object formNovaAposta: TformNovaAposta
     ItemHeight = 0
     OnChange = cbUnidadeChange
     Style = csDropDownList
-    TabOrder = 9
+    TabOrder = 8
   end
   object cbSituacao: TComboBox
     Left = 1176
@@ -191,6 +175,20 @@ object formNovaAposta: TformNovaAposta
     ItemHeight = 0
     OnChange = cbSituacaoChange
     Style = csDropDownList
+    TabOrder = 9
+  end
+  object deAposta: TDateEdit
+    Left = 16
+    Height = 33
+    Top = 40
+    Width = 130
+    CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+    DefaultToday = True
+    DateOrder = doNone
+    DateFormat = 'yyyy-mm-dd'
+    ButtonWidth = 30
+    NumGlyphs = 1
+    MaxLength = 0
     TabOrder = 10
   end
   object qrNovaAposta: TSQLQuery
@@ -200,6 +198,11 @@ object formNovaAposta: TformNovaAposta
       item
         Name = 'Cod_Aposta'
         DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
         Precision = -1
       end    
       item
@@ -272,6 +275,7 @@ object formNovaAposta: TformNovaAposta
         DataType = ftLargeint
         Precision = -1
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select * from Apostas;'
@@ -303,6 +307,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Competição from Competições;'
@@ -340,6 +345,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Time from Times;'
@@ -361,6 +367,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Time from Times;'
@@ -386,6 +393,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Estratégia from Estratégias;'
@@ -415,6 +423,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Unidade from Unidades;'
@@ -440,6 +449,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
         Size = 255
       end>
+    Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'Select Status from Status_Aposta;'

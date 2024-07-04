@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, SQLDB, DB, Forms, Controls, Graphics, Dialogs, DBExtCtrls,
-  ActnList, StdCtrls, DBCtrls, Math;
+  ActnList, StdCtrls, DBCtrls, EditBtn, Math;
 
 type
 
@@ -21,6 +21,7 @@ type
     cbVisitante: TComboBox;
     cbEstrategia: TComboBox;
     cbUnidade: TComboBox;
+    deAposta: TDateEdit;
     dsNACompeticao: TDataSource;
     dsNAEstrategia: TDataSource;
     dsNAUnidade: TDataSource;
@@ -29,7 +30,6 @@ type
     dsNAVisitante: TDataSource;
     dsNovaAposta: TDataSource;
     edtOdd: TEdit;
-    deAposta: TDBDateEdit;
     edtValor: TEdit;
     Label1: TLabel;
     Label2: TLabel;
@@ -43,6 +43,7 @@ type
     qrNACompeticaoCompetio: TStringField;
     qrNAEstrategia: TSQLQuery;
     qrNASituacao: TSQLQuery;
+    qrNASituacaoStatus: TStringField;
     qrNAUnidade: TSQLQuery;
     qrNAMandante: TSQLQuery;
     qrNAVisitante: TSQLQuery;
@@ -275,27 +276,24 @@ begin
       'VALUES (:Data, :Competição, :Mandante, :Visitante, :Estratégia, ' +
       ':Odd, :Unidade, :ValorApostado, :Situação)';
 
-    qrNovaAposta.ParamByName('Data').AsDate := deAposta.Date;
+    qrNovaAposta.ParamByName('Data').AsString := FormatDateTime('YYYY-MM-DD', deAposta.Date);
     qrNovaAposta.ParamByName('Competição').AsString := cbCompeticao.Text;
     qrNovaAposta.ParamByName('Mandante').AsString := cbMandante.Text;
     qrNovaAposta.ParamByName('Visitante').AsString := cbVisitante.Text;
     qrNovaAposta.ParamByName('Estratégia').AsString := cbEstrategia.Text;
     qrNovaAposta.ParamByName('Odd').AsFloat := StrToFloat(edtOdd.Text);
     qrNovaAposta.ParamByName('ValorApostado').AsFloat := StrToFloat(edtValor.Text);
-    qrNovaAposta.ParamByName('Unidade').AsString := cbUnidade.Text; // Usando Text para o valor selecionado
-    qrNovaAposta.ParamByName('Situação').AsString := cbSituacao.Text; // Usando Text para o valor selecionado
+    qrNovaAposta.ParamByName('Unidade').AsString := cbUnidade.Text;
+    qrNovaAposta.ParamByName('Situação').AsString := cbSituacao.Text;
 
-    qrNovaAposta.ExecSQL; // Executa o INSERT diretamente
+    qrNovaAposta.ExecSQL;
     formPrincipal.ReiniciarTodosOsQueries;
 
     Close;
-
-    // Limpar campos ou fazer outras ações necessárias após o salvamento
-
   except
     on E: Exception do
     begin
-      ShowMessage('Erro ao salvar dados: ' + E.Message);
+      MessageDlg('Erro', 'Erro ao salvar dados, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
     end;
   end;
 end;
@@ -409,7 +407,8 @@ end;
 
 procedure TformNovaAposta.edtOddKeyPress(Sender: TObject; var Key: char);
 begin
-
+  if Key = '.' then
+     Key := ',';
 end;
 
 procedure TformNovaAposta.edtValorChange(Sender: TObject);
@@ -428,7 +427,8 @@ end;
 
 procedure TformNovaAposta.edtValorKeyPress(Sender: TObject; var Key: char);
 begin
-
+  if Key = '.' then
+     Key := ',';
 end;
 
 procedure TformNovaAposta.edtValorMouseEnter(Sender: TObject);

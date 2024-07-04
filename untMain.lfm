@@ -1,11 +1,11 @@
 object formPrincipal: TformPrincipal
-  Left = 1836
+  Left = 70
   Height = 874
-  Top = 142
-  Width = 1301
+  Top = 366
+  Width = 1405
   Caption = 'Graxaim Gestão de Banca [ALPHA]'
   ClientHeight = 847
-  ClientWidth = 1301
+  ClientWidth = 1405
   DesignTimePPI = 125
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -20,20 +20,21 @@ object formPrincipal: TformPrincipal
     Left = 0
     Height = 847
     Top = 0
-    Width = 1301
-    ActivePage = tsApostas
+    Width = 1405
+    ActivePage = tsPainel
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 4
+    TabIndex = 0
     TabOrder = 0
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
       ClientHeight = 812
-      ClientWidth = 1291
+      ClientWidth = 1395
+      OnShow = tsPainelShow
       object txtBancaAtual: TDBText
         Left = 40
-        Height = 1
+        Height = 74
         Top = 328
-        Width = 1
+        Width = 447
         DataField = 'R$BancaAtual'
         DataSource = dsBancaAtual
         Font.Height = -63
@@ -81,11 +82,14 @@ object formPrincipal: TformPrincipal
         Caption = 'Ano:'
       end
       object PageControl2: TPageControl
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
         Left = 400
         Height = 812
         Top = 0
         Width = 1022
         ActivePage = Graficos
+        Anchors = [akTop, akLeft, akRight, akBottom]
         TabIndex = 0
         TabOrder = 1
         object Graficos: TTabSheet
@@ -93,10 +97,12 @@ object formPrincipal: TformPrincipal
           ClientHeight = 777
           ClientWidth = 1012
           object chrtLucroMes: TChart
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 328
+            Height = 1
             Top = 32
-            Width = 876
+            Width = 786
             AxisList = <            
               item
                 Marks.LabelBrush.Style = bsClear
@@ -114,16 +120,19 @@ object formPrincipal: TformPrincipal
               'Lucro do Mês'
             )
             Title.Visible = True
+            Anchors = [akTop, akLeft, akRight, akBottom]
             object chrtLucroMesLineSeries1: TLineSeries
               Pointer.Visible = True
               ShowPoints = True
             end
           end
           object chrtLucroAno: TChart
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 328
+            Height = 1
             Top = 376
-            Width = 876
+            Width = 786
             AxisList = <            
               item
                 Marks.LabelBrush.Style = bsClear
@@ -141,6 +150,7 @@ object formPrincipal: TformPrincipal
               'Lucro do Ano'
             )
             Title.Visible = True
+            Anchors = [akTop, akLeft, akRight, akBottom]
             object chrtLucroAnoLineSeries1: TLineSeries
             end
           end
@@ -154,9 +164,9 @@ object formPrincipal: TformPrincipal
       end
       object txtLucroMoeda: TDBText
         Left = 40
-        Height = 1
+        Height = 74
         Top = 456
-        Width = 1
+        Width = 471
         DataField = 'R$Lucro'
         DataSource = dsBancaAtual
         Font.Height = -63
@@ -165,9 +175,9 @@ object formPrincipal: TformPrincipal
       end
       object txtLucroPorCento: TDBText
         Left = 40
-        Height = 1
+        Height = 74
         Top = 536
-        Width = 1
+        Width = 548
         DataField = '%Lucro'
         DataSource = dsBancaAtual
         Font.Height = -63
@@ -204,6 +214,7 @@ object formPrincipal: TformPrincipal
         Top = 104
         Width = 130
         ItemHeight = 0
+        OnChange = cbAnoChange
         Style = csDropDownList
         TabOrder = 2
       end
@@ -235,9 +246,9 @@ object formPrincipal: TformPrincipal
       end
       object txtUnidade: TDBText
         Left = 192
-        Height = 1
+        Height = 33
         Top = 256
-        Width = 1
+        Width = 155
         DataField = 'R$Stake'
         DataSource = dsBancaInicial
         Font.Height = -28
@@ -248,65 +259,77 @@ object formPrincipal: TformPrincipal
     object tsTimes: TTabSheet
       Caption = 'Times'
       ClientHeight = 812
-      ClientWidth = 1291
+      ClientWidth = 1395
+      OnShow = tsTimesShow
       object grdTodosTimes: TDBGrid
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = -5
-        Height = 571
+        Height = 680
         Top = 24
-        Width = 613
+        Width = 733
         Anchors = [akTop, akLeft, akBottom]
         AutoFillColumns = True
         Color = clWindow
         Columns = <        
           item
+            ButtonStyle = cbsCheckboxColumn
+            Title.Caption = 'Selec.'
+            Width = 89
+            FieldName = 'Selec.'
+          end        
+          item
             MaxSize = 50
             Title.Caption = 'Time'
-            Width = 82
+            Width = 89
             FieldName = 'Time'
           end        
           item
             Title.Caption = 'País'
-            Width = 82
+            Width = 89
             FieldName = 'País'
           end        
           item
             Title.Caption = 'Mandante'
-            Width = 82
+            Width = 89
             FieldName = 'Mandante'
           end        
           item
             Title.Caption = 'Visitante'
-            Width = 82
+            Width = 89
             FieldName = 'Visitante'
           end        
           item
             Title.Caption = 'Greens'
-            Width = 82
+            Width = 89
             FieldName = 'Greens'
           end        
           item
             Title.Caption = 'P/L'
-            Width = 82
+            Width = 89
             FieldName = 'P/L'
           end        
           item
             Title.Caption = 'Reds'
-            Width = 86
+            Width = 90
             FieldName = 'Reds'
           end>
         DataSource = dsTodosTimes
         Scrollbars = ssAutoBoth
         TabOrder = 0
+        OnCellClick = grdTodosTimesCellClick
+        OnColEnter = grdTodosTimesColEnter
+        OnColExit = grdTodosTimesColExit
+        OnExit = grdTodosTimesExit
+        OnUserCheckboxState = grdTodosTimesUserCheckboxState
       end
       object grdTimesMaisLucrativos: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 608
-        Height = 571
+        Left = 728
+        Height = 680
         Top = 24
         Width = 200
         Anchors = [akTop, akLeft, akBottom]
@@ -334,7 +357,7 @@ object formPrincipal: TformPrincipal
         Caption = 'Lista de Times'
       end
       object lbTimesMaisLucrativos: TLabel
-        Left = 608
+        Left = 728
         Height = 21
         Top = 0
         Width = 171
@@ -342,17 +365,17 @@ object formPrincipal: TformPrincipal
       end
       object lbTimesMenosLucrativos: TLabel
         AnchorSideRight.Side = asrBottom
-        Left = 808
+        Left = 928
         Height = 21
         Top = 0
-        Width = 475
+        Width = 579
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Times Menos Lucrativos'
       end
       object grdTimesMenosLucrativos: TDBGrid
         AnchorSideBottom.Side = asrBottom
-        Left = 808
-        Height = 570
+        Left = 928
+        Height = 682
         Top = 24
         Width = 200
         Anchors = [akTop, akLeft, akBottom]
@@ -373,20 +396,26 @@ object formPrincipal: TformPrincipal
         TabOrder = 2
       end
       object btnNovoTime: TButton
+        AnchorSideBottom.Side = asrBottom
         Left = 8
         Height = 64
-        Top = 608
+        Top = 729
         Width = 136
+        Anchors = [akLeft, akBottom]
         Caption = 'Novo Time'
+        Enabled = False
         OnClick = btnNovoTimeClick
         TabOrder = 3
       end
       object btnRemoverTime: TButton
+        AnchorSideBottom.Side = asrBottom
         Left = 160
         Height = 65
-        Top = 607
+        Top = 728
         Width = 138
+        Anchors = [akLeft, akBottom]
         Caption = 'Remover Time'
+        Enabled = False
         OnClick = btnRemoverTimeClick
         TabOrder = 4
       end
@@ -394,17 +423,48 @@ object formPrincipal: TformPrincipal
     object tsCampeonatos: TTabSheet
       Caption = 'Campeonatos'
       ClientHeight = 812
-      ClientWidth = 1291
+      ClientWidth = 1395
+      OnShow = tsCampeonatosShow
       object DBGrid3: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = -8
         Height = 749
         Top = 0
-        Width = 616
+        Width = 736
         Anchors = [akTop, akLeft, akBottom]
         Color = clWindow
-        Columns = <>
+        Columns = <        
+          item
+            Title.Caption = 'Competição'
+            Width = 300
+            FieldName = 'Competição'
+          end        
+          item
+            Title.Caption = 'País'
+            Width = 150
+            FieldName = 'País'
+          end        
+          item
+            Title.Caption = 'Mercados'
+            Width = 90
+            FieldName = 'Mercados'
+          end        
+          item
+            Title.Caption = 'Green'
+            Width = 60
+            FieldName = 'Green'
+          end        
+          item
+            Title.Caption = 'Red'
+            Width = 60
+            FieldName = 'Red'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 40
+            FieldName = 'P/L'
+          end>
         DataSource = dsCampeonatos
         Scrollbars = ssAutoBoth
         TabOrder = 0
@@ -413,19 +473,26 @@ object formPrincipal: TformPrincipal
     object tsEstrategias: TTabSheet
       Caption = 'Estratégias'
       ClientHeight = 812
-      ClientWidth = 1291
+      ClientWidth = 1395
+      OnContextPopup = tsEstrategiasContextPopup
+      OnShow = tsEstrategiasShow
       object grdEstrategias: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 532
+        Height = 648
         Top = 48
         Width = 376
+        Anchors = [akTop, akLeft, akBottom]
         Color = clWindow
         Columns = <        
           item
+            Title.Caption = 'Selec.'
+            Width = 60
+            FieldName = 'Selec.'
+          end        
+          item
             Title.Caption = 'Estratégia'
-            Width = 200
             FieldName = 'Estratégia'
           end        
           item
@@ -439,6 +506,13 @@ object formPrincipal: TformPrincipal
         DataSource = dsEstrategias
         Scrollbars = ssNone
         TabOrder = 0
+        OnCellClick = grdEstrategiasCellClick
+        OnColEnter = grdEstrategiasColEnter
+        OnColExit = grdEstrategiasColExit
+        OnExit = grdEstrategiasExit
+        OnKeyPress = grdEstrategiasKeyPress
+        OnSelectEditor = grdEstrategiasSelectEditor
+        OnUserCheckboxState = grdEstrategiasUserCheckboxState
       end
       object chrtEstrategias: TChart
         AnchorSideRight.Side = asrBottom
@@ -446,7 +520,7 @@ object formPrincipal: TformPrincipal
         Left = 384
         Height = 577
         Top = 0
-        Width = 821
+        Width = 925
         AxisList = <        
           item
             TickLength = 1
@@ -575,20 +649,26 @@ object formPrincipal: TformPrincipal
         ParentFont = False
       end
       object btnNovaEstrategia: TButton
+        AnchorSideBottom.Side = asrBottom
         Left = 0
         Height = 64
-        Top = 592
+        Top = 720
         Width = 184
+        Anchors = [akLeft, akBottom]
         Caption = 'Nova Estratégia'
+        Enabled = False
         OnClick = btnNovaEstrategiaClick
         TabOrder = 2
       end
       object btnRemoverEstrategia: TButton
+        AnchorSideBottom.Side = asrBottom
         Left = 192
         Height = 64
-        Top = 592
+        Top = 720
         Width = 184
+        Anchors = [akLeft, akBottom]
         Caption = 'Remover Estratégia'
+        Enabled = False
         OnClick = btnRemoverEstrategiaClick
         TabOrder = 3
       end
@@ -596,61 +676,60 @@ object formPrincipal: TformPrincipal
     object tsApostas: TTabSheet
       Caption = 'Apostas'
       ClientHeight = 812
-      ClientWidth = 1291
+      ClientWidth = 1395
+      OnShow = tsApostasShow
       object grdApostas: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 680
+        Height = 672
         Top = 32
-        Width = 1296
-        Anchors = [akTop, akLeft, akBottom]
+        Width = 1400
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Color = clWindow
         Columns = <        
           item
-            ReadOnly = True
-            Title.Caption = 'ID'
-            Width = 30
-            FieldName = 'Cod_Aposta'
+            ButtonStyle = cbsCheckboxColumn
+            Title.Caption = 'Selec.'
+            Width = 60
+            FieldName = 'Selec.'
           end        
           item
             Title.Caption = 'Data'
-            Width = 110
             FieldName = 'Data'
           end        
           item
-            ButtonStyle = cbsPickList
             Title.Caption = 'Competição'
-            Width = 180
+            Width = 200
             FieldName = 'Competição_AP'
           end        
           item
             ButtonStyle = cbsPickList
             Title.Caption = 'Mandante'
-            Width = 150
+            Width = 130
             FieldName = 'Mandante'
           end        
           item
             ButtonStyle = cbsPickList
             Title.Caption = 'Visitante'
-            Width = 150
+            Width = 130
             FieldName = 'Visitante'
           end        
           item
             ButtonStyle = cbsPickList
             Title.Caption = 'Estratégia'
-            Width = 160
+            Width = 130
             FieldName = 'Estratégia_Escolhida'
           end        
           item
             Title.Caption = 'Odd'
-            Width = 40
+            Width = 50
             FieldName = 'Odd'
           end        
           item
             ButtonStyle = cbsPickList
             Title.Caption = 'Unidade'
-            Width = 80
+            Width = 100
             FieldName = 'Unidade'
           end        
           item
@@ -661,7 +740,7 @@ object formPrincipal: TformPrincipal
           item
             ButtonStyle = cbsPickList
             Title.Caption = 'Situação'
-            Width = 75
+            Width = 80
             FieldName = 'Status'
           end        
           item
@@ -670,23 +749,24 @@ object formPrincipal: TformPrincipal
             FieldName = 'Retorno'
           end        
           item
-            ReadOnly = True
             Title.Caption = 'Lucro'
-            Width = 60
+            Width = 80
             FieldName = 'Profit_L'
           end        
           item
-            ReadOnly = True
-            Title.Caption = 'Total'
-            Width = 60
+            Title.Caption = 'Banca Final'
+            Width = 110
             FieldName = 'Banca_Final'
           end>
         DataSource = dsApostas
         Scrollbars = ssAutoBoth
         TabOrder = 0
         OnCellClick = grdApostasCellClick
+        OnColEnter = grdApostasColEnter
         OnColExit = grdApostasColExit
+        OnDrawColumnCell = grdApostasDrawColumnCell
         OnExit = grdApostasExit
+        OnUserCheckboxState = grdApostasUserCheckboxState
       end
       object btnNovaAposta: TButton
         AnchorSideRight.Side = asrBottom
@@ -694,163 +774,155 @@ object formPrincipal: TformPrincipal
         Left = 8
         Height = 67
         Top = 728
-        Width = 160
+        Width = 206
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
         OnClick = btnNovaApostaClick
         TabOrder = 1
       end
-      object edtRemoverAposta: TEdit
-        Left = 296
-        Height = 35
-        Top = 760
-        Width = 112
-        Font.Height = -19
-        Font.Name = 'Sans'
-        ParentFont = False
-        TabOrder = 2
-      end
       object btnFiltrarAp: TButton
-        Left = 1120
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 1212
         Height = 67
         Top = 728
         Width = 162
+        Anchors = [akRight, akBottom]
         Caption = 'Filtrar Apostas'
+        Enabled = False
         OnClick = btnFiltrarApClick
-        TabOrder = 4
+        TabOrder = 2
       end
-      object Button1: TButton
-        Left = 507
-        Height = 35
-        Top = 760
-        Width = 112
-        Caption = 'Remover'
-        OnClick = Button1Click
-        TabOrder = 5
-      end
-      object Label3: TLabel
-        Left = 296
-        Height = 21
+      object btnRemoverAposta: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 240
+        Height = 67
         Top = 728
-        Width = 323
-        Caption = 'Insira o ID de uma aposta para removê-la:'
-      end
-      object pnFiltroAp: TPanel
-        Left = 1088
-        Height = 336
-        Top = 376
-        Width = 208
-        ClientHeight = 336
-        ClientWidth = 208
+        Width = 206
+        Anchors = [akLeft, akBottom]
+        Caption = 'Remover Selecionada'
+        OnClick = btnRemoverApostaClick
         TabOrder = 3
-        Visible = False
-        object DBDateEdit1: TDBDateEdit
-          Left = 16
-          Height = 33
-          Top = 32
-          Width = 176
-          CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
-          DateOrder = doNone
-          ButtonWidth = 30
-          NumGlyphs = 1
-          MaxLength = 0
-          TabOrder = 0
-          Text = 'DBDateEdit1'
-        end
-        object DBDateEdit2: TDBDateEdit
-          Left = 16
-          Height = 33
-          Top = 96
-          Width = 176
-          CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
-          DateOrder = doNone
-          ButtonWidth = 30
-          NumGlyphs = 1
-          MaxLength = 0
-          TabOrder = 1
-          Text = 'DBDateEdit2'
-        end
-        object lbFiltroDataInicial: TLabel
-          Left = 16
-          Height = 21
-          Top = 8
-          Width = 86
-          Caption = 'Data Inicial'
-        end
-        object lbFiltroDataFinal: TLabel
-          Left = 16
-          Height = 21
-          Top = 72
-          Width = 78
-          Caption = 'Data Final'
-        end
-        object DBComboBox1: TDBComboBox
-          Left = 16
-          Height = 33
-          Top = 160
-          Width = 142
-          ItemHeight = 0
-          MaxLength = 0
-          TabOrder = 2
-        end
-        object DBComboBox2: TDBComboBox
-          Left = 16
-          Height = 33
-          Top = 224
-          Width = 142
-          ItemHeight = 0
-          MaxLength = 0
-          TabOrder = 3
-        end
-        object cbMandante: TDBCheckBox
-          Left = 16
-          Height = 25
-          Top = 264
-          Width = 142
-          Caption = 'Mandante'
-          TabOrder = 4
-          ValueChecked = 'True'
-          ValueUnchecked = 'False'
-        end
-        object cbVisitante: TDBCheckBox
-          Left = 16
-          Height = 33
-          Top = 296
-          Width = 141
-          Caption = 'Visitante'
-          TabOrder = 5
-          ValueChecked = 'True'
-          ValueUnchecked = 'False'
-        end
-        object Label1: TLabel
-          Left = 16
-          Height = 21
-          Top = 136
-          Width = 93
-          Caption = 'Competição'
-        end
-        object Label2: TLabel
-          Left = 16
-          Height = 21
-          Top = 200
-          Width = 39
-          Caption = 'Time'
-        end
       end
       object Label4: TLabel
-        Left = 296
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideRight.Side = asrCenter
+        Left = 368
         Height = 29
         Top = 0
         Width = 617
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Clique duas vezes sobre uma célula para alterá-la:'
         Font.Height = -24
         Font.Name = 'Sans'
         ParentFont = False
       end
+      object chbMandante: TDBCheckBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 916
+        Height = 33
+        Top = 768
+        Width = 142
+        Anchors = [akRight, akBottom]
+        Caption = 'Mandante'
+        Enabled = False
+        TabOrder = 4
+        ValueChecked = 'True'
+        ValueUnchecked = 'False'
+      end
+      object chbVisitante: TDBCheckBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 1060
+        Height = 33
+        Top = 768
+        Width = 141
+        Anchors = [akRight, akBottom]
+        Caption = 'Visitante'
+        Enabled = False
+        TabOrder = 5
+        ValueChecked = 'True'
+        ValueUnchecked = 'False'
+      end
+      object Label1: TLabel
+        Left = 1128
+        Height = 21
+        Top = 512
+        Width = 93
+        Caption = 'Competição'
+      end
+      object Label2: TLabel
+        Left = 1128
+        Height = 21
+        Top = 576
+        Width = 39
+        Caption = 'Time'
+      end
+      object cbCompeticao: TComboBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 756
+        Height = 33
+        Top = 712
+        Width = 400
+        Anchors = [akRight, akBottom]
+        Enabled = False
+        ItemHeight = 0
+        TabOrder = 6
+        Text = 'Competição'
+      end
+      object cbTime: TComboBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 756
+        Height = 33
+        Top = 768
+        Width = 154
+        Anchors = [akRight, akBottom]
+        Enabled = False
+        ItemHeight = 0
+        TabOrder = 7
+        Text = 'Time'
+      end
+      object deFiltroDataInicial: TDateEdit
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 588
+        Height = 33
+        Top = 712
+        Width = 134
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 30
+        Anchors = [akRight, akBottom]
+        NumGlyphs = 1
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 8
+        Text = 'Data Inicial'
+      end
+      object deFiltroDataFinal: TDateEdit
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 588
+        Height = 33
+        Top = 768
+        Width = 134
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 30
+        Anchors = [akRight, akBottom]
+        NumGlyphs = 1
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 9
+        Text = 'Data Final'
+      end
     end
   end
   object transactionBancoDAdos: TSQLTransaction
-    Active = True
+    Active = False
     Database = conectBancoDados
     Left = 768
     Top = 688
@@ -859,6 +931,11 @@ object formPrincipal: TformPrincipal
     IndexName = 'DEFAULT_ORDER'
     MaxIndexesCount = 4
     FieldDefs = <    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
       item
         Name = 'Time'
         DataType = ftString
@@ -873,17 +950,17 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Mandante'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
         Name = 'Visitante'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
         Name = 'Greens'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
@@ -893,10 +970,9 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Reds'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -907,6 +983,9 @@ object formPrincipal: TformPrincipal
       'FROM Times'
       'WHERE "P/L" > 0'
       'ORDER BY "P/L" DESC;'
+    )
+    DeleteSQL.Strings = (
+      'Delete from Times where "Selec." = 1'
     )
     Params = <>
     Macros = <>
@@ -921,6 +1000,7 @@ object formPrincipal: TformPrincipal
   end
   object dsTimesMaisLucrativos: TDataSource
     DataSet = qrTimesMaisLucrativos
+    OnDataChange = dsTimesMaisLucrativosDataChange
     Left = 312
     Top = 688
   end
@@ -939,7 +1019,6 @@ object formPrincipal: TformPrincipal
         DataType = ftLargeint
         Precision = -1
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -969,7 +1048,6 @@ object formPrincipal: TformPrincipal
         DataType = ftLargeint
         Precision = -1
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -994,6 +1072,11 @@ object formPrincipal: TformPrincipal
     MaxIndexesCount = 4
     FieldDefs = <    
       item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
         Name = 'Competição'
         DataType = ftString
         Precision = -1
@@ -1007,17 +1090,17 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Mercados'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
         Name = 'Green'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
         Name = 'Red'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
@@ -1030,7 +1113,6 @@ object formPrincipal: TformPrincipal
         DataType = ftLargeint
         Precision = -1
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -1047,9 +1129,20 @@ object formPrincipal: TformPrincipal
     Top = 808
   end
   object qrEstrategias: TSQLQuery
+    PacketRecords = 1
     IndexName = 'DEFAULT_ORDER'
     MaxIndexesCount = 4
     FieldDefs = <    
+      item
+        Name = 'Cod_Estratégia'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
       item
         Name = 'Estratégia'
         DataType = ftString
@@ -1058,7 +1151,7 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Mercados_Estr'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
@@ -1066,11 +1159,20 @@ object formPrincipal: TformPrincipal
         DataType = ftFloat
         Precision = -1
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
-      'SELECT Estratégia, Mercados_Estr, Profit_Estr FROM Estratégias;'
+      'SELECT * FROM Estratégias;'
+    )
+    InsertSQL.Strings = (
+      'insert into Estratégias values ("Selec." = :"Selec.", Estratégia = :Estratégia);'
+    )
+    UpdateSQL.Strings = (
+      'update Estratégias set "Selec." = :"Selec.", Estratégia = :Estratégia where Cod_Estratégia = :Cod_Estratégia;'
+    )
+    DeleteSQL.Strings = (
+      'DELETE FROM Estratégias WHERE "Selec." = 1'
+      ''
     )
     Params = <>
     Macros = <>
@@ -1110,6 +1212,25 @@ object formPrincipal: TformPrincipal
       Required = False
       Precision = -1
     end
+    object qrEstrategiasCod_Estratgia: TLongintField
+      FieldKind = fkData
+      FieldName = 'Cod_Estratégia'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrEstrategiasSelec: TBooleanField
+      FieldKind = fkData
+      FieldName = 'Selec.'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
   end
   object dsEstrategias: TDataSource
     DataSet = qrEstrategias
@@ -1128,6 +1249,11 @@ object formPrincipal: TformPrincipal
       item
         Name = 'Cod_Aposta'
         DataType = ftAutoInc
+        Precision = -1
+      end    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
         Precision = -1
       end    
       item
@@ -1199,34 +1325,14 @@ object formPrincipal: TformPrincipal
         Name = 'Banca_Final'
         DataType = ftLargeint
         Precision = -1
-      end    
-      item
-        Name = 'DataFormatada'
-        DataType = ftString
-        Precision = -1
-        Size = 255
       end>
-    Active = True
     AfterInsert = qrApostasAfterInsert
     AfterOpen = qrApostasAfterOpen
     AfterRefresh = qrApostasAfterRefresh
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
-      'SELECT Cod_Aposta,'
-      '       Data,'
-      '       Competição_AP,'
-      '       Mandante,'
-      '       Visitante,'
-      '       Estratégia_Escolhida,'
-      '       Odd,'
-      '       Unidade,'
-      '       Valor_Aposta,'
-      '       Status,'
-      '       Retorno,'
-      '       Profit_L,'
-      '       Banca_Final,'
-      '       strftime(''%d/%m/%Y'', Data) AS DataFormatada'
+      'SELECT *'
       'FROM Apostas;'
     )
     InsertSQL.Strings = (
@@ -1234,10 +1340,10 @@ object formPrincipal: TformPrincipal
       ''
     )
     UpdateSQL.Strings = (
-      'Update Apostas set Competição = :Competição, Mandante = :Mandante, Visitante = :Visitante, Estratégia_Escolhida = :Estratégia_Escolhida, Odd = :Odd, Unidade = :Unidade, Valor_R$ = :Valor_R$ where Cod_Aposta = :Cod_Aposta;'
+      'Update Apostas set "Selec." = :"Selec.", Competição_AP = :Competição_AP, Mandante = :Mandante, Visitante = :Visitante, Estratégia_Escolhida = :Estratégia_Escolhida, Odd = :Odd, Unidade = :Unidade, Valor_Aposta = :Valor_Aposta where Cod_Aposta = :Cod_Aposta;'
     )
     DeleteSQL.Strings = (
-      'delete from Apostas where Cod_Aposta = :Cod_Aposta;'
+      'DELETE FROM Apostas WHERE "Selec." = 1'
     )
     Params = <>
     Macros = <>
@@ -1265,7 +1371,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Over 1.5"'''
     Filtered = True
     Database = conectBancoDados
@@ -1312,7 +1417,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Back Favorito"'''
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -1364,7 +1468,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Zebra Favorito"'''
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -1410,7 +1513,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Cantos"'''
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -1456,7 +1558,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Handicap Asiático"'''
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -1502,7 +1603,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Handicap Europeu"'''
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -1555,7 +1655,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Cartões"'''
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -1589,7 +1688,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Bilhete Personalizado"'''
     Filtered = True
     Database = conectBancoDados
@@ -1636,7 +1734,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Over "2.5"'''
     Filtered = True
     Database = conectBancoDados
@@ -1683,7 +1780,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Under 2.5"'''
     Filtered = True
     Database = conectBancoDados
@@ -1730,7 +1826,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Under 3.5"'''
     Filtered = True
     Database = conectBancoDados
@@ -1777,7 +1872,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Total de Gols da Equipe"'''
     Filtered = True
     Database = conectBancoDados
@@ -1829,7 +1923,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Empate Anula"'''
     Filtered = True
     Database = conectBancoDados
@@ -1876,7 +1969,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Chance Dupla"'''
     Filtered = True
     Database = conectBancoDados
@@ -1925,7 +2017,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Aposta Múltipla"'''
     Filtered = True
     Database = conectBancoDados
@@ -1977,7 +2068,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Filter = '''Estratégia_Escolhida = "Outras"'''
     Filtered = True
     Database = conectBancoDados
@@ -2002,12 +2092,12 @@ object formPrincipal: TformPrincipal
     FieldDefs = <    
       item
         Name = 'Mês'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
         Name = 'Ano'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
@@ -2040,7 +2130,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     OnCalcFields = qrBancaAtualCalcFields
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -2168,12 +2257,12 @@ object formPrincipal: TformPrincipal
     FieldDefs = <    
       item
         Name = 'Mês'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
         Name = 'Ano'
-        DataType = ftLargeint
+        DataType = ftInteger
         Precision = -1
       end    
       item
@@ -2188,7 +2277,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     OnCalcFields = qrBancaInicialCalcFields
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -2310,7 +2398,6 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -2336,7 +2423,6 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -2410,7 +2496,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -2438,7 +2523,6 @@ object formPrincipal: TformPrincipal
         Precision = 9
         Size = 2
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -2479,7 +2563,6 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -2510,7 +2593,6 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -2546,16 +2628,12 @@ object formPrincipal: TformPrincipal
     Top = 8
   end
   object conectBancoDados: TSQLite3Connection
-    Connected = True
+    Connected = False
     LoginPrompt = False
-    DatabaseName = 'database.db'
-    KeepConnection = True
-    Params.Strings = (
-      'AlwaysUseBigint=1'
-    )
+    KeepConnection = False
     Transaction = transactionBancoDAdos
-    AlwaysUseBigint = True
-    Left = 128
-    Top = 40
+    AlwaysUseBigint = False
+    Left = 367
+    Top = 312
   end
 end

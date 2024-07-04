@@ -9,9 +9,9 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   DBExtCtrls, Menus, ActnList, CheckLst, Buttons, ExtCtrls, JSONPropStorage,
-  TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
+  EditBtn, TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
   TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
-  Iphttpbroker, DateUtils, {VTHeaderPopup,} Math;
+  Iphttpbroker, DateUtils, Math, Grids;
 
 type
 
@@ -21,25 +21,25 @@ type
     btnNovaAposta: TButton;
     btnSalvarBancaInicial: TButton;
     btnFiltrarAp: TButton;
-    Button1: TButton;
+    btnRemoverAposta: TButton;
     btnNovaEstrategia: TButton;
     btnRemoverEstrategia: TButton;
     btnNovoTime: TButton;
     btnRemoverTime: TButton;
+    cbCompeticao: TComboBox;
     chrtLucroAno: TChart;
     chrtLucroAnoLineSeries1: TLineSeries;
     chrtLucroMes: TChart;
     chrtEstrategias: TChart;
     chrtLucroMesLineSeries1: TLineSeries;
-    cbMandante: TDBCheckBox;
-    cbVisitante: TDBCheckBox;
+    chbMandante: TDBCheckBox;
+    chbVisitante: TDBCheckBox;
     cbAno: TComboBox;
     cbMes: TComboBox;
     cbPerfil: TComboBox;
-    DBComboBox1: TDBComboBox;
-    DBComboBox2: TDBComboBox;
-    DBDateEdit1: TDBDateEdit;
-    DBDateEdit2: TDBDateEdit;
+    cbTime: TComboBox;
+    deFiltroDataInicial: TDateEdit;
+    deFiltroDataFinal: TDateEdit;
     edtBancaInicial: TEdit;
     linkAtualizacoes: TIpHttpDataProvider;
     JSONPropStorage1: TJSONPropStorage;
@@ -47,6 +47,8 @@ type
     Label5: TLabel;
     qrBancaInicialMoedaStake: TStringField;
     qrBancaInicialStake: TBCDField;
+    qrEstrategiasCod_Estratgia: TLongintField;
+    qrEstrategiasSelec: TBooleanField;
     qrPerfisPerfil: TStringField;
     qrSelecionarPerfilPerfilSelecionado: TStringField;
     dsSelecionarPerfil: TDataSource;
@@ -55,16 +57,11 @@ type
     dbGraficoLucroMes: TDbChartSource;
     dsGraficoLucroAno: TDataSource;
     dsGraficoLucroMes: TDataSource;
-    edtRemoverAposta: TEdit;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
     lbUnidade: TLabel;
     lbPerfil: TLabel;
-    lbFiltroDataInicial: TLabel;
-    lbFiltroDataFinal: TLabel;
     lbLucro: TLabel;
-    pnFiltroAp: TPanel;
     qrBancaInicialValor_Inicial: TBCDField;
     qrGraficoLucroMes: TSQLQuery;
     qrGraficoLucroAno: TSQLQuery;
@@ -219,9 +216,33 @@ type
     procedure btnNovoTimeClick(Sender: TObject);
     procedure btnRemoverEstrategiaClick(Sender: TObject);
     procedure btnRemoverTimeClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure btnRemoverApostaClick(Sender: TObject);
+    procedure cbAnoChange(Sender: TObject);
+    procedure dsTimesMaisLucrativosDataChange(Sender: TObject; Field: TField);
+    procedure grdApostasColEnter(Sender: TObject);
     procedure grdApostasColExit(Sender: TObject);
+    procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure grdApostasExit(Sender: TObject);
+    procedure grdApostasUserCheckboxState(Sender: TObject; Column: TColumn;
+      var AState: TCheckboxState);
+    procedure grdEstrategiasCellClick(Column: TColumn);
+    procedure grdEstrategiasColEnter(Sender: TObject);
+    procedure grdEstrategiasColExit(Sender: TObject);
+    procedure grdEstrategiasDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure grdEstrategiasExit(Sender: TObject);
+    procedure grdEstrategiasKeyPress(Sender: TObject; var Key: char);
+    procedure grdEstrategiasSelectEditor(Sender: TObject; Column: TColumn;
+      var Editor: TWinControl);
+    procedure grdEstrategiasUserCheckboxState(Sender: TObject; Column: TColumn;
+      var AState: TCheckboxState);
+    procedure grdTodosTimesCellClick(Column: TColumn);
+    procedure grdTodosTimesColEnter(Sender: TObject);
+    procedure grdTodosTimesColExit(Sender: TObject);
+    procedure grdTodosTimesExit(Sender: TObject);
+    procedure grdTodosTimesUserCheckboxState(Sender: TObject; Column: TColumn;
+      var AState: TCheckboxState);
     procedure MenuItem8Click(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
     procedure MudarCorLucro;
@@ -241,9 +262,24 @@ type
     procedure qrBancaInicialCalcFields(DataSet: TDataSet);
     procedure TabControl1Change(Sender: TObject);
     procedure ReiniciarTodosOsQueries;
-   // procedure dsGraficoEstrategiaDataChange(Sender: TObject; Field: TField);
-   // procedure FormCreate(Sender: TObject);
+    procedure LocalizarBancoDeDados;
+    procedure tsApostasShow(Sender: TObject);
+    procedure tsCampeonatosShow(Sender: TObject);
+    procedure tsEstrategiasContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure tsEstrategiasShow(Sender: TObject);
+    procedure tsPainelShow(Sender: TObject);
+    procedure tsTimesShow(Sender: TObject);
+
+   //Funções e procedimentos personalizados
    function VerificarAtualizacoes (currentVersion: string): string;
+   function JaAtualizado: Boolean;
+   procedure VerificarVersaoBancoDeDados;
+   procedure FontesEditaveis;
+   procedure AtualizarBancoDeDados;
+   procedure CriarBancoDeDados;
+   procedure ExecutarSQLDeArquivo(const VarArquivo: string);
+   function FimDoTexto(const Ending, FullString: string): Boolean;
   private
       contadorCliques: Integer;
   public
@@ -257,6 +293,12 @@ var
   stakeAposta: Double;
   valorInicial: Double;
   mesSelecionado, anoSelecionado: Integer;
+  estrategia: String;
+  versaoBDInstalada: Integer;
+  versaoBDEsperada: Integer = 2;
+  CriarBD: String;
+  AtualizarBD: String;
+  LocalizarBD: String;
 implementation
 uses
   untNA, fpjson, HTTPDefs, fphttpclient, httpsend, synautil, jsonparser, LCLIntf, IdSSLOpenSSLHeaders, ssl_openssl3;
@@ -299,7 +341,7 @@ var
   json: TJSONObject;
   userResponse: Integer;
 begin
-  currentVersion := ('0.0.0.2');
+  currentVersion := ('0.0.0.4');
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');
@@ -341,6 +383,20 @@ begin
     end;
   end;
   response.Free;
+end;
+
+function TformPrincipal.JaAtualizado: Boolean;
+begin
+  writeln('Verificando se o arquivo de marcação existe...');
+  {$IFDEF MSWINDOWS}
+   Result := FileExists(IncludeTrailingPathDelimiter(GetEnvironmentVariable('APPDATA')) +
+    'GraxaimBanca\NaoExcluir)';
+  {$ENDIF}
+
+  {$IFDEF LINUX}
+   Result := FileExists(IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME')) +
+    '.GraxaimBanca/NaoExcluir');
+  {$ENDIF}
 end;
 
 procedure TformPrincipal.cbMesChange(Sender: TObject);
@@ -388,11 +444,11 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
   if TryStrToInt(cbMes.Text, mes) and TryStrToInt(cbAno.Text, ano) then
   begin
     try
-       // Abre a conexão com o banco de dados, se ainda não estiver aberta
+
        if not conectBancoDados.Connected then
          conectBancoDados.Connected := True;
 
-       // Verifica se já existe um registro com o mês e ano fornecidos
+
        qrBancaInicial.Close;
        qrBancaInicial.SQL.Text := 'SELECT "Mês", "Ano", "Valor_Inicial", "Stake" FROM "Banca" WHERE "Mês" = :mesSelecionado AND "Ano" = :anoSelecionado';
        qrBancaInicial.ParamByName('mesSelecionado').AsInteger := mes;
@@ -401,7 +457,7 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
 
        if qrBancaInicial.RecordCount = 0 then
        begin
-         // Insere um novo registro se não existir
+
          qrBancaInicial.Close;
          qrBancaInicial.SQL.Text := 'INSERT INTO "Banca" ("Mês", "Ano", "Valor_Inicial", "Stake") VALUES (:mes, :ano, :valorInicial, :stake)';
          qrBancaInicial.ParamByName('mes').AsInteger := mes;
@@ -412,7 +468,7 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
        end
        else
        begin
-         // Atualiza o valor correspondente ao mês e ano selecionados
+
          if TryStrToFloat(edtBancaInicial.Text, novoValor) then
          begin
            qrBancaInicial.Close;
@@ -427,7 +483,7 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
 
        valorInicial := novoValor;
        transactionBancoDAdos.Commit;
-       // Define o valor de stakeAposta com base no perfil selecionado
+
        if perfilInvestidor = 'Conservador' then
           stakeAposta := RoundTo(valorInicial / 100, -2)
           else
@@ -441,9 +497,9 @@ procedure TformPrincipal.btnSalvarBancaInicialClick(Sender: TObject);
      except
        on E: Exception do
        begin
-         // Em caso de erro, mostra uma mensagem de erro
+
          ShowMessage('Erro ao salvar: ' + E.Message);
-         transactionBancoDAdos.Rollback; // Desfaz as alterações no banco de dados
+         transactionBancoDAdos.Rollback;
        end;
      end;
    end
@@ -468,7 +524,14 @@ end;
 
 procedure TformPrincipal.btnNovaApostaClick(Sender: TObject);
 begin
-
+  try
+    formNovaAposta.ShowModal;
+  finally
+    formNovaAposta.Free;
+    ReiniciarTodosOsQueries;
+    if qrApostas.IsEmpty then grdApostas.Enabled:=False
+    else grdApostas.Enabled:=True;
+  end;
 end;
 
 procedure TformPrincipal.FormCreate(Sender: TObject);
@@ -480,10 +543,14 @@ var
   Time: TStringList;
   Unidade: TStringList;
   query: TSQLQuery;
+  anoAtual: Integer;
 begin
- MudarCorLucro;
  VerificarAtualizacoes(currentVersion);
- // Carrega os perfis disponíveis no ComboBox
+ LocalizarBancoDeDados;;
+ MudarCorLucro;
+ qrApostas.EnableControls;
+ qrEstrategias.EnableControls;
+ anoAtual := YearOf(Now);
   qrPerfis.Open;
   try
     while not qrPerfis.EOF do
@@ -495,7 +562,7 @@ begin
     qrPerfis.Close;
   end;
 
-  // Define o perfil selecionado no ComboBox
+
   qrSelecionarPerfil.Open;
   try
     perfilInvestidor := qrSelecionarPerfil.FieldByName('Perfil Selecionado').AsString;
@@ -503,21 +570,21 @@ begin
     qrSelecionarPerfil.Close;
   end;
   cbPerfil.Text := perfilInvestidor;
-  // Configura o combobox do mês com os meses de 1 a 12
+
   cbMes.Clear;
   cbAno.Items.Add(IntToStr(qrBancaInicial.FieldByName('Ano').AsInteger));
   for i := 1 to 12 do
   cbMes.Items.Add(IntToStr(i));
   cbMes.ItemIndex := MonthOf(Now) - 1;
-  cbAno.Text := IntToStr(YearOf(Now));
+  if cbAno.Items.IndexOf(IntToStr(anoAtual)) = -1 then
+     cbAno.Items.Add(IntToStr(anoAtual));
+     cbAno.ItemIndex := cbAno.Items.IndexOf(IntToStr(anoAtual));
 
   Estrategias := TStringList.Create;
   Situacao := TStringList.Create;
   Competicao := TStringList.Create;
   Time := TStringList.Create;
   Unidade := TStringList.Create;
-
-  // Mostra o valor da Banca Inicial da data selecionada
   mesSelecionado := StrToInt(cbMes.Text);
   anoSelecionado := StrToInt(cbAno.Text);
 
@@ -547,8 +614,6 @@ begin
   else
       if perfilInvestidor = 'Agressivo' then
       stakeAposta := RoundTo(valorInicial / 40, -2);
-
-  try
     qrEstrategias.Open;
     qrTodosTimes.Open;
     qrSituacao.Open;
@@ -585,13 +650,6 @@ begin
       Unidade.Add(qrUnidades.FieldByName('Unidade').AsString);
       qrUnidades.Next;
     end;
-  finally
-    qrEstrategias.Close;
-    qrTodosTimes.Close;
-    qrSituacao.Close;
-    qrCompeticoes.Close;
-    qrUnidades.Close;
-  end;
 
     //Listar opções nos PickLists das colunas
     try
@@ -631,31 +689,35 @@ begin
   finally
     Estrategias.Free;
   end;
- end;
+end;
 
 procedure TformPrincipal.grdApostasCellClick(Column: TColumn);
-{var
-ARect: TRect;
-cbStatusLeft, cbStatusTop: Integer;}
 begin
-  {if (grdApostas.SelectedIndex = 8) then
-  begin
-    cbStatusLeft := grdApostas.Left + grdApostas.Columns[grdApostas.SelectedIndex].Width;
-    cbStatusTop := grdApostas.Top + grdApostas.HowHeights * grdApostas.DefaultRowHeight;
+  if not (qrApostas.State in [dsEdit, dsInsert]) then
+    qrApostas.Edit;
 
-    ARect := grdApostas.CellRect(Column.Index, grdApostas.Row);
-    ARect.Left := cbStatusLeft;
-    ARect.Right := cbStatusLeft + 80;
-
-    cbCelulaStatus.Left := cbStatusLeft;
-    cbCelulaStatus.Top := cbStatusTop;
-    cbCelulaStatus.Width := 80;
-    cbCelulaStatus.Visible := True;
-  end
-  else
+  if Column.Field is TBooleanField then
   begin
-    cbCelulaStatus.Visible := False;
-  end;}
+    try
+      qrApostas.Post;
+      qrApostas.ApplyUpdates;
+      transactionBancoDados.Commit;
+      qrApostas.Open;
+      grdApostas.Invalidate;
+    except
+      on E: EDatabaseError do
+      begin
+        MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        qrApostas.Cancel;
+        transactionBancoDados.RollbackRetaining;
+      end;
+      on E: Exception do
+      begin
+        MessageDlg('Erro', 'Erro ao remover a aposta. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        transactionBancoDados.RollbackRetaining;
+      end;
+    end;
+  end;
 end;
 
 procedure TformPrincipal.MenuItem1Click(Sender: TObject);
@@ -749,83 +811,397 @@ end;
 
 procedure TformPrincipal.btnFiltrarApClick(Sender: TObject);
 begin
-  Inc(contadorCliques);
-  case contadorCliques mod 2 of
-  1:
-    begin
-      pnFiltroAp.Visible := True;
-    end;
-  0:
-    begin
-      pnFiltroAp.Visible := False;
-    end;
-  end;
+  ShowMessage('Opção em desenvolvimento!');
 end;
 
 procedure TformPrincipal.btnNovaEstrategiaClick(Sender: TObject);
 begin
-  ShowMessage ('Opção em desenvolvimento!');
+  qrEstrategias.Append;
+  qrEstrategias.Insert;
+  qrEstrategias.Edit;
 end;
 
 procedure TformPrincipal.btnNovoTimeClick(Sender: TObject);
 begin
-  ShowMessage ('Opção em desenvolvimento!');
+  qrTodosTimes.Append;
+  qrTodosTimes.Edit;
 end;
 
-procedure TformPrincipal.btnRemoverEstrategiaClick(Sender: TObject);
+ procedure TformPrincipal.btnRemoverEstrategiaClick(Sender: TObject);
 begin
-  ShowMessage ('Opção em desenvolvimento!');
+  if not qrEstrategias.Active then
+    qrEstrategias.Open;
+
+  if dsEstrategias.DataSet.IsEmpty then
+  begin
+    ShowMessage('Não há estratégias para remover.');
+    Exit;
+  end;
+  try
+    qrEstrategias.Delete;
+    qrEstrategias.ApplyUpdates;
+    transactionBancoDados.CommitRetaining;
+    ShowMessage('Estratégia(s) removida(s)!');
+  except
+  ShowMessage ('Selecione uma estratégia para remover!');
+  end;
+  qrEstrategias.Open;
+  MudarCorLucro;
 end;
 
 procedure TformPrincipal.btnRemoverTimeClick(Sender: TObject);
 begin
-  ShowMessage ('Opção em desenvolvimento!');
+    if qrTodosTimes.IsEmpty then
+  begin
+    ShowMessage('Não há times para remover.');
+    Exit;
+  end;
+    if MessageDlg('Tem certeza que deseja excluir o(s) time(s) selecionado(s)?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+         try
+            qrTodosTimes.Delete;
+            transactionBancoDados.CommitRetaining;
+            qrTodosTimes.ApplyUpdates;
+            ShowMessage('Time(s) Removido(s)!');
+         except
+         on E: Exception do
+            begin
+              MessageDlg('Erro', 'Erro ao remover time(s). Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+              transactionBancoDados.RollbackRetaining;
+            end;
+         end;
+    end;
+  qrApostas.Open;
 end;
 
-procedure TformPrincipal.Button1Click(Sender: TObject);
-var codAposta: Integer;
+procedure TFormPrincipal.btnRemoverApostaClick(Sender: TObject);
 begin
-  codAposta := StrToInt(edtRemoverAposta.Text);
-  qrApostas.ParamByName('Cod_Aposta').AsInteger := codAposta;
+  if not dsApostas.DataSet.Active then
+    dsApostas.DataSet.Open;
+
+  if dsApostas.DataSet.IsEmpty then
+  begin
+    ShowMessage('Não há apostas para remover.');
+    Exit;
+  end;
+
   try
-     qrApostas.Post;
-     qrApostas.ApplyUpdates;
-     transactionBancoDAdos.Commit;
-     transactionBancoDAdos.StartTransaction;
-     ShowMessage ('Aposta Removida!');
+    dsApostas.DataSet.Delete;
+    qrApostas.ApplyUpdates;
+    transactionBancoDados.Commit;
+    qrApostas.Open;
+    dsApostas.DataSet.Refresh;
+    grdApostas.Invalidate;
+    ShowMessage('Aposta(s) Removida(s)!');
   except
+    on E: EDatabaseError do
+    begin
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      transactionBancoDados.RollbackRetaining;
+    end;
     on E: Exception do
     begin
-      MessageDlg('Erro', 'Erro ao salvar os dados: ' + E.Message, mtError, [mbOK], 0);
+      MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      transactionBancoDados.RollbackRetaining;
     end;
   end;
+  if qrApostas.IsEmpty then grdApostas.Enabled:=False
+  else grdApostas.Enabled:=True;
   MudarCorLucro;
+end;
+
+procedure TformPrincipal.cbAnoChange(Sender: TObject);
+begin
+
+end;
+
+procedure TformPrincipal.dsTimesMaisLucrativosDataChange(Sender: TObject;
+  Field: TField);
+begin
+
+end;
+
+procedure TformPrincipal.grdApostasColEnter(Sender: TObject);
+begin
+  if not (qrApostas.State in [dsEdit, dsInsert]) then
+    qrApostas.Edit;
+
+  if (Sender is TDBGrid) and (TDBGrid(Sender).SelectedField is TBooleanField) then
+  begin
+    try
+      qrApostas.Post;
+      qrApostas.ApplyUpdates;
+      transactionBancoDados.Commit;
+      qrApostas.Open;
+      grdApostas.Invalidate;
+    except
+      on E: EDatabaseError do
+      begin
+        MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        qrApostas.Cancel;
+        transactionBancoDados.RollbackRetaining;
+      end;
+      on E: Exception do
+      begin
+        MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        transactionBancoDados.RollbackRetaining;
+      end;
+    end;
+  end;
 end;
 
 procedure TformPrincipal.grdApostasColExit(Sender: TObject);
 begin
-  try
+  if qrApostas.State in [dsEdit, dsInsert] then
     qrApostas.Post;
+
+  try
     qrApostas.ApplyUpdates;
-    transactionBancoDAdos.Commit;
+    transactionBancoDados.Commit;
+    qrApostas.Open;
     MudarCorLucro;
+    qrApostas.Edit;
   except
-    On E: Exception do
+    on E: EDatabaseError do
     begin
-      MessageDlg('Erro', 'Erro ao salvar os dados: ' + E.Message, mtError, [mbOK], 0);
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      qrApostas.Cancel;
+      transactionBancoDados.RollbackRetaining;
     end;
-
-    On E: EDatabaseError do
+    on E: Exception do
     begin
-      MessageDlg('Erro', 'Erro de banco dados: ' + E.Message, mtError, [mbOK], 0);
+      MessageDlg('Erro', 'Erro ao salvar dados, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      transactionBancoDados.RollbackRetaining;
     end;
-
   end;
+end;
+
+procedure TformPrincipal.grdApostasDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+
 end;
 
 procedure TformPrincipal.grdApostasExit(Sender: TObject);
 begin
-   MudarCorLucro;
+  try
+    if qrApostas.State in [dsEdit, dsInsert] then
+      qrApostas.Post;
+
+    qrApostas.ApplyUpdates;
+    transactionBancoDados.Commit;
+    qrApostas.Open;
+    MudarCorLucro;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      qrApostas.Cancel;
+      transactionBancoDados.RollbackRetaining;
+    end;
+    on E: Exception do
+    begin
+      MessageDlg('Erro', 'Erro ao salvar os dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      transactionBancoDados.RollbackRetaining;
+    end;
+  end;
+end;
+
+procedure TformPrincipal.grdApostasUserCheckboxState(Sender: TObject;
+  Column: TColumn; var AState: TCheckboxState);
+begin
+
+end;
+
+procedure TformPrincipal.grdEstrategiasCellClick(Column: TColumn);
+begin
+  if not qrEstrategias.Active then
+    qrEstrategias.Open;
+
+  if not (qrEstrategias.State in [dsEdit, dsInsert]) then
+    qrEstrategias.Edit;
+
+  if Column.Field is TBooleanField then
+  begin
+    try
+      qrEstrategias.Post;
+      grdEstrategias.Invalidate;
+    except
+      on E: EDatabaseError do
+      begin
+        MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        qrEstrategias.Cancel;
+        transactionBancoDados.RollbackRetaining;
+      end;
+      on E: Exception do
+      begin
+        MessageDlg('Erro', 'Erro ao selecionar estratégia, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        transactionBancoDados.RollbackRetaining;
+      end;
+    end;
+  end;
+end;
+
+procedure TformPrincipal.grdEstrategiasColEnter(Sender: TObject);
+begin
+  if not qrEstrategias.Active then
+    qrEstrategias.Open;
+
+  if not (qrEstrategias.State in [dsEdit, dsInsert]) then
+    qrEstrategias.Edit;
+
+  if (Sender is TDBGrid) and (TDBGrid(Sender).SelectedField is TBooleanField) then
+  begin
+    try
+      qrEstrategias.Post;
+      grdEstrategias.Invalidate;
+    except
+      on E: EDatabaseError do
+      begin
+        MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        qrEstrategias.Cancel;
+        transactionBancoDados.RollbackRetaining;
+      end;
+      on E: Exception do
+      begin
+        MessageDlg('Erro', 'Erro ao selecionar estratégia. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+        transactionBancoDados.RollbackRetaining;
+      end;
+    end;
+  end;
+end;
+
+procedure TformPrincipal.grdEstrategiasColExit(Sender: TObject);
+begin
+  try
+    if qrEstrategias.State in [dsEdit, dsInsert] then
+      qrEstrategias.Post;
+
+    qrEstrategias.Close;
+    qrEstrategias.Open;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      qrEstrategias.Cancel;
+    end;
+  end;
+end;
+
+
+procedure TformPrincipal.grdEstrategiasDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+
+end;
+
+procedure TformPrincipal.grdEstrategiasExit(Sender: TObject);
+begin
+  try
+    if qrEstrategias.State in [dsEdit, dsInsert] then
+      qrEstrategias.Post;
+
+    qrEstrategias.Close;
+    qrEstrategias.Open;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      qrEstrategias.Cancel;
+    end;
+  end;
+end;
+
+
+procedure TformPrincipal.grdEstrategiasKeyPress(Sender: TObject; var Key: char);
+begin
+//  if grdEstrategias.Columns[ColIndex].ReadOnly then Key := 0;
+end;
+
+procedure TformPrincipal.grdEstrategiasSelectEditor(Sender: TObject;
+  Column: TColumn; var Editor: TWinControl);
+begin
+
+end;
+
+procedure TformPrincipal.grdEstrategiasUserCheckboxState(Sender: TObject;
+  Column: TColumn; var AState: TCheckboxState);
+begin
+
+end;
+
+procedure TformPrincipal.grdTodosTimesCellClick(Column: TColumn);
+begin
+  try
+     qrTodosTImes.Edit;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+      qrEstrategias.Cancel;
+    end;
+  end;
+      if Column.Field is TBooleanField then
+  begin
+    qrTodosTimes.Edit;
+    qrTodosTimes.Post;
+    qrTodosTimes.ApplyUpdates;
+    transactionBancoDados.CommitRetaining;
+    grdTodosTimes.Invalidate;
+  end;
+end;
+
+procedure TformPrincipal.grdTodosTimesColEnter(Sender: TObject);
+begin
+  try
+     qrEstrategias.Edit;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);;
+      qrEstrategias.Cancel;
+    end;
+  end;
+end;
+
+procedure TformPrincipal.grdTodosTimesColExit(Sender: TObject);
+begin
+  try
+     qrTodosTimes.Edit;
+     qrTodosTimes.Post;
+     qrTodosTimes.ApplyUpdates;
+     transactionBancoDAdos.Commit;
+     qrTodosTimes.Edit;
+   except
+     on E: EDatabaseError do
+     begin
+       MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+       qrTodosTimes.Cancel;
+     end;
+   end;
+end;
+
+procedure TformPrincipal.grdTodosTimesExit(Sender: TObject);
+begin
+  try
+     qrTodosTimes.Edit;
+     qrTodosTimes.Post;
+     qrTodosTimes.ApplyUpdates;
+     transactionBancoDAdos.Commit;
+   except
+     on E: EDatabaseError do
+     begin
+       MessageDlg('Erro', 'Erro de banco dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+       qrTodosTimes.Cancel;
+     end;
+   end;
+  qrTodosTimes.Open;
+end;
+
+procedure TformPrincipal.grdTodosTimesUserCheckboxState(Sender: TObject;
+  Column: TColumn; var AState: TCheckboxState);
+begin
+
 end;
 
 procedure TformPrincipal.MenuItem8Click(Sender: TObject);
@@ -890,4 +1266,292 @@ begin
       qrBancaInicial.Open;
 end;
 
+procedure TFormPrincipal.FontesEditaveis;
+begin
+
+end;
+
+procedure TformPrincipal.tsApostasShow(Sender: TObject);
+begin
+  if not qrApostas.Active then
+  qrApostas.Open;
+  if qrApostas.IsEmpty then grdApostas.Enabled:=False
+  else grdApostas.Enabled:=True;
+end;
+
+procedure TformPrincipal.tsCampeonatosShow(Sender: TObject);
+begin
+  if not qrCompeticoes.Active then
+  qrCompeticoes.Open;
+end;
+
+procedure TformPrincipal.tsEstrategiasContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+
+end;
+
+procedure TformPrincipal.tsEstrategiasShow(Sender: TObject);
+begin
+  if not qrEstrategias.Active then
+  qrEstrategias.Open;
+end;
+
+procedure TformPrincipal.tsPainelShow(Sender: TObject);
+begin
+  if not qrBancaInicial.Active then qrBancaInicial.Open;
+  if not qrBancaAtual.Active then qrBancaAtual.Open;
+end;
+
+procedure TformPrincipal.tsTimesShow(Sender: TObject);
+begin
+  if not qrTodosTimes.Active then
+  qrTodosTimes.Open;
+  if not qrTimesMaisLucrativos.Active then
+  qrTimesMaisLucrativos.Open;
+  if not qrTimesMenosLucrativos.Active then
+  qrTimesMenosLucrativos.Open;
+end;
+
+procedure TformPrincipal.AtualizarBancoDeDados;
+begin
+  try
+    if FileExists(AtualizarBD) then ExecutarSQLDeArquivo(AtualizarBD)
+    else
+      begin
+        MessageDlg('Erro', 'Não foi possível atualizar o banco de dados, o arquivo de atualização não existe. Favor executar o arquivo de instalação do programa para reparar.', mtError, [mbOK], 0);
+        Close;
+      end;
+   finally
+     writeln ('Banco de dados atualizado com sucesso! Excluindo script...');
+     DeleteFile(AtualizarBD);
+   end;
+end;
+
+procedure TformPrincipal.CriarBancoDeDados;
+
+begin
+ try
+    writeln('Banco de dados não existe, criando...');
+   try
+     if FileExists(CriarBD) then
+     begin
+      try
+       ExecutarSQLDeArquivo(CriarBD);
+      except
+        On E: Exception do
+        begin
+          writeln ('Erro ao executar script SQL: ' + E.message);
+        end;
+      end;
+     end
+     else begin
+       writeln ('Erro: arquivo de criação do banco de dados não existe. Abortado.');
+       Close;
+     end;
+   except
+     on E: Exception do
+     begin
+       writeln ('Erro ao criar banco de dados: ' + E.message);
+       MessageDlg('Erro', 'Não foi possível criar o banco de dados. Tente reinstalar o programa. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+     end;
+   end;
+ finally
+   writeln ('Banco de dados atualizado com sucesso! Excluindo script...');
+   DeleteFile(CriarBD);
+ end;
+end;
+
+procedure TformPrincipal.VerificarVersaoBancoDeDados;
+var qrVersaoBD: TSQLQuery;
+begin
+ qrVersaoBD := TSQLQuery.Create(nil);
+ writeln ('Verificando se o banco de dados está atualizado...');
+    try
+      qrVersaoBD.Database := conectBancoDados;
+      qrVersaoBD.SQL.Text := 'SELECT Versao FROM ControleVersao';
+      qrVersaoBD.Open;
+
+      if not qrVersaoBD.IsEmpty then
+      begin
+        if qrVersaoBD.FieldByName('Versao').AsInteger < versaoBDEsperada then
+        begin
+          writeln('Banco de dados está desatualizado, fazendo atualização...');
+          AtualizarBancoDeDados;
+        end;
+      end
+      else
+      begin
+        writeln('A tabela ControleVersao está vazia, fazendo a atualização...');
+        AtualizarBancoDeDados;
+      end;
+    except
+    on E: Exception do
+    begin
+      writeln('A tabela ControleVersao não existe no banco de dados, fazendo a atualização...');
+      if Pos('no such table', LowerCase(E.Message)) > 0 then
+       AtualizarBancoDeDados;
+    end;
+    end;
+end;
+
+procedure TformPrincipal.LocalizarBancoDeDados;
+begin
+  try
+    writeln('Verificando se o banco de dados existe...');
+    conectBancoDados.DatabaseName := (LocalizarBD);
+     if not FileExists (LocalizarBD) then
+     begin
+       CriarBancoDeDados;
+       conectBancoDados.DatabaseName := (LocalizarBD);
+     end
+     else VerificarVersaoBancoDeDados;
+   try
+    if not conectBancoDados.Connected then
+    begin
+     writeln('Conectando com o banco de dados...');
+      conectBancoDados.Connected := True;
+    end;
+   except
+     on E: Exception do
+     begin
+       MessageDlg('Erro', 'Não foi possível conectar com o banco de dados. Se o problema persistir favor informar no Github com a seguinte mensagem: ' + E.Message, mtError, [mbOK], 0);
+       Close;
+     end;
+   end;
+  except
+    on E: Exception do
+      MessageDlg('Erro', 'Ocorreu um erro. Tente reiniciar o programa. Se o erro persistir, favor informar no GitHub incluindo a seguinte mensagem de erro: ' + E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
+//Procedimento para executar SQL de um arquivo
+procedure TformPrincipal.ExecutarSQLDeArquivo(const VarArquivo: string);
+var
+  Arquivo: TStringList;
+  ScriptSQL: TStringBuilder;
+  I: Integer;
+  LinhaSQL: string;
+  DentroDeTrigger: Boolean;
+begin
+  Arquivo := TStringList.Create;
+  ScriptSQL := TStringBuilder.Create;
+  try
+    Arquivo.LoadFromFile(VarArquivo);
+    DentroDeTrigger := False;
+
+    for I := 0 to Arquivo.Count - 1 do
+    begin
+      LinhaSQL := Trim(Arquivo[I]);
+
+      if (LinhaSQL <> '') and (not LinhaSQL.StartsWith('--')) then
+      begin
+        ScriptSQL.Append(LinhaSQL);
+        ScriptSQL.Append(' ');
+
+        if LinhaSQL.StartsWith('CREATE TRIGGER', True) then
+          DentroDeTrigger := True;
+
+        if (not DentroDeTrigger and FimDoTexto(';', LinhaSQL)) or
+           (DentroDeTrigger and FimDoTexto('END;', LinhaSQL)) then
+        begin
+          try
+            if not conectBancoDados.Connected then
+              conectBancoDados.Connected := True;
+
+            if not transactionBancoDados.Active then
+              transactionBancoDados.StartTransaction;
+
+            conectBancoDados.ExecuteDirect(ScriptSQL.ToString);
+
+            if DentroDeTrigger and FimDoTexto('END;', LinhaSQL) then
+              writeln('Gatilho criado.')
+            else if LinhaSQL.StartsWith('CREATE TABLE IF NOT EXISTS', True) then
+              writeln('Tabela criada caso não exista.')
+            else if LinhaSQL.StartsWith('INSERT INTO', True) then
+              writeln('Dados padrão inseridos na tabela.');
+
+            transactionBancoDados.Commit;
+          except
+            on E: Exception do
+            begin
+              if transactionBancoDados.Active then
+                transactionBancoDados.Rollback;
+              writeln('Erro ao executar comando SQL: ' + E.Message + ' Comando: ' + ScriptSQL.ToString);
+            end;
+          end;
+
+          ScriptSQL.Clear;
+          if DentroDeTrigger and FimDoTexto('END;', LinhaSQL) then
+            DentroDeTrigger := False;
+        end;
+      end;
+    end;
+  finally
+    Arquivo.Free;
+    ScriptSQL.Free;
+  end;
+end;
+
+function TformPrincipal.FimDoTexto(const Ending, FullString: string): Boolean;
+var
+  LenEnding, LenFullString: Integer;
+begin
+  LenEnding := Length(Ending);
+  LenFullString := Length(FullString);
+
+  if LenEnding > LenFullString then
+    Result := False
+  else
+    Result := SameText(Ending, Copy(FullString, LenFullString - LenEnding + 1, LenEnding));
+end;
+
+//Procedimento que criei para futuramente colocar comandos personalizados para serem executados só uma vez.
+{procedure TformPrincipal.PosAtualizacao;
+var
+  NaoExcluir: TStringList;
+  programAtualizado: Boolean = False;
+begin
+    if not JaAtualizado then
+    begin
+      NaoExcluir := TStringList.Create;
+      try
+        {$IFDEF MSWINDOWS}
+        writeln('Sistema Windows detectado!');
+        NaoExcluir.SaveToFile(IncludeTrailingPathDelimiter(GetEnvironmentVariable('APPDATA')) +
+          'GraxaimBanca\NaoExcluir');
+        writeln('Criado arquivo de marcação em %APPDATA%\GraxaimBanca\');
+        {$ENDIF}
+
+        {$IFDEF LINUX}
+        writeln('Sistema Linux detectado!');
+        NaoExcluir.SaveToFile(IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME')) +
+          '.GraxaimBanca/NaoExcluir');
+        writeln('Criado arquivo de marcação em $HOME/.GraxaimBanca/');
+        {$ENDIF}
+      finally
+        NaoExcluir.Free;
+      end;
+      programAtualizado := True;
+    end;
+end;}
+initialization
+
+{$IFDEF MSWINDOWS}
+  CriarBD := (IncludeTrailingPathDelimiter(GetEnvironmentVariable('APPDATA')) +
+  'GraxaimBanca\criarbd.sql');
+  CriarBD := (IncludeTrailingPathDelimiter(GetEnvironmentVariable('APPDATA')) +
+  'GraxaimBanca/criarbd.sql');
+  AtualizarBD := (IncludeTrailingPathDelimiter(GetEnvironmentVariable('APPDATA')) +
+  'GraxaimBanca/atualizarbd.sql');
+ {$ENDIF}
+
+ {$IFDEF LINUX}
+  CriarBD := (IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME')) +
+  '.GraxaimBanca/criarbd.sql');
+  AtualizarBD := (IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME')) +
+  '.GraxaimBanca/atualizarbd.sql');
+  LocalizarBD := (IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME')) +
+  '.GraxaimBanca/database.db');
+ {$ENDIF}
 end.

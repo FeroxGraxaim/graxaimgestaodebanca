@@ -17,7 +17,7 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <BuildNr Value="2"/>
+      <BuildNr Value="4"/>
       <Language Value="0416"/>
       <StringTable CompanyName="Graxaim Software"/>
     </VersionInfo>
@@ -32,7 +32,7 @@
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
             <OtherUnitFiles Value="Indy;/usr/lib/x86_64-linux-gnu/;/usr/lib/"/>
-            <UnitOutputDirectory Value="/home/ferox/Documentos/Programacao/GraxaimGestaoDeBanca"/>
+            <UnitOutputDirectory Value="/home/ferox/Documentos/Programação/Projeto Graxaim Gestão de Banca"/>
           </SearchPaths>
           <CodeGeneration>
             <TargetOS Value="linux"/>
