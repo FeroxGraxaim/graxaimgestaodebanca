@@ -1,0 +1,1782 @@
+object formPrincipal: TformPrincipal
+  Left = 116
+  Height = 769
+  Top = 350
+  Width = 1407
+  Caption = 'Graxaim Gestão de Banca [ALPHA]'
+  ClientHeight = 769
+  ClientWidth = 1407
+  DesignTimePPI = 125
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '3.4.0.0'
+  object PageControl1: TPageControl
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 769
+    Top = 0
+    Width = 1407
+    ActivePage = tsPainel
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 0
+    object tsPainel: TTabSheet
+      Caption = 'Painel Principal'
+      ClientHeight = 734
+      ClientWidth = 1397
+      object txtBancaAtual: TDBText
+        Left = 40
+        Height = 74
+        Top = 328
+        Width = 447
+        DataField = 'ValorFinalCalculado'
+        DataSource = dsBanca
+        Font.Height = -63
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object btnSalvarBancaInicial: TButton
+        Left = 192
+        Height = 33
+        Top = 168
+        Width = 130
+        Caption = 'Salvar'
+        TabOrder = 0
+      end
+      object lbBancaAtual: TLabel
+        Left = 40
+        Height = 25
+        Top = 296
+        Width = 128
+        Caption = 'Banca Final:'
+        Font.Height = -21
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object lbBancaInicial: TLabel
+        Left = 40
+        Height = 21
+        Top = 144
+        Width = 100
+        Caption = 'Banca Inicial:'
+      end
+      object lbMes: TLabel
+        Left = 40
+        Height = 21
+        Top = 80
+        Width = 37
+        Caption = 'Mês:'
+      end
+      object lbAno: TLabel
+        Left = 192
+        Height = 21
+        Top = 80
+        Width = 35
+        Caption = 'Ano:'
+      end
+      object PageControl2: TPageControl
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 400
+        Height = 734
+        Top = 0
+        Width = 1024
+        ActivePage = Graficos
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        TabIndex = 0
+        TabOrder = 1
+        object Graficos: TTabSheet
+          Caption = 'Gráficos'
+          ClientHeight = 699
+          ClientWidth = 1014
+          object chrtLucroMes: TChart
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 0
+            Height = 336
+            Top = 32
+            Width = 986
+            AxisList = <            
+              item
+                Grid.EndCap = pecFlat
+                Grid.Mode = pmMergePenNot
+                Intervals.Count = 10
+                Intervals.NiceSteps = '1|2|3'
+                Alignment = calBottom
+                MarginsForMarks = False
+                Marks.Format = '%0:.2g'
+                Marks.LabelBrush.Style = bsClear
+                Marks.Range.Max = 31
+                Marks.Range.Min = 5
+                Marks.Style = smsCustom
+                Minors = <>
+                Range.Max = 31
+                Range.Min = 1
+                Range.UseMax = True
+                Range.UseMin = True
+                Title.LabelBrush.Style = bsClear
+              end            
+              item
+                Marks.Format = '%0:.2m'
+                Marks.LabelBrush.Style = bsClear
+                Marks.Style = smsCustom
+                Minors = <>
+                Title.LabelBrush.Style = bsClear
+              end>
+            Title.Text.Strings = (
+              'Lucro do Mês'
+            )
+            Title.Visible = True
+            Anchors = [akTop, akLeft, akRight]
+            object lnGraficoLucroMes: TLineSeries
+              Pointer.Visible = True
+              ShowPoints = True
+            end
+          end
+          object chrtLucroAno: TChart
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 0
+            Height = 336
+            Top = 392
+            Width = 986
+            AxisList = <            
+              item
+                Marks.Format = '%0:.2m'
+                Marks.LabelBrush.Style = bsClear
+                Marks.Style = smsCustom
+                Minors = <>
+                Title.LabelFont.Orientation = 900
+                Title.LabelBrush.Style = bsClear
+              end            
+              item
+                Intervals.MaxLength = 150
+                Intervals.NiceSteps = '1.0 | 2.0 | 3.0'
+                Alignment = calBottom
+                Marks.LabelBrush.Style = bsClear
+                Minors = <>
+                Range.Max = 12
+                Range.Min = 1
+                Range.UseMax = True
+                Range.UseMin = True
+                Title.LabelBrush.Style = bsClear
+              end>
+            Title.Text.Strings = (
+              'Lucro do Ano'
+            )
+            Title.Visible = True
+            Anchors = [akTop, akLeft, akRight]
+            object lnGraficoLucroAno: TLineSeries
+            end
+          end
+        end
+        object ResumodoMes: TTabSheet
+          Caption = 'Resumo do Mês'
+        end
+        object ResumodoAno: TTabSheet
+          Caption = 'Resumo do Ano'
+        end
+      end
+      object txtLucroMoeda: TDBText
+        Left = 40
+        Height = 74
+        Top = 456
+        Width = 471
+        DataField = 'LucroR$Calculado'
+        DataSource = dsBanca
+        Font.Height = -63
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object txtLucroPorCento: TDBText
+        Left = 40
+        Height = 74
+        Top = 536
+        Width = 548
+        DataField = 'Lucro%Calculado'
+        DataSource = dsBanca
+        Font.Height = -63
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object lbLucro: TLabel
+        Left = 40
+        Height = 25
+        Top = 424
+        Width = 64
+        Caption = 'Lucro:'
+        Font.Height = -21
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object lbPerfil: TLabel
+        Left = 40
+        Height = 21
+        Top = 232
+        Width = 47
+        Caption = 'Perfil:'
+      end
+      object lbUnidade: TLabel
+        Left = 192
+        Height = 21
+        Top = 232
+        Width = 69
+        Caption = 'Unidade:'
+      end
+      object cbAno: TComboBox
+        Left = 192
+        Height = 33
+        Top = 104
+        Width = 130
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 2
+      end
+      object cbMes: TComboBox
+        Left = 40
+        Height = 33
+        Top = 104
+        Width = 130
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 3
+      end
+      object edtBancaInicial: TEdit
+        Left = 40
+        Height = 33
+        Top = 168
+        Width = 130
+        TabOrder = 4
+      end
+      object cbPerfil: TComboBox
+        Left = 40
+        Height = 33
+        Top = 256
+        Width = 130
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 5
+      end
+      object txtStake: TDBText
+        Left = 192
+        Height = 33
+        Top = 256
+        Width = 117
+        DataField = 'R$Stake'
+        DataSource = dsBanca
+        Font.Height = -28
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+    end
+    object tsTimes: TTabSheet
+      Caption = 'Times'
+      ClientHeight = 734
+      ClientWidth = 1397
+      object grdTodosTimes: TDBGrid
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = -5
+        Height = 602
+        Top = 24
+        Width = 733
+        Anchors = [akTop, akLeft, akBottom]
+        AutoFillColumns = True
+        Color = clWindow
+        Columns = <        
+          item
+            ButtonStyle = cbsCheckboxColumn
+            Title.Caption = 'Selec.'
+            Width = 95
+            FieldName = 'Selec.'
+          end        
+          item
+            MaxSize = 50
+            Title.Caption = 'Time'
+            Width = 50
+            FieldName = 'Time'
+          end        
+          item
+            Title.Caption = 'País'
+            Width = 95
+            FieldName = 'País'
+          end        
+          item
+            Title.Caption = 'Mandante'
+            Width = 95
+            FieldName = 'Mandante'
+          end        
+          item
+            Title.Caption = 'Visitante'
+            Width = 95
+            FieldName = 'Visitante'
+          end        
+          item
+            Title.Caption = 'Greens'
+            Width = 95
+            FieldName = 'Greens'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 94
+            FieldName = 'P/L'
+          end        
+          item
+            Title.Caption = 'Reds'
+            Width = 94
+            FieldName = 'Reds'
+          end>
+        DataSource = dsTodosTimes
+        Scrollbars = ssAutoBoth
+        TabOrder = 0
+      end
+      object grdTimesMaisLucrativos: TDBGrid
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 728
+        Height = 602
+        Top = 24
+        Width = 200
+        Anchors = [akTop, akLeft, akBottom]
+        Color = clWindow
+        Columns = <        
+          item
+            Title.Caption = 'Time'
+            Width = 110
+            FieldName = 'Time'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 50
+            FieldName = 'P/L'
+          end>
+        DataSource = dsTimesMaisLucrativos
+        Scrollbars = ssAutoBoth
+        TabOrder = 1
+      end
+      object lbListaTimes: TLabel
+        Left = 8
+        Height = 21
+        Top = 0
+        Width = 112
+        Caption = 'Lista de Times'
+      end
+      object lbTimesMaisLucrativos: TLabel
+        Left = 728
+        Height = 21
+        Top = 0
+        Width = 171
+        Caption = 'Times Mais Lucrativos'
+      end
+      object lbTimesMenosLucrativos: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 928
+        Height = 21
+        Top = 0
+        Width = 581
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Times Menos Lucrativos'
+      end
+      object grdTimesMenosLucrativos: TDBGrid
+        AnchorSideBottom.Side = asrBottom
+        Left = 928
+        Height = 604
+        Top = 24
+        Width = 200
+        Anchors = [akTop, akLeft, akBottom]
+        Color = clWindow
+        Columns = <        
+          item
+            Title.Caption = 'Time'
+            Width = 110
+            FieldName = 'Time'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 50
+            FieldName = 'P/L'
+          end>
+        DataSource = dsTimesMenosLucrativos
+        Scrollbars = ssAutoBoth
+        TabOrder = 2
+      end
+      object btnNovoTime: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 8
+        Height = 64
+        Top = 651
+        Width = 136
+        Anchors = [akLeft, akBottom]
+        Caption = 'Novo Time'
+        Enabled = False
+        TabOrder = 3
+      end
+      object btnRemoverTime: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 160
+        Height = 65
+        Top = 650
+        Width = 138
+        Anchors = [akLeft, akBottom]
+        Caption = 'Remover Time'
+        Enabled = False
+        TabOrder = 4
+      end
+    end
+    object tsCampeonatos: TTabSheet
+      Caption = 'Campeonatos'
+      ClientHeight = 734
+      ClientWidth = 1397
+      object DBGrid3: TDBGrid
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = -8
+        Height = 671
+        Top = 0
+        Width = 736
+        Anchors = [akTop, akLeft, akBottom]
+        Color = clWindow
+        Columns = <        
+          item
+            Title.Caption = 'Competição'
+            Width = 300
+            FieldName = 'Competição'
+          end        
+          item
+            Title.Caption = 'País'
+            Width = 150
+            FieldName = 'País'
+          end        
+          item
+            Title.Caption = 'Mercados'
+            Width = 90
+            FieldName = 'Mercados'
+          end        
+          item
+            Title.Caption = 'Green'
+            Width = 60
+            FieldName = 'Green'
+          end        
+          item
+            Title.Caption = 'Red'
+            Width = 60
+            FieldName = 'Red'
+          end        
+          item
+            Title.Caption = 'P/L'
+            Width = 40
+            FieldName = 'P/L'
+          end>
+        DataSource = dsCampeonatos
+        Scrollbars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tsEstrategias: TTabSheet
+      Caption = 'Estratégias'
+      ClientHeight = 734
+      ClientWidth = 1397
+      object grdEstrategias: TDBGrid
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 570
+        Top = 48
+        Width = 376
+        Anchors = [akTop, akLeft, akBottom]
+        Color = clWindow
+        Columns = <        
+          item
+            Title.Caption = 'Selec.'
+            Width = 60
+            FieldName = 'Selec.'
+          end        
+          item
+            Title.Caption = 'Estratégia'
+            FieldName = 'Estratégia'
+          end        
+          item
+            Title.Caption = 'Mercados'
+            FieldName = 'Mercados_Estr'
+          end        
+          item
+            Title.Caption = 'P/L'
+            FieldName = 'Profit_Estr'
+          end>
+        DataSource = dsEstrategias
+        Scrollbars = ssNone
+        TabOrder = 0
+      end
+      object chrtEstrategias: TChart
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 384
+        Height = 499
+        Top = 0
+        Width = 927
+        AxisList = <        
+          item
+            TickLength = 1
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Intervals.MaxLength = 100
+            Intervals.MinLength = 20
+            Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        Legend.Visible = True
+        Title.Text.Strings = (
+          'Média de Lucro de Cada Estratégia'
+        )
+        Title.Visible = True
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        object lnBackFavorito: TLineSeries
+          Title = 'Back Favorito'
+          LinePen.Width = 5
+        end
+        object lnZebraFavorito: TLineSeries
+          Title = 'Zebra Favorito'
+          LinePen.Color = clMaroon
+          LinePen.Width = 5
+        end
+        object lnCantos: TLineSeries
+          Title = 'Cantos'
+          LinePen.Color = clGreen
+          LinePen.Width = 5
+        end
+        object lnHandicapAsiatico: TLineSeries
+          Title = 'Handicap Asiático'
+          LinePen.Color = clOlive
+          LinePen.Width = 5
+        end
+        object lnHandicapEuropeu: TLineSeries
+          Title = 'Handicap Europeu'
+          LinePen.Color = clNavy
+          LinePen.Width = 5
+        end
+        object lnCartoes: TLineSeries
+          Title = 'Cartões'
+          LinePen.Color = clPurple
+          LinePen.Width = 5
+        end
+        object lnBilhetePersonalizado: TLineSeries
+          Title = 'Bilhete Personalizado'
+          LinePen.Color = clTeal
+          LinePen.Width = 5
+        end
+        object lnOver15: TLineSeries
+          Title = 'Over 1,5'
+          LinePen.Color = clGray
+          LinePen.Width = 5
+        end
+        object lnOver25: TLineSeries
+          Title = 'Over 2,5'
+          LinePen.Color = clSilver
+          LinePen.Width = 5
+        end
+        object lnUnder25: TLineSeries
+          Title = 'Under 2,5'
+          LinePen.Color = clRed
+          LinePen.Width = 5
+        end
+        object lnUnder35: TLineSeries
+          Title = 'Under 3,5'
+          LinePen.Color = clLime
+          LinePen.Width = 5
+        end
+        object lnTotGolsEquipe: TLineSeries
+          Title = 'Total de Gols da Equipe'
+          LinePen.Color = clYellow
+          LinePen.Width = 5
+        end
+        object lnEmpateAnula: TLineSeries
+          Title = 'Empate Anula'
+          LinePen.Color = clBlue
+          LinePen.Width = 5
+        end
+        object lnChanceDupla: TLineSeries
+          Title = 'Chance Dupla'
+          LinePen.Color = clFuchsia
+          LinePen.Width = 5
+        end
+        object lnApostaMultipla: TLineSeries
+          Title = 'Aposta Múltipla'
+          LinePen.Color = clAqua
+          LinePen.Width = 5
+        end
+        object lnOutros: TLineSeries
+          Title = 'Outros'
+          LinePen.Color = clMoneyGreen
+          LinePen.Width = 5
+        end
+      end
+      object Label5: TLabel
+        Left = 0
+        Height = 46
+        Top = 0
+        Width = 348
+        Caption = 'Clique duas vezes sobre uma célula '#10'para alterá-la:'
+        Font.Height = -19
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object btnNovaEstrategia: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 64
+        Top = 642
+        Width = 184
+        Anchors = [akLeft, akBottom]
+        Caption = 'Nova Estratégia'
+        Enabled = False
+        TabOrder = 2
+      end
+      object btnRemoverEstrategia: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 192
+        Height = 64
+        Top = 642
+        Width = 184
+        Anchors = [akLeft, akBottom]
+        Caption = 'Remover Estratégia'
+        Enabled = False
+        TabOrder = 3
+      end
+    end
+    object tsApostas: TTabSheet
+      Caption = 'Apostas'
+      ClientHeight = 734
+      ClientWidth = 1397
+      object grdApostas: TDBGrid
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 594
+        Top = 32
+        Width = 1402
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Color = clWindow
+        Columns = <        
+          item
+            ButtonStyle = cbsCheckboxColumn
+            Title.Caption = 'Selec.'
+            Width = 60
+            FieldName = 'Selec.'
+          end        
+          item
+            Title.Caption = 'Data'
+            FieldName = 'Data'
+          end        
+          item
+            Title.Caption = 'Competição'
+            Width = 200
+            FieldName = 'Competição_AP'
+          end        
+          item
+            ButtonStyle = cbsPickList
+            Title.Caption = 'Mandante'
+            Width = 130
+            FieldName = 'Mandante'
+          end        
+          item
+            ButtonStyle = cbsPickList
+            Title.Caption = 'Visitante'
+            Width = 130
+            FieldName = 'Visitante'
+          end        
+          item
+            ButtonStyle = cbsPickList
+            Title.Caption = 'Estratégia'
+            Width = 130
+            FieldName = 'Estratégia_Escolhida'
+          end        
+          item
+            Title.Caption = 'Odd'
+            Width = 50
+            FieldName = 'Odd'
+          end        
+          item
+            ButtonStyle = cbsPickList
+            Title.Caption = 'Unidade'
+            Width = 100
+            FieldName = 'Unidade'
+          end        
+          item
+            Title.Caption = 'Valor R$'
+            Width = 80
+            FieldName = 'Valor_Aposta'
+          end        
+          item
+            ButtonStyle = cbsPickList
+            Color = clDefault
+            Title.Caption = 'Situação'
+            Width = 80
+            FieldName = 'Status'
+          end        
+          item
+            Title.Caption = 'Retorno'
+            Width = 80
+            FieldName = 'Retorno'
+          end        
+          item
+            Title.Caption = 'Lucro'
+            Width = 80
+            FieldName = 'Profit_L'
+          end        
+          item
+            Title.Caption = 'Banca Final'
+            Width = 110
+            FieldName = 'Banca_Final'
+          end>
+        DataSource = dsApostas
+        Scrollbars = ssAutoBoth
+        TabOrder = 0
+      end
+      object btnNovaAposta: TButton
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 8
+        Height = 67
+        Top = 650
+        Width = 206
+        Anchors = [akLeft, akBottom]
+        Caption = 'Nova Aposta'
+        TabOrder = 1
+      end
+      object btnFiltrarAp: TButton
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 1214
+        Height = 67
+        Top = 650
+        Width = 162
+        Anchors = [akRight, akBottom]
+        Caption = 'Filtrar Apostas'
+        Enabled = False
+        TabOrder = 2
+      end
+      object btnRemoverAposta: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 240
+        Height = 67
+        Top = 650
+        Width = 206
+        Anchors = [akLeft, akBottom]
+        Caption = 'Remover Selecionada'
+        TabOrder = 3
+      end
+      object Label4: TLabel
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideRight.Side = asrCenter
+        Left = 368
+        Height = 29
+        Top = 0
+        Width = 619
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Clique duas vezes sobre uma célula para alterá-la:'
+        Font.Height = -24
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object chbMandante: TDBCheckBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 918
+        Height = 33
+        Top = 690
+        Width = 142
+        Anchors = [akRight, akBottom]
+        Caption = 'Mandante'
+        Enabled = False
+        TabOrder = 4
+        ValueChecked = 'True'
+        ValueUnchecked = 'False'
+      end
+      object chbVisitante: TDBCheckBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 1062
+        Height = 33
+        Top = 690
+        Width = 141
+        Anchors = [akRight, akBottom]
+        Caption = 'Visitante'
+        Enabled = False
+        TabOrder = 5
+        ValueChecked = 'True'
+        ValueUnchecked = 'False'
+      end
+      object Label1: TLabel
+        Left = 1128
+        Height = 21
+        Top = 512
+        Width = 93
+        Caption = 'Competição'
+      end
+      object Label2: TLabel
+        Left = 1128
+        Height = 21
+        Top = 576
+        Width = 39
+        Caption = 'Time'
+      end
+      object cbCompeticao: TComboBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 758
+        Height = 33
+        Top = 634
+        Width = 400
+        Anchors = [akRight, akBottom]
+        Enabled = False
+        ItemHeight = 0
+        TabOrder = 6
+        Text = 'Competição'
+      end
+      object cbTime: TComboBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 758
+        Height = 33
+        Top = 690
+        Width = 154
+        Anchors = [akRight, akBottom]
+        Enabled = False
+        ItemHeight = 0
+        TabOrder = 7
+        Text = 'Time'
+      end
+      object deFiltroDataInicial: TDateEdit
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 590
+        Height = 33
+        Top = 634
+        Width = 134
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 30
+        Anchors = [akRight, akBottom]
+        NumGlyphs = 1
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 8
+        Text = 'Data Inicial'
+      end
+      object deFiltroDataFinal: TDateEdit
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 590
+        Height = 33
+        Top = 690
+        Width = 134
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 30
+        Anchors = [akRight, akBottom]
+        NumGlyphs = 1
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 9
+        Text = 'Data Final'
+      end
+    end
+  end
+  object transactionBancoDAdos: TSQLTransaction
+    Active = False
+    Database = conectBancoDados
+    Left = 768
+    Top = 688
+  end
+  object qrTodosTimes: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
+        Name = 'Time'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'País'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mandante'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Visitante'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Greens'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'P/L'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
+        Name = 'Reds'
+        DataType = ftInteger
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT * FROM Times;'
+    )
+    InsertSQL.Strings = (
+      'SELECT Time, "P/L"'
+      'FROM Times'
+      'WHERE "P/L" > 0'
+      'ORDER BY "P/L" DESC;'
+    )
+    DeleteSQL.Strings = (
+      'Delete from Times where "Selec." = 1'
+    )
+    Params = <>
+    Macros = <>
+    ServerFiltered = True
+    Left = 640
+    Top = 712
+  end
+  object dsTodosTimes: TDataSource
+    DataSet = qrTodosTimes
+    Left = 504
+    Top = 720
+  end
+  object dsTimesMaisLucrativos: TDataSource
+    DataSet = qrTimesMaisLucrativos
+    Left = 312
+    Top = 688
+  end
+  object qrTimesMaisLucrativos: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Time'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'P/L'
+        DataType = ftLargeint
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT Time, "P/L"'
+      'FROM Times'
+      'WHERE "P/L" > 0'
+      'ORDER BY "P/L" DESC;'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 80
+    Top = 696
+  end
+  object qrTimesMenosLucrativos: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Time'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'P/L'
+        DataType = ftLargeint
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT Time, "P/L"'
+      'FROM Times'
+      'WHERE "P/L" < 0'
+      'ORDER BY "P/L" ASC;'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 112
+    Top = 800
+  end
+  object dsTimesMenosLucrativos: TDataSource
+    DataSet = qrTimesMenosLucrativos
+    Left = 104
+    Top = 512
+  end
+  object qrCampeonatos: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
+        Name = 'Competição'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'País'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mercados'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Green'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Red'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'P/L'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
+        Name = 'Total'
+        DataType = ftLargeint
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT * FROM Competições'
+    )
+    Params = <>
+    Macros = <>
+    Left = 296
+    Top = 568
+  end
+  object dsCampeonatos: TDataSource
+    DataSet = qrCampeonatos
+    Left = 312
+    Top = 808
+  end
+  object qrEstrategias: TSQLQuery
+    PacketRecords = 1
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Cod_Estratégia'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
+        Name = 'Estratégia'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mercados_Estr'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Profit_Estr'
+        DataType = ftFloat
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT * FROM Estratégias;'
+    )
+    InsertSQL.Strings = (
+      'insert into Estratégias values ("Selec." = :"Selec.", Estratégia = :Estratégia);'
+    )
+    UpdateSQL.Strings = (
+      'update Estratégias set "Selec." = :"Selec.", Estratégia = :Estratégia where Cod_Estratégia = :Cod_Estratégia;'
+    )
+    DeleteSQL.Strings = (
+      'DELETE FROM Estratégias WHERE "Selec." = 1'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 768
+    Top = 768
+    object qrEstrategiasEstratgia: TStringField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'Estratégia'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrEstrategiasMercados_Estr: TLongintField
+      DisplayLabel = 'Mercados'
+      DisplayWidth = 3
+      FieldKind = fkData
+      FieldName = 'Mercados_Estr'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrEstrategiasProfit_Estr: TFloatField
+      DisplayLabel = 'P/L'
+      DisplayWidth = 3
+      FieldKind = fkData
+      FieldName = 'Profit_Estr'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = -1
+    end
+    object qrEstrategiasCod_Estratgia: TLongintField
+      FieldKind = fkData
+      FieldName = 'Cod_Estratégia'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrEstrategiasSelec: TBooleanField
+      FieldKind = fkData
+      FieldName = 'Selec.'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+  end
+  object dsEstrategias: TDataSource
+    DataSet = qrEstrategias
+    Left = 576
+    Top = 688
+  end
+  object dsApostas: TDataSource
+    DataSet = qrApostas
+    Left = 184
+    Top = 607
+  end
+  object qrApostas: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Cod_Aposta'
+        DataType = ftAutoInc
+        Precision = -1
+      end    
+      item
+        Name = 'Selec.'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
+        Name = 'Data'
+        DataType = ftDate
+        Precision = -1
+      end    
+      item
+        Name = 'Competição_AP'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mandante'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Visitante'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Estratégia_Escolhida'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Odd'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Unidade'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Valor_Aposta'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Status'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Retorno'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Profit_L'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Banca_Final'
+        DataType = ftLargeint
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT *'
+      'FROM Apostas;'
+    )
+    InsertSQL.Strings = (
+      'INSERT INTO Apostas "Data", Competição_AP, Mandante, Visitante, Estratégia_Escolhida, Odd, Unidade, Valor_Aposta, Status) VALUES (:V1, V2, V3, V4, V5, V6, V7, V8, V9);'
+      ''
+    )
+    UpdateSQL.Strings = (
+      'Update Apostas set "Data" = :"Data", "Selec." = :"Selec.", Competição_AP = :Competição_AP, Mandante = :Mandante, Visitante = :Visitante, Estratégia_Escolhida = :Estratégia_Escolhida, Odd = :Odd, Unidade = :Unidade, Valor_Aposta = :Valor_Aposta, Status = :Status where Cod_Aposta = :Cod_Aposta;'
+    )
+    DeleteSQL.Strings = (
+      'DELETE FROM Apostas WHERE "Selec." = 1'
+    )
+    Params = <>
+    Macros = <>
+    Left = 64
+    Top = 639
+  end
+  object qrBanca: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Mês'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Ano'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Valor_Inicial'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Lucro_R$'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Lucro_%'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Valor_Final'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Stake'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT *'
+      'FROM "Banca"'
+    )
+    InsertSQL.Strings = (
+      'INSERT INTO "Banca" ("Mês", Ano, Valor_Inicial, Stake) VALUES (:mes, :ano :novoValor, :stakeAposta)'
+      ''
+    )
+    UpdateSQL.Strings = (
+      'UPDATE "Banca Inicial" SET Valor_R$ = :novoValor WHERE "Mês" = :mesSelecionado AND Ano = :anoSelecionado'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 662
+    Top = 584
+    object qrBancaInicialMoedaStake: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'R$Stake'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaMs: TLongintField
+      FieldKind = fkData
+      FieldName = 'Mês'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaAno: TLongintField
+      FieldKind = fkData
+      FieldName = 'Ano'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaValor_Inicial: TBCDField
+      FieldKind = fkData
+      FieldName = 'Valor_Inicial'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrBancaLucro_R: TBCDField
+      FieldKind = fkData
+      FieldName = 'Lucro_R$'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrBancaValor_Final: TBCDField
+      FieldKind = fkData
+      FieldName = 'Valor_Final'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrBancaStake: TBCDField
+      FieldKind = fkData
+      FieldName = 'Stake'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrBancaValorCalculado: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'ValorInicialCalculado'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaValorFinalCalculado: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'ValorFinalCalculado'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaLucroRSCalculado: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'LucroR$Calculado'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaLucroPrCntCalculado: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'Lucro%Calculado'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrBancaLucro_: TBCDField
+      FieldKind = fkData
+      FieldName = 'Lucro_%'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+  end
+  object dsBanca: TDataSource
+    DataSet = qrBanca
+    Left = 528
+    Top = 616
+  end
+  object MainMenu1: TMainMenu
+    Left = 1240
+    Top = 760
+    object MenuItem1: TMenuItem
+      Caption = 'Dados'
+      object MenuItem3: TMenuItem
+        Caption = 'Importar Dados'
+      end
+      object MenuItem4: TMenuItem
+        Caption = 'Exportar Dados'
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'Conectar na Nuvem'
+      end
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Ajuda'
+      object MenuItem6: TMenuItem
+        Caption = 'Como Usar o Programa'
+      end
+      object MenuItem8: TMenuItem
+        Caption = 'Apóie o Projeto'
+      end
+      object MenuItem7: TMenuItem
+        Caption = 'Sobre'
+      end
+    end
+  end
+  object qrCompeticoes: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Competição'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'Select Competição from Competições;'
+    )
+    Params = <>
+    Macros = <>
+    DataSource = dsCompeticoes
+    Left = 232
+    Top = 776
+  end
+  object dsCompeticoes: TDataSource
+    Left = 408
+    Top = 792
+  end
+  object qrSituacao: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Status'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'select Status from Status_Aposta;'
+    )
+    Params = <>
+    Macros = <>
+    DataSource = dsSituacao
+    Left = 288
+    Top = 784
+  end
+  object dsSituacao: TDataSource
+    Left = 481
+    Top = 812
+  end
+  object qrUnidades: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Unidade'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'select Unidade from Unidades'
+    )
+    Params = <>
+    Macros = <>
+    DataSource = dsUnidades
+    Left = 468
+    Top = 789
+    object qrUnidadesUnidade: TStringField
+      FieldKind = fkData
+      FieldName = 'Unidade'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+  end
+  object dsUnidades: TDataSource
+    Left = 1184
+    Top = 790
+  end
+  object dsPerfis: TDataSource
+    DataSet = qrPerfis
+    Left = 207
+    Top = 736
+  end
+  object qrPerfis: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Perfil'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'Select Perfil from Perfis'
+    )
+    Params = <>
+    Macros = <>
+    Left = 268
+    Top = 690
+    object qrPerfisPerfil: TStringField
+      FieldKind = fkData
+      FieldName = 'Perfil'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+  end
+  object qrSelecionarPerfil: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Perfil Selecionado'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'Select "Perfil Selecionado" from "Selecionar Perfil"'
+    )
+    Params = <>
+    Macros = <>
+    Left = 67
+    Top = 651
+    object qrSelecionarPerfilPerfilSelecionado: TStringField
+      FieldKind = fkData
+      FieldName = 'Perfil Selecionado'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 255
+    end
+  end
+  object dsSelecionarPerfil: TDataSource
+    Left = 178
+    Top = 673
+  end
+  object linkAtualizacoes: TIpHttpDataProvider
+    Left = 8
+    Top = 8
+  end
+  object JSONPropStorage1: TJSONPropStorage
+    StoredValues = <>
+    Formatted = False
+    Left = 8
+    Top = 8
+  end
+  object conectBancoDados: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = transactionBancoDAdos
+    AlwaysUseBigint = False
+    Left = 367
+    Top = 312
+  end
+  object dbGraficoMes: TDbChartSource
+    DataSource = dsGraficoMes
+    FieldX = 'Data'
+    FieldY = 'Banca_Final'
+    Left = 752
+    Top = 80
+  end
+  object dsGraficoMes: TDataSource
+    Left = 849
+    Top = 94
+  end
+  object qrMes: TSQLQuery
+    FieldDefs = <>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT strftime("%d", Data) as Dia, (SELECT SUM(Profit_L)'
+      '               FROM Apostas AS A2         WHERE strftime("%m", A2.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
+      '                 AND strftime("%Y", A2.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      '                 AND strftime("%d", A2.Data) <= strftime("%d", Apostas.Data)'
+      '              ) AS SomaLucro FROM Apostas'
+      '        WHERE strftime("%m", Data) = (SELECT Mês FROM "Selecionar Mês e Ano")  AND strftime("%Y", Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      '        GROUP BY strftime("%d", Data);'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 984
+    Top = 88
+  end
+  object qrAno: TSQLQuery
+    FieldDefs = <>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT Mês, Lucro_R$ FROM Banca'
+      'WHERE Ano = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 1059
+    Top = 88
+  end
+  object dbGraficoAno: TDbChartSource
+    DataSource = dsGraficoAno
+    FieldX = 'Mês'
+    FieldY = 'Lucro_R$'
+    Left = 659
+    Top = 104
+  end
+  object dsGraficoAno: TDataSource
+    DataSet = qrAno
+    Left = 598
+    Top = 95
+  end
+end
