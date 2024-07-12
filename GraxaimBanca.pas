@@ -10,8 +10,9 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, untMain, untNA, indylaz,
-  tachartlazaruspkg, datetimectrls;
+  Forms, untMain, untNA, untUpdate, tachartlazaruspkg, datetimectrls,
+  untDatabase, untApostas, untEstrategias, untCampeonatos, untTimes, untPainel,
+  indylaz, untMultipla, untSobre;
 
 {$R *.res}
 
@@ -22,5 +23,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TformPrincipal, formPrincipal);
   Application.CreateForm(TformNovaAposta, formNovaAposta);
+  Application.CreateForm(TformSobre, formSobre);
   Application.Run;
 end.

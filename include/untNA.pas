@@ -290,7 +290,7 @@ begin
       'VALUES (:Data, :Competição, :Mandante, :Visitante, :Estratégia, ' +
       ':Odd, :Unidade, :ValorApostado, :Situação)';
 
-    qrNovaAposta.ParamByName('Data').AsString := FormatDateTime('YYYY-MM-DD', deAposta.Date);
+    qrNovaAposta.ParamByName('Data').AsDateTime := deAposta.Date;
     qrNovaAposta.ParamByName('Competição').AsString := cbCompeticao.Text;
     qrNovaAposta.ParamByName('Mandante').AsString := cbMandante.Text;
     qrNovaAposta.ParamByName('Visitante').AsString := cbVisitante.Text;

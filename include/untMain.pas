@@ -11,14 +11,17 @@ DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
 DBExtCtrls, Menus, ActnList, CheckLst, Buttons, ExtCtrls, JSONPropStorage,
 EditBtn, TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
 TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
-Iphttpbroker, DateUtils, Math, Grids, TAChartAxisUtils;
+Iphttpbroker, DateUtils, Math, Grids, TAChartAxisUtils, framePageSetup;
 
 type
 
 { TformPrincipal }
 
 TformPrincipal = class(TForm)
+  btnAddJogo: TButton;
+  btnExcJogo: TButton;
   btnNovaAposta: TButton;
+  btnNovaMult: TButton;
   btnSalvarBancaInicial: TButton;
   btnFiltrarAp: TButton;
   btnRemoverAposta: TButton;
@@ -26,12 +29,47 @@ TformPrincipal = class(TForm)
   btnRemoverEstrategia: TButton;
   btnNovoTime: TButton;
   btnRemoverTime: TButton;
+  btnExpandir: TButton;
+  btnNovaMultipla: TButton;
+  btnRemoverMultipla: TButton;
+  btnRemoverJogo: TButton;
+  btnExcMult: TButton;
+  btnCancelarMult: TButton;
+  btnSalvarMult: TButton;
+  btnCashout: TButton;
   cbCompeticao: TComboBox;
+  cbCompMultipla: TComboBox;
+  cbEstrMultipla: TComboBox;
+  cbMandante: TComboBox;
+  cbSituacao: TComboBox;
+  cbVisitante: TComboBox;
+  chbJogo:    TCheckBox;
+  chbMultipla: TCheckBox;
+  CheckBox1:  TCheckBox;
   chrtLucroAno: TChart;
+  DateEdit1:  TDateEdit;
+  deMult:     TDateEdit;
   dsGraficoAno: TDataSource;
   dbGraficoAno: TDbChartSource;
   dsGraficoMes: TDataSource;
   dbGraficoMes: TDbChartSource;
+  edtValorMultipla: TEdit;
+  edtOddMultipla: TEdit;
+  lbSituacaoMult: TLabel;
+  lbOddMult:  TLabel;
+  lbEstrMult: TLabel;
+  lbVisitanteMult: TLabel;
+  lbMandanteMult: TLabel;
+  lbCompMult: TLabel;
+  lbValorMultipla: TLabel;
+  lbCompMultipla: TLabel;
+  lbData:     TLabel;
+  lbDataMultipla: TLabel;
+  lbSituacao: TLabel;
+  lbRetorno:  TLabel;
+  lbStatusMult: TLabel;
+  lbValorMult: TLabel;
+  lbVisiMult: TLabel;
   lnGraficoLucroAno: TLineSeries;
   chrtLucroMes: TChart;
   chrtEstrategias: TChart;
@@ -42,8 +80,15 @@ TformPrincipal = class(TForm)
   cbMes:      TComboBox;
   cbPerfil:   TComboBox;
   cbTime:     TComboBox;
+  pnMultipla: TPanel;
+  pnJogo:     TPanel;
+  pnInfoMult: TPanel;
   qrMes:      TSQLQuery;
   qrAno:      TSQLQuery;
+  scrlTodasMultiplas: TScrollBox;
+  scrlMultipla: TScrollBox;
+  btnAtualizaApostas: TSpeedButton;
+  tsMultipla: TTabSheet;
   txtStake:   TDBText;
   deFiltroDataInicial: TDateEdit;
   deFiltroDataFinal: TDateEdit;
@@ -159,11 +204,16 @@ TformPrincipal = class(TForm)
   txtLucroMoeda: TDBText;
   txtLucroPorCento: TDBText;
   procedure FormShow(Sender: TObject);
-  procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
-    DataCol: integer; Column: TColumn; State: TGridDrawState);
+  procedure MenuItem3Click(Sender: TObject);
+  procedure MenuItem4Click(Sender: TObject);
+  procedure MenuItem5Click(Sender: TObject);
+  procedure MenuItem6Click(Sender: TObject);
+  procedure MenuItem7Click(Sender: TObject);
   procedure MenuItem8Click(Sender: TObject);
   procedure MenuItem9Click(Sender: TObject);
   procedure FormCreate(Sender: TObject);
+  procedure pnInfoMultClick(Sender: TObject);
+  procedure qrApostasAfterOpen(DataSet: TDataSet);
 
   //Funções e procedimentos personalizados
   procedure ReiniciarTodosOsQueries;
@@ -194,8 +244,10 @@ mesSelecionado, anoSelecionado: integer;
 implementation
 
 uses
-untNA, untUpdate, untCampeonatos, untEstrategias, untApostas,
-untTimes, untPainel, untDatabase;
+untUpdate, untCampeonatos, untEstrategias, untApostas,
+untTimes, untPainel, untDatabase, untMultipla, untSobre,
+fpjson, HTTPDefs, synautil, jsonparser, LCLIntf,
+IdSSLOpenSSLHeaders, ssl_openssl3;
 
 {$R *.lfm}
 
@@ -210,6 +262,7 @@ var
   EventosEstrategias: TEventosEstrategias;
   EventosCampeonatos: TEventosCampeonatos;
   EventosApostas: TEventosApostas;
+  EventosMultiplas: TEventosMultiplas;
 begin
   writeln('Criando formulário principal...');
 
@@ -239,7 +292,9 @@ begin
   grdApostas.OnCellClick := @EventosApostas.grdApostasCellClick;
   btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
   btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
-  grdApostas.OnDrawColumnCell := @EventosApostas.MudarCoresDasCelulas;
+  grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
+  grdApostas.OnEditingDone := @EventosApostas.grdApostasEditingDone;
+  btnAtualizaApostas.OnClick := @EventosApostas.btnAtualizaApostasClick;
 
   writeln('Criando eventos do tsEstrategias...');
   tsEstrategias.OnShow      := @EventosEstrategias.tsEstrategiasShow;
@@ -252,18 +307,32 @@ begin
   writeln('Criando eventos do banco de dados...');
   qrBanca.OnCalcFields := @BancoDados.qrBancaCalcFields;
 
+  writeln('Criando eventos do tsMultipla...');
+  tsMultipla.OnShow   := @EventosMultiplas.tsMultiplaShow;
+  btnNovaMult.OnClick := @EventosMultiplas.btnNovaMultClick;
+  btnExcMult.OnClick  := @EventosMultiplas.btnExcMultClick;
+
   VerificarAtualizacoes(currentVersion);
 
   // Quando for compilar a release, descomentar a linha abaixo:
   @BancoDados.LocalizarBancoDeDados;
-  // if not conectBancoDados.Connected then
-  // conectBancoDados.Open;
+  if not conectBancoDados.Connected then
+    conectBancoDados.Open;
 
   // Definindo a variável perfilInvestidor
   perfilInvestidor := qrSelecionarPerfil.FieldByName('Perfil Selecionado').AsString;
   DefinirStake;
 end;
 
+procedure TformPrincipal.pnInfoMultClick(Sender: TObject);
+begin
+
+end;
+
+procedure TformPrincipal.qrApostasAfterOpen(DataSet: TDataSet);
+begin
+  DataSet.Last;
+end;
 
 procedure TformPrincipal.MudarCorLucro;
 var
@@ -320,13 +389,42 @@ end;
 
 procedure TformPrincipal.MenuItem8Click(Sender: TObject);
 begin
-  VerificarAtualizacoes(currentVersion);
+  openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
 end;
 
-procedure TformPrincipal.grdApostasDrawColumnCell(Sender: TObject;
-const Rect: TRect; DataCol: integer; Column: TColumn; State: TGridDrawState);
+procedure TformPrincipal.MenuItem3Click(Sender: TObject);
 begin
 
+end;
+
+procedure TformPrincipal.MenuItem4Click(Sender: TObject);
+begin
+
+end;
+
+procedure TformPrincipal.MenuItem5Click(Sender: TObject);
+begin
+
+end;
+
+procedure TformPrincipal.MenuItem6Click(Sender: TObject);
+begin
+
+end;
+
+procedure TformPrincipal.MenuItem7Click(Sender: TObject);
+var
+  SobreForm: TformSobre;
+begin
+  writeln('Criando formulário...');
+  SobreForm := TformSobre.Create(nil);
+    try
+    writeln('Exibindo o formulário...');
+    SobreForm.ShowModal;
+    finally
+    writeln('Destruindo o formulário...');
+    SobreForm.Free;
+    end;
 end;
 
 procedure TformPrincipal.FormShow(Sender: TObject);

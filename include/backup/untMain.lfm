@@ -1,11 +1,11 @@
 object formPrincipal: TformPrincipal
-  Left = 103
-  Height = 796
-  Top = 375
-  Width = 1407
+  Left = 1948
+  Height = 827
+  Top = 106
+  Width = 1399
   Caption = 'Graxaim Gestão de Banca [ALPHA]'
-  ClientHeight = 796
-  ClientWidth = 1407
+  ClientHeight = 827
+  ClientWidth = 1399
   DesignTimePPI = 125
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -19,17 +19,17 @@ object formPrincipal: TformPrincipal
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 796
+    Height = 827
     Top = 0
-    Width = 1407
-    ActivePage = tsPainel
+    Width = 1399
+    ActivePage = tsApostas
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 0
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
-      ClientHeight = 761
-      ClientWidth = 1397
+      ClientHeight = 792
+      ClientWidth = 1389
       object txtBancaAtual: TDBText
         Left = 40
         Height = 74
@@ -84,24 +84,24 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 400
-        Height = 761
+        Height = 792
         Top = 0
-        Width = 1024
+        Width = 1016
         ActivePage = Graficos
         Anchors = [akTop, akLeft, akRight, akBottom]
         TabIndex = 0
         TabOrder = 1
         object Graficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 726
-          ClientWidth = 1014
+          ClientHeight = 757
+          ClientWidth = 1006
           object chrtLucroMes: TChart
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
             Height = 336
             Top = 32
-            Width = 986
+            Width = 978
             AxisList = <            
               item
                 Grid.EndCap = pecFlat
@@ -145,7 +145,7 @@ object formPrincipal: TformPrincipal
             Left = 0
             Height = 336
             Top = 392
-            Width = 986
+            Width = 978
             AxisList = <            
               item
                 Marks.Format = '%0:.2m'
@@ -178,9 +178,11 @@ object formPrincipal: TformPrincipal
         end
         object ResumodoMes: TTabSheet
           Caption = 'Resumo do Mês'
+          TabVisible = False
         end
         object ResumodoAno: TTabSheet
           Caption = 'Resumo do Ano'
+          TabVisible = False
         end
       end
       object txtLucroMoeda: TDBText
@@ -277,15 +279,15 @@ object formPrincipal: TformPrincipal
     end
     object tsTimes: TTabSheet
       Caption = 'Times'
-      ClientHeight = 761
-      ClientWidth = 1397
+      ClientHeight = 792
+      ClientWidth = 1389
       object grdTodosTimes: TDBGrid
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = -5
-        Height = 629
+        Height = 660
         Top = 24
         Width = 733
         Anchors = [akTop, akLeft, akBottom]
@@ -326,12 +328,12 @@ object formPrincipal: TformPrincipal
           end        
           item
             Title.Caption = 'P/L'
-            Width = 94
+            Width = 95
             FieldName = 'P/L'
           end        
           item
             Title.Caption = 'Reds'
-            Width = 94
+            Width = 95
             FieldName = 'Reds'
           end>
         DataSource = dsTodosTimes
@@ -342,7 +344,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 728
-        Height = 629
+        Height = 660
         Top = 24
         Width = 200
         Anchors = [akTop, akLeft, akBottom]
@@ -381,14 +383,14 @@ object formPrincipal: TformPrincipal
         Left = 928
         Height = 21
         Top = 0
-        Width = 581
+        Width = 573
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Times Menos Lucrativos'
       end
       object grdTimesMenosLucrativos: TDBGrid
         AnchorSideBottom.Side = asrBottom
         Left = 928
-        Height = 631
+        Height = 662
         Top = 24
         Width = 200
         Anchors = [akTop, akLeft, akBottom]
@@ -412,7 +414,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 8
         Height = 64
-        Top = 678
+        Top = 709
         Width = 136
         Anchors = [akLeft, akBottom]
         Caption = 'Novo Time'
@@ -423,7 +425,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 160
         Height = 65
-        Top = 677
+        Top = 708
         Width = 138
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Time'
@@ -433,13 +435,14 @@ object formPrincipal: TformPrincipal
     end
     object tsCampeonatos: TTabSheet
       Caption = 'Campeonatos'
-      ClientHeight = 761
-      ClientWidth = 1397
+      ClientHeight = 792
+      ClientWidth = 1389
+      TabVisible = False
       object DBGrid3: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = -8
-        Height = 698
+        Height = 729
         Top = 0
         Width = 736
         Anchors = [akTop, akLeft, akBottom]
@@ -482,13 +485,14 @@ object formPrincipal: TformPrincipal
     end
     object tsEstrategias: TTabSheet
       Caption = 'Estratégias'
-      ClientHeight = 761
-      ClientWidth = 1397
+      ClientHeight = 792
+      ClientWidth = 1389
+      TabVisible = False
       object grdEstrategias: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 597
+        Height = 628
         Top = 48
         Width = 376
         Anchors = [akTop, akLeft, akBottom]
@@ -519,9 +523,9 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 384
-        Height = 526
+        Height = 557
         Top = 0
-        Width = 927
+        Width = 919
         AxisList = <        
           item
             TickLength = 1
@@ -638,7 +642,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 0
         Height = 64
-        Top = 669
+        Top = 700
         Width = 184
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Estratégia'
@@ -649,7 +653,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 192
         Height = 64
-        Top = 669
+        Top = 700
         Width = 184
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Estratégia'
@@ -659,15 +663,15 @@ object formPrincipal: TformPrincipal
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
-      ClientHeight = 761
-      ClientWidth = 1397
+      ClientHeight = 792
+      ClientWidth = 1389
       object grdApostas: TDBGrid
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 621
+        Height = 652
         Top = 32
-        Width = 1402
+        Width = 1394
         Anchors = [akTop, akLeft, akRight, akBottom]
         Color = clWindow
         Columns = <        
@@ -751,7 +755,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 8
         Height = 67
-        Top = 677
+        Top = 708
         Width = 206
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -760,9 +764,9 @@ object formPrincipal: TformPrincipal
       object btnFiltrarAp: TButton
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 1214
+        Left = 1206
         Height = 67
-        Top = 677
+        Top = 708
         Width = 162
         Anchors = [akRight, akBottom]
         Caption = 'Filtrar Apostas'
@@ -773,7 +777,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 240
         Height = 67
-        Top = 677
+        Top = 708
         Width = 206
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -785,7 +789,7 @@ object formPrincipal: TformPrincipal
         Left = 368
         Height = 29
         Top = 0
-        Width = 619
+        Width = 611
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Clique duas vezes sobre uma célula para alterá-la:'
         Font.Height = -24
@@ -795,9 +799,9 @@ object formPrincipal: TformPrincipal
       object chbMandante: TDBCheckBox
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 918
+        Left = 910
         Height = 33
-        Top = 717
+        Top = 748
         Width = 142
         Anchors = [akRight, akBottom]
         Caption = 'Mandante'
@@ -809,9 +813,9 @@ object formPrincipal: TformPrincipal
       object chbVisitante: TDBCheckBox
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 1062
+        Left = 1054
         Height = 33
-        Top = 717
+        Top = 748
         Width = 141
         Anchors = [akRight, akBottom]
         Caption = 'Visitante'
@@ -837,9 +841,9 @@ object formPrincipal: TformPrincipal
       object cbCompeticao: TComboBox
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 758
+        Left = 750
         Height = 33
-        Top = 661
+        Top = 692
         Width = 400
         Anchors = [akRight, akBottom]
         Enabled = False
@@ -850,9 +854,9 @@ object formPrincipal: TformPrincipal
       object cbTime: TComboBox
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 758
+        Left = 750
         Height = 33
-        Top = 717
+        Top = 748
         Width = 154
         Anchors = [akRight, akBottom]
         Enabled = False
@@ -863,9 +867,9 @@ object formPrincipal: TformPrincipal
       object deFiltroDataInicial: TDateEdit
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 590
+        Left = 582
         Height = 33
-        Top = 661
+        Top = 692
         Width = 134
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -880,9 +884,9 @@ object formPrincipal: TformPrincipal
       object deFiltroDataFinal: TDateEdit
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 590
+        Left = 582
         Height = 33
-        Top = 717
+        Top = 748
         Width = 134
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -893,6 +897,422 @@ object formPrincipal: TformPrincipal
         MaxLength = 0
         TabOrder = 9
         Text = 'Data Final'
+      end
+      object btnAtualizaApostas: TSpeedButton
+        Left = 1360
+        Height = 29
+        Top = 0
+        Width = 30
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000001000000090000000E0000
+          00170000001B0000002100000023000000250000002600000022000000200000
+          001C000000180000000F0000000A000000020000000000000000000000000000
+          000400000006000000150000001A000000250000002A00000032000000330000
+          0031000000361A0B013F1609013A000000240000001E0000001C000000160000
+          000A000000050000000000000000000000038B562D552D170627000000240000
+          00320000003487552EA5AD774BE3CF9968FFD19B68FFCE9763FFCE9560FFCA8E
+          57FFBD804BFF7949256A0000001D000000150000000F00000001000000000000
+          0003854F264C9F6A41A7060000242711013F88552D9BD19E71FFD4A274FFCB96
+          64FFC99360FFC8915CFFC88F5AFFC88F59FFC88F58FFB87A45FB8F582D890000
+          00130000000E00000001000000000000000093511E41E8CEB4FFC69B78FCE2C0
+          A0FFD3A67CFFCC9968FFCB9766FFCD9B6BFFD29F70FFCB9463FFC68D5AFFBD84
+          53FFBD834FFFC78E57FFCA8F56FF864E25200000000100000000000000000000
+          00009A541F3DE1C1A3FFE2C4A8FFDCBA98FFD8B28DFFCC9867FFD09F71FFCB97
+          6AFFB77F51E999603283A0612F7FC38654FACEA583FFB67A48FFC58A53FFA465
+          34740000000000000000000000000000000099531E3DE1C2A4FFDCB897FFDBB8
+          97FFDEBD9DFFC19069E1A565336D000000000000000000000000000000000000
+          0000CF936282F3E5D772D2AD9073B07340E2914F211200000000000000000000
+          000098531D3CE1C2A4FFDCB897FFDDBA99FFE4C7ACFF8C3F062F000000000000
+          000000000000000000000000000000000000D49E723FECDBC94BFFFFFC1FA96A
+          38F2A263321E00000000000000000000000097501A3CE6CBB0FFE1C0A2FFE0C1
+          A2FFE0BFA0FFD1A886FEA567376E000000000000000000000000000000000000
+          0000E6C9B00FEDDECE0200000000A46534BCA465341600000000000000000000
+          00009C582439D2AD8DFFD0A989FFD1AA89FFD2AA89FFD6AF8EFFB47B4EFB0000
+          000000000000000000000000000000000000000000000000000000000000A363
+          3156A7683606000000000000000000000000A364334AFFFFFF04000000000000
+          00000000000000000000000000000000000000000000A3643276CD9D75FFDEB5
+          90FFDEB690FFDEB590FFDEB58FFFB9865DD74907030800000000000000000000
+          0000A2623167D5A37E51D09E7746B074463D7530080100000000000000000000
+          00000000000000000000A5673782D8AF88FFCFA073FFCE9D70FFCD9B6DFFBA89
+          61D04A000008000000000000000000000000AA6E4067B77D51E6C48E65D2AA6D
+          3EB54A0000020000000000000000000000000000000000000000944C162BD1A7
+          83FFD7AF89FFCFA073FFCE9D6FFFBA875FD25800000900000000000000000000
+          00009F5C294ABB8860FFB37748FEB27547ED9E5E2C3600000000000000000000
+          000000000000A8683781BF8C63E9D7AE88FFD1A479FFD0A074FFCE9D70FFBA87
+          5ED35D00000A00000000000000000000000000000001EBCFB6FFE9D3C0FFBB8A
+          63FFB57D50FFB0784CD8B7845BC9CFA888FFE5C4A8FFE4C8ADFFE0C2A5FFD7AF
+          89FFD4A880FFD8AF8BFFD7AE88FFB9865CD56706000B00000000000000000000
+          000000000000C49570F3EFDAC6FFE9D3BFFFE5CCB5FFE7CBB2FFEBD0B7FFE7CE
+          B6FFE4C9B0FFE2C4A9FFE1C3A6FFE4C8ADFFE4C3A4FFA46635A9C2926BF7B985
+          5BD56B0D000C0000000000000000000000000000000000000000A1612F66E7C9
+          AEFFEDD6C1FFE9D2BCFFE7D0B9FFE7CFB7FFE7CEB6FFE7C8ABFFD3AA89FFA362
+          2F6A7825000C0000000000000000A96C3DDF9A56260E00000000000000000000
+          0000000000000000000000000000B076489AC3946FE3DEBB9EFFE1C0A3FFDBB6
+          96FFCCA381FEB27A4CADA2602C5B00000000000000000000000000000000A363
+          3270A56735130000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+      end
+    end
+    object tsMultipla: TTabSheet
+      Caption = 'Apostas Múltiplas'
+      ClientHeight = 792
+      ClientWidth = 1389
+      TabVisible = False
+      object scrlTodasMultiplas: TScrollBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = -5
+        Height = 696
+        Top = -8
+        Width = 1400
+        HorzScrollBar.Page = 1360
+        VertScrollBar.Page = 616
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ClientHeight = 694
+        ClientWidth = 1398
+        TabOrder = 0
+        object pnInfoMult: TPanel
+          Left = 8
+          Height = 544
+          Top = 72
+          Width = 1352
+          Caption = 'pnInfoMult'
+          ClientHeight = 544
+          ClientWidth = 1352
+          TabOrder = 0
+          Visible = False
+          OnClick = pnInfoMultClick
+          object scrlMultipla: TScrollBox
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 0
+            Height = 472
+            Top = 0
+            Width = 1352
+            HorzScrollBar.Page = 1328
+            VertScrollBar.Page = 72
+            Anchors = [akTop, akLeft, akRight, akBottom]
+            ClientHeight = 470
+            ClientWidth = 1350
+            TabOrder = 0
+            object pnJogo: TPanel
+              AnchorSideRight.Side = asrBottom
+              Left = 0
+              Height = 72
+              Top = 0
+              Width = 1328
+              ClientHeight = 72
+              ClientWidth = 1328
+              TabOrder = 0
+              object lbDataMultipla: TLabel
+                Left = 53
+                Height = 21
+                Top = 0
+                Width = 37
+                Anchors = [akTop]
+                Caption = 'Data'
+              end
+              object cbMandante: TComboBox
+                Left = 434
+                Height = 33
+                Top = 24
+                Width = 144
+                Anchors = [akTop]
+                ItemHeight = 0
+                TabOrder = 0
+                Text = 'cbMandante'
+              end
+              object cbVisitante: TComboBox
+                Left = 632
+                Height = 33
+                Top = 24
+                Width = 130
+                Anchors = [akTop]
+                ItemHeight = 0
+                TabOrder = 1
+                Text = 'cbVisitante'
+              end
+              object cbCompMultipla: TComboBox
+                Left = 253
+                Height = 33
+                Top = 24
+                Width = 130
+                Anchors = [akTop]
+                ItemHeight = 0
+                TabOrder = 2
+                Text = 'cbCompMultipla'
+              end
+              object cbEstrMultipla: TComboBox
+                Left = 811
+                Height = 33
+                Top = 24
+                Width = 130
+                Anchors = [akTop]
+                ItemHeight = 0
+                Style = csDropDownList
+                TabOrder = 3
+              end
+              object edtOddMultipla: TEdit
+                Left = 990
+                Height = 33
+                Top = 24
+                Width = 130
+                Anchors = [akTop]
+                TabOrder = 4
+                Text = 'edtOddMultipla'
+              end
+              object cbSituacao: TComboBox
+                Left = 1169
+                Height = 33
+                Top = 24
+                Width = 130
+                Anchors = [akTop]
+                ItemHeight = 0
+                Style = csDropDownList
+                TabOrder = 5
+              end
+              object chbJogo: TCheckBox
+                Left = 16
+                Height = 33
+                Top = 24
+                Width = 23
+                Anchors = [akTop]
+                Constraints.MinHeight = 33
+                TabOrder = 6
+              end
+              object deMult: TDateEdit
+                Left = 53
+                Height = 33
+                Top = 24
+                Width = 134
+                CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+                DateOrder = doNone
+                ButtonWidth = 30
+                Anchors = [akTop]
+                NumGlyphs = 1
+                MaxLength = 0
+                TabOrder = 7
+                Text = 'deMult'
+              end
+              object lbCompMult: TLabel
+                Left = 253
+                Height = 21
+                Top = 0
+                Width = 93
+                Caption = 'Competição'
+              end
+              object lbMandanteMult: TLabel
+                Left = 434
+                Height = 21
+                Top = 0
+                Width = 80
+                Caption = 'Mandante'
+              end
+              object lbVisitanteMult: TLabel
+                Left = 632
+                Height = 21
+                Top = 0
+                Width = 70
+                Caption = 'Visitante'
+              end
+              object lbEstrMult: TLabel
+                Left = 811
+                Height = 21
+                Top = 0
+                Width = 81
+                Caption = 'Estratégia'
+              end
+              object lbOddMult: TLabel
+                Left = 990
+                Height = 21
+                Top = 0
+                Width = 33
+                Caption = 'Odd'
+              end
+              object lbSituacaoMult: TLabel
+                Left = 1169
+                Height = 21
+                Top = 0
+                Width = 66
+                Caption = 'Situação'
+              end
+            end
+          end
+          object btnAddJogo: TButton
+            AnchorSideBottom.Side = asrBottom
+            Left = 304
+            Height = 33
+            Top = 503
+            Width = 152
+            Anchors = [akLeft, akBottom]
+            Caption = 'Adicionar Jogo'
+            TabOrder = 1
+          end
+          object btnRemoverJogo: TButton
+            AnchorSideBottom.Side = asrBottom
+            Left = 480
+            Height = 33
+            Top = 503
+            Width = 152
+            Anchors = [akLeft, akBottom]
+            Caption = 'Excluir Seleção'
+            TabOrder = 2
+          end
+          object edtValorMultipla: TEdit
+            AnchorSideBottom.Side = asrBottom
+            Left = 176
+            Height = 33
+            Top = 503
+            Width = 104
+            Anchors = [akLeft, akBottom]
+            TabOrder = 3
+            Text = 'edtValorMultipla'
+          end
+          object lbValorMultipla: TLabel
+            AnchorSideBottom.Side = asrBottom
+            Left = 176
+            Height = 21
+            Top = 480
+            Width = 42
+            Anchors = [akLeft, akBottom]
+            Caption = 'Valor'
+          end
+          object btnSalvarMult: TButton
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 1112
+            Height = 33
+            Top = 503
+            Width = 98
+            Anchors = [akRight, akBottom]
+            Caption = 'Salvar'
+            TabOrder = 4
+          end
+          object btnCancelarMult: TButton
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 1232
+            Height = 33
+            Top = 503
+            Width = 98
+            Anchors = [akRight, akBottom]
+            Caption = 'Cancelar'
+            TabOrder = 5
+          end
+          object btnCashout: TButton
+            Left = 992
+            Height = 33
+            Top = 503
+            Width = 98
+            Caption = 'Cashout'
+            TabOrder = 6
+          end
+          object DateEdit1: TDateEdit
+            Left = 8
+            Height = 33
+            Top = 503
+            Width = 142
+            CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+            DateOrder = doNone
+            ButtonWidth = 30
+            NumGlyphs = 1
+            MaxLength = 0
+            TabOrder = 7
+            Text = 'DateEdit1'
+          end
+        end
+        object pnMultipla: TPanel
+          AnchorSideRight.Side = asrBottom
+          Left = 8
+          Height = 49
+          Top = 24
+          Width = 1352
+          ClientHeight = 49
+          ClientWidth = 1352
+          TabOrder = 1
+          Visible = False
+          object lbData: TLabel
+            Left = 72
+            Height = 33
+            Top = 8
+            Width = 176
+            Caption = 'dd/mm/YYYY'
+            Font.Height = -28
+            Font.Name = 'Sans'
+            ParentFont = False
+          end
+          object lbSituacao: TLabel
+            AnchorSideRight.Side = asrBottom
+            Left = 946
+            Height = 33
+            Top = 8
+            Width = 160
+            Anchors = []
+            BidiMode = bdRightToLeft
+            Caption = 'Meio Green'
+            Font.Height = -28
+            Font.Name = 'Sans'
+            ParentBidiMode = False
+            ParentFont = False
+          end
+          object lbRetorno: TLabel
+            Left = 680
+            Height = 33
+            Top = 8
+            Width = 109
+            Anchors = [akTop]
+            Caption = 'R$ 0,00'
+            Font.Height = -28
+            Font.Name = 'Sans'
+            ParentFont = False
+          end
+          object btnExpandir: TButton
+            AnchorSideRight.Side = asrBottom
+            Left = 1224
+            Height = 33
+            Top = 8
+            Width = 122
+            Anchors = [akTop, akRight]
+            Caption = 'Expandir'
+            TabOrder = 0
+          end
+          object chbMultipla: TCheckBox
+            Left = 16
+            Height = 33
+            Top = 8
+            Width = 23
+            Anchors = [akTop]
+            Constraints.MinHeight = 33
+            TabOrder = 1
+          end
+        end
+      end
+      object btnNovaMult: TButton
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 8
+        Height = 70
+        Top = 710
+        Width = 206
+        Anchors = [akLeft, akBottom]
+        Caption = 'Nova Aposta'
+        TabOrder = 1
+      end
+      object btnExcMult: TButton
+        AnchorSideBottom.Side = asrBottom
+        Left = 232
+        Height = 70
+        Top = 710
+        Width = 206
+        Anchors = [akLeft, akBottom]
+        Caption = 'Excluir Aposta'
+        TabOrder = 2
       end
     end
   end
@@ -1300,6 +1720,7 @@ object formPrincipal: TformPrincipal
         DataType = ftLargeint
         Precision = -1
       end>
+    AfterOpen = qrApostasAfterOpen
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -1529,24 +1950,34 @@ object formPrincipal: TformPrincipal
       Caption = 'Dados'
       object MenuItem3: TMenuItem
         Caption = 'Importar Dados'
+        Enabled = False
+        OnClick = MenuItem3Click
       end
       object MenuItem4: TMenuItem
         Caption = 'Exportar Dados'
+        Enabled = False
+        OnClick = MenuItem4Click
       end
       object MenuItem5: TMenuItem
         Caption = 'Conectar na Nuvem'
+        Enabled = False
+        OnClick = MenuItem5Click
       end
     end
     object MenuItem2: TMenuItem
       Caption = 'Ajuda'
       object MenuItem6: TMenuItem
         Caption = 'Como Usar o Programa'
+        Enabled = False
+        OnClick = MenuItem6Click
       end
       object MenuItem8: TMenuItem
         Caption = 'Apóie o Projeto'
+        OnClick = MenuItem8Click
       end
       object MenuItem7: TMenuItem
         Caption = 'Sobre'
+        OnClick = MenuItem7Click
       end
     end
   end
@@ -1717,6 +2148,7 @@ object formPrincipal: TformPrincipal
   object conectBancoDados: TSQLite3Connection
     Connected = False
     LoginPrompt = False
+    DatabaseName = '/home/ferox/Documentos/Programação/Projeto Graxaim Gestão de Banca/database.db'
     KeepConnection = False
     Transaction = transactionBancoDAdos
     AlwaysUseBigint = False

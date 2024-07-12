@@ -307,9 +307,8 @@ begin
   with formPrincipal do
   begin
     try
-      // Limpa todas as séries do gráfico
-      chrtLucroMes.Series.Clear;
-      chrtLucroAno.Series.Clear;
+      (chrtLucroMes.Series[0] as TLineSeries).Clear;
+      (chrtLucroAno.Series[0] as TLineSeries).Clear;
 
       // Gráfico de lucro do mês
       try
@@ -396,12 +395,12 @@ begin
         query.ParamByName('anoSelec').AsInteger := anoSelecionado;
         writeln('Dando ExecSQL com as variáveis ', mesSelecionado, '/', anoSelecionado);
         query.ExecSQL;
-        transactionBancoDados.Commit;
-        query.SQL.Text := 'SELECT Mês AS mes, Ano AS ano FROM "Selecionar Mês e Ano"';
+        transactionBancoDados.CommitRetaining;
+        {query.SQL.Text := 'SELECT Mês AS mes, Ano AS ano FROM "Selecionar Mês e Ano"';
         query.ExecSQL;
         if not query.Active then query.Open;
         writeln('Mês e ano do banco de dados definidos para ',
-        query.FieldByName('mes').AsInteger, '/', query.FieldByName('ano').AsInteger);
+        query.FieldByName('mes').AsInteger, '/', query.FieldByName('ano').AsInteger);}
         query.Free;
         except
         on E: Exception do
