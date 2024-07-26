@@ -27,4 +27,4 @@ Baixe a última versão no link https://github.com/FeroxGraxaim/graxaimgestaodeb
 #### Windows: 
 
 A versão Windows já está disponível desde o lançamento 0.1, bastando executar o instalador. 
-*Obs:* O Windows e o navegador podem detectar o instalador como potencial risco de segurança, mas não se preocupe, isso acontece porque este programa não tem certificado digital. Caso desconfie de algo, sinta-se a vontade para fazer uma verificação com antivírus. 
+**Obs:** O Windows e o navegador podem detectar o instalador como potencial risco de segurança, mas não se preocupe, isso acontece porque este programa não tem certificado digital. Caso desconfie de algo, sinta-se a vontade para fazer uma verificação com antivírus. 
