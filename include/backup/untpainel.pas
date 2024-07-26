@@ -5,77 +5,57 @@ unit untPainel;
 interface
 
 uses
-Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
-DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
-Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-TACustomSeries, TAMultiSeries, DateUtils, untMain;
+  Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
+  DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
+  Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
+  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl;
 
 type
 
-{ TEventosPainel }
+  { TEventosPainel }
 
-TEventosPainel = class(TformPrincipal)
+  TEventosPainel = class(TformPrincipal)
 
-public
-  procedure tsPainelShow(Sender: TObject);
-  procedure btnSalvarBancaInicialClick(Sender: TObject);
-  procedure cbPerfilChange(Sender: TObject);
-  procedure edtBancaInicialKeyPress(Sender: TObject; var Key: char);
-  procedure cbMesChange(Sender: TObject);
-  procedure cbAnoChange(Sender: TObject);
-  procedure PreencherComboBox;
-  procedure PreencherBancaInicial;
-  procedure AtualizarGraficoLucro;
-  procedure AtualizaMesEAno;
-end;
+  public
+    procedure tsPainelShow(Sender: TObject);
+    procedure btnSalvarBancaInicialClick(Sender: TObject);
+    procedure cbPerfilChange(Sender: TObject);
+    procedure edtBancaInicialKeyPress(Sender: TObject; var Key: char);
+    procedure cbMesChange(Sender: TObject);
+    procedure cbAnoChange(Sender: TObject);
+    procedure cbGraficosChange(Sender: TObject);
+    procedure qrMesCalcFields(DataSet: TDataSet);
+    procedure qrAnoCalcFields(DataSet: TDataSet);
+
+    procedure PreencherComboBox;
+    procedure PreencherBancaInicial;
+    procedure AtualizarGraficoLucro;
+    procedure AtualizaMesEAno;
+  end;
+
+  TDateDoubleMap = specialize TFPGMap<TDateTime, double>;
 
 implementation
 
 var
-MesDoCB, AnoDoCB: integer;
+  MesDoCB, AnoDoCB: integer;
 
 procedure TEventosPainel.tsPainelShow(Sender: TObject);
 begin
-  with formPrincipal do
-    begin
-
-    //Preenchendo os itens dos ComboBoxes do painel
-    PreencherComboBox;
-
-    //Atualizar o mês e ano
-    AtualizaMesEAno;
-
-    //Preenchendo o TEdit da Banca Inicial
-    PreencherBancaInicial;
-
-    //Chamando procedimento de calcular a stake
-    PerfilDoInvestidor;
-
-    //Definindo a stake
-    //if not qrBanca.Active then qrBanca.Open;
-    DefinirStake;
-
-    //Reiniciando todos os queries
-    ReiniciarTodosOsQueries;
-
-    //Chamando procedimento de mudar a cor do lucro
-    MudarCorLucro;
-
-    //Atualizando os gráficos
-    AtualizarGraficoLucro;
-    end;
+  formPrincipal.MudarCorLucro;
+  AtualizarGraficoLucro;
 end;
 
 
 
 procedure TEventosPainel.btnSalvarBancaInicialClick(Sender: TObject);
 var
-  mes, ano:  integer;
+  mes, ano, mesGreen, mesRed: integer;
   novoValor: double;
-  query:     TSQLQuery;
+  query: TSQLQuery;
 begin
   with formPrincipal do
-    begin
+  begin
     writeln('Clicado no botão para salvar dados da banca!');
     writeln('Criando query...');
     query := TSQLQuery.Create(nil);
@@ -93,16 +73,16 @@ begin
     // Verifica se o mês e o ano são válidos
     writeln('Verificando se o mês e ano são válidos...');
     if TryStrToInt(cbMes.Text, mes) and TryStrToInt(cbAno.Text, ano) then
-      begin
-        try
+    begin
+      try
 
         if not conectBancoDados.Connected then
-          begin
+        begin
           writeln('Conectando com o banco de dados...');
           conectBancoDados.Connected := True;
-          end;
+        end;
         if qrBanca.RecordCount = 0 then
-          begin
+        begin
           writeln(
             'Não tem valor na tabela Banca com mês e ano selecionados, inserindo novos dados');
           query.Close;
@@ -122,25 +102,25 @@ begin
           query.ParamByName('stake').AsFloat := stakeAposta;
           writeln('Executando ExecSQL');
           query.ExecSQL;
-          end
+        end
         else if TryStrToFloat(edtBancaInicial.Text, novoValor) then
-            begin
-            writeln('Já existe valor no mês e ano selecionados, atualizando');
-            query.Close;
-            query.SQL.Text :=
-              'UPDATE "Banca" SET "Valor_Inicial" = :novoValor, "Stake" = :stake WHERE "Mês" = :mesSelecionado AND "Ano" = :anoSelecionado';
-            writeln('Inserido texto SQL no query: ' + query.SQL.Text);
-            writeln('Definindo parâmetro "novoValor" do query como ', novoValor);
-            query.ParamByName('novoValor').AsFloat := novoValor;
-            writeln('Definindo parâmetro "stake" do query como ', stakeAposta);
-            query.ParamByName('stake').AsFloat := stakeAposta;
-            writeln('Definindo o parâmetro "mesSelecionado" do query como ', mes);
-            query.ParamByName('mesSelecionado').AsInteger := mes;
-            writeln('Definindo o parâmetro "anoSelecionado" do query como ', ano);
-            query.ParamByName('anoSelecionado').AsInteger := ano;
-            writeln('Executando ExecSQL');
-            query.ExecSQL;
-            end;
+        begin
+          writeln('Já existe valor no mês e ano selecionados, atualizando');
+          query.Close;
+          query.SQL.Text :=
+            'UPDATE "Banca" SET "Valor_Inicial" = :novoValor, "Stake" = :stake WHERE "Mês" = :mesSelecionado AND "Ano" = :anoSelecionado';
+          writeln('Inserido texto SQL no query: ' + query.SQL.Text);
+          writeln('Definindo parâmetro "novoValor" do query como ', novoValor);
+          query.ParamByName('novoValor').AsFloat := novoValor;
+          writeln('Definindo parâmetro "stake" do query como ', stakeAposta);
+          query.ParamByName('stake').AsFloat := stakeAposta;
+          writeln('Definindo o parâmetro "mesSelecionado" do query como ', mes);
+          query.ParamByName('mesSelecionado').AsInteger := mes;
+          writeln('Definindo o parâmetro "anoSelecionado" do query como ', ano);
+          query.ParamByName('anoSelecionado').AsInteger := ano;
+          writeln('Executando ExecSQL');
+          query.ExecSQL;
+        end;
         writeln('Alterando o valor ', valorInicial, ' para ', novoValor);
         valorInicial := novoValor;
         writeln('Salvando mudanças no banco de dados');
@@ -149,37 +129,37 @@ begin
         DefinirStake;
         ReiniciarTodosOsQueries;
         ShowMessage('Valor de banca salvo com sucesso!');
-        except
+      except
         on E: Exception do
-          begin
+        begin
           MessageDlg('Erro',
             'Erro ao salvar dados. Se o problema persistir favor informar no Github com a seguinte mensagem: '
             + E.Message, mtError, [mbOK], 0);
           writeln('Ocorreu um erro: ' + E.Message +
             ' Revertendo mudanças no banco de dados');
           transactionBancoDados.Rollback;
-          end;
         end;
-      end
-    else
-      begin
-      MessageDlg('Erro', 'Informe um mês e um ano válidos!', mtError, [mbOK], 0);
       end;
-      try
+    end
+    else
+    begin
+      MessageDlg('Erro', 'Informe um mês e um ano válidos!', mtError, [mbOK], 0);
+    end;
+    try
       query.Close;
       query.SQL.Text :=
         'select Valor_Inicial from Banca where Mês = :MesSelecionado and Ano = :AnoSelecionado';
       query.ParamByName('MesSelecionado').AsInteger := mesSelecionado;
       query.ParamByName('AnoSelecionado').AsInteger := anoSelecionado;
       query.Open;
-      finally
+    finally
       query.Free;
-      end;
+    end;
     //perfilInvestidor := cbPerfil.Text;
     //txtStake.DataField := qrBanca.FieldByName('R$Stake').AsString;
     MudarCorLucro;
     AtualizarGraficoLucro;
-    end;
+  end;
 end;
 
 procedure TEventosPainel.cbPerfilChange(Sender: TObject);
@@ -187,11 +167,11 @@ var
   query: TSQLQuery;
 begin
   with formPrincipal do
-    begin
+  begin
     perfilInvestidor := cbPerfil.Text;
-      try
+    try
       query := TSQLQuery.Create(nil);
-        try
+      try
         query.DataBase := conectBancoDados;
         query.Close;
         query.SQL.Text :=
@@ -199,22 +179,22 @@ begin
         query.ParamByName('perfilSelecionado').AsString := perfilInvestidor;
         query.ExecSQL;
         transactionBancoDados.Commit;
-        except
+      except
         on E: Exception do
-          begin
+        begin
           writeln('Erro ao atualizar perfil: ' + E.Message);
           transactionBancoDados.Rollback;
-          end;
         end;
-      finally
-      query.Free;
       end;
+    finally
+      query.Free;
+    end;
     DefinirStake;
     PerfilDoInvestidor;
     writeln('Definido perfil como ', perfilInvestidor);
     ReiniciarTodosOsQueries;
     AtualizarGraficoLucro;
-    end;
+  end;
 end;
 
 procedure TEventosPainel.edtBancaInicialKeyPress(Sender: TObject; var Key: char);
@@ -226,10 +206,10 @@ end;
 procedure TEventosPainel.PreencherComboBox;
 var
   itemCBPerfil: string;
-  i, anoAtual:  integer;
+  i, anoAtual: integer;
 begin
   with formPrincipal do
-    begin
+  begin
     writeln('Habilitando queries que estiverem desabilitados...');
     if not qrBanca.Active then qrBanca.Open;
     if not qrPerfis.Active then qrPerfis.Open;
@@ -237,17 +217,17 @@ begin
     //Adicionar itens no ComboBox Perfil
     cbPerfil.Clear;
     while not qrPerfis.EOF do
-      begin
+    begin
       itemCBPerfil := qrPerfis.FieldByName('Perfil').AsString;
       cbPerfil.Items.Add(itemCBPerfil);
       writeln('Adicionado item "', itemCBPerfil, '" no ComboBox "Perfil"');
       qrPerfis.Next;
-      end;
+    end;
 
     if not qrSelecionarPerfil.Active then qrSelecionarPerfil.Open;
     perfilInvestidor :=
       qrSelecionarPerfil.FieldByName('Perfil Selecionado').AsString;
-    cbPerfil.Text    := perfilInvestidor;
+    cbPerfil.Text := perfilInvestidor;
     writeln('Definido texto do cbPerfil como "', perfilInvestidor, '"');
 
     //Adicionar itens no ComboBox Ano
@@ -257,10 +237,10 @@ begin
     //Adicionar itens no ComboBox Mês
     cbMes.Clear;
     for i := 1 to 12 do
-      begin
+    begin
       cbMes.Items.Add(IntToStr(i));
       writeln('Adicionado mês "', i, '"no ComboBox "Mês"');
-      end;
+    end;
     cbMes.ItemIndex := MonthOf(Now) - 1;
     writeln('Definido mês padrão como ' + cbMes.Text);
 
@@ -273,16 +253,17 @@ begin
     //Definir as variáveis mesSelecionado e anoSelecionado de acordo com o texto do ComboBox
     mesSelecionado := StrToInt(cbMes.Text);
     anoSelecionado := StrToInt(cbAno.Text);
-    end;
+  end;
 end;
 
 procedure TEventosPainel.PreencherBancaInicial;
 var
   query: TSQLQuery;
+  i: integer;
 begin
   with formPrincipal do
-    begin
-      try
+  begin
+    try
       query := TSQLQuery.Create(nil);
       query.DataBase := conectBancoDados;
       query.SQL.Text :=
@@ -296,13 +277,16 @@ begin
       else
         valorInicial := 0;
       edtBancaInicial.Text := FloatToStr(valorInicial);
-      finally
+    finally
       query.Free;
-      end;
     end;
+  end;
 end;
 
+
 procedure TEventosPainel.AtualizarGraficoLucro;
+var
+  i, j, k, mesGreen, mesRed, diaGreen, diaRed: integer;
 begin
   with formPrincipal do
   begin
@@ -316,14 +300,29 @@ begin
         if qrMes.RecordCount = 0 then Exit;
 
         writeln('Registros encontrados para o mês: ' + IntToStr(qrMes.RecordCount));
-
-        while not qrMes.EOF do
+        if cbGraficos.Text = 'Lucro R$' then
         begin
-          (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-            qrMes.RecNo,
-            qrMes.FieldByName('SomaLucro').AsFloat,
-            qrMes.FieldByName('Dia').AsFloat);
-          qrMes.Next;
+          chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
+          (chrtLucroMes.Series[0] as TLineSeries).Clear;
+          while not qrMes.EOF do
+          begin
+            (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+              qrMes.FieldByName('Dia').AsInteger,
+              qrMes.FieldByName('SomaLucro').AsFloat);
+            qrMes.Next;
+          end;
+        end
+        else if cbGraficos.Text = 'Lucro %' then
+        begin
+          chrtLucroMes.AxisList[1].Marks.Format := '%0:.2n%%';
+          (chrtLucroMes.Series[0] as TLineSeries).Clear;
+          while not qrMes.EOF do
+          begin
+            (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+              qrMes.FieldByName('Dia').AsFloat,
+              qrMes.FieldByName('PorCentoLucro').AsFloat);
+            qrMes.Next;
+          end;
         end;
       except
         on E: Exception do
@@ -339,14 +338,31 @@ begin
 
         writeln('Registros encontrados para o ano: ' + IntToStr(qrAno.RecordCount));
 
-
-        while not qrAno.EOF do
         begin
-          (chrtLucroAno.Series[0] as TLineSeries).AddXY(
-            qrAno.RecNo,
-            qrAno.FieldByName('Lucro_R$').AsFloat,
-            qrAno.FieldByName('Mês').AsFloat);
-          qrAno.Next;
+          if cbGraficos.Text = 'Lucro %' then
+          begin
+            chrtLucroAno.AxisList[0].Marks.Format := '%0:.2n%%';
+            while not qrAno.EOF do
+            begin
+              (chrtLucroAno.Series[0] as TLineSeries).AddXY(
+                qrAno.RecNo,
+                qrAno.FieldByName('LucroAnualReais').AsFloat,
+                qrAno.FieldByName('Mês').AsFloat);
+              qrAno.Next;
+            end;
+          end
+          else if cbGraficos.Text = 'Lucro R$' then
+          begin
+            chrtLucroAno.AxisList[0].Marks.Format := '%0:.2m';
+            while not qrAno.EOF do
+            begin
+              (chrtLucroAno.Series[0] as TLineSeries).AddXY(
+                qrAno.RecNo,
+                qrAno.FieldByName('LucroTotalPorCento').AsFloat,
+                qrAno.FieldByName('Mês').AsFloat);
+              qrAno.Next;
+            end;
+          end;
         end;
       except
         on E: Exception do
@@ -356,11 +372,68 @@ begin
       end;
       chrtLucroMes.Invalidate;
       chrtLucroAno.Invalidate;
+
+      //Atualizar gráficos pizza
+      try
+        chrtAcertMes.Clear;
+        chrtAcertAno.Clear;
+        if not qrMes.Active then qrMes.Open;
+        if qrMes.RecordCount = 0 then Exit;
+
+        writeln('Registros encontrados para colocar no gráfico de greens e reds: ' +
+          IntToStr(qrMes.RecordCount));
+        diaGreen := 0;
+        diaRed := 0;
+        for i := 0 to qrMes.RecordCount - 1 do
+        begin
+          qrMes.RecNo := i + 1;
+          diaGreen := diaGreen + qrMes.FieldByName('Green').AsInteger;
+          diaRed := diaRed + qrMes.FieldByName('Red').AsInteger;
+        end;
+
+        (chrtAcertMes.Series[0] as TPieSeries).AddPie(diaGreen,
+          'Dias de Lucro ', clGreen);
+        (chrtAcertMes.Series[0] as TPieSeries).AddPie(diaRed,
+          'Dias de Perejuízo ', clRed);
+
+        (chrtAcertAno.Series[0] as TPieSeries).Clear;
+        mesGreen := 0;
+        mesRed := 0;
+        for j := 0 to qrBanca.RecordCount - 1 do
+        begin
+          qrBanca.RecNo := j + 1;
+
+          if (qrBanca.FieldByName('Lucro').AsFloat) < 0 then
+            mesRed := mesRed + 1
+          else if (qrBanca.FieldByName('Lucro').AsFloat) > 0 then
+            mesGreen := mesGreen + 1;
+        end;
+
+        (chrtAcertAno.Series[0] as TPieSeries).AddPie(mesGreen, 'Meses de Lucro',
+          clGreen);
+
+        (chrtAcertAno.Series[0] as TPieSeries).AddPie(mesRed,
+          'Meses de Prejuízo', clRed);
+      except
+        on E: Exception do
+        begin
+          writeln('Falha ao atualizar o gráfico do mês: ' + E.Message);
+        end;
+      end;
+      chrtAcertMes.Invalidate;
+
     finally
+      qrMesesGreenRed.Close;
       qrMes.Close;
       qrAno.Close;
     end;
+
   end;
+end;
+
+procedure TEventosPainel.cbGraficosChange(Sender: TObject);
+begin
+  AtualizarGraficoLucro;
 end;
 
 procedure TEventosPainel.AtualizaMesEAno;
@@ -369,8 +442,9 @@ var
 label
   AoMudar, AtualizaNoBD, Fim;
 begin
+  writeln('Tentando atualizar mês e ano');
   with formPrincipal do
-    begin
+  begin
     MesDoCB := StrToInt(cbMes.Text);
     AnoDoCB := StrToInt(cbAno.Text);
 
@@ -383,7 +457,7 @@ begin
       goto AtualizaNoBD;
 
     AtualizaNoBD:
-        try
+      try
         query := TSQLQuery.Create(nil);
         writeln('Criado query');
         query.Database := conectBancoDados;
@@ -396,19 +470,14 @@ begin
         writeln('Dando ExecSQL com as variáveis ', mesSelecionado, '/', anoSelecionado);
         query.ExecSQL;
         transactionBancoDados.CommitRetaining;
-        {query.SQL.Text := 'SELECT Mês AS mes, Ano AS ano FROM "Selecionar Mês e Ano"';
-        query.ExecSQL;
-        if not query.Active then query.Open;
-        writeln('Mês e ano do banco de dados definidos para ',
-        query.FieldByName('mes').AsInteger, '/', query.FieldByName('ano').AsInteger);}
         query.Free;
-        except
+      except
         on E: Exception do
-          begin
+        begin
           writeln('Erro ao salvar mês e ano selecionados: ' + E.Message);
           transactionBancoDados.Rollback;
-          end;
         end;
+      end;
     goto Fim;
 
     AoMudar:
@@ -419,10 +488,8 @@ begin
       '/', anoSelecionado);
     goto AtualizaNoBD;
 
-    Fim:
-      ReiniciarTodosOsQueries;
-    AtualizarGraficoLucro;
-    end;
+    Fim: ;
+  end;
 end;
 
 procedure TEventosPainel.cbMesChange(Sender: TObject);
@@ -435,6 +502,24 @@ procedure TEventosPainel.cbAnoChange(Sender: TObject);
 begin
   AtualizaMesEAno;
   AtualizarGraficoLucro;
+end;
+
+procedure TEventosPainel.qrMesCalcFields(DataSet: TDataSet);
+begin
+
+ { if DataSet.FieldByName('PorCentoLucro').DataType in [ftFloat, ftCurrency] then
+    DataSet.FieldByName('LucroCalculado').AsString :=
+      FormatFloat('#0.##%', DataSet.FieldByName('PorCentoLucro').AsFloat);
+
+
+  if DataSet.FieldByName('SomaLucro').DataType in [ftFloat, ftCurrency] then
+    DataSet.FieldByName('LucroMoedaCalculado').AsString :=
+      'R$ ' + FormatFloat('#,##0.00', DataSet.FieldByName('SomaLucro').AsFloat);}
+end;
+
+procedure TEventosPainel.qrAnoCalcFields(DataSet: TDataSet);
+begin
+
 end;
 
 end.

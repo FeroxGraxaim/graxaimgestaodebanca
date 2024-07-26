@@ -1,0 +1,755 @@
+object fmMainDemo: TfmMainDemo
+  Left = -8
+  Height = 931
+  Top = -8
+  Width = 1854
+  Caption = 'TdxDBGridController Demo'
+  ClientHeight = 908
+  ClientWidth = 1854
+  Color = 16645629
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  WindowState = wsMaximized
+  object pnlClientPanel: TPanel
+    Left = 3
+    Height = 731
+    Top = 73
+    Width = 1848
+    Align = alClient
+    BorderSpacing.Around = 3
+    BevelOuter = bvNone
+    ClientHeight = 731
+    ClientWidth = 1848
+    TabOrder = 2
+    object grdProject: TDBGrid
+      Left = 3
+      Height = 725
+      Top = 3
+      Width = 1445
+      Align = alClient
+      AlternateColor = 16250871
+      BorderSpacing.Around = 3
+      Columns = <>
+      DataSource = dsProject
+      FixedColor = 16579061
+      Flat = True
+      Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgCellEllipsis, dgRowHighlight]
+      ParentColor = True
+      Scrollbars = ssVertical
+      TabOrder = 0
+      OnDrawColumnCell = grdProjectDrawColumnCell
+      OnDrawColumnTitle = grdProjectDrawColumnTitle
+      OnEditButtonClick = grdProjectEditButtonClick
+      OnGetCellHint = grdProjectGetCellHint
+      OnKeyDown = grdProjectKeyDown
+      OnMouseDown = grdProjectMouseDown
+      OnMouseMove = grdProjectMouseMove
+      OnTitleClick = grdProjectTitleClick
+    end
+    object Splitter1: TSplitter
+      Left = 1451
+      Height = 731
+      Top = 0
+      Width = 5
+      Align = alRight
+      ResizeAnchor = akRight
+    end
+    object pnlRight: TPanel
+      Left = 1456
+      Height = 731
+      Top = 0
+      Width = 392
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 731
+      ClientWidth = 392
+      TabOrder = 2
+      object TIPropertyGrid: TTIPropertyGrid
+        Left = 3
+        Height = 350
+        Top = 18
+        Width = 386
+        Align = alTop
+        BackgroundColor = clWhite
+        BorderSpacing.Around = 3
+        CheckboxForBoolean = False
+        DefaultValueFont.Color = clWindowText
+        Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper, tkFile, tkClassRef, tkPointer]
+        Indent = 16
+        NameFont.Color = clWindowText
+        PreferredSplitterX = 200
+        SplitterX = 200
+        TIObject = dxDBGridController
+        ValueFont.Color = clMaroon
+      end
+      object Splitter2: TSplitter
+        Cursor = crVSplit
+        Left = 0
+        Height = 5
+        Top = 371
+        Width = 392
+        Align = alTop
+        ResizeAnchor = akTop
+      end
+      object TIPropertyDataset: TTIPropertyGrid
+        Left = 3
+        Height = 334
+        Top = 394
+        Width = 386
+        Align = alClient
+        BackgroundColor = clWhite
+        BorderSpacing.Around = 3
+        CheckboxForBoolean = False
+        DefaultValueFont.Color = clWindowText
+        Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper, tkFile, tkClassRef, tkPointer]
+        Indent = 16
+        NameFont.Color = clWindowText
+        PreferredSplitterX = 200
+        SplitterX = 200
+        TIObject = grdProject
+        ValueFont.Color = clMaroon
+      end
+      object lbControllerProperties: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 392
+        Align = alTop
+        Alignment = taCenter
+        Caption = 'Controller properties'
+        Font.Color = clHighlight
+        ParentColor = False
+        ParentFont = False
+      end
+      object lbGridProperties1: TLabel
+        Left = 0
+        Height = 15
+        Top = 376
+        Width = 392
+        Align = alTop
+        Alignment = taCenter
+        Caption = 'Grid Properties'
+        Font.Color = clHighlight
+        ParentColor = False
+        ParentFont = False
+      end
+    end
+  end
+  object pnlButtonPanel: TPanel
+    Left = 0
+    Height = 64
+    Top = 6
+    Width = 1854
+    Align = alTop
+    BevelOuter = bvSpace
+    ClientHeight = 64
+    ClientWidth = 1854
+    TabOrder = 1
+    object btnSaveGridView: TButton
+      Left = 5
+      Height = 25
+      Top = 5
+      Width = 147
+      Caption = 'Save current grid view'
+      OnClick = btnSaveGridViewClick
+      TabOrder = 0
+    end
+    object btnLoadGridView: TButton
+      Left = 5
+      Height = 25
+      Top = 32
+      Width = 147
+      Caption = 'Load last saved grid view'
+      OnClick = btnLoadGridViewClick
+      TabOrder = 9
+    end
+    object btnCreateProject: TButton
+      Left = 153
+      Height = 25
+      Top = 5
+      Width = 120
+      Caption = 'Create 200 projects'
+      OnClick = btnCreateProjectClick
+      TabOrder = 1
+    end
+    object btnDeleteProject: TButton
+      Left = 153
+      Height = 25
+      Top = 32
+      Width = 120
+      Caption = 'Delete 100 projects'
+      OnClick = btnDeleteProjectClick
+      TabOrder = 10
+    end
+    object btnClearSort: TButton
+      Left = 274
+      Height = 25
+      Top = 32
+      Width = 94
+      Caption = 'Sort clear'
+      OnClick = btnClearSortClick
+      TabOrder = 11
+    end
+    object btnClearAllFilters: TButton
+      Left = 637
+      Height = 25
+      Top = 32
+      Width = 126
+      Caption = 'Clear all filters'
+      OnClick = btnClearAllFiltersClick
+      TabOrder = 14
+    end
+    object btnShowHideFooter: TButton
+      Left = 510
+      Height = 25
+      Top = 5
+      Width = 126
+      Caption = 'Show/Hide footer'
+      OnClick = btnShowHideFooterClick
+      TabOrder = 4
+    end
+    object btnActivateGridHint: TButton
+      Left = 510
+      Height = 25
+      Top = 32
+      Width = 126
+      Caption = 'Activate grid hint'
+      OnClick = btnActivateGridHintClick
+      TabOrder = 13
+    end
+    object cbLocalization: TComboBox
+      Left = 1772
+      Height = 23
+      Top = 5
+      Width = 77
+      Anchors = [akTop, akRight]
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'English'
+        'Français'
+      )
+      OnChange = cbLocalizationChange
+      Style = csDropDownList
+      TabOrder = 8
+      Text = 'English'
+    end
+    object btnUnitTesting: TButton
+      Left = 851
+      Height = 25
+      Top = 32
+      Width = 126
+      Caption = 'Unit testing ...'
+      Color = clInactiveCaption
+      OnClick = btnUnitTestingClick
+      TabOrder = 16
+    end
+    object btnDestroyController: TButton
+      Left = 851
+      Height = 25
+      Top = 5
+      Width = 126
+      Caption = 'Destroy controller'
+      OnClick = btnDestroyControllerClick
+      TabOrder = 7
+    end
+    object btnUnlinkController: TButton
+      Left = 764
+      Height = 25
+      Top = 5
+      Width = 87
+      Caption = 'Unlink grid'
+      OnClick = btnUnlinkControllerClick
+      TabOrder = 6
+    end
+    object btnLinkController: TButton
+      Left = 764
+      Height = 25
+      Top = 32
+      Width = 87
+      Caption = 'Link grid'
+      OnClick = btnLinkControllerClick
+      TabOrder = 15
+    end
+    object btnChangeSearchBox: TButton
+      Left = 637
+      Height = 25
+      Top = 5
+      Width = 126
+      Caption = 'Change search box'
+      OnClick = btnChangeSearchBoxClick
+      TabOrder = 5
+    end
+    object btnSortColumn: TButton
+      Left = 274
+      Height = 25
+      Top = 5
+      Width = 94
+      Caption = 'Sort columns'
+      OnClick = btnSortColumnClick
+      TabOrder = 2
+    end
+    object btnGroupOnClient: TButton
+      Left = 368
+      Height = 25
+      Top = 5
+      Width = 142
+      Caption = 'Group/Ungroup client'
+      OnClick = btnGroupOnClientClick
+      TabOrder = 3
+    end
+    object btnHideGroupLine: TButton
+      Left = 368
+      Height = 25
+      Top = 32
+      Width = 142
+      Caption = 'Hide group line'
+      OnClick = btnHideGroupLineClick
+      TabOrder = 12
+    end
+  end
+  object pnlFooterPanel: TPanel
+    Left = 0
+    Height = 101
+    Top = 807
+    Width = 1854
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 101
+    ClientWidth = 1854
+    TabOrder = 3
+    object gbSortingInformation: TGroupBox
+      Left = 3
+      Height = 95
+      Top = 3
+      Width = 500
+      Align = alLeft
+      BorderSpacing.Around = 3
+      Caption = 'Last sorting information'
+      ClientHeight = 75
+      ClientWidth = 496
+      TabOrder = 0
+      object lbSQLOrderby: TLabel
+        Left = 112
+        Height = 15
+        Top = 5
+        Width = 17
+        Caption = 'NA'
+        Font.Color = clMenuHighlight
+        ParentColor = False
+        ParentFont = False
+      end
+      object lbIndexFieldNames: TLabel
+        Left = 112
+        Height = 15
+        Top = 26
+        Width = 17
+        Caption = 'NA'
+        Font.Color = clMenuHighlight
+        ParentColor = False
+        ParentFont = False
+      end
+      object lbIndexName: TLabel
+        Left = 112
+        Height = 15
+        Top = 46
+        Width = 17
+        Caption = 'NA'
+        Font.Color = clMenuHighlight
+        ParentColor = False
+        ParentFont = False
+      end
+      object lblSQLOrderby: TLabel
+        Left = 8
+        Height = 15
+        Top = 5
+        Width = 64
+        Caption = 'SQLOrderby'
+        ParentColor = False
+      end
+      object lblIndexFieldNames: TLabel
+        Left = 8
+        Height = 15
+        Top = 26
+        Width = 97
+        Caption = 'IndexFieldNames :'
+        ParentColor = False
+      end
+      object lblIndexName: TLabel
+        Left = 8
+        Height = 15
+        Top = 47
+        Width = 67
+        Caption = 'IndexName :'
+        ParentColor = False
+      end
+    end
+    object gbCustomAggregation: TGroupBox
+      Left = 506
+      Height = 95
+      Top = 3
+      Width = 242
+      Align = alLeft
+      BorderSpacing.Around = 3
+      Caption = 'Custom display aggregation'
+      ClientHeight = 75
+      ClientWidth = 238
+      TabOrder = 1
+      object stMaxAmount: TStaticText
+        Left = 128
+        Height = 17
+        Top = 8
+        Width = 104
+        Alignment = taRightJustify
+        BorderStyle = sbsSingle
+        Caption = '$ 0.00'
+        Font.Color = clGreen
+        ParentFont = False
+        TabOrder = 0
+      end
+      object lbMaxAmount: TLabel
+        Left = 11
+        Height = 15
+        Top = 10
+        Width = 70
+        Caption = 'Max Amount'
+        ParentColor = False
+      end
+      object lbMinAmount: TLabel
+        Left = 11
+        Height = 15
+        Top = 31
+        Width = 68
+        Caption = 'Min Amount'
+        ParentColor = False
+      end
+      object lbAvgAmount: TLabel
+        Left = 11
+        Height = 15
+        Top = 53
+        Width = 68
+        Caption = 'Avg Amount'
+        ParentColor = False
+      end
+      object stMinAmount: TStaticText
+        Left = 128
+        Height = 17
+        Top = 29
+        Width = 104
+        Alignment = taRightJustify
+        BorderStyle = sbsSingle
+        Caption = '$ 0.00'
+        Font.Color = clMaroon
+        ParentFont = False
+        TabOrder = 1
+      end
+      object stAvgAmount: TStaticText
+        Left = 128
+        Height = 17
+        Top = 51
+        Width = 104
+        Alignment = taRightJustify
+        BorderStyle = sbsSingle
+        Caption = '$ 0.00'
+        Font.Color = clMenuHighlight
+        ParentFont = False
+        TabOrder = 2
+      end
+    end
+    object gbDatasetInformation: TGroupBox
+      Left = 751
+      Height = 95
+      Top = 3
+      Width = 1100
+      Align = alClient
+      BorderSpacing.Around = 3
+      TabOrder = 2
+    end
+  end
+  object pbProgressBar: TProgressBar
+    Left = 0
+    Height = 6
+    Top = 0
+    Width = 1854
+    Align = alTop
+    Max = 1000
+    Smooth = True
+    Step = 100
+    Style = pbstMarquee
+    TabOrder = 0
+    Visible = False
+  end
+  object dsProject: TDataSource
+    DataSet = qProjectBuf
+    left = 96
+    top = 120
+  end
+  object qProjectBuf: TBufDataset
+    MaxIndexesCount = 20
+    FieldDefs = <>
+    left = 96
+    top = 176
+    object qProjectBufPK_Project: TAutoIncField
+      FieldKind = fkData
+      FieldName = 'PK_Project'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Visible = False
+    end
+    object qProjectBufFK_Client: TLongintField
+      FieldKind = fkData
+      FieldName = 'FK_Client'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qProjectBufProjectNumber: TStringField
+      FieldKind = fkData
+      FieldName = 'ProjectNumber'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 50
+    end
+    object qProjectBufProjectManager: TStringField
+      FieldKind = fkData
+      FieldName = 'ProjectManager'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 50
+    end
+    object qProjectBufLUClient: TStringField
+      DisplayLabel = 'Client'
+      FieldKind = fkData
+      FieldName = 'LUClient'
+      Index = 4
+      KeyFields = 'FK_Client'
+      LookupCache = False
+      LookupDataSet = qLUClientBuf
+      LookupKeyFields = 'PK_Client'
+      LookupResultField = 'LookupValue'
+      ProviderFlags = []
+      ReadOnly = False
+      Required = False
+      Size = 250
+    end
+    object qProjectBufStartDate: TDateTimeField
+      FieldKind = fkData
+      FieldName = 'StartDate'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayFormat = 'YYYY-MM-dd'
+    end
+    object qProjectBufEndDate: TDateTimeField
+      FieldKind = fkData
+      FieldName = 'EndDate'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayFormat = 'YYYY-MM-dd'
+    end
+    object qProjectBufAmount: TCurrencyField
+      FieldKind = fkData
+      FieldName = 'Amount'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qProjectBufWithTaxes: TBooleanField
+      FieldKind = fkData
+      FieldName = 'WithTaxes'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+    object qProjectBufNote: TMemoField
+      FieldKind = fkData
+      FieldName = 'Note'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      BlobType = ftMemo
+      Size = 2000
+      Transliterate = False
+    end
+  end
+  object dxDBGridController: TdxDBGridController
+    SearchColor = 10260189
+    GroupLineColor = clDefault
+    ControllerOptions = [coMemoEditor, coDatetimeEditor, coLookupEditor, coDefaultDrawingFooter, coShowColumnFilter, coShowFooter]
+    GlyphCancelFilter.Data = {
+      2801000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA864000000BD4944415438
+      4F631870C008A5C1202222E23F948917AC58B102451F1C1063002135D7803817
+      C2C40A407257214CEC4005882F02F11220E601094001880D1203C981D4E0051C
+      403C11886F00B12E106B00F165205E04C45C404C348807F917EAE77888102660
+      82D2D8C042280D02C86C1480CF00A20029069402B10384090620762929061C07
+      86C77E20ED04C43650F65990044E80148830E0802406760D5E1780922CCE644B
+      06B085DA0CF302984D8AE9A0403C0DC407C03CB017184C01994A325598440179
+      0000000049454E44AE426082
+    }
+    GlyphSortUp.Data = {
+      A000000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA864000000354944415438
+      4F6318DC202222E23F0843B958012394C600E81A57AC5881552D56415CB66233
+      044380909371B964148C8281040C0C00E8041012B3018A2D0000000049454E44
+      AE426082
+    }
+    GlyphSortDown.Data = {
+      A700000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA8640000003C4944415438
+      4F631870C008A5E1202222E23F948915AC58B102450F86012080CB1074CD2080
+      D500104037049B6682006408212F8D8251301800030300DE1D10123A34458500
+      00000049454E44AE426082
+    }
+    GlyphFind.Data = {
+      5C01000089504E470D0A1A0A0000000D494844520000000D0000000D08060000
+      0072EBE47C000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA864000000F14944415428
+      5395D1314B42511887F19345378D120C4A1C6C89509A73EC4B889BD1D0D6124D
+      7D3A694B9A5A5A9A1B5A5C320A32A59EE77AAF5DE3A2F8871FDEFB7ADE737C8F
+      6BE12FEBA862131B18638077CC256DDAC24962172344B0F901F7988B8D2D5CA1
+      6121490147B8C1A1856C2A68E314D99F9BE618D7D3C769DC6D077B78C20FFEE7
+      0525B82E8E4D2E74F82F0B39F1FB0F38631C9B2C7CA26E21274538C25BFC466C
+      1AE215CEE42D66E38C97F0F6BE2D189B7CE9A18C0BEC631B357801E7C9FB2CFE
+      A1668247B849076768E20ED66FE1CCCF70EDD278015DF493CF283D6951DCD913
+      BC30E7F6E49572104228FD02FFBD270B356B44D10000000049454E44AE426082
+    }
+    GlyphColumnFilter.Data = {
+      E800000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA8640000007D4944415438
+      4F631870C008A5C1202222E23F948917AC58B102451F1C1063002135D7803817
+      C2C40A407257214CEC4005882F02F11220E601094001880D1203C981D4E0051C
+      403C11886F00B12E106B00F165205E04C45C404C348807F917EAE77888102660
+      82D2D8C042280D02C86C1480CF00A2C0303060C8030606005585173C4D8F1A05
+      0000000049454E44AE426082
+    }
+    GlyphColumnHaveFilter.Data = {
+      0F01000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA864000000A44944415438
+      4F631870C008A5C1202222E23F948917AC58B102AE8F054AC3C18A80D9501676
+      10B12115CA8200141700C135209ECEB0E2F32408170D44F0E601C90C20D606F3
+      8100DD0015205E0BC4978186448345602082772990D405E26020BE0312020126
+      280D03200973207E0BD470132C020211BC5780E43F20B60462B86642201E14A8
+      D0808D870861027417208385501A0490D928009F0144816160C090070C0C007C
+      8D1EAC193E22040000000049454E44AE426082
+    }
+    GlyphColumnChooser.Data = {
+      A800000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF6100000006624B474400FF00FF00FFA0BDA7930000005D4944415438
+      8DED933B0E80300C435F514FD02B5371E686A56C0C692B6209362C65C9C7B1A5
+      045EC20118D0036140F5040694E0B202349FECA2E2BB3F2F8A69419A1E195505
+      9B3838E0B7309114C460E144BB44F3C98AF60BBBA8F8435CAC502A1ACBEFA60E
+      0000000049454E44AE426082
+    }
+    GlyphSelectAll.Data = {
+      9C00000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA864000000314944415438
+      4F63A026384C264D3D40AA8960F58C602626F80FA5B1015C7A465D000443D405
+      5405301349A507143030000007FC164D20419AA50000000049454E44AE426082
+    }
+    GlyphSortingAsc.Data = {
+      ED00000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA864000000824944415438
+      4FCD92C10DC02008456DE7711C0F0EE938EC638BF26D25A5D6C4435F421015FC
+      12DC6FC8E24D524AD97BDF8C6339FA0627C9B280782F5155305751D8C40FD10A
+      18226AF95060AA187D812BC11E39136455418C04FDB25968399602A653316AE2
+      1431C6564CCF81B60E4C6308417626B9BF0CDE7A00CA9DA53DB870EE004E6336
+      35528203380000000049454E44AE426082
+    }
+    GlyphSortingDesc.Data = {
+      EA00000089504E470D0A1A0A0000000D49484452000000100000001008060000
+      001FF3FF61000000017352474200AECE1CE90000000467414D410000B18F0BFC
+      6105000000097048597300000EC300000EC301C76FA8640000007F4944415438
+      4FC591610E80200885B5F3781C7E78488FE37D2C16CF19528BE5D6B7310427C2
+      237C258A6FE22D624A69BAAFB5E2AD8F9CF3A5D8269E9396754A298D3B2122C9
+      38D13F83270DFA8C4B35D0DC75B0A63A8080308EE5AAC309D884D6608CB1466E
+      19E6426B6016D01D30AE2DBC1961FA61E47820A7131DFF49083BC2B5353789DA
+      A5800000000049454E44AE426082
+    }
+    OnSortColumn = dxDBGridControllerSortColumn
+    OnAfterSortColumn = dxDBGridControllerAfterSortColumn
+    OnLocalize = dxDBGridControllerLocalize
+    OnAggregation = dxDBGridControllerAggregation
+    OnAfterAggregation = dxDBGridControllerAfterAggregation
+    left = 96
+    top = 232
+  end
+  object qLUClientBuf: TBufDataset
+    PacketRecords = -1
+    IndexFieldNames = 'PK_Client'
+    FieldDefs = <>
+    left = 200
+    top = 176
+    object qLUClientBufPK_Client: TLongintField
+      FieldKind = fkData
+      FieldName = 'PK_Client'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qLUClientBufCode: TStringField
+      FieldKind = fkData
+      FieldName = 'Code'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 50
+    end
+    object qLUClientBufName: TStringField
+      FieldKind = fkData
+      FieldName = 'Name'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 250
+    end
+    object qLUClientBufLookupValue: TStringField
+      FieldKind = fkData
+      FieldName = 'LookupValue'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 250
+    end
+  end
+end

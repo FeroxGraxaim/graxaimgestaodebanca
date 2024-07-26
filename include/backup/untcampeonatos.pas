@@ -25,8 +25,7 @@ procedure TEventosCampeonatos.tsCampeonatosShow(Sender: TObject);
 begin
   with formPrincipal do
     begin
-    if not qrCampeonatos.Active then
-      qrCampeonatos.Open;
+    ReiniciarTodosOsQueries;
     writeln ('Encontrados ',qrCampeonatos.RecordCount,' campeonatos');
     end;
 end;

@@ -10,19 +10,24 @@ uses
   ActnList, Buttons, ExtCtrls,
   TAGraph, TARadialSeries, Types, TASeries,
   TADbSource, TACustomSeries, TAMultiSeries, DateUtils;
-  function CompareVersion(version1, version2: string): Integer;
-  function VerificarAtualizacoes (currentVersion: string): string;
-  function JaAtualizado: Boolean;
-var
-  currentVersion: String;
-implementation
-uses
-  untMain, fpjson, HTTPDefs, fphttpclient, httpsend, synautil, jsonparser, LCLIntf, IdSSLOpenSSLHeaders, ssl_openssl3;
 
-function CompareVersion(version1, version2: string): Integer;
+function CompareVersion(version1, version2: string): integer;
+function VerificarAtualizacoes(currentVersion: string): string;
+function JaAtualizado: boolean;
+
+var
+  currentVersion: string;
+
+implementation
+
+uses
+  untMain, fpjson, HTTPDefs, fphttpclient, httpsend, synautil,
+  jsonparser, LCLIntf, IdSSLOpenSSLHeaders, ssl_openssl3, opensslsockets;
+
+function CompareVersion(version1, version2: string): integer;
 var
   ver1, ver2: TStringDynArray;
-  i: Integer;
+  i: integer;
 begin
 
   ver1 := version1.Split(['.']);
@@ -50,73 +55,83 @@ var
   response: TStringStream;
   apiUrl, latestVersion: string;
   json: TJSONObject;
-  userResponse: Integer;
+  userResponse: integer;
+  httpClient: TFPHTTPClient;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.0.2.1';
+  currentVersion := '0.1.2.11'; // Atualize conforme necessário
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');
+  httpClient := TFPHTTPClient.Create(nil);
 
   try
     writeln('Tentando se conectar com o repositório...');
-    if HttpGetBinary(apiUrl, response) then
-    begin
+    try
+      // Adiciona o cabeçalho User-Agent
+      httpClient.AddHeader('User-Agent', 'MyApp/1.0');
+      httpClient.Get(apiUrl, response);
       writeln('Resposta recebida: ' + response.DataString);
 
-      if Pos('API rate limit exceeded', response.DataString) > 0 then
+      if response.DataString = '' then
       begin
-        writeln('Limite de requisições da API excedido. Tente novamente mais tarde.');
+        writeln('Resposta nula recebida da API.');
         Exit;
       end;
 
-      json := TJSONObject(GetJSON(response.DataString));
-      try
-        latestVersion := json.Get('tag_name', '');
-        if latestVersion <> '' then
-        begin
-          if CompareText(currentVersion, latestVersion) < 0 then
-          begin
-            userResponse := MessageDlg('Nova versão disponível: ' + latestVersion + sLineBreak +
-                                       'Deseja instalar agora?', mtConfirmation, [mbYes, mbNo], 0);
-            if userResponse = mrYes then
+      if Pos('API rate limit exceeded', response.DataString) > 0 then
+        writeln('Limite de requisições da API excedido. Tente novamente mais tarde.')
+      else
+      begin
+        try
+          json := TJSONObject(GetJSON(response.DataString));
+          try
+            latestVersion := json.Get('tag_name', '');
+            if latestVersion <> '' then
             begin
-              OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest');
-            end;
-          end
-          else
-          begin
-            writeln('Programa já está atualizado.');
+              if CompareText(currentVersion, latestVersion) < 0 then
+              begin
+                userResponse := MessageDlg('Nova versão disponível: ' +
+                  latestVersion + sLineBreak +
+                  'Deseja atualizar agora?', mtConfirmation, [mbYes, mbNo], 0);
+                if userResponse = mrYes then
+                begin
+                  OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest');
+                  writeln('Fechando aplicação...');
+                  halt;
+                end;
+              end
+              else
+                writeln('Programa já está atualizado.');
+            end
+            else
+              writeln('Versão não encontrada no JSON.');
+          except
+            on E: Exception do
+              writeln('Erro ao processar JSON: ' + E.Message);
           end;
-        end
-        else
-        begin
-          writeln('Versão não encontrada no JSON.');
+        finally
+          json.Free;
         end;
-      finally
-        json.Free;
       end;
-    end
-    else
-    begin
-      ShowMessage('Falha ao obter informações de atualização. Resposta: ' + response.DataString);
+    except
+      on E: Exception do
+      begin
+        writeln('Erro ao fazer a solicitação HTTP: ' + E.Message);
+        MessageDlg('Não foi possível verificar se há atualizações, verifique a conexão e tente novamente.', mtError, [mbOK], 0);
+      end;
     end;
-  except
-    on E: Exception do
-    begin
-      ShowMessage('Erro: ' + E.Message + sLineBreak + 'Resposta: ' + response.DataString);
-    end;
+  finally
+    response.Free;
+    httpClient.Free;
   end;
-  response.Free;
-  Exit;
 end;
 
-function JaAtualizado: Boolean;
+function JaAtualizado: boolean;
 begin
   writeln('Verificando se o arquivo de marcação existe...');
   {$IFDEF MSWINDOWS}
-   Result := FileExists(IncludeTrailingPathDelimiter(GetEnvironmentVariable('APPDATA')) +
-    'GraxaimBanca\NaoExcluir');
+  Result := FileExists('%AppData%\GraxaimBanca\NaoExcluir');
   {$ENDIF}
 
   {$IFDEF LINUX}

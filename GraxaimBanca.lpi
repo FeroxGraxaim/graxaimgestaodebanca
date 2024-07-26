@@ -9,57 +9,24 @@
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <XPManifest>
-        <DpiAware Value="Per-monitor"/>
-        <ExecutionLevel Value="highestAvailable"/>
-        <TextName Value="GraxaimSoftware.GraxaimGestãoDeBanca.GraxaimGestãoDeBanca"/>
-        <TextDesc Value="Sistema para fazer gestão de banca nas apostas em futebol"/>
+        <DpiAware Value="True"/>
+        <ExecutionLevel Value="requireAdministrator"/>
       </XPManifest>
       <Icon Value="0"/>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
+      <MinorVersionNr Value="1"/>
       <RevisionNr Value="2"/>
-      <BuildNr Value="1"/>
-      <Language Value="0416"/>
-      <Attributes pvaPreRelease="True"/>
-      <StringTable CompanyName="Graxaim Software"/>
+      <BuildNr Value="11"/>
     </VersionInfo>
     <BuildModes>
-      <Item Name="Windows" Default="True"/>
-      <Item Name="Linux">
+      <Item Name="Linux" Default="True"/>
+      <Item Name="Windows">
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="$(ProjOutDir)/bin/linux/GraxaimBanca"/>
-          </Target>
-          <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)/Include;$(ProjOutDir)"/>
-            <OtherUnitFiles Value="Indy;/usr/lib/x86_64-linux-gnu/;/usr/lib/;include"/>
-            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-          </SearchPaths>
-          <CodeGeneration>
-            <TargetOS Value="linux"/>
-          </CodeGeneration>
-          <Linking>
-            <Debugging>
-              <DebugInfoType Value="dsDwarf3"/>
-            </Debugging>
-          </Linking>
-          <Other>
-            <ExecuteBefore>
-              <ScanForMakeMsgs Value="True"/>
-            </ExecuteBefore>
-            <ExecuteAfter>
-              <ScanForMakeMsgs Value="True"/>
-            </ExecuteAfter>
-          </Other>
-        </CompilerOptions>
-      </Item>
-      <Item Name="Android">
-        <CompilerOptions>
-          <Version Value="11"/>
-          <Target>
-            <Filename Value="Graxaim"/>
+            <Filename Value="GraxaimBanca"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -67,59 +34,8 @@
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
-            <TargetOS Value="android"/>
-          </CodeGeneration>
-          <Linking>
-            <Debugging>
-              <DebugInfoType Value="dsDwarf3"/>
-            </Debugging>
-            <Options>
-              <Win32>
-                <GraphicApplication Value="True"/>
-              </Win32>
-            </Options>
-          </Linking>
-        </CompilerOptions>
-      </Item>
-      <Item Name="iOS">
-        <CompilerOptions>
-          <Version Value="11"/>
-          <Target>
-            <Filename Value="Graxaim"/>
-          </Target>
-          <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="include"/>
-            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-          </SearchPaths>
-          <CodeGeneration>
-            <TargetOS Value="ios"/>
-          </CodeGeneration>
-          <Linking>
-            <Debugging>
-              <DebugInfoType Value="dsDwarf3"/>
-            </Debugging>
-            <Options>
-              <Win32>
-                <GraphicApplication Value="True"/>
-              </Win32>
-            </Options>
-          </Linking>
-        </CompilerOptions>
-      </Item>
-      <Item Name="Compilar">
-        <CompilerOptions>
-          <Version Value="11"/>
-          <Target>
-            <Filename Value="Graxaim"/>
-          </Target>
-          <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="include"/>
-            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-          </SearchPaths>
-          <CodeGeneration>
-            <TargetOS Value="ios"/>
+            <TargetCPU Value="i386"/>
+            <TargetOS Value="win32"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
@@ -145,28 +61,10 @@
     </RunParams>
     <RequiredPackages>
       <Item>
-        <PackageName Value="SQLDBLaz"/>
-      </Item>
-      <Item>
         <PackageName Value="laz_synapse"/>
       </Item>
       <Item>
         <PackageName Value="indylaz"/>
-      </Item>
-      <Item>
-        <PackageName Value="lhelpcontrolpkg"/>
-      </Item>
-      <Item>
-        <PackageName Value="LazDebuggerLldb"/>
-      </Item>
-      <Item>
-        <PackageName Value="fpdebug"/>
-      </Item>
-      <Item>
-        <PackageName Value="TurboPowerIPro"/>
-      </Item>
-      <Item>
-        <PackageName Value="DateTimeCtrls"/>
       </Item>
       <Item>
         <PackageName Value="TAChartLazarusPkg"/>
@@ -175,16 +73,58 @@
         <PackageName Value="FCL"/>
       </Item>
       <Item>
+        <PackageName Value="SQLDBLaz"/>
+      </Item>
+      <Item>
         <PackageName Value="LCL"/>
       </Item>
     </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="GraxaimBanca.pas"/>
+        <Filename Value="GraxaimBanca.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="database.db"/>
+        <Filename Value="include/untmain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formPrincipal"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untMain"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untmain.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untMain.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untsobre.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untsplash.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untapostas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untApostas"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untdatabase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untDatabase"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untmultipla.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untMultipla"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untNA.lfm"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -195,91 +135,49 @@
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
-        <Filename Value="include/untNA.lfm"/>
+        <Filename Value="include/untpainel.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="untPainel"/>
       </Unit>
       <Unit>
-        <Filename Value="include/untMain.pas"/>
+        <Filename Value="include/untsobre.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="formPrincipal"/>
+        <ComponentName Value="formSobre"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untSobre"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untsplash.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formSplash"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untMain.lfm"/>
-        <IsPartOfProject Value="True"/>
+        <UnitName Value="untSplash"/>
       </Unit>
       <Unit>
         <Filename Value="include/untUpdate.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="include/untdatabase.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untDatabase"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untapostas.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untApostas"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untestrategias.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untEstrategias"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untcampeonatos.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untCampeonatos"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/unttimes.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untTimes"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untpainel.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untPainel"/>
-      </Unit>
-      <Unit>
-        <Filename Value="GraxaimBanca.lps"/>
+        <Filename Value="datafiles/atualizarbd.sql"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="GraxaimBanca.lpi"/>
+        <Filename Value="datafiles/criarbd.sql"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untmultipla.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="untMultipla"/>
-      </Unit>
-      <Unit>
-        <Filename Value="include/untsobre.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="formSobre"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="untSobre"/>
       </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="GraxaimBanca.exe"/>
+      <Filename Value="GraxaimBanca"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <OtherUnitFiles Value="include"/>
-      <UnitOutputDirectory Value="/home/ferox/.fpcupdeluxe/lazarus/components/buildintf/units/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <CodeGeneration>
-      <TargetCPU Value="i386"/>
-      <TargetOS Value="win32"/>
-    </CodeGeneration>
     <Linking>
       <Debugging>
         <DebugInfoType Value="dsDwarf3"/>
@@ -290,14 +188,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <Verbosity>
-        <ShowAll Value="True"/>
-        <ShowDebugInfo Value="True"/>
-      </Verbosity>
-      <ConfigFile>
-        <DontUseConfigFile Value="True"/>
-      </ConfigFile>
-    </Other>
   </CompilerOptions>
 </CONFIG>

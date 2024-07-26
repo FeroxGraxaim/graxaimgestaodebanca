@@ -45,7 +45,6 @@ begin
       begin
         try
         qrEstrategias.Post;
-        grdEstrategias.Invalidate;
         except
         on E: EDatabaseError do
           begin

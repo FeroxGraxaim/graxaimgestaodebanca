@@ -1,208 +1,313 @@
 object formNovaAposta: TformNovaAposta
-  Left = 155
-  Height = 149
-  Top = 701
-  Width = 1323
-  BorderIcons = []
-  BorderStyle = bsDialog
+  Left = 247
+  Height = 427
+  Top = 728
+  Width = 721
+  BorderIcons = [biHelp]
+  BorderStyle = bsToolWindow
   Caption = 'Nova Aposta'
-  ClientHeight = 149
-  ClientWidth = 1323
-  DesignTimePPI = 125
+  ClientHeight = 427
+  ClientWidth = 721
+  DefaultMonitor = dmMainForm
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '3.4.0.0'
   object btnOk: TButton
-    Left = 552
-    Height = 33
-    Top = 88
-    Width = 98
+    AnchorSideBottom.Side = asrBottom
+    Left = 268
+    Height = 25
+    Top = 388
+    Width = 75
+    Anchors = [akBottom]
     Caption = 'Ok'
-    Enabled = False
     TabOrder = 0
     OnClick = btnOkClick
   end
   object btnCancelar: TButton
-    Left = 680
-    Height = 33
-    Top = 88
-    Width = 98
+    AnchorSideBottom.Side = asrBottom
+    Left = 375
+    Height = 25
+    Top = 388
+    Width = 75
+    Anchors = [akBottom]
     Caption = 'Cancelar'
     TabOrder = 1
     OnClick = btnCancelarClick
   end
-  object Label1: TLabel
-    Left = 16
-    Height = 21
-    Top = 16
-    Width = 37
-    Caption = 'Data'
-  end
-  object Label2: TLabel
-    Left = 168
-    Height = 21
-    Top = 16
-    Width = 93
-    Caption = 'Competição'
-  end
-  object Label3: TLabel
-    Left = 312
-    Height = 21
-    Top = 16
-    Width = 80
-    Caption = 'Mandante'
-  end
-  object Label4: TLabel
-    Left = 456
-    Height = 21
-    Top = 16
-    Width = 70
-    Caption = 'Visitante'
-  end
-  object Label5: TLabel
-    Left = 600
-    Height = 21
-    Top = 16
-    Width = 81
-    Caption = 'Estratégia'
-  end
-  object Label6: TLabel
-    Left = 744
-    Height = 21
-    Top = 16
-    Width = 33
-    Caption = 'Odd'
-  end
-  object Label7: TLabel
-    Left = 888
-    Height = 21
-    Top = 16
-    Width = 65
-    Caption = 'Unidade'
-  end
-  object Label8: TLabel
-    Left = 1032
-    Height = 21
-    Top = 16
-    Width = 121
-    Caption = 'Valor Apostado'
-  end
-  object Label9: TLabel
-    Left = 1176
-    Height = 21
-    Top = 16
-    Width = 66
-    Caption = 'Situação'
-  end
-  object edtOdd: TEdit
-    Left = 744
-    Height = 33
-    Top = 40
-    Width = 130
+  object grbNovaLinha: TGroupBox
+    Left = 6
+    Height = 209
+    Top = 166
+    Width = 707
+    Caption = 'Clique duas vezes sobre uma célula para editar'
+    ClientHeight = 190
+    ClientWidth = 703
     TabOrder = 2
-    OnChange = edtOddChange
-    OnKeyPress = edtOddKeyPress
+    object grdNovaAposta: TDBGrid
+      AnchorSideLeft.Control = grbNovaLinha
+      AnchorSideTop.Control = grbNovaLinha
+      AnchorSideRight.Control = grbNovaLinha
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = grbNovaLinha
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 190
+      Top = 0
+      Width = 703
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Color = clWindow
+      Columns = <      
+        item
+          Title.Caption = 'Competição'
+          Width = 115
+          FieldName = 'Competição'
+        end      
+        item
+          Title.Caption = 'Jogo'
+          Width = 154
+          FieldName = 'Jogo'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Método'
+          Width = 115
+          FieldName = 'Método'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Linha'
+          Width = 115
+          FieldName = 'Linha'
+        end      
+        item
+          Title.Caption = 'Odd'
+          Width = 38
+          FieldName = 'OddMercado'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Situação'
+          Width = 61
+          FieldName = 'Situacao'
+        end>
+      DataSource = dsNovaAposta
+      Enabled = False
+      Scrollbars = ssAutoVertical
+      TabOrder = 0
+      OnCellClick = grdNovaApostaCellClick
+      OnEditingDone = grdNovaApostaEditingDone
+    end
   end
-  object edtValor: TEdit
-    Left = 1032
-    Height = 33
-    Top = 40
-    Width = 130
-    Color = clInactiveBorder
-    ReadOnly = True
+  object grbNovoJogo: TGroupBox
+    Left = 350
+    Height = 141
+    Top = 6
+    Width = 362
+    Caption = 'Novo Jogo'
+    ClientHeight = 122
+    ClientWidth = 358
     TabOrder = 3
-    OnChange = edtValorChange
-    OnKeyPress = edtValorKeyPress
+    object btnAddJogo: TButton
+      AnchorSideBottom.Side = asrBottom
+      Left = 272
+      Height = 27
+      Top = 82
+      Width = 74
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      Caption = 'Inserir Jogo'
+      TabOrder = 0
+      OnClick = btnAddJogoClick
+    end
+    object cbMandante: TComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 27
+      Top = 82
+      Width = 120
+      Anchors = [akLeft, akBottom]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 0
+      TabOrder = 1
+    end
+    object cbVisitante: TComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 136
+      Height = 27
+      Top = 82
+      Width = 120
+      Anchors = [akLeft, akBottom]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 0
+      TabOrder = 2
+    end
+    object cbCompeticao: TComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 27
+      Top = 27
+      Width = 346
+      Anchors = [akLeft, akBottom]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 0
+      TabOrder = 3
+    end
+    object lbCompeticao: TLabel
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 67
+      Caption = 'Competição'
+    end
+    object lbMandante2: TLabel
+      Left = 6
+      Height = 17
+      Top = 56
+      Width = 57
+      Caption = 'Mandante'
+    end
+    object lbVisitante2: TLabel
+      Left = 136
+      Height = 17
+      Top = 55
+      Width = 48
+      Caption = 'Visitante'
+    end
   end
-  object cbCompeticao: TComboBox
-    Left = 168
-    Height = 33
-    Top = 40
-    Width = 130
-    AutoComplete = True
-    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
+  object grbBasico: TGroupBox
+    Left = 6
+    Height = 141
+    Top = 6
+    Width = 258
+    Caption = 'Básico'
+    ClientHeight = 122
+    ClientWidth = 254
     TabOrder = 4
-    OnChange = cbCompeticaoChange
-  end
-  object cbMandante: TComboBox
-    Left = 312
-    Height = 33
-    Top = 40
-    Width = 130
-    AutoComplete = True
-    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
-    TabOrder = 5
-    OnChange = cbMandanteChange
-  end
-  object cbVisitante: TComboBox
-    Left = 456
-    Height = 33
-    Top = 40
-    Width = 130
-    AutoComplete = True
-    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
-    TabOrder = 6
-    OnChange = cbVisitanteChange
-  end
-  object cbEstrategia: TComboBox
-    Left = 600
-    Height = 33
-    Top = 40
-    Width = 130
-    ItemHeight = 0
-    Style = csDropDownList
-    TabOrder = 7
-    OnChange = cbEstrategiaChange
-  end
-  object cbUnidade: TComboBox
-    Left = 888
-    Height = 33
-    Top = 40
-    Width = 130
-    ItemHeight = 0
-    Style = csDropDownList
-    TabOrder = 8
-    OnChange = cbUnidadeChange
-  end
-  object cbSituacao: TComboBox
-    Left = 1176
-    Height = 33
-    Top = 40
-    Width = 130
-    ItemHeight = 0
-    Style = csDropDownList
-    TabOrder = 9
-    OnChange = cbSituacaoChange
-  end
-  object deAposta: TDateEdit
-    Left = 16
-    Height = 33
-    Top = 40
-    Width = 130
-    CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
-    DefaultToday = True
-    DateOrder = doNone
-    DateFormat = 'yyyy-mm-dd'
-    ButtonWidth = 30
-    NumGlyphs = 1
-    MaxLength = 0
-    TabOrder = 10
+    object deAposta: TDateEdit
+      Left = 12
+      Height = 27
+      Top = 18
+      Width = 100
+      CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+      DefaultToday = True
+      DateOrder = doNone
+      DateFormat = 'yyyy-mm-dd'
+      ButtonWidth = 23
+      NumGlyphs = 1
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object btnNovaLinha: TButton
+      Left = 141
+      Height = 25
+      Top = 18
+      Width = 100
+      Caption = 'Nova Linha'
+      Enabled = False
+      TabOrder = 1
+      OnClick = btnNovaLinhaClick
+    end
+    object rbtnSimples: TRadioButton
+      Left = 12
+      Height = 21
+      Top = 49
+      Width = 67
+      Caption = 'Simples'
+      Checked = True
+      TabOrder = 2
+      TabStop = True
+    end
+    object rbtnMultipla: TRadioButton
+      Left = 141
+      Height = 21
+      Top = 49
+      Width = 68
+      Caption = 'Múltipla'
+      Enabled = False
+      TabOrder = 3
+      OnChange = rbtnMultiplaChange
+    end
+    object Label7: TLabel
+      Left = 12
+      Height = 17
+      Top = 72
+      Width = 47
+      Caption = 'Unidade'
+    end
+    object Label8: TLabel
+      Left = 141
+      Height = 17
+      Top = 72
+      Width = 85
+      Caption = 'Valor Apostado'
+    end
+    object cbUnidade: TComboBox
+      Left = 12
+      Height = 25
+      Top = 92
+      Width = 100
+      ItemHeight = 0
+      ItemIndex = 3
+      Items.Strings = (
+        '0,25 Un'
+        '0,5 Un'
+        '0,75 Un'
+        '1 Un'
+        '1,25 Un'
+        '1,5 Un'
+        '1,75 Un'
+        '2 Un'
+      )
+      Style = csDropDownList
+      TabOrder = 4
+      Text = '1 Un'
+      OnChange = cbUnidadeChange
+    end
+    object edtValor: TEdit
+      Left = 141
+      Height = 27
+      Top = 87
+      Width = 100
+      Color = clInactiveBorder
+      ReadOnly = True
+      TabOrder = 5
+      OnChange = edtValorChange
+      OnKeyPress = edtValorKeyPress
+    end
+    object Label1: TLabel
+      Left = 12
+      Height = 17
+      Top = 0
+      Width = 27
+      Caption = 'Data'
+    end
   end
   object qrNovaAposta: TSQLQuery
     IndexName = 'DEFAULT_ORDER'
     MaxIndexesCount = 4
     FieldDefs = <    
       item
-        Name = 'Cod_Aposta'
+        Name = 'ROWID'
         DataType = ftInteger
         Precision = -1
       end    
       item
-        Name = 'Selec.'
-        DataType = ftBoolean
+        Name = 'CodJogo'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'CodMetodo'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'CodLinha'
+        DataType = ftInteger
         Precision = -1
       end    
       item
@@ -211,7 +316,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
       end    
       item
-        Name = 'Competição_AP'
+        Name = 'Competição'
         DataType = ftString
         Precision = -1
         Size = 255
@@ -229,245 +334,406 @@ object formNovaAposta: TformNovaAposta
         Size = 255
       end    
       item
-        Name = 'Estratégia_Escolhida'
+        Name = 'Jogo'
         DataType = ftString
         Precision = -1
         Size = 255
       end    
       item
-        Name = 'Odd'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
-      end    
-      item
-        Name = 'Unidade'
+        Name = 'Método'
         DataType = ftString
         Precision = -1
         Size = 255
       end    
       item
-        Name = 'Valor_Aposta'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
-      end    
-      item
-        Name = 'Status'
+        Name = 'Linha'
         DataType = ftString
         Precision = -1
         Size = 255
       end    
       item
-        Name = 'Retorno'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
-      end    
-      item
-        Name = 'Profit_L'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
-      end    
-      item
-        Name = 'Banca_Final'
+        Name = 'OddMercado'
         DataType = ftLargeint
         Precision = -1
-      end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.transactionBancoDAdos
-    SQL.Strings = (
-      'Select * from Apostas;'
-    )
-    InsertSQL.Strings = (
-      'INSERT INTO Apostas (Data, Competição_AP, Mandante, Visitante,'
-      '      Estratégia_Escolhida, Odd, Unidade, Valor_Aposta, Status)'
-      '      VALUES (:Data, :Competição, :Mandante, :Visitante, :Estratégia,'
-      '      :Odd, :Unidade, :ValorApostado, :Situação)'
-      ''
-    )
-    Params = <>
-    Macros = <>
-    Left = 120
-    Top = 96
-  end
-  object dsNovaAposta: TDataSource
-    DataSet = qrNovaAposta
-    Left = 168
-    Top = 96
-  end
-  object qrNACompeticao: TSQLQuery
-    IndexName = 'DEFAULT_ORDER'
-    MaxIndexesCount = 4
-    FieldDefs = <    
+      end    
       item
-        Name = 'Competição'
+        Name = 'Situacao'
         DataType = ftString
         Precision = -1
         Size = 255
       end>
+    BeforePost = qrNovaApostaBeforePost
     Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
-      'Select Competição from Competições;'
+      'SELECT'
+      '      Mercados.ROWID AS ROWID,'
+      '      Mercados.Cod_Jogo AS CodJogo,'
+      '      Mercados.Cod_Metodo AS CodMetodo,'
+      '      Mercados.Cod_Linha AS CodLinha,'
+      #9'Apostas.Data AS Data,'
+      '    Competições.Competição AS Competição,'
+      #9'Jogo.Mandante AS Mandante,'
+      #9'Jogo.Visitante AS Visitante,'
+      '    Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo,'
+      '    Métodos.Nome AS Método,'
+      '    Linhas.Nome AS Linha,'
+      '    Mercados.Odd AS OddMercado,'
+      '    Mercados.Status AS Situacao'
+      'FROM'
+      '    Mercados'
+      'LEFT JOIN'
+      #9'Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta'
+      'LEFT JOIN'
+      '    Jogo ON Mercados.Cod_Jogo = Jogo.Cod_Jogo'
+      'LEFT JOIN'
+      '    Competições ON Jogo.Cod_Comp = Competições.Cod_Comp'
+      'LEFT JOIN'
+      '    Linhas ON Mercados.Cod_Linha = Linhas.Cod_Linha'
+      'LEFT JOIN'
+      '    Métodos ON Linhas.Cod_Metodo = Métodos.Cod_Metodo'
+      'WHERE'
+      '    Mercados.Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas);'
+    )
+    InsertSQL.Strings = (
+      'INSERT INTO Mercados (Cod_Jogo, Cod_Linha, Cod_Metodo, Cod_Aposta)'
+      'VALUES'
+      '    ((SELECT Jogo.Cod_Jogo FROM Jogo WHERE Jogo.Mandante = :Mandante AND Jogo.Visitante = :Visitante),'
+      '    (SELECT Linhas.Cod_Linha FROM Linhas WHERE Linhas.Nome = :Linha),'
+      '    (SELECT Métodos.Cod_Metodo FROM Métodos WHERE Métodos.Nome = :Método),'
+      '    (SELECT MAX(Cod_Aposta) FROM Apostas));'
+    )
+    UpdateSQL.Strings = (
+      'UPDATE Mercados'
+      'SET'
+      '    Cod_Jogo = (SELECT Jogo.Cod_Jogo'
+      '                FROM Jogo'
+      '                WHERE Jogo.Mandante = :Mandante'
+      '                AND Jogo.Visitante = :Visitante),'
+      '    Cod_Metodo = (SELECT "Métodos".Cod_Metodo'
+      '                  FROM "Métodos"'
+      '                  WHERE "Métodos".Nome = :"Método"),'
+      '    Cod_Linha = (SELECT Cod_Linha'
+      '                 FROM Linhas'
+      '                 WHERE Linhas.Nome = :Linha),'
+      '    Odd = :OddMercado,'
+      '    Status = :Situacao'
+      'WHERE Mercados.ROWID = :ROWID;'
     )
     Params = <>
     Macros = <>
-    Left = 216
-    Top = 96
-    object qrNACompeticaoCompetio: TStringField
+    UpdateMode = upWhereAll
+    Left = 713
+    Top = 338
+    object qrNovaApostaData: TDateField
       FieldKind = fkData
-      FieldName = 'Competição'
+      FieldName = 'Data'
       Index = 0
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
-      Required = True
-      Size = 255
+      Required = False
     end
-  end
-  object dsNACompeticao: TDataSource
-    Left = 264
-    Top = 96
-  end
-  object dsNAMandante: TDataSource
-    Left = 264
-    Top = 96
-  end
-  object qrNAMandante: TSQLQuery
-    IndexName = 'DEFAULT_ORDER'
-    MaxIndexesCount = 4
-    FieldDefs = <    
-      item
-        Name = 'Time'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.transactionBancoDAdos
-    SQL.Strings = (
-      'Select Time from Times;'
-      ''
-    )
-    Params = <>
-    Macros = <>
-    DataSource = dsNAMandante
-    Left = 56
-    Top = 96
-  end
-  object qrNAVisitante: TSQLQuery
-    IndexName = 'DEFAULT_ORDER'
-    MaxIndexesCount = 4
-    FieldDefs = <    
-      item
-        Name = 'Time'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.transactionBancoDAdos
-    SQL.Strings = (
-      'Select Time from Times;'
-      ''
-    )
-    Params = <>
-    Macros = <>
-    DataSource = dsNAVisitante
-    Left = 56
-    Top = 96
-  end
-  object dsNAVisitante: TDataSource
-    Left = 264
-    Top = 96
-  end
-  object qrNAEstrategia: TSQLQuery
-    IndexName = 'DEFAULT_ORDER'
-    MaxIndexesCount = 4
-    FieldDefs = <    
-      item
-        Name = 'Estratégia'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.transactionBancoDAdos
-    SQL.Strings = (
-      'Select Estratégia from Estratégias;'
-      ''
-    )
-    Params = <>
-    Macros = <>
-    DataSource = dsNAEstrategia
-    Left = 56
-    Top = 96
-  end
-  object dsNAEstrategia: TDataSource
-    Left = 264
-    Top = 96
-  end
-  object dsNAUnidade: TDataSource
-    Left = 264
-    Top = 96
-  end
-  object qrNAUnidade: TSQLQuery
-    IndexName = 'DEFAULT_ORDER'
-    MaxIndexesCount = 4
-    FieldDefs = <    
-      item
-        Name = 'Unidade'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.transactionBancoDAdos
-    SQL.Strings = (
-      'Select Unidade from Unidades;'
-      ''
-    )
-    Params = <>
-    Macros = <>
-    DataSource = dsNAUnidade
-    Left = 56
-    Top = 96
-  end
-  object dsNASituacao: TDataSource
-    Left = 264
-    Top = 96
-  end
-  object qrNASituacao: TSQLQuery
-    IndexName = 'DEFAULT_ORDER'
-    MaxIndexesCount = 4
-    FieldDefs = <    
-      item
-        Name = 'Status'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end>
-    Database = formPrincipal.conectBancoDados
-    Transaction = formPrincipal.transactionBancoDAdos
-    SQL.Strings = (
-      'Select Status from Status_Aposta;'
-    )
-    Params = <>
-    Macros = <>
-    DataSource = dsNASituacao
-    Left = 312
-    Top = 96
-    object qrNASituacaoStatus: TStringField
+    object qrNovaApostaCompetio: TStringField
       FieldKind = fkData
-      FieldName = 'Status'
-      Index = 0
+      FieldName = 'Competição'
+      Index = 1
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
       Required = False
       Size = 255
     end
+    object qrNovaApostaJogo: TStringField
+      FieldKind = fkData
+      FieldName = 'Jogo'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrNovaApostaMtodo: TStringField
+      FieldKind = fkData
+      FieldName = 'Método'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrNovaApostaLinha: TStringField
+      FieldKind = fkData
+      FieldName = 'Linha'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrNovaApostaMandante: TStringField
+      FieldKind = fkData
+      FieldName = 'Mandante'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrNovaApostaVisitante: TStringField
+      FieldKind = fkData
+      FieldName = 'Visitante'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrNovaApostaCodJogo: TLongintField
+      FieldKind = fkData
+      FieldName = 'CodJogo'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrNovaApostaCodMetodo: TLongintField
+      FieldKind = fkData
+      FieldName = 'CodMetodo'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrNovaApostaCodLinha: TLongintField
+      FieldKind = fkData
+      FieldName = 'CodLinha'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrNovaApostaOddMercado: TBCDField
+      FieldKind = fkData
+      FieldName = 'OddMercado'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrNovaApostaSituacao: TStringField
+      FieldKind = fkData
+      FieldName = 'Situacao'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrNovaApostaROWID: TLongintField
+      FieldKind = fkData
+      FieldName = 'ROWID'
+      Index = 12
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object scriptNovaAposta: TSQLScript
+    DataBase = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    AutoCommit = False
+    UseDollarString = False
+    Directives.Strings = (
+      'SET TERM'
+      'COMMIT WORK'
+      'COMMIT RETAIN'
+      'COMMIT'
+      '#IFDEF'
+      '#IFNDEF'
+      '#ELSE'
+      '#ENDIF'
+      '#DEFINE'
+      '#UNDEF'
+      '#UNDEFINE'
+    )
+    Script.Strings = (
+      'INSERT INTO Apostas (Data, Valor_Aposta)'
+      'VALUES'
+      '    (null, null);'
+      ''
+      'INSERT INTO Mercados (Cod_Aposta)'
+      'SELECT'
+      '    MAX(Cod_Aposta)'
+      'FROM'
+      '    Apostas;'
+      ''
+      ''
+      ''
+      ''
+    )
+    Terminator = ';'
+    CommentsinSQL = True
+    UseSetTerm = True
+    UseCommit = True
+    UseDefines = True
+    Left = 596
+    Top = 276
+  end
+  object scriptNovoJogo: TSQLScript
+    DataBase = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    AutoCommit = False
+    UseDollarString = False
+    Directives.Strings = (
+      'SET TERM'
+      'COMMIT WORK'
+      'COMMIT RETAIN'
+      'COMMIT'
+      '#IFDEF'
+      '#IFNDEF'
+      '#ELSE'
+      '#ENDIF'
+      '#DEFINE'
+      '#UNDEF'
+      '#UNDEFINE'
+    )
+    Script.Strings = (
+      'INSERT INTO Jogo (Cod_Comp, Mandante, Visitante)'
+      'SELECT'
+      '    C.Cod_Comp,'
+      '    Mandante,'
+      '    Visitante'
+      'FROM'
+      '    Competições C'
+      'WHERE'
+      '    C.Competição = Competição;'
+      ''
+      'INSERT INTO Mercados (Cod_Aposta, Cod_Jogo, Cod_Metodo, Cod_Linha, Odd, Status)'
+      'SELECT'
+      '    A.Cod_Aposta,'
+      '    J.Cod_Jogo,'
+      '    Cod_Metodo,'
+      '    Cod_Linha,'
+      '    Odd,'
+      '    Status'
+      'FROM'
+      '    Apostas A'
+      '    INNER JOIN Jogo J ON A.Cod_Aposta = J.Cod_Aposta'
+      'WHERE'
+      '    A.Data = Data;'
+      ''
+    )
+    Terminator = ';'
+    CommentsinSQL = True
+    UseSetTerm = True
+    UseCommit = True
+    UseDefines = True
+    Left = 639
+    Top = 301
+  end
+  object scriptNovoMercado: TSQLScript
+    DataBase = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    OnDirective = scriptNovoMercadoDirective
+    AutoCommit = False
+    UseDollarString = False
+    Directives.Strings = (
+      'SET TERM'
+      'COMMIT WORK'
+      'COMMIT RETAIN'
+      'COMMIT'
+      '#IFDEF'
+      '#IFNDEF'
+      '#ELSE'
+      '#ENDIF'
+      '#DEFINE'
+      '#UNDEF'
+      '#UNDEFINE'
+    )
+    Script.Strings = (
+      'INSERT INTO Mercados (Cod_Aposta, Cod_Jogo, Cod_Metodo, Cod_Linha, Odd, Status)'
+      'SELECT'
+      '    A.Cod_Aposta,'
+      '    J.Cod_Jogo,'
+      '    :Cod_Metodo,'
+      '    :Cod_Linha,'
+      '    :Odd,'
+      '    :Status'
+      'FROM'
+      '    Apostas A'
+      '    INNER JOIN Jogo J ON A.Cod_Aposta = J.Cod_Aposta'
+      'WHERE'
+      '    A.Data = :Data'
+      '    AND J.Mandante = :Mandante'
+      '    AND J.Visitante = :Visitante;'
+    )
+    Terminator = ';'
+    CommentsinSQL = True
+    UseSetTerm = True
+    UseCommit = True
+    UseDefines = True
+    Left = 528
+    Top = 375
+  end
+  object dsNovaAposta: TDataSource
+    DataSet = qrNovaAposta
+    Left = 657
+    Top = 375
+  end
+  object scriptCancelar: TSQLScript
+    DataBase = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    AutoCommit = False
+    UseDollarString = False
+    Directives.Strings = (
+      'SET TERM'
+      'COMMIT WORK'
+      'COMMIT RETAIN'
+      'COMMIT'
+      '#IFDEF'
+      '#IFNDEF'
+      '#ELSE'
+      '#ENDIF'
+      '#DEFINE'
+      '#UNDEF'
+      '#UNDEFINE'
+    )
+    Script.Strings = (
+      'DELETE FROM Mercados'
+      'WHERE Cod_Aposta IN (SELECT MAX(Cod_Aposta) FROM Apostas);'
+      'DELETE FROM Jogo'
+      'WHERE Cod_Aposta IN (SELECT MAX(Cod_Aposta) FROM Apostas);'
+      'DELETE FROM Apostas'
+      'WHERE Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas);'
+      ''
+    )
+    Terminator = ';'
+    CommentsinSQL = True
+    UseSetTerm = True
+    UseCommit = True
+    UseDefines = True
+    Left = 301
+    Top = 98
+  end
+  object popupLinhas: TPopupMenu
+    Left = 301
+    Top = 32
   end
 end

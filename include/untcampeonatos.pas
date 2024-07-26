@@ -25,8 +25,7 @@ procedure TEventosCampeonatos.tsCampeonatosShow(Sender: TObject);
 begin
   with formPrincipal do
     begin
-    ReiniciarTodosOsQueries;
-    writeln ('Encontrados ',qrCampeonatos.RecordCount,' campeonatos');
+    //writeln ('Encontrados ',qrCampeonatos.RecordCount,' campeonatos');
     end;
 end;
 
