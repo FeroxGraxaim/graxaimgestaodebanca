@@ -12,7 +12,7 @@ LAZARUS_REPO = https://gitlab.com/freepascal.org/lazarus/lazarus.git
 LAZARUS_BIN = $(LAZARUS_DIR)/lazbuild
 TARGET = GraxaimBanca
 
-all: install-deps install-lazarus build-program clean
+all: install-deps build-program
 
 install-lazarus:
 	@echo "Baixando o Lazarus..."
@@ -128,6 +128,7 @@ install: build-program
 	for file in $(FILES); do \
 		sudo cp $$file $(INSTALL_DIR_SHARE); \
 	done
+	cp Graxaim\ Gestão\ de\ Banca.desktop $(INSTALL_DIR_SHARE)
 	sudo chmod 644 $(INSTALL_DIR_SHARE)/*
 	@echo "Arquivos instalados em $(INSTALL_DIR_SHARE)"
 

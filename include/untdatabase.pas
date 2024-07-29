@@ -58,11 +58,6 @@ begin
 
   LocalizarBD := ExpandFileName(GetEnvironmentVariable('APPDATA') +
     '\GraxaimBanca\database.db');
-
-  if not DirectoryExists(ExtractFilePath(LocalizarBD)) then
-    if not ForceDirectories(ExtractFilePath(LocalizarBD)) then
-      raise Exception.Create('Não foi possível criar o diretório do banco de dados: '
-        + ExtractFilePath(LocalizarBD));
   {$ENDIF}
 
   {$IFDEF LINUX}
@@ -92,6 +87,12 @@ begin
      Halt;
      end;
   {$ENDIF}
+
+  if not DirectoryExists(ExtractFilePath(LocalizarBD)) then
+    if not ForceDirectories(ExtractFilePath(LocalizarBD)) then
+      raise Exception.Create('Não foi possível criar o diretório do banco de dados: '
+        + ExtractFilePath(LocalizarBD));
+
 end;
 
 procedure TBancoDados.AtualizarBancoDeDados;

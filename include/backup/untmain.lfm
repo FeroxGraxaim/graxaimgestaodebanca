@@ -1,10 +1,10 @@
 object formPrincipal: TformPrincipal
   Left = 1620
-  Height = 560
+  Height = 537
   Top = 82
   Width = 1082
   Caption = 'formPrincipal'
-  ClientHeight = 560
+  ClientHeight = 537
   ClientWidth = 1082
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -18,7 +18,7 @@ object formPrincipal: TformPrincipal
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 548
+    Height = 525
     Top = 0
     Width = 1082
     ActivePage = tsPainel
@@ -28,7 +28,7 @@ object formPrincipal: TformPrincipal
     OnChange = pcPrincipalChange
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
-      ClientHeight = 521
+      ClientHeight = 498
       ClientWidth = 1078
       object txtBancaAtual: TDBText
         Left = 31
@@ -84,7 +84,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 521
+        Height = 498
         Top = 0
         Width = 791
         ActivePage = tsGraficos
@@ -93,19 +93,19 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 494
+          ClientHeight = 471
           ClientWidth = 787
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 456
+            Height = 433
             Top = 31
             Width = 788
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 456
+            ClientHeight = 433
             ClientWidth = 788
             TabOrder = 0
             object chrtLucroMes: TChart
@@ -313,7 +313,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 494
+          ClientHeight = 471
           ClientWidth = 787
           TabVisible = False
           object pnTabelas: TPanel
@@ -484,18 +484,18 @@ object formPrincipal: TformPrincipal
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
-      ClientHeight = 521
+      ClientHeight = 498
       ClientWidth = 1078
       OnContextPopup = tsApostasContextPopup
       object grbApostas: TGroupBox
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 258
+        Height = 235
         Top = 12
         Width = 940
         Anchors = [akTop, akLeft, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 239
+        ClientHeight = 216
         ClientWidth = 936
         TabOrder = 0
         object grdApostas: TDBGrid
@@ -506,7 +506,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 239
+          Height = 216
           Top = 0
           Width = 936
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -594,7 +594,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 270
+        Top = 247
         Width = 940
         Anchors = [akLeft, akBottom]
         Caption = 'Detalhes da Aposta'
@@ -743,7 +743,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 576
         Height = 27
-        Top = 448
+        Top = 425
         Width = 118
         Anchors = [akLeft, akBottom]
         Enabled = False
@@ -756,7 +756,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 465
         Height = 27
-        Top = 447
+        Top = 424
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -773,7 +773,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 465
         Height = 27
-        Top = 483
+        Top = 460
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -790,7 +790,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 576
         Height = 27
-        Top = 479
+        Top = 456
         Width = 118
         Anchors = [akLeft, akBottom]
         Enabled = False
@@ -803,7 +803,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 705
         Height = 25
-        Top = 481
+        Top = 458
         Width = 109
         Anchors = [akLeft, akBottom]
         Caption = 'Visitante'
@@ -817,7 +817,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 705
         Height = 25
-        Top = 450
+        Top = 427
         Width = 109
         Anchors = [akLeft, akBottom]
         Caption = 'Mandante'
@@ -831,7 +831,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 828
         Height = 26
-        Top = 480
+        Top = 457
         Width = 118
         Anchors = [akLeft, akBottom]
         Caption = 'Limpar Filtros'
@@ -842,7 +842,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 184
         Height = 50
-        Top = 460
+        Top = 437
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -853,7 +853,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 50
-        Top = 460
+        Top = 437
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -864,7 +864,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 828
         Height = 26
-        Top = 450
+        Top = 427
         Width = 118
         Anchors = [akLeft, akBottom]
         Caption = 'Filtrar Apostas'
@@ -874,14 +874,14 @@ object formPrincipal: TformPrincipal
     end
     object tsControleMetodos: TTabSheet
       Caption = 'Controle de Métodos'
-      ClientHeight = 521
+      ClientHeight = 498
       ClientWidth = 1078
       TabVisible = False
       object pcControleMetodos: TPageControl
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 215
-        Height = 523
+        Height = 500
         Top = 0
         Width = 870
         ActivePage = tsGrafMet
@@ -890,7 +890,7 @@ object formPrincipal: TformPrincipal
         TabOrder = 0
         object tsGrafMet: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 519
+          ClientHeight = 496
           ClientWidth = 866
           OnContextPopup = tsGrafMetContextPopup
           object gbMetodo: TGroupBox
@@ -1193,7 +1193,7 @@ object formPrincipal: TformPrincipal
     end
     object tsContrTimes: TTabSheet
       Caption = 'Controle de Times'
-      ClientHeight = 521
+      ClientHeight = 498
       ClientWidth = 1078
       TabVisible = False
       object PageControl3: TPageControl
@@ -1247,7 +1247,7 @@ object formPrincipal: TformPrincipal
   object StatusBar1: TStatusBar
     Left = 0
     Height = 21
-    Top = 539
+    Top = 516
     Width = 1082
     Panels = <>
   end

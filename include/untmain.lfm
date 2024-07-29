@@ -1254,7 +1254,6 @@ object formPrincipal: TformPrincipal
   object conectBancoDados: TSQLite3Connection
     Connected = True
     LoginPrompt = False
-    DatabaseName = '/home/ferox/Documentos/Programação/Graxaim Gestão de Banca/database.db'
     KeepConnection = False
     Params.Strings = (
       'AlwaysUseBigint=1'

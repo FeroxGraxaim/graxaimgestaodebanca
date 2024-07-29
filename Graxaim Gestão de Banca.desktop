@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Graxaim Gestão de Banca
+Exec=/usr/bin/GraxaimBanca
+Comment=Sistema de Gestão de Banca Para Apostas Esportivas
+Terminal=false
+PrefersNonDefaultGPU=false
+Icon=/usr/share/GraxaimBanca/graxaimbanca.png
+Type=Application
