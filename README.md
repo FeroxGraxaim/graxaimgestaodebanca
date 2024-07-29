@@ -31,22 +31,22 @@ Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/re
   - **Debian, Ubuntu, Linux Mint, Pop!_OS e demais distros baseadas em Debian:** Baixar e executar o arquivo .DEB.
   - **Fedora, OpenSUSE, RedHat e demais distros baseadas em RedHat:** Baixar e executar o arquivo .RPM
   - **Manjaro e Arch Linux:** Infelizmente ainda não há opção pré-compilada, sendo necessário compilar o código-fonte o programa conforme será ensinado abaixo.
-- **Compilação:** Recomendável que tenha git instalado.
+- **Compilação:** Instale o git para fazer o clone do repositório, e instale o make para fazer a compilação.
   - Baseados em Debian:
     ```
-    sudo apt install git
+    sudo apt install git make
     ```
   - RedHat:
     ```
-    sudo yum install git
+    sudo yum install git make
     ```
   - Manjaro e Arch Linux:
     ```
-    sudo pacman -S git
+    sudo pacman -S git make
     ```
   - OpenSUSE:
     ```
-    sudo zypper install git
+    sudo zypper install git make
     ```
 > [!NOTE]
 > Caso baixe o código-fonte sem usar o git, o próprio makefile fará a instalação automaticamente, para o download temporário do compilador.
