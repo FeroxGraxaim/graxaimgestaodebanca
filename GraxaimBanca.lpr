@@ -10,10 +10,8 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, indylaz, tachartlazaruspkg, untMain, untApostas,
-  untDatabase, untMultipla, untNA, untPainel, untSobre,
-  untSplash, untUpdate
-  { you can add units after this };
+  Forms, tachartlazaruspkg, untMain, untApostas, untDatabase, untNA,
+  untPainel, untSobre, untSplash, untUpdate;
 
 {$R *.res}
 

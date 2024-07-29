@@ -199,8 +199,12 @@ end;
 
 procedure TEventosPainel.edtBancaInicialKeyPress(Sender: TObject; var Key: char);
 begin
-  if Key = '.' then
-    Key := ',';
+  if FormatSettings.DecimalSeparator = ',' then
+    if Key = '.' then
+       Key := ','
+  else if FormatSettings.DecimalSeparator = '.' then
+    if Key = ',' then
+       Key := '.';
 end;
 
 procedure TEventosPainel.PreencherComboBox;

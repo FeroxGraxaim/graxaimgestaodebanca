@@ -32,9 +32,7 @@ formSplash: TformSplash;
 
 implementation
 
-uses untMain, untUpdate, untApostas, untPainel, untDatabase, untMultipla, untSobre,
-fpjson, HTTPDefs, synautil, jsonparser, LCLIntf,
-IdSSLOpenSSLHeaders, ssl_openssl3;
+uses untMain, untUpdate, untApostas, untPainel, untDatabase, untMultipla;
 
 {$R *.lfm}
 

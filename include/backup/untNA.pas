@@ -123,18 +123,18 @@ begin
   //btnOk.Enabled := False;
 
   // Listar competições no ComboBox "Competição":
-    qrNACompeticao := TSQLQuery.Create(nil);
-    qrNACompeticao.DataBase := formPrincipal.conectBancoDados;
-    qrNACompeticao.SQL.Text := 'SELECT Competição FROM Competições';
-    qrNACompeticao.Open;
-    while not qrNACompeticao.EOF do
-    begin
-      cbCompeticao.items.AddObject(
-        qrNACompeticao.FieldByName('Competição').AsString,
-        TObject(qrNACompeticao.FieldByName('Competição').AsString));
-      qrNACompeticao.Next;
-    end;
-    qrNACompeticao.Free;
+  qrNACompeticao := TSQLQuery.Create(nil);
+  qrNACompeticao.DataBase := formPrincipal.conectBancoDados;
+  qrNACompeticao.SQL.Text := 'SELECT Competição FROM Competições';
+  qrNACompeticao.Open;
+  while not qrNACompeticao.EOF do
+  begin
+    cbCompeticao.items.AddObject(
+      qrNACompeticao.FieldByName('Competição').AsString,
+      TObject(qrNACompeticao.FieldByName('Competição').AsString));
+    qrNACompeticao.Next;
+  end;
+  qrNACompeticao.Free;
 
   try
     qrNATimes := TSQLQuery.Create(nil);
@@ -290,7 +290,8 @@ end;
 procedure TformNovaAposta.rbtnMultiplaChange(Sender: TObject);
 begin
   if rbtnMultipla.Checked then btnAddJogo.Enabled := True
-  else btnAddJogo.Enabled := False;
+  else
+    btnAddJogo.Enabled := False;
 end;
 
 procedure TformNovaAposta.scriptNovoMercadoDirective(Sender: TObject;
@@ -394,10 +395,10 @@ end;
 procedure TformNovaAposta.btnAddJogoClick(Sender: TObject);
 var
   query: TSQLQuery;
-  Competicao, Mandante, Visitante: String;
+  Competicao, Mandante, Visitante: string;
 begin
   try
-     if qrNovaAposta.Active then
+    if qrNovaAposta.Active then
       qrNovaAposta.Close;
 
     query := TSQLQuery.Create(nil);
@@ -405,36 +406,30 @@ begin
 
     writeln('Inserindo na tabela Jogo');
     query.SQL.Text :=
-      'INSERT INTO Jogo (Cod_Jogo, Cod_Comp, Mandante, Visitante,   ' +
-      '                  Cod_Aposta)                                ' +
-      'VALUES                                                       ' +
-      '    :Cod_Jogo,                                               ' +
-      '    (SELECT Cod_Comp FROM Competições WHERE                  ' +
-      '    Competições.Competição = :Competicao),                   ' +
-      '    :Mandante,                                               ' +
-      '    :Visitante,                                              ' +
-      '    (SELECT MAX(A.Cod_Aposta) FROM Apostas A)                ';
+      'INSERT INTO Jogo (Cod_Jogo, Cod_Comp, Mandante, Visitante, Cod_Aposta) ' +
+      'VALUES (                                                               ' +
+      '    :Cod_Jogo,                                                         ' +
+      '    (SELECT Cod_Comp FROM Competições WHERE Competições.Competição = :Competicao), '
+      + '    :Mandante,                                                         ' +
+      '    :Visitante,                                                        ' +
+      '    (SELECT MAX(A.Cod_Aposta) FROM Apostas A))';
+
 
     query.ParamByName('Competicao').AsString := cbCompeticao.Text;
     query.ParamByName('Mandante').AsString := cbMandante.Text;
     query.ParamByName('Visitante').AsString := cbVisitante.Text;
     query.ExecSQL;
-    writeln('Dado Exec com o comando ',query.SQL.Text);
+    writeln('Dado Exec com o comando ', query.SQL.Text);
 
     writeln('Atualizando tabela Mercados');
     query.SQL.Text :=
-      'UPDATE Mercados               ' +
-      'SET Cod_Jogo = (              ' +
-      'SELECT J.Cod_Jogo        ' +
-      'FROM Jogo J              ' +
-      'WHERE J.Cod_Jogo = (     ' +
-      'SELECT MAX(Cod_Jogo) ' +
-      'FROM Jogo))          ' +
-      'WHERE Mercados.Cod_Aposta = ( ' +
-      'SELECT MAX(Cod_Aposta)        ' +
-      'FROM Apostas);                ';
+      'UPDATE Mercados               ' + 'SET Cod_Jogo = (              ' +
+      'SELECT J.Cod_Jogo        ' + 'FROM Jogo J              ' +
+      'WHERE J.Cod_Jogo = (     ' + 'SELECT MAX(Cod_Jogo) ' +
+      'FROM Jogo))          ' + 'WHERE Mercados.Cod_Aposta = ( ' +
+      'SELECT MAX(Cod_Aposta)        ' + 'FROM Apostas);                ';
     query.ExecSQL;
-    writeln('Dado Exec com o comando ',query.SQL.Text);
+    writeln('Dado Exec com o comando ', query.SQL.Text);
     query.Free;
 
     qrNovaAposta.Open;

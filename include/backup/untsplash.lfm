@@ -1,7 +1,7 @@
 object formSplash: TformSplash
-  Left = 461
+  Left = 369
   Height = 174
-  Top = 842
+  Top = 848
   Width = 540
   BorderStyle = bsNone
   Caption = 'formSplash'

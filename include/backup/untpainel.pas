@@ -375,8 +375,8 @@ begin
 
       //Atualizar gráficos pizza
       try
-        chrtAcertMes.Clear;
-        chrtAcertAno.Clear;
+      (chrtAcertMes.Series[0] as TPieSeries).Clear;
+      (chrtAcertAno.Series[0] as TPieSeries).Clear;
         if not qrMes.Active then qrMes.Open;
         if qrMes.RecordCount = 0 then Exit;
 

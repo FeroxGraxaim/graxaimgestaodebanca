@@ -21,15 +21,14 @@ var
 implementation
 
 uses
-  untMain, fpjson, HTTPDefs, fphttpclient, httpsend, synautil,
-  jsonparser, LCLIntf, IdSSLOpenSSLHeaders, ssl_openssl3, opensslsockets;
+  fpjson, HTTPDefs, fphttpclient,
+  jsonparser, LCLIntf, opensslsockets;
 
 function CompareVersion(version1, version2: string): integer;
 var
   ver1, ver2: TStringDynArray;
   i: integer;
 begin
-
   ver1 := version1.Split(['.']);
   ver2 := version2.Split(['.']);
 
@@ -131,7 +130,7 @@ function JaAtualizado: boolean;
 begin
   writeln('Verificando se o arquivo de marcação existe...');
   {$IFDEF MSWINDOWS}
-  Result := FileExists('%AppData%\GraxaimBanca\NaoExcluir');
+  Result := FileExists(GetEnvironmentVariable('APPDATA') + '\GraxaimBanca\NaoExcluir');
   {$ENDIF}
 
   {$IFDEF LINUX}

@@ -1,7 +1,7 @@
 object formNovaAposta: TformNovaAposta
-  Left = 247
+  Left = 2301
   Height = 427
-  Top = 728
+  Top = 307
   Width = 721
   BorderIcons = [biHelp]
   BorderStyle = bsToolWindow
