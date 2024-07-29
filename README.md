@@ -48,9 +48,6 @@ Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/re
     ```
     sudo zypper install git make
     ```
-> [!NOTE]
-> Caso baixe o código-fonte sem usar o git, o próprio makefile fará a instalação automaticamente, para o download temporário do compilador.
-  
   Após a instalação do git, digite os seguintes comandos no terminal:
   ```
   git clone https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
@@ -58,5 +55,8 @@ Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/re
   make
   make install
   ```
+> [!NOTE]
+> Caso baixe o código-fonte sem usar o git, o próprio makefile fará a instalação automaticamente, para o download temporário do compilador.
+
   Isso deverá instalar o programa. Caso ocorra algum problema, <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/issues"> favor relatar. </a> 
     
