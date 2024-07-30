@@ -12,7 +12,7 @@ LAZARUS_REPO = https://gitlab.com/freepascal.org/lazarus/lazarus.git
 LAZARUS_BIN = $(LAZARUS_DIR)/lazbuild
 TARGET = GraxaimBanca
 
-all: install-deps build-program
+all: install-deps install-lazarus build-program
 
 install-lazarus:
 	@echo "Baixando o Lazarus..."
