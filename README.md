@@ -30,8 +30,8 @@ Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/re
 
 #### Instalação Simples (pacote)
 Acesse os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest"> lançamentos </a> e baixe a versão de acordo com sua distro:
-- Debian, Ubuntu, Linux Mint, Pop!_OS e derivados: Baixar e executar o arquivo **DEB.**
-- Fedora, OpenSUSE, RedHat e derivados Baixar e executar o arquivo **RPM.**
+- Debian, Ubuntu, Linux Mint, Pop!_OS e derivados: baixar e executar o arquivo **DEB.**
+- Fedora, OpenSUSE, RedHat e derivados: baixar e executar o arquivo **RPM.**
 - Manjaro e Arch Linux: Infelizmente ainda não há opção pré-compilada, sendo necessário compilar o código-fonte o programa conforme será ensinado abaixo.
 
 #### Instalação Manual (Compilação)    
