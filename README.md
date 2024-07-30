@@ -20,11 +20,43 @@ Este programa tem o intuito de substituir o uso de planilhas de gestão de banca
 
 ## Como instalar o programa:
 
-#### Linux: 
-
-Baixe a última versão no link https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases, e execute o arquivo DEB ou RPM dependendo da sua distribuição.
-
 #### Windows: 
 
-A versão Windows já está disponível desde o lançamento 0.1, bastando executar o instalador. 
-**Obs:** O Windows e o navegador podem detectar o instalador como potencial risco de segurança, mas não se preocupe, isso acontece porque este programa não tem certificado digital. Caso desconfie de algo, sinta-se a vontade para fazer uma verificação com antivírus. 
+Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest"> lançamentos </a> e baixar o executável .EXE. 
+> [!IMPORTANT]
+> O Windows e o navegador podem detectar o instalador como potencial risco de segurança, mas não se preocupe, isso acontece porque este programa não tem certificado digital. Caso desconfie de algo, sinta-se a vontade para fazer uma verificação com antivírus.
+
+#### Linux: 
+- **Instalador:** Acesse os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest"> lançamentos </a> e baixe a versão de acordo com sua distro:
+  - **Debian, Ubuntu, Linux Mint, Pop!_OS e demais distros baseadas em Debian:** Baixar e executar o arquivo .DEB.
+  - **Fedora, OpenSUSE, RedHat e demais distros baseadas em RedHat:** Baixar e executar o arquivo .RPM
+  - **Manjaro e Arch Linux:** Infelizmente ainda não há opção pré-compilada, sendo necessário compilar o código-fonte o programa conforme será ensinado abaixo.
+- **Compilação:** Instale o git para fazer o clone do repositório, e instale o make para fazer a compilação.
+  - Baseados em Debian:
+    ```
+    sudo apt install git make
+    ```
+  - RedHat:
+    ```
+    sudo yum install git make
+    ```
+  - Manjaro e Arch Linux:
+    ```
+    sudo pacman -S git make
+    ```
+  - OpenSUSE:
+    ```
+    sudo zypper install git make
+    ```
+  Após a instalação do git, digite os seguintes comandos no terminal:
+  ```
+  git clone https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
+  cd graxaimgestaodebanca
+  make
+  make install
+  ```
+> [!NOTE]
+> Caso baixe o código-fonte sem usar o git, o próprio makefile fará a instalação automaticamente, para o download temporário do compilador.
+
+  Isso deverá instalar o programa. Caso ocorra algum problema, <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/issues"> favor relatar. </a> 
+    
