@@ -156,7 +156,7 @@ install: build-program
 	for file in $(FILES); do \
 		sudo cp $$file $(INSTALL_DIR_SHARE); \
 	done
-	cp Graxaim\ Gestão\ de\ Banca.desktop $(INSTALL_DIR_SHARE)
+	sudo cp Graxaim\ Gestão\ de\ Banca.desktop $(INSTALL_DIR_SHARE)
 	sudo chmod 644 $(INSTALL_DIR_SHARE)/*
 	@echo "Arquivos instalados em $(INSTALL_DIR_SHARE)"
 
