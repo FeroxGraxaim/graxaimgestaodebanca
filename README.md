@@ -67,7 +67,7 @@ Instale o git para fazer o clone do repositório, e instale o make para fazer a 
 
 Após a instalação do git e do make, digite os seguintes comandos no terminal:
 ```
-git clone https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
+git clone --branch beta https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
 cd graxaimgestaodebanca
 make
 make install
