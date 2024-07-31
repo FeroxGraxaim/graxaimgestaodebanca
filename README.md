@@ -52,7 +52,7 @@ Instale o git para fazer o clone do repositório, e instale o make para fazer a 
   sudo dnf install git
   sudo dnf install make
   ```
-  - Manjaro e Arch Linux:
+- Manjaro e Arch Linux:
   ```
   sudo pacman -S git
   sudo pacman -S make
