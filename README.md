@@ -54,8 +54,8 @@ Instale o git para fazer o clone do repositório, e instale o make para fazer a 
   ```
 - Manjaro e Arch Linux:
   ```
-  sudo pacman -S git
-  sudo pacman -S make
+  sudo pacman -Sy git
+  sudo pacman -Sy make
   ```
 - OpenSUSE:
   ```
