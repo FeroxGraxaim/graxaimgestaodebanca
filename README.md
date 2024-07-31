@@ -69,8 +69,7 @@ Após a instalação do git e do make, digite os seguintes comandos no terminal:
 ```
 git clone https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
 cd graxaimgestaodebanca
-make
-make install
+make all
 ```
 > [!NOTE]
 > Caso baixe o código-fonte sem usar o git, o próprio makefile fará a instalação automaticamente, para o download temporário do compilador.
