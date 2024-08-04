@@ -32,7 +32,7 @@ Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/re
 Acesse os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest"> lançamentos </a> e baixe a versão de acordo com sua distro:
 - Debian, Ubuntu, Linux Mint, Pop!_OS e derivados: baixar e executar o arquivo **DEB.**
 - Fedora, OpenSUSE, RedHat e derivados: baixar e executar o arquivo **RPM.**
-- Manjaro e Arch Linux: Infelizmente ainda não há opção pré-compilada, sendo necessário compilar o código-fonte o programa conforme será ensinado abaixo.
+- Manjaro e Arch Linux: Baixe e execute o arquivo **.SH**, certifique-se de que esteja com permissões para ser executado nas propriedades do arquivo.
 
 #### Instalação Manual (Compilação)    
 Instale o git para fazer o clone do repositório, e instale o make para fazer a compilação.
@@ -52,10 +52,10 @@ Instale o git para fazer o clone do repositório, e instale o make para fazer a 
   sudo dnf install git
   sudo dnf install make
   ```
-  - Manjaro e Arch Linux:
+- Manjaro e Arch Linux:
   ```
-  sudo pacman -S git
-  sudo pacman -S make
+  sudo pacman -Sy git
+  sudo pacman -Sy make
   ```
 - OpenSUSE:
   ```
@@ -67,10 +67,9 @@ Instale o git para fazer o clone do repositório, e instale o make para fazer a 
 
 Após a instalação do git e do make, digite os seguintes comandos no terminal:
 ```
-git clone --branch beta https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
+git clone https://github.com/FeroxGraxaim/graxaimgestaodebanca.git
 cd graxaimgestaodebanca
-make
-make install
+make all
 ```
 > [!NOTE]
 > Caso baixe o código-fonte sem usar o git, o próprio makefile fará a instalação automaticamente, para o download temporário do compilador.

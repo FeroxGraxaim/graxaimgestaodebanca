@@ -10,7 +10,7 @@ uses
   DBExtCtrls, Menus, ActnList, CheckLst, Buttons, ExtCtrls, JSONPropStorage,
   EditBtn, TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
   TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
-  DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, FileUtil;
+  DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, FileUtil, HTTPDefs;
 
 type
 
@@ -113,7 +113,6 @@ type
     qrApostas: TSQLQuery;
     qrApostasBanca_Final: TBCDField;
     qrApostasCod_Aposta: TLongintField;
-    qrApostasCompeticao: TStringField;
     qrApostasData: TDateField;
     qrApostasJogo: TStringField;
     qrApostasLucro: TBCDField;
@@ -125,7 +124,6 @@ type
     qrApostasRSRetorno: TStringField;
     qrApostasSelecao: TBooleanField;
     qrApostasStatus: TStringField;
-    qrApostasTipoAposta: TStringField;
     qrApostasValor_Aposta: TBCDField;
     qrBanca: TSQLQuery;
     qrBancaAno: TLargeintField;
@@ -197,6 +195,8 @@ type
     procedure CriaMultipla(Contador: integer);
     procedure grdDadosApCellClick(Column: TColumn);
     procedure grdDadosApEditingDone(Sender: TObject);
+    procedure MenuItem7Click(Sender: TObject);
+    procedure MenuItem8Click(Sender: TObject);
     procedure pcPrincipalChange(Sender: TObject);
     procedure ReiniciarTodosOsQueries;
     procedure MudarCorLucro;
@@ -226,7 +226,8 @@ var
 implementation
 
 uses
-  untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre;
+  untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre,
+  fpjson, fphttpclient, jsonparser, LCLIntf;
 
 procedure DefinirStake;
 var
@@ -512,6 +513,16 @@ begin
   transactionBancoDados.CommitRetaining;
   qrApostas.Close;
   qrApostas.Open;
+end;
+
+procedure TformPrincipal.MenuItem7Click(Sender: TObject);
+begin
+  formSobre.ShowModal;
+end;
+
+procedure TformPrincipal.MenuItem8Click(Sender: TObject);
+begin
+  openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
 end;
 
 procedure TformPrincipal.pcPrincipalChange(Sender: TObject);
