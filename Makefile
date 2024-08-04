@@ -1,7 +1,7 @@
 FPC_VERSION = 3.2.0
 LCL_VERSION = 3.0
 CPU_TARGET = x86_64-linux
-INSTALL_DIR_BIN = /usr/bin
+INSTALL_DIR_BIN = /usr/local/bin
 INSTALL_DIR_SHARE = /usr/share/GraxaimBanca
 FILES = datafiles/criarbd.sql \
         datafiles/localizarbd.sql \
@@ -12,7 +12,7 @@ LAZARUS_REPO = https://gitlab.com/freepascal.org/lazarus/lazarus.git
 LAZARUS_BIN = $(LAZARUS_DIR)/lazbuild
 TARGET = GraxaimBanca
 
-all: install-deps install-lazarus build-program clean
+all: install-deps build-program
 
 install-lazarus:
 	@echo "Baixando o Lazarus..."
@@ -37,8 +37,6 @@ install-deps:
 	@echo "Detectando distribuição e instalando dependências..."
 	@if [ -f /etc/debian_version ]; then \
 		DISTRO="debian"; \
-	elif [ -f /etc/redhat-release ] && grep -q "Fedora" /etc/redhat-release; then \
-		DISTRO="fedora"; \
 	elif [ -f /etc/redhat-release ]; then \
 		DISTRO="redhat"; \
 	elif [ -f /etc/arch-release ]; then \
@@ -46,8 +44,8 @@ install-deps:
 	elif [ -f /etc/os-release ] && grep -q "openSUSE" /etc/os-release; then \
 		DISTRO="opensuse"; \
 	else \
-		echo "Distribuição desconhecida"; \
-		DISTRO="unknown"; \
+		echo "Distribuição não suportada"; \
+		exit 1; \
 	fi; \
 	\
 	case $$DISTRO in \
@@ -67,23 +65,8 @@ install-deps:
 				libc6-dev \
 				libsqlite3-dev; \
 			;; \
-		fedora) \
-			echo "Instalando dependências para Fedora"; \
-			sudo dnf install -y \
-				fpc \
-				git \
-				gtk2-devel \
-				libX11-devel \
-				gdk-pixbuf2-devel \
-				glib2-devel \
-				pango-devel \
-				cairo-devel \
-				atk-devel \
-				glibc-devel \
-				sqlite-devel; \
-			;; \
 		redhat) \
-			echo "Instalando dependências para Red Hat/CentOS"; \
+			echo "Instalando dependências para Red Hat/CentOS/Fedora"; \
 			sudo yum install -y \
 				fpc \
 				git \
@@ -129,19 +112,9 @@ install-deps:
 				sqlite3-devel \
 				sqlite3; \
 			;; \
-		unknown) \
-			clear; \
-			echo "Distribuição desconhecida, não foi possível instalar dependências automaticamente:"; \
-			echo "fpc, git, gtk2, libX11-6, gdk-pixbuf2, glib2, pango, cairo, atk, glibc, sqlite3, sqlite3-devel."; \
-			echo ; \
-			read -n 1 -s -r -p "As dependências já estão instaladas? (S/n)" resposta; \
-			echo; \
-			if [ "$resposta" = "S" ] || [ "$resposta" = "s" ]; then \
-			   echo "Continuando a compilação..."; \
-			else \
-			   echo "Compilação cancelada."; \
-			   exit 1; \
-			fi \
+		*) \
+			echo "Distribuição não suportada"; \
+			exit 1; \
 			;; \
 	esac
 
@@ -155,8 +128,9 @@ install: build-program
 	for file in $(FILES); do \
 		sudo cp $$file $(INSTALL_DIR_SHARE); \
 	done
-	sudo cp Graxaim\ Gestão\ de\ Banca.desktop /usr/share/applications
-	sudo chmod 644 /usr/share/applications/Graxaim\ Gestão\ de\ Banca.desktop
+	cp Graxaim\ Gestão\ de\ Banca.desktop $(INSTALL_DIR_SHARE)
+	sudo chmod 644 $(INSTALL_DIR_SHARE)/*
+	@echo "Arquivos instalados em $(INSTALL_DIR_SHARE)"
 
 uninstall:
 	@echo "Desinstalando $(TARGET) e arquivos associados"
