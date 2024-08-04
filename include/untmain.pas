@@ -197,6 +197,8 @@ type
     procedure CriaMultipla(Contador: integer);
     procedure grdDadosApCellClick(Column: TColumn);
     procedure grdDadosApEditingDone(Sender: TObject);
+    procedure MenuItem7Click(Sender: TObject);
+    procedure MenuItem8Click(Sender: TObject);
     procedure pcPrincipalChange(Sender: TObject);
     procedure ReiniciarTodosOsQueries;
     procedure MudarCorLucro;
@@ -226,7 +228,8 @@ var
 implementation
 
 uses
-  untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre;
+  untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre,
+  fpjson, HTTPDefs, fphttpclient, jsonparser, LCLIntf;
 
 procedure DefinirStake;
 var
@@ -512,6 +515,16 @@ begin
   transactionBancoDados.CommitRetaining;
   qrApostas.Close;
   qrApostas.Open;
+end;
+
+procedure TformPrincipal.MenuItem7Click(Sender: TObject);
+begin
+  formSobre.ShowModal;
+end;
+
+procedure TformPrincipal.MenuItem8Click(Sender: TObject);
+begin
+  openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
 end;
 
 procedure TformPrincipal.pcPrincipalChange(Sender: TObject);

@@ -1,16 +1,15 @@
 object formPrincipal: TformPrincipal
   Left = 1620
-  Height = 652
+  Height = 634
   Top = 82
   Width = 1082
   Caption = 'formPrincipal'
-  ClientHeight = 652
+  ClientHeight = 634
   ClientWidth = 1082
   Menu = MainMenu1
   OnCreate = FormCreate
   OnResize = FormResize
   Position = poDesktopCenter
-  LCLVersion = '3.4.0.0'
   object pcPrincipal: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -18,7 +17,7 @@ object formPrincipal: TformPrincipal
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 640
+    Height = 622
     Top = 0
     Width = 1082
     ActivePage = tsPainel
@@ -28,13 +27,13 @@ object formPrincipal: TformPrincipal
     OnChange = pcPrincipalChange
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
-      ClientHeight = 613
+      ClientHeight = 595
       ClientWidth = 1078
       object txtBancaAtual: TDBText
         Left = 31
         Height = 67
         Top = 252
-        Width = 217
+        Width = 314
         DataField = 'BancaFinalCalc'
         DataSource = dsBanca
         Font.Height = -48
@@ -84,7 +83,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 613
+        Height = 595
         Top = 0
         Width = 791
         ActivePage = tsGraficos
@@ -93,19 +92,19 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 586
+          ClientHeight = 568
           ClientWidth = 787
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 548
+            Height = 530
             Top = 31
             Width = 788
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 548
+            ClientHeight = 530
             ClientWidth = 788
             TabOrder = 0
             object chrtLucroMes: TChart
@@ -313,7 +312,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 586
+          ClientHeight = 568
           ClientWidth = 787
           TabVisible = False
           object pnTabelas: TPanel
@@ -393,7 +392,7 @@ object formPrincipal: TformPrincipal
         Left = 31
         Height = 67
         Top = 350
-        Width = 178
+        Width = 342
         DataField = 'LucroR$Calc'
         DataSource = dsBanca
         Font.Height = -48
@@ -404,7 +403,7 @@ object formPrincipal: TformPrincipal
         Left = 31
         Height = 67
         Top = 412
-        Width = 149
+        Width = 396
         DataField = 'Lucro%Calc'
         DataSource = dsBanca
         Font.Height = -48
@@ -473,7 +472,7 @@ object formPrincipal: TformPrincipal
         Left = 147
         Height = 31
         Top = 197
-        Width = 78
+        Width = 84
         DataField = 'StakeCalc'
         DataSource = dsBanca
         Font.Height = -22
@@ -484,18 +483,18 @@ object formPrincipal: TformPrincipal
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
-      ClientHeight = 613
+      ClientHeight = 595
       ClientWidth = 1078
       OnContextPopup = tsApostasContextPopup
       object grbApostas: TGroupBox
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 350
+        Height = 332
         Top = 12
         Width = 940
         Anchors = [akTop, akLeft, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 331
+        ClientHeight = 313
         ClientWidth = 936
         TabOrder = 0
         object grdApostas: TDBGrid
@@ -506,7 +505,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 331
+          Height = 313
           Top = 0
           Width = 936
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -594,7 +593,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 362
+        Top = 344
         Width = 940
         Anchors = [akLeft, akBottom]
         Caption = 'Detalhes da Aposta'
@@ -743,7 +742,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 576
         Height = 27
-        Top = 540
+        Top = 522
         Width = 118
         Anchors = [akLeft, akBottom]
         Enabled = False
@@ -756,7 +755,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 465
         Height = 27
-        Top = 539
+        Top = 521
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -773,7 +772,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 465
         Height = 27
-        Top = 575
+        Top = 557
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -790,7 +789,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 576
         Height = 27
-        Top = 571
+        Top = 553
         Width = 118
         Anchors = [akLeft, akBottom]
         Enabled = False
@@ -803,7 +802,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 705
         Height = 25
-        Top = 573
+        Top = 555
         Width = 109
         Anchors = [akLeft, akBottom]
         Caption = 'Visitante'
@@ -817,7 +816,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 705
         Height = 25
-        Top = 542
+        Top = 524
         Width = 109
         Anchors = [akLeft, akBottom]
         Caption = 'Mandante'
@@ -831,7 +830,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 828
         Height = 26
-        Top = 572
+        Top = 554
         Width = 118
         Anchors = [akLeft, akBottom]
         Caption = 'Limpar Filtros'
@@ -842,7 +841,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 184
         Height = 50
-        Top = 552
+        Top = 534
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -853,7 +852,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 50
-        Top = 552
+        Top = 534
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -864,7 +863,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 828
         Height = 26
-        Top = 542
+        Top = 524
         Width = 118
         Anchors = [akLeft, akBottom]
         Caption = 'Filtrar Apostas'
@@ -874,14 +873,14 @@ object formPrincipal: TformPrincipal
     end
     object tsControleMetodos: TTabSheet
       Caption = 'Controle de Métodos'
-      ClientHeight = 613
+      ClientHeight = 595
       ClientWidth = 1078
       TabVisible = False
       object pcControleMetodos: TPageControl
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 215
-        Height = 615
+        Height = 597
         Top = 0
         Width = 870
         ActivePage = tsGrafMet
@@ -890,7 +889,7 @@ object formPrincipal: TformPrincipal
         TabOrder = 0
         object tsGrafMet: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 587
+          ClientHeight = 569
           ClientWidth = 866
           OnContextPopup = tsGrafMetContextPopup
           object gbMetodo: TGroupBox
@@ -1193,7 +1192,7 @@ object formPrincipal: TformPrincipal
     end
     object tsContrTimes: TTabSheet
       Caption = 'Controle de Times'
-      ClientHeight = 613
+      ClientHeight = 595
       ClientWidth = 1078
       TabVisible = False
       object PageControl3: TPageControl
@@ -1247,14 +1246,13 @@ object formPrincipal: TformPrincipal
   object StatusBar1: TStatusBar
     Left = 0
     Height = 21
-    Top = 631
+    Top = 613
     Width = 1082
     Panels = <>
   end
   object conectBancoDados: TSQLite3Connection
-    Connected = True
+    Connected = False
     LoginPrompt = False
-    DatabaseName = '/home/ferox/Documentos/Programação/Graxaim Gestão de Banca/database.db'
     KeepConnection = False
     Params.Strings = (
       'AlwaysUseBigint=1'
@@ -1265,7 +1263,7 @@ object formPrincipal: TformPrincipal
     Top = 240
   end
   object transactionBancoDAdos: TSQLTransaction
-    Active = True
+    Active = False
     Database = conectBancoDados
     Left = 590
     Top = 528
@@ -1641,7 +1639,6 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -1869,9 +1866,11 @@ object formPrincipal: TformPrincipal
       end
       object MenuItem8: TMenuItem
         Caption = 'Apóie o Projeto'
+        OnClick = MenuItem8Click
       end
       object MenuItem7: TMenuItem
         Caption = 'Sobre'
+        OnClick = MenuItem7Click
       end
     end
   end
@@ -2059,25 +2058,28 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'SomaLucro'
-        DataType = ftFloat
+        DataType = ftString
         Precision = -1
+        Size = 255
       end    
       item
         Name = 'PorCentoLucro'
-        DataType = ftFloat
+        DataType = ftString
         Precision = -1
+        Size = 255
       end    
       item
         Name = 'Green'
-        DataType = ftLargeint
+        DataType = ftString
         Precision = -1
+        Size = 255
       end    
       item
         Name = 'Red'
-        DataType = ftLargeint
+        DataType = ftString
         Precision = -1
+        Size = 255
       end>
-    Active = True
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (

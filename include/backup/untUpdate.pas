@@ -22,7 +22,7 @@ implementation
 
 uses
   fpjson, HTTPDefs, fphttpclient,
-  jsonparser, LCLIntf, ssl_openssl3, opensslsockets;
+  jsonparser, LCLIntf, opensslsockets;
 
 function CompareVersion(version1, version2: string): integer;
 var

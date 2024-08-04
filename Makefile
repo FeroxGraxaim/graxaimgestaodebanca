@@ -1,7 +1,7 @@
 FPC_VERSION = 3.2.0
 LCL_VERSION = 3.0
 CPU_TARGET = x86_64-linux
-INSTALL_DIR_BIN = /usr/local/bin
+INSTALL_DIR_BIN = /usr/bin
 INSTALL_DIR_SHARE = /usr/share/GraxaimBanca
 FILES = datafiles/criarbd.sql \
         datafiles/localizarbd.sql \
@@ -134,8 +134,7 @@ install-deps:
 			echo "Distribuição desconhecida, não foi possível instalar dependências automaticamente:"; \
 			echo "fpc, git, gtk2, libX11-6, gdk-pixbuf2, glib2, pango, cairo, atk, glibc, sqlite3, sqlite3-devel."; \
 			echo ; \
-			echo "As dependências já estão instaladas? (S/n)" \
-			read -n 1 -s -r -p "Pressione 'S' para continuar ou 'N' para cancelar: " resposta; \
+			read -n 1 -s -r -p "As dependências já estão instaladas? (S/n)" resposta; \
 			echo; \
 			if [ "$resposta" = "S" ] || [ "$resposta" = "s" ]; then \
 			   echo "Continuando a compilação..."; \
@@ -156,9 +155,8 @@ install: build-program
 	for file in $(FILES); do \
 		sudo cp $$file $(INSTALL_DIR_SHARE); \
 	done
-	sudo cp Graxaim\ Gestão\ de\ Banca.desktop $(INSTALL_DIR_SHARE)
-	sudo chmod 644 $(INSTALL_DIR_SHARE)/*
-	@echo "Arquivos instalados em $(INSTALL_DIR_SHARE)"
+	sudo cp Graxaim\ Gestão\ de\ Banca.desktop /usr/share/applications
+	sudo chmod 644 /usr/share/applications/Graxaim\ Gestão\ de\ Banca.desktop
 
 uninstall:
 	@echo "Desinstalando $(TARGET) e arquivos associados"
