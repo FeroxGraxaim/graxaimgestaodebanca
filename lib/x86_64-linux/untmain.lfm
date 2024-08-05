@@ -1,10 +1,10 @@
 object formPrincipal: TformPrincipal
-  Left = 1620
-  Height = 634
-  Top = 82
+  Left = 198
+  Height = 706
+  Top = 565
   Width = 1082
   Caption = 'formPrincipal'
-  ClientHeight = 634
+  ClientHeight = 706
   ClientWidth = 1082
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -17,17 +17,17 @@ object formPrincipal: TformPrincipal
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 622
+    Height = 694
     Top = 0
     Width = 1082
-    ActivePage = tsPainel
+    ActivePage = tsApostas
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     OnChange = pcPrincipalChange
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
-      ClientHeight = 595
+      ClientHeight = 667
       ClientWidth = 1078
       object txtBancaAtual: TDBText
         Left = 31
@@ -83,7 +83,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 595
+        Height = 668
         Top = 0
         Width = 791
         ActivePage = tsGraficos
@@ -92,19 +92,19 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 568
+          ClientHeight = 641
           ClientWidth = 787
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 530
+            Height = 604
             Top = 31
             Width = 788
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 530
+            ClientHeight = 604
             ClientWidth = 788
             TabOrder = 0
             object chrtLucroMes: TChart
@@ -312,7 +312,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 568
+          ClientHeight = 641
           ClientWidth = 787
           TabVisible = False
           object pnTabelas: TPanel
@@ -458,6 +458,7 @@ object formPrincipal: TformPrincipal
         Top = 129
         Width = 100
         TabOrder = 4
+        Text = 'Banca Inicial'
       end
       object cbPerfil: TComboBox
         Left = 31
@@ -483,18 +484,18 @@ object formPrincipal: TformPrincipal
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
-      ClientHeight = 595
+      ClientHeight = 667
       ClientWidth = 1078
       OnContextPopup = tsApostasContextPopup
       object grbApostas: TGroupBox
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 332
+        Height = 405
         Top = 12
         Width = 940
         Anchors = [akTop, akLeft, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 313
+        ClientHeight = 386
         ClientWidth = 936
         TabOrder = 0
         object grdApostas: TDBGrid
@@ -505,7 +506,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 313
+          Height = 386
           Top = 0
           Width = 936
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -524,23 +525,9 @@ object formPrincipal: TformPrincipal
             item
               Color = 14935011
               ReadOnly = True
-              Title.Caption = 'Competição'
-              Width = 154
-              FieldName = 'Competicao'
-            end          
-            item
-              Color = 14935011
-              ReadOnly = True
               Title.Caption = 'Jogo'
-              Width = 154
+              Width = 400
               FieldName = 'Jogo'
-            end          
-            item
-              Color = 14935011
-              ReadOnly = True
-              Title.Caption = 'Tipo de Aposta'
-              Width = 100
-              FieldName = 'TipoAposta'
             end          
             item
               Color = 14935011
@@ -587,13 +574,14 @@ object formPrincipal: TformPrincipal
           DataSource = dsApostas
           Scrollbars = ssAutoBoth
           TabOrder = 0
+          OnEditingDone = grdApostasEditingDone
         end
       end
       object grbDetalhesAp: TGroupBox
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 344
+        Top = 417
         Width = 940
         Anchors = [akLeft, akBottom]
         Caption = 'Detalhes da Aposta'
@@ -718,11 +706,6 @@ object formPrincipal: TformPrincipal
               FieldName = 'Linha'
             end          
             item
-              Title.Caption = 'Odd'
-              Width = 77
-              FieldName = 'Odd'
-            end          
-            item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Situação'
               Width = 77
@@ -742,7 +725,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 576
         Height = 27
-        Top = 522
+        Top = 595
         Width = 118
         Anchors = [akLeft, akBottom]
         Enabled = False
@@ -755,7 +738,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 465
         Height = 27
-        Top = 521
+        Top = 594
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -772,7 +755,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 465
         Height = 27
-        Top = 557
+        Top = 630
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -789,7 +772,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 576
         Height = 27
-        Top = 553
+        Top = 626
         Width = 118
         Anchors = [akLeft, akBottom]
         Enabled = False
@@ -802,7 +785,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 705
         Height = 25
-        Top = 555
+        Top = 628
         Width = 109
         Anchors = [akLeft, akBottom]
         Caption = 'Visitante'
@@ -816,7 +799,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 705
         Height = 25
-        Top = 524
+        Top = 597
         Width = 109
         Anchors = [akLeft, akBottom]
         Caption = 'Mandante'
@@ -830,7 +813,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 828
         Height = 26
-        Top = 554
+        Top = 627
         Width = 118
         Anchors = [akLeft, akBottom]
         Caption = 'Limpar Filtros'
@@ -841,7 +824,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 184
         Height = 50
-        Top = 534
+        Top = 607
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -852,7 +835,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 50
-        Top = 534
+        Top = 607
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -863,7 +846,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 828
         Height = 26
-        Top = 524
+        Top = 597
         Width = 118
         Anchors = [akLeft, akBottom]
         Caption = 'Filtrar Apostas'
@@ -873,14 +856,14 @@ object formPrincipal: TformPrincipal
     end
     object tsControleMetodos: TTabSheet
       Caption = 'Controle de Métodos'
-      ClientHeight = 595
+      ClientHeight = 667
       ClientWidth = 1078
       TabVisible = False
       object pcControleMetodos: TPageControl
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 215
-        Height = 597
+        Height = 670
         Top = 0
         Width = 870
         ActivePage = tsGrafMet
@@ -889,7 +872,7 @@ object formPrincipal: TformPrincipal
         TabOrder = 0
         object tsGrafMet: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 569
+          ClientHeight = 642
           ClientWidth = 866
           OnContextPopup = tsGrafMetContextPopup
           object gbMetodo: TGroupBox
@@ -1192,7 +1175,7 @@ object formPrincipal: TformPrincipal
     end
     object tsContrTimes: TTabSheet
       Caption = 'Controle de Times'
-      ClientHeight = 595
+      ClientHeight = 667
       ClientWidth = 1078
       TabVisible = False
       object PageControl3: TPageControl
@@ -1246,13 +1229,14 @@ object formPrincipal: TformPrincipal
   object StatusBar1: TStatusBar
     Left = 0
     Height = 21
-    Top = 613
+    Top = 685
     Width = 1082
     Panels = <>
   end
   object conectBancoDados: TSQLite3Connection
     Connected = False
     LoginPrompt = False
+    DatabaseName = '/home/ferox/.config/GraxaimBanca/database.db'
     KeepConnection = False
     Params.Strings = (
       'AlwaysUseBigint=1'
@@ -1316,19 +1300,7 @@ object formPrincipal: TformPrincipal
         Precision = -1
       end    
       item
-        Name = 'Competicao'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end    
-      item
         Name = 'Jogo'
-        DataType = ftString
-        Precision = -1
-        Size = 255
-      end    
-      item
-        Name = 'TipoAposta'
         DataType = ftString
         Precision = -1
         Size = 255
@@ -1363,33 +1335,29 @@ object formPrincipal: TformPrincipal
       '    Apostas."Selec." AS Selecao,'
       '    Apostas.Múltipla,'
       '    CASE'
-      '        WHEN Apostas."Múltipla" = 0 THEN Competições.Competição'
-      '        WHEN Apostas."Múltipla" = 1 THEN ''Várias Comp.'''
-      '    END AS Competicao,'
-      '    CASE'
-      '        WHEN Apostas."Múltipla" = 0 THEN Jogo.Mandante || '' X '' || Jogo.Visitante'
-      '        WHEN Apostas."Múltipla" = 1 THEN ''Vários Jogos'''
+      '        WHEN Apostas."Múltipla" = 0 THEN Competições.Competição || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante'
+      '        WHEN Apostas."Múltipla" = 1 THEN ''Aposta Múltipla'''
       '    END AS Jogo,'
-      '    CASE'
-      '        WHEN Apostas."Múltipla" = 0 THEN ''Simples'''
-      '        WHEN Apostas."Múltipla" = 1 THEN ''Múltipla'''
-      '    END AS TipoAposta,'
       '    Apostas.Odd,'
       '    Apostas.Valor_Aposta,'
       '    Apostas.Status'
       'FROM'
       '    Apostas'
       'LEFT JOIN'
-      '    Jogo ON Apostas.Cod_Aposta = Jogo.Cod_Aposta'
+      '    Mercados ON Apostas.Cod_Aposta = Mercados.Cod_Aposta'
+      'LEFT JOIN'
+      '    Jogo ON Mercados.Cod_Jogo = Jogo.Cod_Jogo'
       'INNER JOIN'
       '    Competições ON Jogo.Cod_Comp = Competições.Cod_Comp'
+      'GROUP BY Jogo'
+      'ORDER BY Data;'
     )
     InsertSQL.Strings = (
       'INSERT INTO Apostas "Data", Competição_AP, Mandante, Visitante, Estratégia_Escolhida, Odd, Unidade, Valor_Aposta, Status) VALUES (:V1, V2, V3, V4, V5, V6, V7, V8, V9);'
       ''
     )
     UpdateSQL.Strings = (
-      'UPDATE Apostas SET "Selec." = :Selecao WHERE Cod_Aposta = :Cod_Aposta;'
+      'UPDATE Apostas SET "Selec." = :Selecao, Data = :Data WHERE Cod_Aposta = :Cod_Aposta;'
     )
     DeleteSQL.Strings = (
       'DELETE FROM Apostas WHERE "Selec." = 1'
@@ -1417,30 +1385,10 @@ object formPrincipal: TformPrincipal
       Required = False
       DisplayValues = 'True;False'
     end
-    object qrApostasCompeticao: TStringField
-      FieldKind = fkData
-      FieldName = 'Competicao'
-      Index = 2
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Size = 255
-    end
     object qrApostasJogo: TStringField
       FieldKind = fkData
       FieldName = 'Jogo'
-      Index = 3
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Size = 255
-    end
-    object qrApostasTipoAposta: TStringField
-      FieldKind = fkData
-      FieldName = 'TipoAposta'
-      Index = 4
+      Index = 2
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1450,7 +1398,7 @@ object formPrincipal: TformPrincipal
     object qrApostasOdd: TBCDField
       FieldKind = fkData
       FieldName = 'Odd'
-      Index = 5
+      Index = 3
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1464,7 +1412,7 @@ object formPrincipal: TformPrincipal
     object qrApostasValor_Aposta: TBCDField
       FieldKind = fkData
       FieldName = 'Valor_Aposta'
-      Index = 6
+      Index = 4
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1478,7 +1426,7 @@ object formPrincipal: TformPrincipal
     object qrApostasStatus: TStringField
       FieldKind = fkData
       FieldName = 'Status'
-      Index = 7
+      Index = 5
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1488,7 +1436,7 @@ object formPrincipal: TformPrincipal
     object qrApostasRSRetorno: TStringField
       FieldKind = fkCalculated
       FieldName = 'RSRetorno'
-      Index = 8
+      Index = 6
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1497,7 +1445,7 @@ object formPrincipal: TformPrincipal
     object qrApostasRSLucro: TStringField
       FieldKind = fkCalculated
       FieldName = 'RSLucro'
-      Index = 9
+      Index = 7
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1506,7 +1454,7 @@ object formPrincipal: TformPrincipal
     object qrApostasRSBancaFinal: TStringField
       FieldKind = fkCalculated
       FieldName = 'RSBancaFinal'
-      Index = 10
+      Index = 8
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1515,7 +1463,7 @@ object formPrincipal: TformPrincipal
     object qrApostasData: TDateField
       FieldKind = fkData
       FieldName = 'Data'
-      Index = 11
+      Index = 9
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1524,7 +1472,7 @@ object formPrincipal: TformPrincipal
     object qrApostasRetorno: TBCDField
       FieldKind = fkData
       FieldName = 'Retorno'
-      Index = 12
+      Index = 10
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1538,7 +1486,7 @@ object formPrincipal: TformPrincipal
     object qrApostasLucro: TBCDField
       FieldKind = fkData
       FieldName = 'Lucro'
-      Index = 13
+      Index = 11
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1552,7 +1500,7 @@ object formPrincipal: TformPrincipal
     object qrApostasBanca_Final: TBCDField
       FieldKind = fkData
       FieldName = 'Banca_Final'
-      Index = 14
+      Index = 12
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1566,7 +1514,7 @@ object formPrincipal: TformPrincipal
     object qrApostasMltipla: TBooleanField
       FieldKind = fkData
       FieldName = 'Múltipla'
-      Index = 15
+      Index = 13
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1703,7 +1651,8 @@ object formPrincipal: TformPrincipal
       '  Stake,'
       '  (''R$ '' || Stake) AS StakeCalc'
       'FROM'
-      '  Banca;'
+      '  Banca'
+      'WHERE Mês = :mesSelec AND Ano = :anoSelec;'
     )
     InsertSQL.Strings = (
       'INSERT INTO "Banca" ("Mês", Ano, Valor_Inicial, Stake) VALUES (:mes, :ano :novoValor, :stakeAposta)'
@@ -1713,7 +1662,17 @@ object formPrincipal: TformPrincipal
       'UPDATE "Banca Inicial" SET Valor_R$ = :novoValor WHERE "Mês" = :mesSelecionado AND Ano = :anoSelecionado'
       ''
     )
-    Params = <>
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'mesSelec'
+        ParamType = ptInput
+      end    
+      item
+        DataType = ftUnknown
+        Name = 'anoSelec'
+        ParamType = ptInput
+      end>
     Macros = <>
     Left = 977
     Top = 43
@@ -2269,8 +2228,10 @@ object formPrincipal: TformPrincipal
       '#UNDEFINE'
     )
     Script.Strings = (
+      'DELETE FROM Jogo WHERE EXISTS (SELECT 1 FROM Mercados JOIN Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta WHERE Mercados.Cod_Jogo = Jogo.Cod_Jogo AND Apostas."Selec." = 1);'
+      ''
       'DELETE FROM Mercados WHERE EXISTS (SELECT 1 FROM Apostas WHERE Mercados.Cod_Aposta = Apostas.Cod_Aposta AND Apostas."Selec." = 1);'
-      'DELETE FROM Jogo WHERE EXISTS (SELECT 1 FROM Apostas WHERE Jogo.Cod_Aposta = Apostas.Cod_Aposta AND Apostas."Selec." = 1);'
+      ''
       'DELETE FROM Apostas WHERE "Selec." = 1;'
     )
     Terminator = ';'
@@ -2364,7 +2325,7 @@ object formPrincipal: TformPrincipal
       'Cod_Linha = (SELECT Cod_Linha FROM Linhas WHERE Linhas.Nome = :Linha),'
       'Odd = :Odd,'
       'Status = :Status'
-      'WHERE ROWID = :ROWID;'
+      'WHERE Cod_Aposta = :CodAposta;'
       ''
     )
     Params = <    

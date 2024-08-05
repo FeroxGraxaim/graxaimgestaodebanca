@@ -148,17 +148,18 @@ begin
         transactionBancoDados.CommitRetaining;
         writeln('Executando script para remover aposta');
         try
-          for i := 0 to scriptRemoverAposta.Script.Count - 1 do
-          begin
-            conectBancoDados.ExecuteDirect(scriptRemoverAposta.Script[i]);
-            writeln('Executando SQL ' + scriptRemoverAposta.Script[i]);
-          end;
+          scriptRemoverAposta.Execute;
           transactionBancoDados.CommitRetaining;
         except
           on E: Exception do
           begin
-            writeln('Erro: ' + E.Message +
-              'Comando SQL: ' + scriptRemoverAposta.Script[i]);
+            writeln('Erro: ' + E.Message + 'Comando SQL: ' +
+              scriptRemoverAposta.Script[i]);
+            transactionBancoDados.RollbackRetaining;
+          end;
+          on E: EDatabaseError do
+          begin
+            writeln('Erro: ' + E.Message);
             transactionBancoDados.RollbackRetaining;
           end;
         end;
@@ -203,12 +204,15 @@ begin
       NovaApostaForm := TformNovaAposta.Create(nil);
       try
         Screen.Cursor := crDefault;
+        conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
+        transactionBancoDados.CommitRetaining;
         NovaApostaForm.ShowModal;
       finally
         NovaApostaForm.Free;
-        ReiniciarTodosOsQueries;
-        if not qrApostas.IsEmpty then grdApostas.Enabled := True;
       end;
+
+      ReiniciarTodosOsQueries;
+      if not qrApostas.IsEmpty then grdApostas.Enabled := True;
     except
       on E: Exception do
       begin

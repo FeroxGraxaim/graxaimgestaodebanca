@@ -76,8 +76,6 @@ begin
     formPrincipal.cbMes.OnChange      := @EventosPainel.cbMesChange;
     formPrincipal.cbAno.OnChange      := @EventosPainel.cbAnoChange;
     formPrincipal.cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
-    //qrMes.OnCalcFields                := @EventosPainel.qrMesCalcFields;
-    //qrAno.OnCalcFields                := @EventosPainel.qrAnoCalcFields;
 
     progresso.Position := 14;
     lbProgresso.Caption := 'Atribuindo eventos de apostas';

@@ -32,7 +32,7 @@ var
 
 implementation
 uses
-  untMain, fpjson, HTTPDefs, fphttpclient, jsonparser, LCLIntf, IdSSLOpenSSLHeaders;
+  untMain, fpjson, HTTPDefs, fphttpclient, jsonparser, LCLIntf;
 
 {$R *.lfm}
 

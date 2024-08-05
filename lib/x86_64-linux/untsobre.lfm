@@ -2,19 +2,18 @@ object formSobre: TformSobre
   Left = 2207
   Height = 470
   Top = 232
-  Width = 396
+  Width = 381
   BorderStyle = bsDialog
   Caption = 'Sobre'
   ClientHeight = 470
-  ClientWidth = 396
-  DesignTimePPI = 125
-  LCLVersion = '3.4.0.0'
+  ClientWidth = 381
+  Position = poMainFormCenter
   Scaled = False
   object graxaimFoto: TImage
     Left = 72
-    Height = 248
-    Top = 56
-    Width = 254
+    Height = 224
+    Top = 72
+    Width = 240
     OnClick = graxaimFotoClick
     Picture.Data = {
       0A544A706567496D616765045C0500FFD8FFE000104A46494600010101012B01
@@ -10999,9 +10998,9 @@ object formSobre: TformSobre
   end
   object lbFerox: TLabel
     Left = 72
-    Height = 42
+    Height = 49
     Top = 304
-    Width = 254
+    Width = 240
     Caption = 'Ferox Graxaim'
     Font.Height = -35
     Font.Name = 'Sans'
@@ -11009,9 +11008,9 @@ object formSobre: TformSobre
   end
   object Label1: TLabel
     Left = 8
-    Height = 21
+    Height = 24
     Top = 24
-    Width = 379
+    Width = 358
     Caption = 'Projeto autônomo de código aberto feito por:'
     Font.Height = -17
     Font.Name = 'Sans'
@@ -11020,7 +11019,7 @@ object formSobre: TformSobre
   object btnGithub: TBitBtn
     Left = 88
     Height = 50
-    Top = 344
+    Top = 352
     Width = 218
     Caption = 'Página do Github'
     Glyph.Data = {
@@ -11146,7 +11145,7 @@ object formSobre: TformSobre
   object btnApoie: TBitBtn
     Left = 88
     Height = 50
-    Top = 400
+    Top = 408
     Width = 218
     Caption = 'Apoie o Projeto!'
     Glyph.Data = {

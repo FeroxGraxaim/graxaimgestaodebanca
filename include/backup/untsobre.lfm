@@ -7,7 +7,6 @@ object formSobre: TformSobre
   Caption = 'Sobre'
   ClientHeight = 470
   ClientWidth = 381
-  Position = poMainFormCenter
   Scaled = False
   object graxaimFoto: TImage
     Left = 72

@@ -10,7 +10,7 @@ uses
   DBExtCtrls, Menus, ActnList, CheckLst, Buttons, ExtCtrls, JSONPropStorage,
   EditBtn, TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
   TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
-  DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, FileUtil;
+  DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, FileUtil, HTTPDefs;
 
 type
 
@@ -113,7 +113,6 @@ type
     qrApostas: TSQLQuery;
     qrApostasBanca_Final: TBCDField;
     qrApostasCod_Aposta: TLongintField;
-    qrApostasCompeticao: TStringField;
     qrApostasData: TDateField;
     qrApostasJogo: TStringField;
     qrApostasLucro: TBCDField;
@@ -125,7 +124,6 @@ type
     qrApostasRSRetorno: TStringField;
     qrApostasSelecao: TBooleanField;
     qrApostasStatus: TStringField;
-    qrApostasTipoAposta: TStringField;
     qrApostasValor_Aposta: TBCDField;
     qrBanca: TSQLQuery;
     qrBancaAno: TLargeintField;
@@ -195,6 +193,7 @@ type
 
     procedure AtualizaMetodoLinha(Sender: TObject);
     procedure CriaMultipla(Contador: integer);
+    procedure grdApostasEditingDone(Sender: TObject);
     procedure grdDadosApCellClick(Column: TColumn);
     procedure grdDadosApEditingDone(Sender: TObject);
     procedure MenuItem7Click(Sender: TObject);
@@ -223,35 +222,43 @@ var
   formPrincipal: TformPrincipal;
   estrategia, perfilInvestidor: string;
   stakeAposta, valorInicial: double;
-  mesSelecionado, anoSelecionado, contMult: integer;
+  contMult: integer;
+  mesSelecionado: integer;
+  anoSelecionado: integer;
 
 implementation
 
 uses
   untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre,
-  fpjson, HTTPDefs, fphttpclient, jsonparser, LCLIntf;
+  fpjson, fphttpclient, jsonparser, LCLIntf;
 
 procedure DefinirStake;
 var
   query: TSQLQuery;
 begin
-  query := TSQLQuery.Create(nil);
-  query.DataBase := formPrincipal.conectBancoDados;
-  try
-    if not query.Active then query.Close;
-    query.SQL.Text := 'UPDATE Banca SET "Stake" = :stake';
-    formPrincipal.PerfilDoInvestidor;
-    query.ParamByName('stake').AsFloat := stakeAposta;
-    query.ExecSQL;
-    formPrincipal.transactionBancoDados.Commit;
-  except
-    on E: Exception do
-    begin
-      writeln('Erro: ' + E.Message + ' Abortado');
-      formPrincipal.transactionBancoDados.Rollback;
+  with formPrincipal do
+  begin
+    query := TSQLQuery.Create(nil);
+    query.DataBase := formPrincipal.conectBancoDados;
+    try
+      if not query.Active then query.Close;
+      query.SQL.Text :=
+        'UPDATE Banca SET "Stake" = :stake WHERE Mês = :mesSelec AND Ano = :anoSelec';
+      formPrincipal.PerfilDoInvestidor;
+      query.ParamByName('stake').AsFloat := stakeAposta;
+      query.ParamByName('mesSelec').AsInteger := mesSelecionado;
+      query.ParamByName('anoSelec').AsInteger := anoSelecionado;
+      query.ExecSQL;
+      transactionBancoDados.CommitRetaining;
+    except
+      on E: Exception do
+      begin
+        writeln('Erro: ' + E.Message + ' Abortado');
+        transactionBancoDados.RollbackRetaining;
+      end;
     end;
+    query.Free;
   end;
-  query.Free;
 end;
 
 {$R *.lfm}
@@ -268,6 +275,10 @@ begin
   //AssignFile(Output, 'debug.txt');
   Rewrite(Output);
   {$ENDIF}
+
+  mesSelecionado := MonthOf(Now);
+  anoSelecionado := YearOf(Now);
+
   writeln('Exibindo tela splash');
   TelaSplash := TformSplash.Create(nil);
   TelaSplash.ShowModal;
@@ -321,9 +332,19 @@ procedure TformPrincipal.CriaMultipla(Contador: integer);
 begin
 
 end;
+
+procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
+begin
+  qrApostas.Post;
+  qrApostas.ApplyUpdates;
+  transactionBancoDados.CommitRetaining;
+  qrApostas.Refresh;
+  qrApostas.Edit;
+end;
+
 procedure TformPrincipal.MudarCorLucro;
 var
-  lucro: Double;
+  lucro: double;
 begin
   lucro := qrBanca.FieldByName('Lucro').AsFloat;
 

@@ -44,6 +44,13 @@ procedure TEventosPainel.tsPainelShow(Sender: TObject);
 begin
   formPrincipal.MudarCorLucro;
   AtualizarGraficoLucro;
+  with formPrincipal do
+  begin
+    if qrBanca.Active then qrBanca.Close;
+    qrBanca.ParamByName('mesSelec').AsInteger := MonthOf(Now);
+    qrBanca.ParamByName('anoSelec').AsInteger := YearOf(Now);
+    qrBanca.Open;
+  end;
 end;
 
 
@@ -124,10 +131,10 @@ begin
         writeln('Alterando o valor ', valorInicial, ' para ', novoValor);
         valorInicial := novoValor;
         writeln('Salvando mudanças no banco de dados');
-        transactionBancoDAdos.Commit;
-        ReiniciarTodosOsQueries;
+        mesSelecionado := StrToInt(cbMes.Text);
+        anoSelecionado := StrToInt(cbAno.Text);
+        transactionBancoDados.CommitRetaining;
         DefinirStake;
-        ReiniciarTodosOsQueries;
         ShowMessage('Valor de banca salvo com sucesso!');
       except
         on E: Exception do
@@ -178,12 +185,12 @@ begin
           'UPDATE "Selecionar Perfil" SET "Perfil Selecionado" = :perfilSelecionado';
         query.ParamByName('perfilSelecionado').AsString := perfilInvestidor;
         query.ExecSQL;
-        transactionBancoDados.Commit;
+        transactionBancoDados.CommitRetaining;
       except
         on E: Exception do
         begin
           writeln('Erro ao atualizar perfil: ' + E.Message);
-          transactionBancoDados.Rollback;
+          transactionBancoDados.RollbackRetaining;
         end;
       end;
     finally
@@ -199,8 +206,12 @@ end;
 
 procedure TEventosPainel.edtBancaInicialKeyPress(Sender: TObject; var Key: char);
 begin
-  if Key = '.' then
-    Key := ',';
+  if FormatSettings.DecimalSeparator = ',' then
+    if Key = '.' then
+      Key := ','
+    else if FormatSettings.DecimalSeparator = '.' then
+      if Key = ',' then
+        Key := '.';
 end;
 
 procedure TEventosPainel.PreencherComboBox;
@@ -282,7 +293,6 @@ begin
     end;
   end;
 end;
-
 
 procedure TEventosPainel.AtualizarGraficoLucro;
 var
@@ -375,8 +385,8 @@ begin
 
       //Atualizar gráficos pizza
       try
-      (chrtAcertMes.Series[0] as TPieSeries).Clear;
-      (chrtAcertAno.Series[0] as TPieSeries).Clear;
+        (chrtAcertMes.Series[0] as TPieSeries).Clear;
+        (chrtAcertAno.Series[0] as TPieSeries).Clear;
         if not qrMes.Active then qrMes.Open;
         if qrMes.RecordCount = 0 then Exit;
 
@@ -496,12 +506,28 @@ procedure TEventosPainel.cbMesChange(Sender: TObject);
 begin
   AtualizaMesEAno;
   AtualizarGraficoLucro;
+  with formPrincipal do
+  begin
+    qrBanca.Close;
+    qrBanca.ParamByName('mesSelec').AsInteger := StrToInt(cbMes.Text);
+    qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
+    qrBanca.Open;
+    edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
+  end;
 end;
 
 procedure TEventosPainel.cbAnoChange(Sender: TObject);
 begin
   AtualizaMesEAno;
   AtualizarGraficoLucro;
+  with formPrincipal do
+  begin
+    qrBanca.Close;
+    qrBanca.ParamByName('mesSelec').AsInteger := StrToInt(cbMes.Text);
+    qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
+    edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
+    qrBanca.Open;
+  end;
 end;
 
 procedure TEventosPainel.qrMesCalcFields(DataSet: TDataSet);
