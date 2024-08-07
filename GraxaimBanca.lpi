@@ -157,6 +157,11 @@
         <Filename Value="datafiles/criarbd.sql"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="include/untcontrolemetodos.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untControleMetodos"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

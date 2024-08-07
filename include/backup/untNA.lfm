@@ -3,8 +3,8 @@ object formNovaAposta: TformNovaAposta
   Height = 427
   Top = 572
   Width = 712
-  BorderIcons = [biHelp]
-  BorderStyle = bsToolWindow
+  BorderIcons = []
+  BorderStyle = bsDialog
   Caption = 'Nova Aposta'
   ClientHeight = 427
   ClientWidth = 712
@@ -473,6 +473,7 @@ object formNovaAposta: TformNovaAposta
         Top = 72
         Width = 75
         Caption = 'Novo Jogo'
+        Enabled = False
         TabOrder = 9
         OnClick = btnAddJogoClick
       end
@@ -974,7 +975,7 @@ object formNovaAposta: TformNovaAposta
       '    Competições ON Jogo.Cod_Comp = Competições.Cod_Comp'
       'WHERE'
       '    Apostas.Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas)'
-      'GROUP BY ROWID;'
+      'GROUP BY Jogo.ROWID;'
       ''
     )
     InsertSQL.Strings = (

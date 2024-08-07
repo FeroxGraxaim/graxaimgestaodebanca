@@ -59,10 +59,15 @@ begin
   with formPrincipal do
   begin
     writeln('Exibido tsApostas');
-    if qrApostas.IsEmpty then
-      grdApostas.Enabled := False
-    else
-      grdApostas.Enabled := True;
+    if qrApostas.State in [dsEdit, dsInsert] then
+      qrApostas.Cancel;
+
+    if qrApostas.Active then qrApostas.Close;
+    qrApostas.ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+    qrApostas.ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+    qrApostas.Open;
+
+    grdApostas.Enabled := not qrApostas.IsEmpty;
   end;
 end;
 
@@ -211,7 +216,7 @@ begin
         NovaApostaForm.Free;
       end;
 
-     ReiniciarTodosOsQueries;
+      ReiniciarTodosOsQueries;
       if not qrApostas.IsEmpty then grdApostas.Enabled := True;
     except
       on E: Exception do
@@ -460,8 +465,5 @@ begin
     // Calculando := False;
   end;
 end;
-
-
-
 
 end.

@@ -32,7 +32,8 @@ formSplash: TformSplash;
 
 implementation
 
-uses untMain, untUpdate, untApostas, untPainel, untDatabase, untMultipla;
+uses untMain, untUpdate, untApostas, untPainel, untDatabase, untMultipla,
+untControleMetodos;
 
 {$R *.lfm}
 
@@ -51,6 +52,7 @@ var
   BancoDados:     TBancoDados;
   EventosApostas: TEventosApostas;
   EventosMultiplas: TEventosMultiplas;
+  EventosMetodos: TEventosMetodos;
 begin
   with formPrincipal do
     begin
@@ -94,6 +96,17 @@ begin
     grdApostas.OnCellClick := @EventosApostas.grdApostascellClick;
     btnCashout.OnClick := @EventosApostas.btnCashoutClick;
     qrApostas.OnCalcFields := @EventosApostas.qrApostasCalcFields;
+
+    //Definindo eventos do controle de métodos
+
+    lsbMetodos.OnClick := @EventosMetodos.lsbMetodosClick;
+    lsbLinhas.OnClick := @EventosMetodos.lsbLinhasClick;
+    btnNovoMetodo.OnClick := @EventosMetodos.NovoMetodo;
+    btnExcluirMetodo.OnClick := @EventosMetodos.RemoverMetodo;
+    tsDadosMesMetodos.OnShow := @EventosMetodos.GridMesMetodos;
+    grdMetodosMes.OnClick := @EventosMetodos.GridMesLinhas;
+    tsDadosAnoMetodos.OnShow := @EventosMetodos.GridAnoMetodos;
+    grdMetodosAno.OnClick := @EventosMetodos.GridAnoLinhas;
 
     //Definindo eventos do do Banco de Dados e Múltiplas
 
@@ -157,7 +170,10 @@ begin
 
       lbProgresso.Caption := 'Iniciando os queries';
       Application.ProcessMessages;
-      ReiniciarTodosOsQueries;
+
+      qrBanca.Open;
+      qrPerfis.Open;
+      qrSelecionarPerfil.Open;
 
     //Procedimentos das apostas
 
@@ -167,6 +183,10 @@ begin
     sleep(50);
     progresso.Invalidate;
     @EventosApostas.AtualizaApostas;
+
+    //Procedimentos de métodos
+
+    @EventosMetodos.CarregaMetodos;
 
     //Procedimentos das múltiplas
 

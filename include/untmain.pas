@@ -17,9 +17,16 @@ type
   { TformPrincipal }
 
   TformPrincipal = class(TForm)
+    btnExcluirLinha: TButton;
+    btnExcluirLinha1: TButton;
+    btnExcluirMetodo1: TButton;
     btnLimparFiltroAp: TButton;
     btnFiltrarAp: TButton;
     btnNovaAposta: TButton;
+    btnExcluirMetodo: TButton;
+    btnNovaLinha: TButton;
+    btnNovaLinha1: TButton;
+    btnNovoMetodo1: TButton;
     btnRemoverAposta: TButton;
     btnSalvarBancaInicial: TButton;
     btnTudoGreen: TButton;
@@ -27,6 +34,7 @@ type
     btnCashout: TButton;
     btnSalvaAp: TButton;
     btnCancelaAp: TButton;
+    btnNovoMetodo: TButton;
     cbAno: TComboBox;
     cbCompeticao: TComboBox;
     cbGraficos: TComboBox;
@@ -36,18 +44,29 @@ type
     chbMandante: TDBCheckBox;
     chbVisitante: TDBCheckBox;
     chrtAcertAno: TChart;
+    chrtAcertLinha: TChart;
+    chrtAcertLinha1: TChart;
     chrtAcertMes: TChart;
-    chrtAcertMetMes1: TChart;
-    chrtAcertMetMes2: TChart;
-    chrtAcertMetMes3: TChart;
-    chrtAcertMetMes4: TChart;
+    chrtAcertMetodo: TChart;
+    chrtAcertMetodo1: TChart;
     chrtLucroAno: TChart;
+    chrtLucroLinha: TChart;
+    chrtLucroLinha1: TChart;
     chrtLucroMes: TChart;
-    chrtLucroMetMes1: TChart;
-    chrtLucroMetMes2: TChart;
-    chrtLucroMetMes3: TChart;
-    chrtLucroMetMes4: TChart;
+    chrtLucroMetodo: TChart;
+    chrtLucroMetodo1: TChart;
     conectBancoDados: TSQLite3Connection;
+    dsLinhasMes: TDataSource;
+    dsLinhasAno: TDataSource;
+    dsMetodosAno: TDataSource;
+    gbListaLinha1: TGroupBox;
+    gbListaMetodo1: TGroupBox;
+    grdLinhasMes1: TDBGrid;
+    grdMetodosMes: TDBGrid;
+    grdLinhasMes: TDBGrid;
+    dsMetodosMes: TDataSource;
+    gbListaLinha: TGroupBox;
+    gbListaMetodo: TGroupBox;
     grdDadosAp: TDBGrid;
     dsDadosAposta: TDataSource;
     dbGraficoAno: TDbChartSource;
@@ -65,29 +84,28 @@ type
     dsSituacao: TDataSource;
     dsUnidades: TDataSource;
     edtBancaInicial: TEdit;
-    gbLinha: TGroupBox;
-    gbListaLinha: TGroupBox;
-    gbListaMetodo: TGroupBox;
-    gbMetodo: TGroupBox;
     gbTimes: TGroupBox;
     grbApostas: TGroupBox;
     grbDetalhesAp: TGroupBox;
     grdAno: TDBGrid;
     grdApostas: TDBGrid;
     grdMes: TDBGrid;
+    grdMetodosMes1: TDBGrid;
     JSONPropStorage1: TJSONPropStorage;
     lbSelecioneAposta: TLabel;
     lbAno: TLabel;
     lbBancaAtual: TLabel;
     lbBancaInicial: TLabel;
-    lbLinhas: TDBListBox;
-    lbLinhas1: TDBListBox;
     lbLucro: TLabel;
     lbMes: TLabel;
     lbPerfil: TLabel;
     lbUnidade: TLabel;
     lnGraficoLucroAno: TLineSeries;
     lnGraficoLucroMes: TLineSeries;
+    lsbLinhas: TListBox;
+    lsbLinhas1: TListBox;
+    lsbMetodos: TListBox;
+    lsbMetodos1: TListBox;
     lsbTimes: TDBListBox;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
@@ -98,13 +116,23 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
-    PageControl1: TPageControl;
-    PageControl2: TPageControl;
+    pcAnoMetodos: TPageControl;
+    pizzaLinha1: TPieSeries;
+    pizzaMetodo3: TPieSeries;
+    pizzaMetodo4: TPieSeries;
+    pizzaMetodo5: TPieSeries;
+    pnGraficosMetodos: TPanel;
+    pcMesMetodos: TPageControl;
     PageControl3: TPageControl;
-    pcControleMetodos: TPageControl;
+    pcMesAnoMetodos: TPageControl;
     pcPrincipal: TPageControl;
     pcResumo: TPageControl;
+    pizzaLinha: TPieSeries;
+    pizzaMetodo: TPieSeries;
+    pizzaMetodo1: TPieSeries;
+    pizzaMetodo2: TPieSeries;
     pnGraficos: TPanel;
+    pnGraficosMetodos1: TPanel;
     pnTabelas: TPanel;
     popupLinhas: TPopupMenu;
     psGraficoGreensReds: TPieSeries;
@@ -150,8 +178,22 @@ type
     qrBancaValor_Inicial: TBCDField;
     qrBancaValor_Inicial1: TBCDField;
     qrCompeticoes: TSQLQuery;
+    qrLinhasAno: TSQLQuery;
     qrMes: TSQLQuery;
     qrMesesGreenRed: TSQLQuery;
+    qrMetodosAno: TSQLQuery;
+    qrMetodosMesCod_Metodo: TLargeintField;
+    qrMetodosMesCod_Metodo1: TLargeintField;
+    qrMetodosMesGreens: TLargeintField;
+    qrMetodosMesGreens1: TLargeintField;
+    qrMetodosMesMtodo: TStringField;
+    qrMetodosMesMtodo1: TStringField;
+    qrMetodosMesPcentAcertos: TFloatField;
+    qrMetodosMesPcentAcertos1: TFloatField;
+    qrMetodosMesReds: TLargeintField;
+    qrMetodosMesReds1: TLargeintField;
+    qrMetodosMesTotalApostas: TLargeintField;
+    qrMetodosMesTotalApostas1: TLargeintField;
     qrPerfis: TSQLQuery;
     qrPerfisPerfil: TStringField;
     qrPerfisPerfil1: TStringField;
@@ -164,24 +206,26 @@ type
     qrUnidadesUnidade1: TStringField;
     scriptRemoverAposta: TSQLScript;
     qrDadosAposta: TSQLQuery;
+    qrMetodosMes: TSQLQuery;
+    qrLinhasMes: TSQLQuery;
     StatusBar1: TStatusBar;
+    tsDadosAnoMetodos: TTabSheet;
+    tsGraficosMesMetodos: TTabSheet;
+    tsDadosMesMetodos: TTabSheet;
+    tsAnoMetodos: TTabSheet;
     tsContrTimes: TTabSheet;
     tsContrPaises: TTabSheet;
     tsContrComp: TTabSheet;
     transactionBancoDAdos: TSQLTransaction;
     cloneMultipla, cloneInfoMult: TPanel;
-    tsAcertMetAno: TTabSheet;
-    tsAcertMetAno1: TTabSheet;
-    tsAcertMetMes: TTabSheet;
-    tsAcertMetMes1: TTabSheet;
     tsApostas: TTabSheet;
     tsControleMetodos: TTabSheet;
     tsGraficos: TTabSheet;
-    tsGrafMet: TTabSheet;
+    tsGraficosAnoMetodos: TTabSheet;
+    tsMesMetodos: TTabSheet;
     tsPainel: TTabSheet;
     tsResumoLista: TTabSheet;
     tsSelecTime: TTabSheet;
-    tsTabelaMet: TTabSheet;
     txtBancaAtual: TDBText;
     txtLucroMoeda: TDBText;
     txtLucroPorCento: TDBText;
@@ -230,7 +274,7 @@ implementation
 
 uses
   untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre,
-  fpjson, fphttpclient, jsonparser, LCLIntf;
+  untControleMetodos, fpjson, fphttpclient, jsonparser, LCLIntf;
 
 procedure DefinirStake;
 var
@@ -300,7 +344,11 @@ const
   AspectRatio = 0.5;
 var
   larguraTotal, alturaTotal, larguraGrafico, alturaGrafico: integer;
+  larguraObjeto, alturaObjeto: integer;
 begin
+
+  //Gráficos do painel principal
+
   larguraTotal := pnGraficos.ClientWidth;
   alturaTotal := pnGraficos.ClientHeight;
 
@@ -310,6 +358,41 @@ begin
   chrtAcertMes.SetBounds(larguraGrafico, 0, larguraGrafico, alturaGrafico);
   chrtLucroAno.SetBounds(0, alturaGrafico, larguraGrafico, alturaGrafico);
   chrtAcertAno.SetBounds(larguraGrafico, alturaGrafico, larguraGrafico, alturaGrafico);
+
+  //Gráficos de métodos/linhas
+
+  larguraTotal := pnGraficosMetodos.ClientWidth;
+  alturaTotal := pnGraficosMetodos.ClientHeight;
+
+  if larguraTotal < 2 then
+    larguraGrafico := larguraTotal
+  else
+    larguraGrafico := larguraTotal div 2;
+
+  alturaGrafico := trunc(alturaTotal * AspectRatio);
+
+  chrtLucroMetodo.SetBounds(0, 0, larguraGrafico, alturaGrafico);
+  chrtAcertMetodo.SetBounds(larguraGrafico, 0, larguraGrafico, alturaGrafico);
+  chrtLucroLinha.SetBounds(0, alturaGrafico, larguraGrafico, alturaGrafico);
+  chrtAcertLinha.SetBounds(larguraGrafico, alturaGrafico, larguraGrafico, alturaGrafico);
+
+  alturaTotal := tsGraficosMesMetodos.ClientHeight;
+  larguraObjeto := gbListaMetodo.ClientWidth;
+  alturaObjeto := trunc(alturaTotal * AspectRatio);
+
+  gbListaMetodo.SetBounds(0, 0, gbListaMetodo.ClientWidth, alturaObjeto);
+  gbListaLinha.SetBounds(0, alturaObjeto, larguraObjeto, alturaObjeto);
+
+  //Grids dos métodos/linhas
+
+  larguraTotal := tsDadosMesMetodos.ClientWidth;
+  alturaTotal := tsDadosMesMetodos.ClientHeight;
+
+  larguraObjeto := larguraTotal div 2;
+  alturaObjeto := alturaTotal;
+
+  grdMetodosMes.SetBounds(0, 0, larguraObjeto, alturaObjeto);
+  grdLinhasMes.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
 end;
 
 procedure TformPrincipal.AtualizaMetodoLinha(Sender: TObject);
@@ -335,11 +418,13 @@ end;
 
 procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
 begin
-  qrApostas.Post;
-  qrApostas.ApplyUpdates;
-  transactionBancoDados.CommitRetaining;
-  qrApostas.Refresh;
-  qrApostas.Edit;
+  if (qrApostas.State in [dsInsert, dsEdit]) then
+  begin
+    qrApostas.Post;
+    qrApostas.ApplyUpdates;
+    transactionBancoDados.CommitRetaining;
+    qrApostas.Refresh;
+  end;
 end;
 
 procedure TformPrincipal.MudarCorLucro;

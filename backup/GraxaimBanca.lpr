@@ -11,7 +11,7 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, tachartlazaruspkg, untMain, untApostas, untDatabase, untNA,
-  untPainel, untSobre, untSplash, untUpdate, untControleMetodos;
+  untPainel, untSobre, untSplash, untUpdate;
 
 {$R *.res}
 
