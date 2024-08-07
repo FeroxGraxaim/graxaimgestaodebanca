@@ -18,7 +18,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="untMain"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="366"/>
         <CursorPos X="73" Y="395"/>
         <UsageCount Value="201"/>
@@ -134,9 +133,9 @@
       <Unit>
         <Filename Value="include/untUpdate.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="25"/>
-        <CursorPos X="30" Y="61"/>
+        <CursorPos X="32" Y="61"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
       </Unit>
@@ -450,7 +449,7 @@
         <UsageCount Value="8"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="29">
+    <JumpHistory HistoryIndex="28">
       <Position>
         <Filename Value="include/untmain.pas"/>
         <Caret Line="383" Column="8" TopLine="349"/>
@@ -494,10 +493,6 @@
       <Position>
         <Filename Value="include/untmain.pas"/>
         <Caret Line="381" Column="8" TopLine="290"/>
-      </Position>
-      <Position>
-        <Filename Value="include/untNA.pas"/>
-        <Caret Line="148" Column="26" TopLine="844"/>
       </Position>
       <Position>
         <Filename Value="include/untNA.pas"/>

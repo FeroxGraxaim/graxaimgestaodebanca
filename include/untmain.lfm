@@ -86,9 +86,9 @@ object formPrincipal: TformPrincipal
         Height = 668
         Top = 0
         Width = 791
-        ActivePage = tsResumoLista
+        ActivePage = tsGraficos
         Anchors = [akTop, akLeft, akRight, akBottom]
-        TabIndex = 1
+        TabIndex = 0
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
@@ -1512,7 +1512,7 @@ object formPrincipal: TformPrincipal
               Caption = 'Dados'
               ClientHeight = 613
               ClientWidth = 1070
-              object grdMetodosMes1: TDBGrid
+              object grdMetodosAno: TDBGrid
                 Left = 0
                 Height = 608
                 Top = 0
@@ -1548,7 +1548,7 @@ object formPrincipal: TformPrincipal
                 Scrollbars = ssAutoBoth
                 TabOrder = 0
               end
-              object grdLinhasMes1: TDBGrid
+              object grdLinhasAno: TDBGrid
                 Left = 568
                 Height = 616
                 Top = 0

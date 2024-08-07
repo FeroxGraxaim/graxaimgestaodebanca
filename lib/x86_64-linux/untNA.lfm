@@ -3,8 +3,8 @@ object formNovaAposta: TformNovaAposta
   Height = 427
   Top = 572
   Width = 712
-  BorderIcons = [biHelp]
-  BorderStyle = bsToolWindow
+  BorderIcons = []
+  BorderStyle = bsDialog
   Caption = 'Nova Aposta'
   ClientHeight = 427
   ClientWidth = 712
@@ -40,8 +40,8 @@ object formNovaAposta: TformNovaAposta
     Height = 376
     Top = 0
     Width = 728
-    ActivePage = tsMultipla
-    TabIndex = 1
+    ActivePage = tsSimples
+    TabIndex = 0
     TabOrder = 2
     OnChange = pcApostasChange
     object tsSimples: TTabSheet
@@ -473,6 +473,7 @@ object formNovaAposta: TformNovaAposta
         Top = 72
         Width = 75
         Caption = 'Novo Jogo'
+        Enabled = False
         TabOrder = 9
         OnClick = btnAddJogoClick
       end

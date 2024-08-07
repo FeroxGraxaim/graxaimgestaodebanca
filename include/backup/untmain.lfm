@@ -20,9 +20,9 @@ object formPrincipal: TformPrincipal
     Height = 694
     Top = 0
     Width = 1082
-    ActivePage = tsControleMetodos
+    ActivePage = tsPainel
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     OnChange = pcPrincipalChange
     object tsPainel: TTabSheet
@@ -92,20 +92,20 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 640
+          ClientHeight = 641
           ClientWidth = 787
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 603
+            Height = 604
             Top = 31
             Width = 788
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 599
-            ClientWidth = 784
+            ClientHeight = 604
+            ClientWidth = 788
             TabOrder = 0
             object chrtLucroMes: TChart
               AnchorSideRight.Control = chrtAcertMes
@@ -312,7 +312,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 640
+          ClientHeight = 641
           ClientWidth = 787
           TabVisible = False
           object pnTabelas: TPanel
@@ -320,13 +320,13 @@ object formPrincipal: TformPrincipal
             Height = 615
             Top = 31
             Width = 879
-            ClientHeight = 611
-            ClientWidth = 875
+            ClientHeight = 615
+            ClientWidth = 879
             TabOrder = 0
             object grdMes: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 609
+              Height = 613
               Top = 0
               Width = 356
               Anchors = [akTop, akLeft, akBottom]
@@ -362,7 +362,7 @@ object formPrincipal: TformPrincipal
             object grdAno: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 356
-              Height = 609
+              Height = 613
               Top = 0
               Width = 350
               Anchors = [akTop, akLeft, akBottom]
@@ -1512,7 +1512,7 @@ object formPrincipal: TformPrincipal
               Caption = 'Dados'
               ClientHeight = 613
               ClientWidth = 1070
-              object grdMetodosMes1: TDBGrid
+              object grdMetodosAno: TDBGrid
                 Left = 0
                 Height = 608
                 Top = 0
@@ -1548,7 +1548,7 @@ object formPrincipal: TformPrincipal
                 Scrollbars = ssAutoBoth
                 TabOrder = 0
               end
-              object grdLinhasMes1: TDBGrid
+              object grdLinhasAno: TDBGrid
                 Left = 568
                 Height = 616
                 Top = 0

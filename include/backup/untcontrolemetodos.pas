@@ -29,6 +29,8 @@ type
     procedure RemoverLinha(Sender: TObject);
     procedure GridMesMetodos(Sender: TObject);
     procedure GridMesLinhas(Sender: TObject);
+    procedure GridAnoMetodos(Sender: TObject);
+    procedure GridAnoLinhas(Sender: TObject);
   end;
 
   TMetodo = class
@@ -629,6 +631,8 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
+      ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+        ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;
@@ -643,6 +647,54 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
+        ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+        ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      Open;
+    end;
+  end;
+end;
+
+procedure TEventosMetodos.GridAnoMetodos(Sender: TObject);
+begin
+  with formPrincipal do
+  begin
+    with qrMetodosAno do
+    begin
+      if Active then Close;
+      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      Open;
+      if IsEmpty then
+      begin
+        grdMetodosMes.Enabled := False;
+        grdLinhasMes.Enabled := False;
+      end
+      else
+      begin
+        grdMetodosMes.Enabled := True;
+        grdLinhasMes.Enabled := True;
+      end;
+    end;
+    with qrLinhasAno do
+    begin
+      if Active then Close;
+      ParamByName('CodMetodo').AsInteger :=
+        qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
+      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      Open;
+    end;
+  end;
+end;
+
+procedure TEventosMetodos.GridAnoLinhas(Sender: TObject);
+begin
+  with formPrincipal do
+  begin
+    with qrLinhaAno do
+    begin
+      if Active then Close;
+      ParamByName('CodMetodo').AsInteger :=
+        qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
+        ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;

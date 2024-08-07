@@ -689,7 +689,7 @@ procedure TEventosMetodos.GridAnoLinhas(Sender: TObject);
 begin
   with formPrincipal do
   begin
-    with qrLinhaAno do
+    with qrLinhasAno do
     begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=

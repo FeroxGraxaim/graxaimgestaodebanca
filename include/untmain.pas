@@ -61,7 +61,7 @@ type
     dsMetodosAno: TDataSource;
     gbListaLinha1: TGroupBox;
     gbListaMetodo1: TGroupBox;
-    grdLinhasMes1: TDBGrid;
+    grdLinhasAno: TDBGrid;
     grdMetodosMes: TDBGrid;
     grdLinhasMes: TDBGrid;
     dsMetodosMes: TDataSource;
@@ -90,7 +90,7 @@ type
     grdAno: TDBGrid;
     grdApostas: TDBGrid;
     grdMes: TDBGrid;
-    grdMetodosMes1: TDBGrid;
+    grdMetodosAno: TDBGrid;
     JSONPropStorage1: TJSONPropStorage;
     lbSelecioneAposta: TLabel;
     lbAno: TLabel;
