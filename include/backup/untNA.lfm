@@ -119,6 +119,7 @@ object formNovaAposta: TformNovaAposta
         Top = 312
         Width = 328
         Caption = 'Nova Linha'
+        Enabled = False
         TabOrder = 2
         OnClick = btnNovaLinhaClick
       end
@@ -283,20 +284,15 @@ object formNovaAposta: TformNovaAposta
           Color = clWindow
           Columns = <          
             item
-              Title.Caption = 'CodJogo'
-              Width = 60
-              FieldName = 'CodJogo'
-            end          
-            item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Método'
-              Width = 60
+              Width = 130
               FieldName = 'Método'
             end          
             item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Linha'
-              Width = 60
+              Width = 130
               FieldName = 'Linha'
             end          
             item
@@ -567,7 +563,7 @@ object formNovaAposta: TformNovaAposta
         Precision = -1
       end    
       item
-        Name = 'Competição'
+        Name = 'Competicao'
         DataType = ftString
         Precision = -1
         Size = 255
@@ -603,12 +599,6 @@ object formNovaAposta: TformNovaAposta
         Size = 255
       end    
       item
-        Name = 'OddMercado'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
-      end    
-      item
         Name = 'Situacao'
         DataType = ftString
         Precision = -1
@@ -623,10 +613,10 @@ object formNovaAposta: TformNovaAposta
       '      Mercados.Cod_Metodo AS CodMetodo,'
       '      Mercados.Cod_Linha AS CodLinha,'
       #9'Apostas.Data AS Data,'
-      '    Competições.Competição AS Competição,'
+      '    Competicoes.Competicao,'
       #9'Jogo.Mandante AS Mandante,'
       #9'Jogo.Visitante AS Visitante,'
-      '    Competições.Competição || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo,'
+      '    Competicoes.Competicao || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo,'
       '    Métodos.Nome AS Método,'
       '    Linhas.Nome AS Linha,'
       '    Mercados.Status AS Situacao'
@@ -637,7 +627,7 @@ object formNovaAposta: TformNovaAposta
       'LEFT JOIN'
       '    Jogo ON Mercados.Cod_Jogo = Jogo.Cod_Jogo'
       'LEFT JOIN'
-      '    Competições ON Jogo.Cod_Comp = Competições.Cod_Comp'
+      '    Competicoes ON Jogo.Cod_Comp = Competicoes.Cod_Comp'
       'LEFT JOIN'
       '    Linhas ON Mercados.Cod_Linha = Linhas.Cod_Linha'
       'LEFT JOIN'
@@ -680,20 +670,10 @@ object formNovaAposta: TformNovaAposta
       ReadOnly = False
       Required = False
     end
-    object qrNovaApostaCompetio: TStringField
-      FieldKind = fkData
-      FieldName = 'Competição'
-      Index = 1
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Size = 255
-    end
     object qrNovaApostaJogo: TStringField
       FieldKind = fkData
       FieldName = 'Jogo'
-      Index = 2
+      Index = 1
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -703,7 +683,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaMtodo: TStringField
       FieldKind = fkData
       FieldName = 'Método'
-      Index = 3
+      Index = 2
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -713,7 +693,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaLinha: TStringField
       FieldKind = fkData
       FieldName = 'Linha'
-      Index = 4
+      Index = 3
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -723,7 +703,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaMandante: TStringField
       FieldKind = fkData
       FieldName = 'Mandante'
-      Index = 5
+      Index = 4
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -733,7 +713,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaVisitante: TStringField
       FieldKind = fkData
       FieldName = 'Visitante'
-      Index = 6
+      Index = 5
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -743,7 +723,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaCodJogo: TLongintField
       FieldKind = fkData
       FieldName = 'CodJogo'
-      Index = 7
+      Index = 6
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -752,7 +732,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaCodMetodo: TLongintField
       FieldKind = fkData
       FieldName = 'CodMetodo'
-      Index = 8
+      Index = 7
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -761,7 +741,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaCodLinha: TLongintField
       FieldKind = fkData
       FieldName = 'CodLinha'
-      Index = 9
+      Index = 8
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -770,7 +750,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaSituacao: TStringField
       FieldKind = fkData
       FieldName = 'Situacao'
-      Index = 10
+      Index = 9
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -780,11 +760,21 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaROWID: TLongintField
       FieldKind = fkData
       FieldName = 'ROWID'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrNovaApostaCompeticao: TStringField
+      FieldKind = fkData
+      FieldName = 'Competicao'
       Index = 11
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
       Required = False
+      Size = 255
     end
   end
   object scriptNovaAposta: TSQLScript
@@ -961,10 +951,10 @@ object formNovaAposta: TformNovaAposta
     SQL.Strings = (
       'SELECT'
       '    Jogo.Cod_Jogo AS CodJogo,'
-      '    Competições.Competição AS Competição,'
+      '    Competicoes.Competicao AS Competição,'
       '    Jogo.Mandante AS Mandante,'
       '    Jogo.Visitante AS Visitante,'
-      '    Competições.Competição || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo'
+      '    Competicoes.Competicao || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo'
       'FROM'
       '    Mercados'
       'LEFT JOIN'
@@ -972,7 +962,7 @@ object formNovaAposta: TformNovaAposta
       'LEFT JOIN'
       #9'Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta'
       'LEFT JOIN'
-      '    Competições ON Jogo.Cod_Comp = Competições.Cod_Comp'
+      '    Competicoes ON Jogo.Cod_Comp = Competicoes.Cod_Comp'
       'WHERE'
       '    Apostas.Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas)'
       'GROUP BY Jogo.ROWID;'

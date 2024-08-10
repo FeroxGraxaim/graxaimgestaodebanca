@@ -58,7 +58,7 @@ var
   httpClient: TFPHTTPClient;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.2.0.14';
+  currentVersion := '0.2.2.16';
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');

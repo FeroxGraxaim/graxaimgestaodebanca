@@ -42,8 +42,6 @@ var
 
 procedure TEventosPainel.tsPainelShow(Sender: TObject);
 begin
-  formPrincipal.MudarCorLucro;
-  AtualizarGraficoLucro;
   with formPrincipal do
   begin
     if qrBanca.Active then qrBanca.Close;
@@ -51,6 +49,8 @@ begin
     qrBanca.ParamByName('anoSelec').AsInteger := YearOf(Now);
     qrBanca.Open;
   end;
+  formPrincipal.MudarCorLucro;
+  AtualizarGraficoLucro;
 end;
 
 
@@ -73,11 +73,7 @@ begin
       novoValor := StrToFloat(edtBancaInicial.Text)
     else
       novoValor := 0.00;
-    //cbPerfil.Items.Add(qrPerfis.FieldByName('Perfil').AsString);
-    //qrPerfis.Next;
-    //cbPerfil.Text := (qrSelecionarPerfil.FieldByName('Perfil Selecionado').AsString);
 
-    // Verifica se o mês e o ano são válidos
     writeln('Verificando se o mês e ano são válidos...');
     if TryStrToInt(cbMes.Text, mes) and TryStrToInt(cbAno.Text, ano) then
     begin
@@ -104,7 +100,6 @@ begin
           query.ParamByName('ano').AsInteger := ano;
           writeln('Definindo parâmetro "valorInicial" do query como ', novoValor);
           query.ParamByName('valorInicial').AsFloat := novoValor;
-          // ou qualquer valor inicial apropriado
           writeln('Definindo parâmetro "stake" do query como ', stakeAposta);
           query.ParamByName('stake').AsFloat := stakeAposta;
           writeln('Executando ExecSQL');
@@ -135,7 +130,9 @@ begin
         anoSelecionado := StrToInt(cbAno.Text);
         transactionBancoDados.CommitRetaining;
         DefinirStake;
-        ShowMessage('Valor de banca salvo com sucesso!');
+        qrBanca.Refresh;
+        ShowMessage('Valor da banca para ' + mesSelecionado + '/' + anoSelecionado +
+        ' salvo com sucesso!');
       except
         on E: Exception do
         begin
@@ -525,8 +522,8 @@ begin
     qrBanca.Close;
     qrBanca.ParamByName('mesSelec').AsInteger := StrToInt(cbMes.Text);
     qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
-    edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
     qrBanca.Open;
+    edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
   end;
 end;
 

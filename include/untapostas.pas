@@ -35,6 +35,8 @@ type
     procedure btnCashoutClick(Sender: TObject);
     procedure qrApostasCalcFields(DataSet: TDataSet);
     procedure CalcularBancaFinal;
+    procedure FiltrarAposta(Sender: TObject);
+    procedure LimparFiltros(Sender: TObject);
   end;
 
 type
@@ -61,13 +63,21 @@ begin
     writeln('Exibido tsApostas');
     if qrApostas.State in [dsEdit, dsInsert] then
       qrApostas.Cancel;
+    with qrApostas do
+    begin
+      if Active then Close;
+      ParamByName('primDia').AsString := Format('%.2d', [1]);
+      ParamByName('ultDia').AsString := Format('%.2d', [31]);
+      ParamByName('primMes').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('ultMes').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('primAno').AsString := Format('%.2d', [anoSelecionado]);
+      ParamByName('ultAno').AsString := Format('%.4d', [anoSelecionado]);
+      Open;
 
-    if qrApostas.Active then qrApostas.Close;
-    qrApostas.ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
-    qrApostas.ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
-    qrApostas.Open;
+      grdApostas.Enabled := not IsEmpty;
 
-    grdApostas.Enabled := not qrApostas.IsEmpty;
+      if grdApostas.Enabled then Last;
+    end;
   end;
 end;
 
@@ -129,7 +139,11 @@ end;
 procedure TEventosApostas.btnRemoverApostaClick(Sender: TObject);
 var
   i: integer;
+  erro: boolean;
+  ComandoErro: string;
+  MensagemE: string;
 begin
+  erro := False;
   with formPrincipal do
   begin
     if not qrApostas.Active then
@@ -144,55 +158,52 @@ begin
       Exit;
     end
     else
-    begin
+    try
+      if MessageDlg('Confirmação','Deseja realmente remover a(s) aposta(s) selecionada(s)?',
+      mtConfirmation,[mbYes, mbNo],0) = mrYes then
       try
         Screen.Cursor := crAppStart;
         qrApostas.Close;
         writeln('Salvando alterações pendentes');
         transactionBancoDados.CommitRetaining;
         writeln('Executando script para remover aposta');
-        try
-          scriptRemoverAposta.Execute;
-          transactionBancoDados.CommitRetaining;
-        except
-          on E: Exception do
-          begin
-            writeln('Erro: ' + E.Message + 'Comando SQL: ' +
-              scriptRemoverAposta.Script[i]);
-            transactionBancoDados.RollbackRetaining;
-          end;
-          on E: EDatabaseError do
-          begin
-            writeln('Erro: ' + E.Message);
-            transactionBancoDados.RollbackRetaining;
-          end;
-        end;
-        ReiniciarTodosOsQueries;
-        grdApostas.Invalidate;
-        if qrApostas.IsEmpty then
-          grdApostas.Enabled := False
-        else
-          grdApostas.Enabled := True;
-        if not grdApostas.Enabled then grdDadosAp.Visible := False;
-        ShowMessage('Aposta(s) Removida(s)!');
+        scriptRemoverAposta.Execute;
+        transactionBancoDados.CommitRetaining;
       except
-        on E: ESQLdatabaseError do
-        begin
-          Screen.Cursor := crDefault;
-          writeln('Erro: ' + E.Message);
-          transactionBancoDados.RollbackRetaining;
-        end;
         on E: Exception do
         begin
           Screen.Cursor := crDefault;
-          MessageDlg('Erro',
-            'Ocorreu um erro, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: '
-            + E.Message, mtError, [mbOK], 0);
-          writeln('Ocorreu um erro: ' + E.Message + ' Desfazendo alterações...');
+          ComandoErro := scriptRemoverAposta.Script[i];
           transactionBancoDados.RollbackRetaining;
+          writeln('Erro: ' + E.Message + 'Comando SQL: ', ComandoErro);
+          MensagemE := E.Message;
+          erro := True;
         end;
       end;
-      ReiniciarTodosOsQueries;
+      qrApostas.Open;
+      grdApostas.Invalidate;
+      if qrApostas.IsEmpty then
+        grdApostas.Enabled := False
+      else
+        grdApostas.Enabled := True;
+      if not grdApostas.Enabled then grdDadosAp.Visible := False;
+
+      if erro then
+        raise Exception.Create('"Erro de banco de dados: ' + MensagemE +
+          sLineBreak + sLineBreak + 'Comando: ' + sLineBreak + ComandoErro)
+      else
+        ShowMessage('Aposta(s) Removida(s)!');
+      Screen.Cursor := crDefault;
+    except
+      on E: Exception do
+      begin
+        Screen.Cursor := crDefault;
+        MessageDlg('Erro',
+          'Ocorreu um erro, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: '
+          + sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
+        writeln('Ocorreu um erro: ' + E.Message + ' Desfazendo alterações...');
+        transactionBancoDados.RollbackRetaining;
+      end;
     end;
   end;
 end;
@@ -215,8 +226,11 @@ begin
         NovaApostaForm.Free;
       end;
 
-      ReiniciarTodosOsQueries;
-      if not qrApostas.IsEmpty then grdApostas.Enabled := True;
+      if not qrApostas.Active then qrApostas.Open
+      else qrApostas.Refresh;
+
+      if not qrApostas.IsEmpty then grdApostas.Enabled := True
+      else grdApostas.Enabled := False;
     except
       on E: Exception do
       begin
@@ -462,6 +476,70 @@ begin
     writeln('Finalizando cálculos');
     // Garantir que a variável de controle seja reconfigurada
     // Calculando := False;
+  end;
+end;
+
+procedure TEventosApostas.FiltrarAposta(Sender: TObject);
+var
+  primDia, primMes, primAno, ultDia, ultMes, ultAno: word;
+  primData, ultData: TDateTime;
+begin
+  with formPrincipal do
+  begin
+    with qrApostas do
+    begin
+      Close;
+      if deFiltroDataInicial.Date = 0 then primData :=
+          EncodeDate(anoSelecionado, mesSelecionado, 1)
+      else
+        primData := deFiltroDataInicial.Date;
+
+      if deFiltroDataFinal.Date = 0 then ultData :=
+          EncodeDate(anoSelecionado, mesSelecionado, 31)
+      else
+        ultData := deFiltroDataFinal.Date;
+
+      if primData > ultData then
+      begin
+        MessageDlg('Erro', 'A data inicial não pode ser maior que a data final!',
+          mtError, [mbOK], 0);
+        LimparFiltros(nil);
+        Exit;
+      end;
+      DecodeDate(primData, primAno, primMes, primDia);
+      DecodeDate(ultData, ultAno, ultMes, ultDia);
+      ParamByName('primDia').AsString := Format('%.2d', [primDia]);
+      ParamByName('ultDia').AsString := Format('%.2d', [ultDia]);
+      ParamByName('primMes').AsString := Format('%.2d', [primMes]);
+      ParamByName('ultMes').AsString := Format('%.2d', [ultMes]);
+      ParamByName('primAno').AsString := Format('%.2d', [primAno]);
+      ParamByName('ultAno').AsString := Format('%.4d', [ultAno]);
+      Open;
+
+      grdApostas.Enabled := not IsEmpty;
+      if grdApostas.Enabled then Last;
+    end;
+  end;
+end;
+
+procedure TEventosApostas.LimparFiltros(Sender: TObject);
+begin
+  with formPrincipal do
+  begin
+    with qrApostas do
+    begin
+      if Active then Close;
+      ParamByName('primDia').AsString := Format('%.2d', [1]);
+      ParamByName('ultDia').AsString := Format('%.2d', [31]);
+      ParamByName('primMes').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('ultMes').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('primAno').AsString := Format('%.2d', [anoSelecionado]);
+      ParamByName('ultAno').AsString := Format('%.4d', [anoSelecionado]);
+      Open;
+
+      grdApostas.Enabled := not IsEmpty;
+      if grdApostas.Enabled then Last;
+    end;
   end;
 end;
 

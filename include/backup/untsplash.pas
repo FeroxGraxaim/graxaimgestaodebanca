@@ -96,6 +96,8 @@ begin
     grdApostas.OnCellClick := @EventosApostas.grdApostascellClick;
     btnCashout.OnClick := @EventosApostas.btnCashoutClick;
     qrApostas.OnCalcFields := @EventosApostas.qrApostasCalcFields;
+    btnFiltrarAp.OnClick := @EventosApostas.FiltrarAposta;
+    btnLimparFiltroAp.OnClick := @EventosApostas.LimparFiltros;
 
     //Definindo eventos do controle de métodos
 
@@ -105,6 +107,10 @@ begin
     btnExcluirMetodo.OnClick := @EventosMetodos.RemoverMetodo;
     tsDadosMesMetodos.OnShow := @EventosMetodos.GridMesMetodos;
     grdMetodosMes.OnClick := @EventosMetodos.GridMesLinhas;
+    tsDadosAnoMetodos.OnShow := @EventosMetodos.GridAnoMetodos;
+    grdMetodosAno.OnClick := @EventosMetodos.GridAnoLinhas;
+    btnNovaLinha.OnClick := @EventosMetodos.NovaLinha;
+    btnExcluirLinha.OnClick := @EventosMetodos.RemoverLinha;
 
     //Definindo eventos do do Banco de Dados e Múltiplas
 

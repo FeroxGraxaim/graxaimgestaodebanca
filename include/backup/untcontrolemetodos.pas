@@ -31,6 +31,7 @@ type
     procedure GridMesLinhas(Sender: TObject);
     procedure GridAnoMetodos(Sender: TObject);
     procedure GridAnoLinhas(Sender: TObject);
+    procedure AoExibirMetodos(Sender: TObject);
   end;
 
   TMetodo = class
@@ -386,6 +387,7 @@ begin
       end;
     end;
     btnExcluirMetodo.Enabled := True;
+    btnNovaLinha.Enabled := True;
   end;
   AtualizaGraficosMetodo;
 end;
@@ -411,6 +413,7 @@ begin
       if CodLinha <> -1 then GlobalCodLinha := CodLinha;
       AtualizaGraficosLinha;
     end;
+    btnExcluirLinha.Enabled := True;
   end;
 end;
 
@@ -516,41 +519,29 @@ var
 begin
   with formPrincipal do
   begin
-    if InputQuery('Novo Método', 'Digite o nome da linha:', ValorEntrada) then
+    if InputQuery('Novs Linha', 'Digite o nome da linha:', ValorEntrada) then
     begin
       Screen.Cursor := crAppStart;
       with TSQLQuery.Create(nil) do
       begin
         try
-          Database := formPrincipal.conectBancoDados;
+          Database := conectBancoDados;
           SQL.Text := 'SELECT Nome FROM Linhas WHERE Nome = :Comparar';
           ParamByName('Comparar').AsString := ValorEntrada;
           Open;
 
-          if not IsEmpty then
-          begin
-            Comparar := FieldByName('Nome').AsString;
-            if Comparar = ValorEntrada then
-              MessageDlg('Erro',
-                'Erro ao salvar linha, a linha digitada já existe.',
-                mtError, [mbOK], 0)
-            else
-            begin
-              Close;
-              SQL.Text :=
-                'INSERT INTO Linhaa (Nome, Cod_Metodo) VALUES (:Linha, :CodMetodo)';
-              ParamByName('Linha').AsString := ValorEntrada;
-              ParamByName('CodMetodo').AsInteger := GlobalCodMetodo;
-              ExecSQL;
-              transactionBancoDados.CommitRetaining;
-              CarregaMetodos;
-            end;
-          end
+          Comparar := FieldByName('Nome').AsString;
+          if Comparar = ValorEntrada then
+            MessageDlg('Erro',
+              'Erro ao salvar linha, a linha digitada já existe.',
+              mtError, [mbOK], 0)
           else
           begin
             Close;
-            SQL.Text := 'INSERT INTO Métodos (Nome) VALUES (:Metodo)';
-            ParamByName('Metodo').AsString := ValorEntrada;
+            SQL.Text :=
+              'INSERT INTO Linhas (Nome, Cod_Metodo) VALUES (:Linha, :CodMetodo)';
+            ParamByName('Linha').AsString := ValorEntrada;
+            ParamByName('CodMetodo').AsInteger := GlobalCodMetodo;
             ExecSQL;
             transactionBancoDados.CommitRetaining;
             CarregaMetodos;
@@ -559,7 +550,7 @@ begin
         except
           on E: Exception do
           begin
-            MessageDlg('Erro', 'Erro ao criar novo método, tente novamente. ' +
+            MessageDlg('Erro', 'Erro ao criar nova linha, tente novamente. ' +
               'Se o erro persistir favor informar no GitHub com a seguinte mensagem: ' +
               sLineBreak + E.Message, mtError, [mbOK], 0);
             Cancel;
@@ -632,7 +623,7 @@ begin
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
       ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
-        ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;
@@ -647,8 +638,8 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
-        ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
-        ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;
@@ -689,14 +680,27 @@ procedure TEventosMetodos.GridAnoLinhas(Sender: TObject);
 begin
   with formPrincipal do
   begin
-    with qrLinhaAno do
+    with qrLinhasAno do
     begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
-        ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
+  end;
+end;
+
+procedure TEventosMetodos.AoExibirMetodos(Sender: TObject);
+begin
+  with formPrincipal do
+  begin
+    with qrMetodosMes do
+      if not Active then Open
+      else Refresh;
+    with qrMetodosAno do
+      if not Active then Open
+      else Refresh;
   end;
 end;
 

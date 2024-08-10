@@ -36,13 +36,9 @@ type
     btnCancelaAp: TButton;
     btnNovoMetodo: TButton;
     cbAno: TComboBox;
-    cbCompeticao: TComboBox;
     cbGraficos: TComboBox;
     cbMes: TComboBox;
     cbPerfil: TComboBox;
-    cbTime: TComboBox;
-    chbMandante: TDBCheckBox;
-    chbVisitante: TDBCheckBox;
     chrtAcertAno: TChart;
     chrtAcertLinha: TChart;
     chrtAcertLinha1: TChart;
@@ -92,6 +88,8 @@ type
     grdMes: TDBGrid;
     grdMetodosAno: TDBGrid;
     JSONPropStorage1: TJSONPropStorage;
+    lbDataFim: TLabel;
+    lbDataInicio: TLabel;
     lbSelecioneAposta: TLabel;
     lbAno: TLabel;
     lbBancaAtual: TLabel;
@@ -107,12 +105,11 @@ type
     lsbMetodos: TListBox;
     lsbMetodos1: TListBox;
     lsbTimes: TDBListBox;
-    MainMenu1: TMainMenu;
+    MenuPrincipal: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
-    MenuItem4: TMenuItem;
-    MenuItem5: TMenuItem;
+    miImportar: TMenuItem;
+    miExportar: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
@@ -208,6 +205,7 @@ type
     qrDadosAposta: TSQLQuery;
     qrMetodosMes: TSQLQuery;
     qrLinhasMes: TSQLQuery;
+    scriptSalvarDados: TSQLScript;
     StatusBar1: TStatusBar;
     tsDadosAnoMetodos: TTabSheet;
     tsGraficosMesMetodos: TTabSheet;
@@ -242,7 +240,11 @@ type
     procedure grdDadosApEditingDone(Sender: TObject);
     procedure MenuItem7Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
+    procedure miExportarClick(Sender: TObject);
+    procedure miImportarClick(Sender: TObject);
     procedure pcPrincipalChange(Sender: TObject);
+    procedure qrApostasAfterOpen(DataSet: TDataSet);
+    procedure qrApostasAfterRefresh(DataSet: TDataSet);
     procedure ReiniciarTodosOsQueries;
     procedure MudarCorLucro;
     procedure PerfilDoInvestidor;
@@ -250,15 +252,19 @@ type
       var Handled: boolean);
     procedure tsGrafMetContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: boolean);
-    procedure txtStakeClick(Sender: TObject);
+    procedure SalvarDadosBD(Sender: TObject);
+    procedure ImportarDadosBD(Sender: TObject);
   private
 
   public
     procedure PosAtualizacao;
+    procedure ExportTable(const TableName: string);
   end;
 
 var
   ColunaAtual: TColumn;
+  Arquivo: TFileStream;
+  Linha: string;
 
 procedure DefinirStake;
 
@@ -478,10 +484,202 @@ begin
 
 end;
 
-procedure TformPrincipal.txtStakeClick(Sender: TObject);
+procedure TformPrincipal.ExportTable(const TableName: string);
+var
+  i: integer;
+  Linha: string;
 begin
+{  with TSQLQuery.Create(nil) do
+  try
+    DataBase := formPrincipal.conectBancoDados;
+    SQL.Text := Format('SELECT * FROM %s', [TableName]);
+    Open;
 
+    Arquivo.Write(Pointer(Linha)^, Length(Linha) * SizeOf(char));
+
+    First;
+    while not EOF do
+    begin
+      Linha := Format('INSERT INTO %s (', [TableName]);
+      i := 0;
+      while i < FieldCount do
+      begin
+        if i > 0 then
+          Linha := Linha + ',';
+        Linha := Linha + '"' + StringReplace(Fields[i].AsString, '"',
+          '""', [rfReplaceAll]) + '"';
+        Linha := Linha + Format('%s', [Fields[i].FieldName]);
+        Inc(i);
+      end;
+      Linha := Linha + ') VALUES (';
+
+      i := 0;
+      while i < FieldCount do
+      begin
+        if i > 0 then
+          Linha := Linha + ',';
+        Linha := Linha + '"' + StringReplace(Fields[i].AsString, '"',
+          '""', [rfReplaceAll]) + '"';
+        Inc(i);
+      end;
+      Linha := Linha + ');' + sLineBreak;
+      Arquivo.Write(Pointer(Linha)^, Length(Linha) * SizeOf(char));
+      Next;
+    end;
+
+    Arquivo.Write(Pointer(sLineBreak)^, Length(sLineBreak) * SizeOf(char));
+    Free;
+  except
+    on E: Exception do
+    begin
+      Free;
+      MessageDlg('Erro', 'Erro ao salvar arquivo, tente novamente. Se o problema ' +
+        'persistir favor informar no GitHub com a seguinte mensagem: ' +
+        sLineBreak + E.Message, mtError, [mbOK], 0);
+    end;
+  end;   }
 end;
+
+
+procedure TformPrincipal.SalvarDadosBD(Sender: TObject);
+var
+  SaveDialog: TSaveDialog;
+  i: integer;
+begin
+{  SaveDialog := TSaveDialog.Create(nil);
+  Arquivo := nil;
+  try
+    SaveDialog.Filter := 'Arquivo SQL (*.sql)|*.sql';
+    SaveDialog.DefaultExt := 'sql';
+    if SaveDialog.Execute then
+    begin
+      Arquivo := TFileStream.Create(SaveDialog.FileName, fmCreate);
+
+      ExportTable('Banca');
+      ExportTable('Países');
+      ExportTable('Times');
+      ExportTable('Competicoes');
+      ExportTable('Métodos');
+      ExportTable('Linhas');
+      ExportTable('Jogo');
+      ExportTable('Mercados');
+
+      writeln('Dados salvos com sucesso');
+    end;
+    SaveDialog.Free;
+    Arquivo.Free;
+  except
+    on E: Exception do
+    begin
+      writeln('Erro: ' + E.Message);
+      SaveDialog.Free;
+      Arquivo.Free;
+    end;
+  end;  }
+end;
+
+
+procedure TformPrincipal.ImportarDadosBD(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  Arquivo: TFileStream;
+  Texto: TStringList;
+  Linha: string;
+begin
+  OpenDialog := TOpenDialog.Create(nil);
+  Texto := TStringList.Create;
+  try
+    with TSQLQuery.Create(nil) do
+    begin
+      try
+        DataBase := conectBancoDados;
+        SQL.Text := 'DELETE FROM Jogo';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Mercados';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Apostas';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Times';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Competicoes';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Países';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Linhas';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Métodos';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        SQL.Text := 'DELETE FROM Banca';
+        writeln('SQL: ', SQL.Text);
+        ExecSQL;
+        transactionBancoDados.CommitRetaining;
+        Free;
+      except
+        on E: Exception do
+          try
+            writeln('Erro: ' + E.Message + 'SQL: ' + SQL.Text);
+            Cancel;
+            raise Exception.Create('Não foi possível excluir dados obsoletos.');
+          finally
+            Free;
+          end;
+      end;
+    end;
+    OpenDialog.Filter := 'Arquivo SQL (*.sql)|*.sql';
+    OpenDialog.DefaultExt := 'sql';
+    if OpenDialog.Execute then
+    begin
+      Arquivo := TFileStream.Create(OpenDialog.FileName, fmOpenRead);
+      Texto.LoadFromStream(Arquivo, TEncoding.UTF8);
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        for Linha in Texto do
+        begin
+          if Trim(Linha) <> '' then
+          begin
+            SQL.Text := Linha;
+            ExecSQL;
+            writeln('Inserida linha ', Linha);
+          end;
+        end;
+        transactionBancoDados.CommitRetaining;
+        ShowMessage('Dados importados com sucesso!');
+        Free;
+      except
+        on E: Exception do
+          try
+            raise Exception.Create('Erro ao inserir novos dados: ' +
+              E.Message + sLineBreak + sLineBreak + 'Comando SQL: ' +
+              sLineBreak + SQL.Text);
+          finally
+            Free;
+          end;
+      end;
+    end;
+  except
+    on E: Exception do
+    begin
+      transactionBancoDados.RollbackRetaining;
+      MessageDlg('Erro',
+        'Erro ao importar os dados. Tente novamente. Se o problema persistir ' +
+        'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
+        sLineBreak + E.Message, mtError, [mbOK], 0);
+    end;
+  end;
+  OpenDialog.Free;
+  Texto.Free;
+  Arquivo.Free;
+end;
+
 
 procedure TformPrincipal.ReiniciarTodosOsQueries;
 var
@@ -503,16 +701,9 @@ begin
 
     for I := 0 to qrPraReiniciar.Count - 1 do
     begin
-      if not TSQLQuery(qrPraReiniciar[I]).Active then
-      begin
-        writeln('Iniciando  ', TComponent(qrPraReiniciar[I]).Name);
-        TSQLQuery(qrPraReiniciar[I]).Open;
-      end
-      else
-      begin
-        writeln('Reiniciando ', TComponent(qrPraReiniciar[I]).Name);
-        TSQLQuery(qrPraReiniciar[I]).Refresh;
-      end;
+      if TSQLQuery(qrPraReiniciar[I]).Active then
+      TSQLQuery(qrPraReiniciar[I]).Refresh;
+      writeln('Reiniciado ', TComponent(qrPraReiniciar[I]).Name);
     end;
   except
     on E: Exception do
@@ -526,7 +717,7 @@ begin
   qrPraReiniciar.Free;
 end;
 
-procedure TFormPrincipal.grdDadosApCellClick(Column: TColumn);
+procedure TformPrincipal.grdDadosApCellClick(Column: TColumn);
 var
   P: TPoint;
   Query: TSQLQuery;
@@ -633,8 +824,28 @@ begin
   openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
 end;
 
+procedure TformPrincipal.miExportarClick(Sender: TObject);
+begin
+
+end;
+
+procedure TformPrincipal.miImportarClick(Sender: TObject);
+begin
+
+end;
+
 procedure TformPrincipal.pcPrincipalChange(Sender: TObject);
 begin
+end;
+
+procedure TformPrincipal.qrApostasAfterOpen(DataSet: TDataSet);
+begin
+  qrApostas.Last;
+end;
+
+procedure TformPrincipal.qrApostasAfterRefresh(DataSet: TDataSet);
+begin
+  qrApostas.Last;
 end;
 
 procedure TformPrincipal.PosAtualizacao;

@@ -58,7 +58,7 @@ var
   httpClient: TFPHTTPClient;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.2.0.14'; // Atualize conforme necessário
+  currentVersion := '0.2.1.15';
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');
@@ -67,7 +67,6 @@ begin
   try
     writeln('Tentando se conectar com o repositório...');
     try
-      // Adiciona o cabeçalho User-Agent
       httpClient.AddHeader('User-Agent', 'MyApp/1.0');
       httpClient.Get(apiUrl, response);
       writeln('Resposta recebida: ' + response.DataString);

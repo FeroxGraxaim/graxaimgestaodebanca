@@ -74,7 +74,7 @@ type
     qrNovaApostaCodJogo: TLongintField;
     qrNovaApostaCodLinha: TLongintField;
     qrNovaApostaCodMetodo: TLongintField;
-    qrNovaApostaCompetio: TStringField;
+    qrNovaApostaCompeticao: TStringField;
     qrNovaApostaData: TDateField;
     qrNovaApostaJogo: TStringField;
     qrNovaApostaLinha: TStringField;
@@ -128,7 +128,7 @@ type
     procedure HabilitarBotaoOk;
     procedure AtualizaMetodoLinha(Sender: TObject);
     procedure AtualizaMetLinMult(Sender: TObject);
-    procedure HabilitarGridSimples;
+    procedure HabilitarBtnNovaLinha;
     procedure VerificaRegistros;
     procedure HabilitaBotaoAddJogo;
   public
@@ -147,6 +147,7 @@ var
   ListaJogo: TList;
   InfoJogo: TItemInfo;
   GlobalExcecao: boolean;
+  Nao: boolean;
 
 implementation
 
@@ -158,31 +159,43 @@ uses
   { TformNovaAposta }
 
 procedure TformNovaAposta.btnAddJogoClick(Sender: TObject);
-var
-  query: TSQLQuery;
 begin
   with formPrincipal do
   begin
-    query := TSQLQuery.Create(nil);
-    query.DataBase := conectBancoDados;
-    query.Transaction := transactionBancoDados;
+    VerificaRegistros;
+    if GlobalExcecao then Exit;
 
-    query.SQL.Text :=
-      'INSERT INTO Jogo (Cod_Comp, Mandante, Visitante) ' +
-      'VALUES (                                      ' +
-      '   (SELECT Cod_Comp FROM Competições C         ' +
-      '    WHERE C.Competição = :Competicao),          ' +
-      '   :Mandante,                                  ' + '   :Visitante)';
-    query.ParamByName('Mandante').AsString := cbMandanteMult.Text;
-    query.ParamByName('Visitante').AsString := cbVisitanteMult.Text;
-    query.ParamByName('Competicao').AsString := cbCompMult.Text;
-    query.ExecSQL;
-    query.SQL.Text :=
-      'INSERT INTO Mercados (Cod_Jogo, Cod_Aposta) ' +
-      'VALUES (                                                          ' +
-      '   (SELECT MAX(Cod_Jogo) FROM Jogo),                              ' +
-      '   (SELECT MAX(Cod_Aposta) FROM Apostas))                           ';
-    query.ExecSQL;
+    with TSQLQuery.Create(nil) do
+    begin
+      DataBase := conectBancoDados;
+      try
+        SQL.Text :=
+          'INSERT INTO Jogo (Cod_Comp, Mandante, Visitante) ' +
+          'VALUES (                                      ' +
+          '   (SELECT Cod_Comp FROM Competicoes C         ' +
+          '    WHERE C.Competicao = :Competicao),          ' +
+          '   :Mandante,                                  ' + '   :Visitante)';
+        ParamByName('Mandante').AsString := cbMandanteMult.Text;
+        ParamByName('Visitante').AsString := cbVisitanteMult.Text;
+        ParamByName('Competicao').AsString := cbCompMult.Text;
+        ExecSQL;
+        SQL.Text :=
+          'INSERT INTO Mercados (Cod_Jogo, Cod_Aposta) ' +
+          'VALUES (                                                          ' +
+          '   (SELECT MAX(Cod_Jogo) FROM Jogo),                              ' +
+          '   (SELECT MAX(Cod_Aposta) FROM Apostas))                           ';
+        ExecSQL;
+      except
+        on E: Exception do
+        begin
+          MessageDlg('Erro', 'Erro ao inserir jogo, tente novamente. Se o problema ' +
+            'persistir favor informar no GitHub com a seguinte mensagem: ' +
+            sLineBreak + E.Message, mtError, [mbOK], 0);
+          Cancel;
+        end;
+      end;
+      Free;
+    end;
 
     if qrJogos.Active then qrJogos.Refresh
     else
@@ -199,15 +212,13 @@ begin
       lsbJogos.Items.Add(InfoJogo.Text);
       qrJogos.Next;
     end;
-
-    query.Free;
-    HabilitarBotaoOk;
-
-    cbCompMult.Text := '';
-    cbMandanteMult.Text := '';
-    cbVisitanteMult.Text := '';
-    btnAddJogo.Enabled := false;
   end;
+  HabilitarBotaoOk;
+
+  cbCompMult.Text := '';
+  cbMandanteMult.Text := '';
+  cbVisitanteMult.Text := '';
+  btnAddJogo.Enabled := False;
 end;
 
 
@@ -227,20 +238,20 @@ begin
   CalcularValorAposta;
   btnOk.Enabled := False;
 
-  // Listar competições no ComboBox "Competição":
+  // Listar Competicoes no ComboBox "Competicao":
   writeln('Listando itens nos ComboBoxes');
   qrNACompeticao := TSQLQuery.Create(nil);
   qrNACompeticao.DataBase := formPrincipal.conectBancoDados;
-  qrNACompeticao.SQL.Text := 'SELECT Competição FROM Competições';
+  qrNACompeticao.SQL.Text := 'SELECT Competicao FROM Competicoes';
   qrNACompeticao.Open;
   while not qrNACompeticao.EOF do
   begin
     cbCompeticao.items.AddObject(
-      qrNACompeticao.FieldByName('Competição').AsString,
-      TObject(qrNACompeticao.FieldByName('Competição').AsString));
+      qrNACompeticao.FieldByName('Competicao').AsString,
+      TObject(qrNACompeticao.FieldByName('Competicao').AsString));
     cbCompMult.items.AddObject(
-      qrNACompeticao.FieldByName('Competição').AsString,
-      TObject(qrNACompeticao.FieldByName('Competição').AsString));
+      qrNACompeticao.FieldByName('Competicao').AsString,
+      TObject(qrNACompeticao.FieldByName('Competicao').AsString));
     qrNACompeticao.Next;
   end;
   qrNACompeticao.Free;
@@ -690,11 +701,10 @@ begin
 
   Multipla:
 
-    if (deApostaMult.Text <> '') and (cbCompMult.Text <> '') and
-      (cbMandanteMult.Text <> '') and (cbVisitanteMult.Text <> '') and
-      (edtValorMult.Text <> '') and (edtOddMult.Text <> '') and not
-      qrJogos.IsEmpty and not qrLinhaMultipla.FieldByName('Método').IsNull and
-      not qrLinhaMultipla.FieldByName('Linha').IsNull and not
+    if (deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
+      (edtOddMult.Text <> '') and not qrJogos.IsEmpty and not
+      qrLinhaMultipla.FieldByName('Método').IsNull and not
+      qrLinhaMultipla.FieldByName('Linha').IsNull and not
       qrLinhaMultipla.FieldByName('Situacao').IsNull then btnOk.Enabled := True
     else
       btnOk.Enabled := False;
@@ -738,16 +748,13 @@ begin
   end;
 end;
 
-procedure TformNovaAposta.HabilitarGridSimples;
+procedure TformNovaAposta.HabilitarBtnNovaLinha;
 begin
   if (cbCompeticao.Text <> '') and (cbMandante.Text <> '') and
     (cbVisitante.Text <> '') then
-  begin
-    grdNovaAposta.Enabled := True;
-    qrNovaAposta.Insert;
-  end
+    btnNovaLinha.Enabled := True
   else
-    grdNovaAposta.Enabled := False;
+    btnNovaLinha.Enabled := False;
 end;
 
 procedure TformNovaAposta.btnCancelarClick(Sender: TObject);
@@ -777,7 +784,7 @@ var
   query: TSQLQuery;
 begin
   MotivoOk := True;
-  VerificaRegistros;
+  Close;
 end;
 
 procedure TformNovaAposta.btnNovaLinhaClick(Sender: TObject);
@@ -787,14 +794,14 @@ var
 begin
   try
     Data := qrNovaAposta.FieldByName('Data').AsDateTime;
-    Competicao := qrNovaAposta.FieldByName('Competição').AsString;
+    Competicao := qrNovaAposta.FieldByName('Competicao').AsString;
     Jogo := qrNovaAposta.FieldByName('Jogo').AsString;
     Mandante := qrNovaAposta.FieldByName('Mandante').AsString;
     Visitante := qrNovaAposta.FieldByName('Visitante').AsString;
     writeln('Inserido nova linha');
     qrNovaAposta.Insert;
     qrNovaAposta.FieldByName('Data').AsDateTime := Data;
-    qrNovaAposta.FieldByName('Competição').AsString := Competicao;
+    qrNovaAposta.FieldByName('Competicao').AsString := Competicao;
     qrNovaAposta.FieldByName('Mandante').AsString := Mandante;
     qrNovaAposta.FieldByName('Visitante').AsString := Visitante;
     qrNovaAposta.FieldByName('Jogo').AsString := Jogo;
@@ -802,6 +809,8 @@ begin
     qrNovaAposta.ApplyUpdates;
     qrNovaAposta.Refresh;
     qrNovaAposta.Edit;
+    if not grdNovaAposta.Enabled then
+      grdNovaAposta.Enabled := True;
   except
     on E: Exception do
     begin
@@ -811,27 +820,13 @@ begin
         mtError, [mbOK], 0);
     end;
   end;
-  //query.Free;
 end;
 
 
 procedure TformNovaAposta.cbCompeticaoChange(Sender: TObject);
 begin
   HabilitarBotaoOk;
-  with TSQLQuery.Create(nil) do
-  begin
-    qrNovaAposta.Close;
-    DataBase := formPrincipal.conectBancoDados;
-    SQL.Text :=
-      'UPDATE Jogo SET Cod_Comp = (SELECT Cod_Comp FROM Competições WHERE ' +
-      'Competições.Competição = :Competição) WHERE Cod_Jogo = (SELECT MAX(Cod_Jogo) FROM Jogo)';
-    writeln('SQL: ', SQL.Text);
-    ParamByName('Competição').AsString := cbCompeticao.Text;
-    ExecSQL;
-    qrNovaAposta.Open;
-    Free;
-  end;
-  HabilitarGridSimples;
+  HabilitarBtnNovaLinha;
 end;
 
 procedure TformNovaAposta.cbCompMultChange(Sender: TObject);
@@ -843,19 +838,7 @@ end;
 procedure TformNovaAposta.cbMandanteChange(Sender: TObject);
 begin
   HabilitarBotaoOk;
-  with TSQLQuery.Create(nil) do
-  begin
-    qrNovaAposta.Close;
-    DataBase := formPrincipal.conectBancoDados;
-    SQL.Text :=
-      'UPDATE Jogo SET Mandante = :Mandante WHERE Cod_Jogo = (SELECT MAX(Cod_Jogo) FROM Jogo)';
-    writeln('SQL: ', SQL.Text);
-    ParamByName('Mandante').AsString := cbMandante.Text;
-    ExecSQL;
-    qrNovaAposta.Open;
-    Free;
-  end;
-  HabilitarGridSimples;
+  HabilitarBtnNovaLinha;
 end;
 
 procedure TformNovaAposta.cbMandanteMultChange(Sender: TObject);
@@ -905,18 +888,7 @@ end;
 procedure TformNovaAposta.cbVisitanteChange(Sender: TObject);
 begin
   HabilitarBotaoOk;
-  with TSQLQuery.Create(nil) do
-  begin
-    qrNovaAposta.Close;
-    DataBase := formPrincipal.conectBancoDados;
-    SQL.Text :=
-      'UPDATE Jogo SET Visitante = :Visitante WHERE Cod_Jogo = (SELECT MAX(Cod_Jogo) FROM Jogo)';
-    ParamByName('Visitante').AsString := cbVisitante.Text;
-    ExecSQL;
-    qrNovaAposta.Open;
-    Free;
-  end;
-  HabilitarGridSimples;
+  HabilitarBtnNovaLinha;
 end;
 
 procedure TformNovaAposta.cbVisitanteMultChange(Sender: TObject);
@@ -979,26 +951,30 @@ end;
 procedure TformNovaAposta.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 var
   i: integer;
-  excecao: boolean;
+  excecao, Multipla: boolean;
 label
-  Simples, Multipla, Salvar, Ok, Cancelar, Fim;
+  Salvar, Cancelar, Fim;
 begin
   if not MotivoOk then
-  if MessageDlg('Deseja realmente cancelar o registro da aposta?',
-    mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-    CloseAction := caNone
-  else
-    goto Cancelar;
+    if MessageDlg('Deseja realmente cancelar o registro da aposta?',
+      mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      CloseAction := caNone
+    else
+      goto Cancelar;
 
   GlobalExcecao := False;
 
   VerificaRegistros;
 
-  if GlobalExcecao then
+  if GlobalExcecao or Nao then
     CloseAction := caNone
   else
   begin
     excecao := False;
+
+    if tsSimples.Showing then Multipla := False
+    else if tsMultipla.Showing then Multipla := True;
+
     with formPrincipal do
     begin
 
@@ -1019,38 +995,32 @@ begin
             'Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas);';
           writeln('SQL: ', SQL.Text);
 
-          if tsSimples.Showing then
+          if not Multipla then
           begin
             ParamByName('Data').AsDateTime := deAposta.Date;
             ParamByName('Valor_Aposta').AsFloat := StrToFloat(edtValor.Text);
             ParamByName('Múltipla').AsBoolean := False;
             ParamByName('Odd').AsFloat := StrToFloat(edtOdd.Text);
-            ExecSQL;
           end
-          else if tsMultipla.Showing then
+          else
           begin
             ParamByName('Data').AsDateTime := deApostaMult.Date;
             ParamByName('Valor_Aposta').AsFloat := StrToFloat(edtValorMult.Text);
             ParamByName('Múltipla').AsBoolean := True;
             ParamByName('Odd').AsFloat := StrToFloat(edtOddMult.Text);
-            ExecSQL;
-          end
-          else
-          begin
-            MessageDlg('Erro', 'Erro ao identificar se é aposta simples ou múltipla. '
-              + 'A aposta será cancelada.', mtError, [mbOK], 0);
-            excecao := True;
           end;
+          ExecSQL;
 
         except
           on E: Exception do
           begin
+            Cancel;
+            writeln('Erro ao atualizar tabela Apostas: ' + E.Message);
             MessageDlg('Erro',
               'Ocorreu um erro, a aposta será cancelada. Se o problema persistir ' +
               'favor informe no Github com a seguinte mensagem: ' +
               sLineBreak + E.Message,
               mtError, [mbOK], 0);
-            Cancel;
             excecao := True;
           end;
         end;
@@ -1064,15 +1034,30 @@ begin
           end;
 
         try
+          if not Multipla then
+          begin
+              SQL.Text :=
+                'UPDATE Jogo SET Cod_Comp = (SELECT Cod_Comp FROM Competicoes ' +
+                'WHERE Competicao = :Comp), Mandante = :Mandante, Visitante = :Visitante ' +
+                'WHERE (SELECT Cod_Aposta FROM Mercados ' +
+                'WHERE Mercados.Cod_Jogo = Jogo.Cod_Jogo ' +
+                'AND Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas))';
+              ParamByName('Comp').AsString := cbCompeticao.Text;
+              ParamByName('Mandante').AsString := cbMandante.Text;
+              ParamByName('Visitante').AsString := cbVisitante.Text;
+              writeln('SQL: ', SQL.Text);
+              ExecSQL;
+          end;
           writeln('Salvando alterações no banco de dados');
           transactionBancoDados.Commitretaining;
         except
           on E: Exception do
           begin
+            writeln('Erro ao salvar aposta ' + E.Message);
             MessageDlg('Erro',
               'Erro ao salvar, aposta será cancelada. Se o problema persistir ' +
-              'favor informe no Github com a seguinte mensagem: ' +
-              sLineBreak + E.Message,
+              'favor informe no Github com a seguinte mensagem: ' + sLineBreak
+              + sLineBreak + E.Message,
               mtError, [mbOK], 0);
             Cancel;
             excecao := True;
@@ -1087,20 +1072,26 @@ begin
 
       Cancelar:
 
-        transactionBancoDados.RollbackRetaining;
-      with TSQLQuery.Create(nil) do
-      begin
-        DataBase := conectBancoDados;
-        try
-          SQL.Text :=
-            'DELETE FROM Apostas WHERE Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas)';
-          ExecSQL;
-          transactionBancoDados.CommitRetaining;
-        finally
-          Free;
-        end;
-      end;
-
+        if not excecao then
+          with TSQLQuery.Create(nil) do
+          try
+            DataBase := conectBancoDados;
+            SQL.Text := 'DELETE FROM Jogo ' +
+              'WHERE Jogo.Cod_Jogo = (SELECT Cod_Jogo FROM Mercados WHERE  ' +
+              'Mercados.Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas)) ';
+            ExecSQL;
+            SQL.Text := 'DELETE FROM Mercados WHERE Mercados.Cod_Aposta = ' +
+              '(SELECT MAX(Cod_Aposta) FROM Apostas)';
+            SQL.Text :=
+              'DELETE FROM Apostas WHERE Cod_Aposta = ' +
+              '(SELECT MAX(Cod_Aposta) FROM Apostas)';
+            ExecSQL;
+            transactionBancoDados.CommitRetaining;
+          finally
+            Free;
+          end
+        else
+          CloseAction := caNone;
       Fim:
 
         qrSavePoint.Free;
@@ -1118,20 +1109,21 @@ var
 begin
   with formPrincipal do
   begin
+    Nao := False;
     if tsSimples.Showing then Multipla := False
     else if tsMultipla.Showing then Multipla := True;
     with TSQLQuery.Create(nil) do
     begin
       try
         DataBase := conectBancoDados;
-        SQL.Text := 'SELECT Competição FROM Competições WHERE Competição = :comp';
+        SQL.Text := 'SELECT Competicao FROM Competicoes WHERE Competicao = :comp';
         if not Multipla then
           ComparaCampeonato := cbCompeticao.Text
         else
           ComparaCampeonato := cbCompMult.Text;
         ParamByName('comp').AsString := ComparaCampeonato;
         Open;
-        if FieldByName('Competição').AsString = ComparaCampeonato then
+        if FieldByName('Competicao').AsString = ComparaCampeonato then
           CampeonatoExiste := True
         else
           CampeonatoExiste := False;
@@ -1168,7 +1160,7 @@ begin
         if not CampeonatoExiste or not MandanteExiste or not VisitanteExiste then
         begin
           if MessageDlg(
-            'Há time(s)/competição inserido(s) que não está(ão) no banco de dados, ' +
+            'Há time(s)/Competicao inserido(s) que não está(ão) no banco de dados, ' +
             'ou houve um erro de digitação. Caso tenha digitado corretamente, deseja ' +
             'registrá-lo(s) no banco de dados agora?', mtConfirmation, [mbYes, mbNo], 0) =
             mrYes then
@@ -1196,7 +1188,7 @@ begin
               begin
                 Close;
                 SQL.Text :=
-                  'INSERT INTO Competições (País, Competição) VALUES (:pais, :comp)';
+                  'INSERT INTO Competicoes (País, Competicao) VALUES (:pais, :comp)';
                 ParamByName('pais').AsString := NomePais;
                 ParamByName('comp').AsString := ComparaCampeonato;
                 ExecSQL;
@@ -1218,18 +1210,21 @@ begin
                 ExecSQL;
               end;
             end;
-          end;
+            transactionBancoDados.CommitRetaining;
+          end
+          else
+            Nao := True;
         end;
       except
         on E: Exception do
         begin
-          MessageDlg('Erro', 'Ocorreu um erro: ' +
-            sLineBreak + E.Message, mtError, [mbOK], 0);
+          MessageDlg('Erro', 'Ocorreu um erro: ' + sLineBreak +
+            E.Message, mtError, [mbOK], 0);
           Cancel;
-          GlobalExcecao := true;
+          transactionBancoDados.RollbackRetaining;
+          GlobalExcecao := True;
         end;
       end;
-      transactionBancoDados.CommitRetaining;
       Free;
     end;
   end;
@@ -1237,11 +1232,10 @@ end;
 
 procedure TformNovaAposta.HabilitaBotaoAddJogo;
 begin
-  if  (cbCompMult.Text <> '')
-  and (cbMandanteMult.Text <> '')
-  and (cbVisitanteMult.Text <> '')
-  then btnAddJogo.Enabled := true
-  else btnAddJogo.Enabled := false;
+  if (cbCompMult.Text <> '') and (cbMandanteMult.Text <> '') and
+    (cbVisitanteMult.Text <> '') then btnAddJogo.Enabled := True
+  else
+    btnAddJogo.Enabled := False;
 end;
 
 end.
