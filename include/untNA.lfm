@@ -40,8 +40,8 @@ object formNovaAposta: TformNovaAposta
     Height = 376
     Top = 0
     Width = 728
-    ActivePage = tsSimples
-    TabIndex = 0
+    ActivePage = tsMultipla
+    TabIndex = 1
     TabOrder = 2
     OnChange = pcApostasChange
     object tsSimples: TTabSheet
@@ -50,13 +50,13 @@ object formNovaAposta: TformNovaAposta
       ClientWidth = 724
       OnShow = tsSimplesShow
       object grbNovaLinha: TGroupBox
-        Left = 368
+        Left = 344
         Height = 296
         Top = 8
-        Width = 328
+        Width = 352
         Caption = 'Clique duas vezes sobre uma célula para editar'
         ClientHeight = 277
-        ClientWidth = 324
+        ClientWidth = 348
         TabOrder = 0
         object grdNovaAposta: TDBGrid
           AnchorSideLeft.Control = grbNovaLinha
@@ -68,7 +68,7 @@ object formNovaAposta: TformNovaAposta
           Left = 0
           Height = 277
           Top = 0
-          Width = 324
+          Width = 348
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -83,6 +83,11 @@ object formNovaAposta: TformNovaAposta
               Title.Caption = 'Linha'
               Width = 115
               FieldName = 'Linha'
+            end          
+            item
+              Title.Caption = 'Odd'
+              Width = 40
+              FieldName = 'Odd'
             end          
             item
               ButtonStyle = cbsButtonColumn
@@ -114,10 +119,10 @@ object formNovaAposta: TformNovaAposta
         TabOrder = 1
       end
       object btnNovaLinha: TButton
-        Left = 368
+        Left = 344
         Height = 25
         Top = 312
-        Width = 328
+        Width = 352
         Caption = 'Nova Linha'
         Enabled = False
         TabOrder = 2
@@ -170,6 +175,8 @@ object formNovaAposta: TformNovaAposta
         TabOrder = 4
         OnChange = edtValorChange
         OnKeyPress = edtValorKeyPress
+        OnMouseEnter = edtValorMouseEnter
+        OnMouseLeave = edtValorMouseLeave
       end
       object Label1: TLabel
         Left = 8
@@ -183,9 +190,14 @@ object formNovaAposta: TformNovaAposta
         Height = 27
         Top = 118
         Width = 60
+        Color = clInactiveBorder
+        ReadOnly = True
         TabOrder = 5
         OnChange = edtOddChange
+        OnEnter = edtOddEnter
         OnKeyPress = edtOddKeyPress
+        OnMouseEnter = edtOddMouseEnter
+        OnMouseLeave = edtOddMouseLeave
       end
       object lbOdd: TLabel
         Left = 276
@@ -286,14 +298,19 @@ object formNovaAposta: TformNovaAposta
             item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Método'
-              Width = 130
+              Width = 115
               FieldName = 'Método'
             end          
             item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Linha'
-              Width = 130
+              Width = 115
               FieldName = 'Linha'
+            end          
+            item
+              Title.Caption = 'Odd'
+              Width = 40
+              FieldName = 'Odd'
             end          
             item
               ButtonStyle = cbsButtonColumn
@@ -393,8 +410,13 @@ object formNovaAposta: TformNovaAposta
         Height = 27
         Top = 24
         Width = 60
+        Color = clInactiveBorder
+        ReadOnly = True
         TabOrder = 5
         OnChange = edtOddMultChange
+        OnEnter = edtOddMultEnter
+        OnMouseEnter = edtOddMultMouseEnter
+        OnMouseLeave = edtOddMultMouseLeave
       end
       object lbOdd1: TLabel
         Left = 645
@@ -599,6 +621,12 @@ object formNovaAposta: TformNovaAposta
         Size = 255
       end    
       item
+        Name = 'Odd'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
         Name = 'Situacao'
         DataType = ftString
         Precision = -1
@@ -619,6 +647,7 @@ object formNovaAposta: TformNovaAposta
       '    Competicoes.Competicao || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo,'
       '    Métodos.Nome AS Método,'
       '    Linhas.Nome AS Linha,'
+      '    Mercados.Odd,'
       '    Mercados.Status AS Situacao'
       'FROM'
       '    Mercados'
@@ -653,6 +682,7 @@ object formNovaAposta: TformNovaAposta
       '    Cod_Linha = (SELECT Cod_Linha'
       '                 FROM Linhas'
       '                 WHERE Linhas.Nome = :Linha),'
+      '    Odd = :Odd,'
       '    Status = :Situacao'
       'WHERE Mercados.ROWID = :ROWID;'
     )
@@ -747,10 +777,24 @@ object formNovaAposta: TformNovaAposta
       ReadOnly = False
       Required = False
     end
+    object qrNovaApostaOdd: TBCDField
+      FieldKind = fkData
+      FieldName = 'Odd'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
     object qrNovaApostaSituacao: TStringField
       FieldKind = fkData
       FieldName = 'Situacao'
-      Index = 9
+      Index = 10
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -760,7 +804,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaROWID: TLongintField
       FieldKind = fkData
       FieldName = 'ROWID'
-      Index = 10
+      Index = 11
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -769,7 +813,7 @@ object formNovaAposta: TformNovaAposta
     object qrNovaApostaCompeticao: TStringField
       FieldKind = fkData
       FieldName = 'Competicao'
-      Index = 11
+      Index = 12
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1062,6 +1106,12 @@ object formNovaAposta: TformNovaAposta
         Size = 255
       end    
       item
+        Name = 'Odd'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
         Name = 'Situacao'
         DataType = ftString
         Precision = -1
@@ -1077,6 +1127,7 @@ object formNovaAposta: TformNovaAposta
       '    Mercados.Cod_Linha AS CodLinha,'
       '    "Métodos".Nome AS "Método",'
       '    Linhas.Nome AS Linha,'
+      '    Mercados.Odd,'
       '    Mercados.Status AS Situacao'
       'FROM'
       '    Mercados'
@@ -1105,6 +1156,7 @@ object formNovaAposta: TformNovaAposta
       '    Cod_Linha = (SELECT Cod_Linha'
       '                 FROM Linhas'
       '                 WHERE Linhas.Nome = :Linha),'
+      '    Odd = :Odd,'
       '    Status = :Situacao'
       'WHERE Mercados.ROWID = :ROWID'
       'AND Mercados.Cod_Jogo ='
@@ -1176,10 +1228,24 @@ object formNovaAposta: TformNovaAposta
       Required = False
       Size = 255
     end
+    object qrLinhaMultiplaOdd: TBCDField
+      FieldKind = fkData
+      FieldName = 'Odd'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
     object qrLinhaMultiplaSituacao: TStringField
       FieldKind = fkData
       FieldName = 'Situacao'
-      Index = 6
+      Index = 7
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False

@@ -37,7 +37,7 @@ var
 procedure TBancoDados.DefinirVariaveis;
 begin
   writeln('Definindo variáveis');
-  versaoBDEsperada := 8;
+  versaoBDEsperada := 9;
 
   {$IFDEF MSWINDOWS}
   if FileExists(GetEnvironmentVariable('PROGRAMFILES') +
@@ -84,7 +84,7 @@ begin
      'não existem ou não estão no diretório correto. Caso tenha instalado o ' +
      'programa através de um arquivo de instalação DEB ou RPM, tente ' +
      'reinstalar o programa. ' +
-     'Caso esteja compilando o código-fonte baixado do Github, certifique-se que' +
+     'Caso esteja compilando o código-fonte usando apenas o comando "make", certifique-se que' +
      'os arquivos "criarbd.sql" e "atualizarbd.sql" estejam na subpasta "datafiles" ' +
      'dentro da mesma pasta do binário "GraxaimBanca"',mtError,[mbOk],0);
      writeln('Caminho fracassado para CriarBD: ',CriarBD);

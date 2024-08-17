@@ -131,8 +131,8 @@ begin
         transactionBancoDados.CommitRetaining;
         DefinirStake;
         qrBanca.Refresh;
-        ShowMessage('Valor da banca para ' + IntToStr(mesSelecionado) + '/' +
-        IntToStr(anoSelecionado) + ' salvo com sucesso!');
+        ShowMessage('Valor da banca para ' + IntToStr(mesSelecionado) +
+          '/' + IntToStr(anoSelecionado) + ' salvo com sucesso!');
       except
         on E: Exception do
         begin
@@ -293,7 +293,8 @@ end;
 
 procedure TEventosPainel.AtualizarGraficoLucro;
 var
-  i, j, k, mesGreen, mesRed, diaGreen, diaRed: integer;
+  i, j, Contador, mesGreen, mesRed, diaGreen, diaRed: integer;
+  ContFloat: double;
 begin
   with formPrincipal do
   begin
@@ -311,10 +312,10 @@ begin
         begin
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
           (chrtLucroMes.Series[0] as TLineSeries).Clear;
-          while not qrMes.EOF do
+          for i := 1 to 31 do
           begin
             (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-              qrMes.FieldByName('Dia').AsInteger,
+              i,
               qrMes.FieldByName('SomaLucro').AsFloat);
             qrMes.Next;
           end;
@@ -323,10 +324,10 @@ begin
         begin
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2n%%';
           (chrtLucroMes.Series[0] as TLineSeries).Clear;
-          while not qrMes.EOF do
+          for i := 1 to 31 do
           begin
             (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-              qrMes.FieldByName('Dia').AsFloat,
+              i,
               qrMes.FieldByName('PorCentoLucro').AsFloat);
             qrMes.Next;
           end;
@@ -349,25 +350,55 @@ begin
           if cbGraficos.Text = 'Lucro %' then
           begin
             chrtLucroAno.AxisList[0].Marks.Format := '%0:.2n%%';
-            while not qrAno.EOF do
+
+            qrAno.First;
+            for Contador := 1 to 12 do
             begin
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(
-                qrAno.RecNo,
-                qrAno.FieldByName('LucroAnualReais').AsFloat,
-                qrAno.FieldByName('Mês').AsFloat);
-              qrAno.Next;
+              ContFloat := Contador;
+              if Contador < qrAno.FieldByName('Mês').AsInteger then
+                (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
+                  qrAno.FieldByName('LucroTotalPorCento').AsFloat, ContFloat)
+              else if Contador > qrAno.FieldByName('Mês').AsInteger then
+              begin
+                qrAno.Last;
+                (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
+                  qrAno.FieldByName('LucroTotalPorCento').AsFloat, ContFloat);
+                qrAno.First;
+              end
+              else
+              begin
+                (chrtLucroAno.Series[0] as TLineSeries).AddXY(
+                  Contador,
+                  qrAno.FieldByName('LucroTotalPorCento').AsFloat,
+                  ContFloat);
+                qrAno.Next;
+              end;
             end;
           end
           else if cbGraficos.Text = 'Lucro R$' then
           begin
             chrtLucroAno.AxisList[0].Marks.Format := '%0:.2m';
-            while not qrAno.EOF do
+            for Contador := 1 to 12 do
             begin
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(
-                qrAno.RecNo,
-                qrAno.FieldByName('LucroTotalPorCento').AsFloat,
-                qrAno.FieldByName('Mês').AsFloat);
-              qrAno.Next;
+              ContFloat := Contador;
+              if Contador < qrAno.FieldByName('Mês').AsInteger then
+                (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
+                  qrAno.FieldByName('LucroAnualReais').AsFloat, ContFloat)
+              else if Contador > qrAno.FieldByName('Mês').AsInteger then
+              begin
+                qrAno.Last;
+                (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
+                  qrAno.FieldByName('LucroAnualReais').AsFloat, ContFloat);
+                qrAno.First;
+              end
+              else
+              begin
+                (chrtLucroAno.Series[0] as TLineSeries).AddXY(
+                  Contador,
+                  qrAno.FieldByName('LucroAnualReais').AsFloat,
+                  ContFloat);
+                qrAno.Next;
+              end;
             end;
           end;
         end;

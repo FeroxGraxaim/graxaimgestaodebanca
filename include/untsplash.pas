@@ -98,6 +98,9 @@ begin
     qrApostas.OnCalcFields := @EventosApostas.qrApostasCalcFields;
     btnFiltrarAp.OnClick := @EventosApostas.FiltrarAposta;
     btnLimparFiltroAp.OnClick := @EventosApostas.LimparFiltros;
+    btnTudoGreen.OnClick := @EventosApostas.TudoGreenRed;
+    btnTudoRed.OnClick := @EventosApostas.TudoGreenRed;
+    grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
 
     //Definindo eventos do controle de métodos
 

@@ -67,6 +67,7 @@ type
     qrLinhaMultiplaCodMetodo: TLargeintField;
     qrLinhaMultiplaLinha: TStringField;
     qrLinhaMultiplaMtodo: TStringField;
+    qrLinhaMultiplaOdd: TBCDField;
     qrLinhaMultiplaROWID: TLargeintField;
     qrLinhaMultiplaSituacao: TStringField;
     qrNovaAposta: TSQLQuery;
@@ -80,6 +81,7 @@ type
     qrNovaApostaLinha: TStringField;
     qrNovaApostaMandante: TStringField;
     qrNovaApostaMtodo: TStringField;
+    qrNovaApostaOdd: TBCDField;
     qrNovaApostaROWID: TLongintField;
     qrNovaApostaSituacao: TStringField;
     qrNovaApostaVisitante: TStringField;
@@ -107,11 +109,18 @@ type
     procedure deApostaChange(Sender: TObject);
     procedure deApostaMultChange(Sender: TObject);
     procedure edtOddChange(Sender: TObject);
+    procedure edtOddEnter(Sender: TObject);
     procedure edtOddKeyPress(Sender: TObject; var Key: char);
+    procedure edtOddMouseEnter(Sender: TObject);
+    procedure edtOddMouseLeave(Sender: TObject);
     procedure edtOddMultChange(Sender: TObject);
+    procedure edtOddMultEnter(Sender: TObject);
+    procedure edtOddMultMouseEnter(Sender: TObject);
+    procedure edtOddMultMouseLeave(Sender: TObject);
     procedure edtValorChange(Sender: TObject);
     procedure edtValorKeyPress(Sender: TObject; var Key: char);
     procedure edtValorMouseEnter(Sender: TObject);
+    procedure edtValorMouseLeave(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure grdLinhaMultCellClick(Column: TColumn);
@@ -131,6 +140,7 @@ type
     procedure HabilitarBtnNovaLinha;
     procedure VerificaRegistros;
     procedure HabilitaBotaoAddJogo;
+    procedure DefineOdd;
   public
 
   end;
@@ -379,8 +389,9 @@ procedure TformNovaAposta.grdLinhaMultEditingDone(Sender: TObject);
 begin
   Screen.Cursor := crAppStart;
   try
-    writeln('Postando alterações');
+    qrLinhaMultipla.Edit;
     qrLinhaMultipla.Post;
+    writeln('Postando alterações');
     qrLinhaMultipla.ApplyUpdates;
     qrLinhaMultipla.Refresh;
   except
@@ -390,6 +401,7 @@ begin
     end;
   end;
   qrLinhaMultipla.Edit;
+  DefineOdd;
   HabilitarBotaoOk;
   Screen.Cursor := crDefault;
 end;
@@ -493,6 +505,7 @@ begin
     end;
   end;
   qrNovaAposta.Edit;
+  DefineOdd;
   HabilitarBotaoOk;
   Screen.Cursor := crDefault;
 end;
@@ -723,6 +736,7 @@ begin
     qrNovaAposta.FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
     writeln('Item selecionado: ', SelectedItem.Caption);
     qrNovaAposta.Post;
+    DefineOdd;
   end;
 end;
 
@@ -738,6 +752,9 @@ begin
       qrLinhaMultipla.FieldByName(ColunaAtual.FieldName).AsString :=
         SelectedItem.Caption;
       writeln('Item selecionado: ', SelectedItem.Caption);
+
+      if (qrLinhaMultipla.State = dsInsert) or (qrLinhaMultipla.State = dsEdit) then
+        qrLinhaMultipla.Post;
     except
       on E: Exception do
       begin
@@ -745,6 +762,7 @@ begin
         qrLinhaMultipla.Cancel;
       end;
     end;
+    DefineOdd;
   end;
 end;
 
@@ -912,6 +930,12 @@ begin
   HabilitarBotaoOk;
 end;
 
+procedure TformNovaAposta.edtOddEnter(Sender: TObject);
+begin
+  if edtOdd.ReadOnly then
+    edtOdd.TabStop := False;
+end;
+
 procedure TformNovaAposta.edtOddKeyPress(Sender: TObject; var Key: char);
 begin
   if FormatSettings.DecimalSeparator = ',' then
@@ -922,9 +946,36 @@ begin
         Key := '.';
 end;
 
+procedure TformNovaAposta.edtOddMouseEnter(Sender: TObject);
+begin
+  Screen.Cursor := crNo;
+end;
+
+procedure TformNovaAposta.edtOddMouseLeave(Sender: TObject);
+begin
+  Screen.Cursor := crDefault;
+end;
+
 procedure TformNovaAposta.edtOddMultChange(Sender: TObject);
 begin
   HabilitarBotaoOk;
+end;
+
+procedure TformNovaAposta.edtOddMultEnter(Sender: TObject);
+begin
+  if edtOddMult.ReadOnly then
+    edtOddMult.TabStop := False;
+end;
+
+procedure TformNovaAposta.edtOddMultMouseEnter(Sender: TObject);
+begin
+  if edtOddMult.ReadOnly then
+    Screen.Cursor := crNo;
+end;
+
+procedure TformNovaAposta.edtOddMultMouseLeave(Sender: TObject);
+begin
+  Screen.Cursor := crDefault;
 end;
 
 procedure TformNovaAposta.edtValorChange(Sender: TObject);
@@ -945,7 +996,12 @@ end;
 procedure TformNovaAposta.edtValorMouseEnter(Sender: TObject);
 begin
   if edtValor.ReadOnly then
-    edtValor.Cursor := crNo;
+    Screen.Cursor := crNo;
+end;
+
+procedure TformNovaAposta.edtValorMouseLeave(Sender: TObject);
+begin
+  Screen.Cursor := crDefault;
 end;
 
 procedure TformNovaAposta.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -958,7 +1014,10 @@ begin
   if not MotivoOk then
     if MessageDlg('Deseja realmente cancelar o registro da aposta?',
       mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-      CloseAction := caNone
+    begin
+      CloseAction := caNone;
+      Exit;
+    end
     else
       goto Cancelar;
 
@@ -1036,17 +1095,17 @@ begin
         try
           if not Multipla then
           begin
-              SQL.Text :=
-                'UPDATE Jogo SET Cod_Comp = (SELECT Cod_Comp FROM Competicoes ' +
-                'WHERE Competicao = :Comp), Mandante = :Mandante, Visitante = :Visitante ' +
-                'WHERE (SELECT Cod_Aposta FROM Mercados ' +
-                'WHERE Mercados.Cod_Jogo = Jogo.Cod_Jogo ' +
-                'AND Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas))';
-              ParamByName('Comp').AsString := cbCompeticao.Text;
-              ParamByName('Mandante').AsString := cbMandante.Text;
-              ParamByName('Visitante').AsString := cbVisitante.Text;
-              writeln('SQL: ', SQL.Text);
-              ExecSQL;
+            SQL.Text :=
+              'UPDATE Jogo SET Cod_Comp = (SELECT Cod_Comp FROM Competicoes ' +
+              'WHERE Competicao = :Comp), Mandante = :Mandante, Visitante = :Visitante '
+              + 'WHERE (SELECT Cod_Aposta FROM Mercados ' +
+              'WHERE Mercados.Cod_Jogo = Jogo.Cod_Jogo ' +
+              'AND Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas))';
+            ParamByName('Comp').AsString := cbCompeticao.Text;
+            ParamByName('Mandante').AsString := cbMandante.Text;
+            ParamByName('Visitante').AsString := cbVisitante.Text;
+            writeln('SQL: ', SQL.Text);
+            ExecSQL;
           end;
           writeln('Salvando alterações no banco de dados');
           transactionBancoDados.Commitretaining;
@@ -1056,8 +1115,8 @@ begin
             writeln('Erro ao salvar aposta ' + E.Message);
             MessageDlg('Erro',
               'Erro ao salvar, aposta será cancelada. Se o problema persistir ' +
-              'favor informe no Github com a seguinte mensagem: ' + sLineBreak
-              + sLineBreak + E.Message,
+              'favor informe no Github com a seguinte mensagem: ' +
+              sLineBreak + sLineBreak + E.Message,
               mtError, [mbOK], 0);
             Cancel;
             excecao := True;
@@ -1073,6 +1132,7 @@ begin
       Cancelar:
 
         if not excecao then
+        begin
           with TSQLQuery.Create(nil) do
           try
             DataBase := conectBancoDados;
@@ -1087,9 +1147,16 @@ begin
               '(SELECT MAX(Cod_Aposta) FROM Apostas)';
             ExecSQL;
             transactionBancoDados.CommitRetaining;
-          finally
             Free;
-          end
+          except
+            on E: Exception do
+            begin
+              transactionBancoDados.RollbackRetaining;
+              writeln('Erro: ' + E.Message + 'Código: ' + SQL.Text);
+              Free;
+            end;
+          end;
+        end
         else
           CloseAction := caNone;
       Fim:
@@ -1236,6 +1303,35 @@ begin
     (cbVisitanteMult.Text <> '') then btnAddJogo.Enabled := True
   else
     btnAddJogo.Enabled := False;
+end;
+
+procedure TformNovaAposta.DefineOdd;
+var
+  Odd: double;
+  OddFormat: string;
+begin
+  with formPrincipal do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT Odd FROM Mercados WHERE Mercados.Cod_Aposta = (SELECT MAX(Cod_Aposta) FROM Apostas)';
+      Open;
+      First;
+      Odd := FieldByName('Odd').AsFloat;
+      Next;
+      while not EOF do
+      begin
+        Odd := Odd * FieldByName('Odd').AsFloat;
+        OddFormat := FormatFloat('0.00', Odd);
+        Odd := StrToFloat(OddFormat);
+        Next;
+      end;
+    finally
+      Free;
+    end;
+  if tsSimples.Showing then edtOdd.Text := FloatToStr(Odd)
+  else if tsMultipla.Showing then edtOddMult.Text := FloatToStr(Odd);
 end;
 
 end.

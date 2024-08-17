@@ -3,7 +3,7 @@ object formPrincipal: TformPrincipal
   Height = 706
   Top = 565
   Width = 1082
-  Caption = 'formPrincipal'
+  Caption = 'Graxaim Gestão de Banca [BETA]'
   ClientHeight = 706
   ClientWidth = 1082
   Menu = MenuPrincipal
@@ -529,15 +529,11 @@ object formPrincipal: TformPrincipal
               FieldName = 'Jogo'
             end          
             item
-              Color = clWindow
-              ReadOnly = False
               Title.Caption = 'Odd'
               Width = 46
               FieldName = 'Odd'
             end          
             item
-              Color = clWindow
-              ReadOnly = False
               Title.Caption = 'Valor'
               Width = 61
               FieldName = 'Valor_Aposta'
@@ -631,38 +627,14 @@ object formPrincipal: TformPrincipal
         object btnCashout: TButton
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 824
+          Left = 808
           Height = 58
           Top = 3
-          Width = 100
+          Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Cashout'
           Enabled = False
           TabOrder = 2
-        end
-        object btnSalvaAp: TButton
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Side = asrBottom
-          Left = 696
-          Height = 38
-          Top = 102
-          Width = 100
-          Anchors = [akRight, akBottom]
-          Caption = 'Salvar'
-          Enabled = False
-          TabOrder = 3
-        end
-        object btnCancelaAp: TButton
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Side = asrBottom
-          Left = 824
-          Height = 38
-          Top = 102
-          Width = 100
-          Anchors = [akRight, akBottom]
-          Caption = 'Cancelar'
-          Enabled = False
-          TabOrder = 4
         end
         object grdDadosAp: TDBGrid
           AnchorSideLeft.Control = lbSelecioneAposta
@@ -682,14 +654,14 @@ object formPrincipal: TformPrincipal
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Competição'
-              Width = 154
+              Width = 150
               FieldName = 'Competição'
             end          
             item
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Jogo'
-              Width = 154
+              Width = 150
               FieldName = 'Jogo'
             end          
             item
@@ -705,15 +677,20 @@ object formPrincipal: TformPrincipal
               FieldName = 'Linha'
             end          
             item
+              Title.Caption = 'Odd'
+              Width = 40
+              FieldName = 'Odd'
+            end          
+            item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Situação'
-              Width = 77
+              Width = 60
               FieldName = 'Status'
             end>
           DataSource = dsDadosAposta
           Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowEditor, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           Scrollbars = ssAutoBoth
-          TabOrder = 5
+          TabOrder = 3
           Visible = False
           OnCellClick = grdDadosApCellClick
           OnEditingDone = grdDadosApEditingDone
@@ -830,7 +807,7 @@ object formPrincipal: TformPrincipal
         TabOrder = 0
         object tsMesMetodos: TTabSheet
           Caption = 'Mês'
-          ClientHeight = 640
+          ClientHeight = 639
           ClientWidth = 1074
           object pcMesMetodos: TPageControl
             AnchorSideLeft.Control = tsMesMetodos
@@ -840,7 +817,7 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsMesMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 640
+            Height = 639
             Top = 0
             Width = 1074
             ActivePage = tsGraficosMesMetodos
@@ -849,7 +826,7 @@ object formPrincipal: TformPrincipal
             TabOrder = 0
             object tsGraficosMesMetodos: TTabSheet
               Caption = 'Gráficos'
-              ClientHeight = 613
+              ClientHeight = 611
               ClientWidth = 1070
               object gbListaLinha: TGroupBox
                 AnchorSideRight.Control = pnGraficosMetodos
@@ -956,12 +933,12 @@ object formPrincipal: TformPrincipal
                 AnchorSideBottom.Control = tsGraficosMesMetodos
                 AnchorSideBottom.Side = asrBottom
                 Left = 215
-                Height = 613
+                Height = 611
                 Top = 0
                 Width = 855
                 Anchors = [akTop, akLeft, akRight, akBottom]
-                ClientHeight = 613
-                ClientWidth = 855
+                ClientHeight = 607
+                ClientWidth = 851
                 TabOrder = 2
                 object chrtAcertMetodo: TChart
                   Left = 376
@@ -1107,7 +1084,7 @@ object formPrincipal: TformPrincipal
             end
             object tsDadosMesMetodos: TTabSheet
               Caption = 'Dados'
-              ClientHeight = 613
+              ClientHeight = 611
               ClientWidth = 1070
               object grdMetodosMes: TDBGrid
                 Left = 0
@@ -1118,7 +1095,7 @@ object formPrincipal: TformPrincipal
                 Columns = <                
                   item
                     Title.Caption = 'Método'
-                    Width = 250
+                    Width = 200
                     FieldName = 'Método'
                   end                
                   item
@@ -1149,12 +1126,12 @@ object formPrincipal: TformPrincipal
                 Left = 568
                 Height = 616
                 Top = 0
-                Width = 504
+                Width = 500
                 Color = clWindow
                 Columns = <                
                   item
                     Title.Caption = 'Linha'
-                    Width = 250
+                    Width = 200
                     FieldName = 'Linha'
                   end                
                   item
@@ -1188,7 +1165,7 @@ object formPrincipal: TformPrincipal
         end
         object tsAnoMetodos: TTabSheet
           Caption = 'Ano'
-          ClientHeight = 640
+          ClientHeight = 639
           ClientWidth = 1074
           TabVisible = False
           object pcAnoMetodos: TPageControl
@@ -1199,7 +1176,7 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsMesMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 641
+            Height = 640
             Top = 0
             Width = 1074
             ActivePage = tsGraficosAnoMetodos
@@ -1208,7 +1185,7 @@ object formPrincipal: TformPrincipal
             TabOrder = 0
             object tsGraficosAnoMetodos: TTabSheet
               Caption = 'Gráficos'
-              ClientHeight = 613
+              ClientHeight = 612
               ClientWidth = 1070
               object gbListaLinha1: TGroupBox
                 AnchorSideRight.Side = asrBottom
@@ -1315,11 +1292,11 @@ object formPrincipal: TformPrincipal
                 AnchorSideBottom.Control = tsGraficosAnoMetodos
                 AnchorSideBottom.Side = asrBottom
                 Left = 215
-                Height = 613
+                Height = 612
                 Top = 0
                 Width = 855
                 Anchors = [akTop, akLeft, akRight, akBottom]
-                ClientHeight = 609
+                ClientHeight = 608
                 ClientWidth = 851
                 TabOrder = 2
                 object chrtAcertMetodo1: TChart
@@ -1466,7 +1443,7 @@ object formPrincipal: TformPrincipal
             end
             object tsDadosAnoMetodos: TTabSheet
               Caption = 'Dados'
-              ClientHeight = 613
+              ClientHeight = 612
               ClientWidth = 1070
               object grdMetodosAno: TDBGrid
                 Left = 0
@@ -1673,6 +1650,11 @@ object formPrincipal: TformPrincipal
         Precision = -1
       end    
       item
+        Name = 'Cashout'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
         Name = 'Jogo'
         DataType = ftString
         Precision = -1
@@ -1697,7 +1679,7 @@ object formPrincipal: TformPrincipal
         Size = 255
       end>
     AfterOpen = qrApostasAfterOpen
-    AfterRefresh = qrApostasAfterRefresh
+    BeforeRefresh = qrApostasBeforeRefresh
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
@@ -1709,6 +1691,7 @@ object formPrincipal: TformPrincipal
       '    Apostas.Data,'
       '    Apostas.Selecao,'
       '    Apostas.Múltipla,'
+      '    Apostas.Cashout,'
       '    CASE'
       '        WHEN Apostas."Múltipla" = 0 THEN Competicoes.Competicao || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante'
       '        WHEN Apostas."Múltipla" = 1 THEN ''Aposta Múltipla'''
@@ -1735,7 +1718,14 @@ object formPrincipal: TformPrincipal
       ''
     )
     UpdateSQL.Strings = (
-      'UPDATE Apostas SET Selecao = :Selecao, Data = :Data, Odd = :Odd, Valor_Aposta = :Valor_Aposta WHERE Cod_Aposta = :Cod_Aposta;'
+      'UPDATE Apostas SET'
+      'Selecao = :Selecao,'
+      'Data = :Data,'
+      'Odd = :Odd,'
+      'Valor_Aposta = :Valor_Aposta,'
+      'Retorno = IFNULL(:Retorno, 0),'
+      'Lucro = IFNULL(:Lucro, 0)'
+      'WHERE Cod_Aposta = :Cod_Aposta;'
     )
     DeleteSQL.Strings = (
       'DELETE FROM Apostas WHERE "Selec." = 1'
@@ -1923,6 +1913,16 @@ object formPrincipal: TformPrincipal
       FieldKind = fkData
       FieldName = 'Múltipla'
       Index = 13
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+    object qrApostasCashout: TBooleanField
+      FieldKind = fkData
+      FieldName = 'Cashout'
+      Index = 14
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -2550,27 +2550,23 @@ object formPrincipal: TformPrincipal
     Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT'
-      '    Mês, Ano,'
-      '    (SELECT SUM(A2.Lucro_R$)'
-      '     FROM Banca AS A2'
-      '     WHERE A2.Mês <= (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '       AND A2.Ano = (SELECT Ano FROM "Selecionar Mês e Ano")) AS LucroAnualReais,'
-      '    (SELECT SUM(A3.Valor_Inicial)'
-      '     FROM Banca AS A3'
-      '     WHERE A3.Mês <= (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '       AND A3.Ano = (SELECT Ano FROM "Selecionar Mês e Ano")) AS TotalBancas,'
-      '    (SELECT SUM(A2.Lucro_R$)'
-      '     FROM Banca AS A2'
-      '     WHERE A2.Mês <= (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '       AND A2.Ano = (SELECT Ano FROM "Selecionar Mês e Ano")) /'
-      '    (SELECT SUM(A3.Valor_Inicial)'
-      '     FROM Banca AS A3'
-      '     WHERE A3.Mês <= (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '       AND A3.Ano = (SELECT Ano FROM "Selecionar Mês e Ano")) * 100 AS LucroTotalPorCento'
+      'Mês, Ano,'
+      '(SELECT SUM(A2.Valor_Final - A2.Valor_Inicial)'
+      'FROM Banca AS A2'
+      'WHERE A2.Mês = Banca.Mês AND A2.Ano = Banca.Ano) AS LucroAnualReais,'
+      '(SELECT SUM(A3.Valor_Inicial)'
+      'FROM Banca AS A3'
+      'WHERE A3.Mês = Banca.Mês AND A3.Ano = Banca.Ano) AS TotalBancas,'
+      '(SELECT SUM(A2.Valor_Final - A2.Valor_Inicial)'
+      'FROM Banca AS A2'
+      'WHERE A2.Mês = Banca.Mês AND A2.Ano = Banca.Ano) /'
+      '(SELECT SUM(CASE WHEN A3.Valor_Inicial IS NULL THEN 0 ELSE A3.Valor_Inicial END)'
+      'FROM Banca AS A3'
+      'WHERE A3.Mês = Banca.Mês AND A3.Ano = Banca.Ano) * 100 AS LucroTotalPorCento'
       'FROM'
-      '    Banca'
+      'Banca'
       'WHERE'
-      '    Ano = (SELECT Ano FROM "Selecionar Mês e Ano");'
+      'Ano = (SELECT Ano FROM "Selecionar Mês e Ano");'
     )
     Params = <>
     Macros = <>
@@ -2659,8 +2655,13 @@ object formPrincipal: TformPrincipal
     MaxIndexesCount = 4
     FieldDefs = <    
       item
+        Name = 'Cod_Aposta'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
         Name = 'ROWID'
-        DataType = ftInteger
+        DataType = ftLargeint
         Precision = -1
       end    
       item
@@ -2704,6 +2705,7 @@ object formPrincipal: TformPrincipal
     Transaction = transactionBancoDAdos
     SQL.Strings = (
       'SELECT'
+      '    Mercados.Cod_Aposta,'
       '    Mercados.ROWID AS ROWID,'
       '    Competicoes.Competicao AS Competição,'
       '    Jogo.Mandante || '' X '' || Jogo.Visitante AS Jogo,'
@@ -2792,11 +2794,11 @@ object formPrincipal: TformPrincipal
       '  COUNT(Mercados.Cod_Metodo) AS TotalApostas,'
       '  SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS Greens,'
       '  SUM(CASE WHEN Apostas.Lucro < 0 THEN 1 ELSE 0 END) AS Reds,'
-      '  ROUND(CASE'
+      '  ROUND((CASE'
       '      WHEN COUNT(Mercados.Cod_Metodo) = 0 THEN 0'
       '      ELSE'
       '        (SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(Mercados.Cod_Metodo))'
-      '    END, 2) AS PcentAcertos'
+      '    END), 2) AS PcentAcertos'
       'FROM Mercados'
       'LEFT JOIN Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta'
       'LEFT JOIN Métodos ON Mercados.Cod_Metodo = Métodos.Cod_Metodo'
@@ -2927,11 +2929,11 @@ object formPrincipal: TformPrincipal
       '  COUNT(Mercados.Cod_Linha) AS TotalApostas,'
       '  SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS Greens,'
       '  SUM(CASE WHEN Apostas.Lucro < 0 THEN 1 ELSE 0 END) AS Reds,'
-      '  ROUND(CASE'
+      '  ROUND((CASE'
       '      WHEN COUNT(Mercados.Cod_Linha) = 0 THEN 0'
       '      ELSE'
       '        (SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(Mercados.Cod_Linha))'
-      '    END, 2) AS PcentAcertos'
+      '    END), 2) AS PcentAcertos'
       'FROM Mercados'
       'LEFT JOIN Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta'
       'LEFT JOIN Linhas ON Mercados.Cod_Linha = Linhas.Cod_Linha'

@@ -32,8 +32,6 @@ type
     btnTudoGreen: TButton;
     btnTudoRed: TButton;
     btnCashout: TButton;
-    btnSalvaAp: TButton;
-    btnCancelaAp: TButton;
     btnNovoMetodo: TButton;
     cbAno: TComboBox;
     cbGraficos: TComboBox;
@@ -137,6 +135,7 @@ type
     qrAno: TSQLQuery;
     qrApostas: TSQLQuery;
     qrApostasBanca_Final: TBCDField;
+    qrApostasCashout: TBooleanField;
     qrApostasCod_Aposta: TLongintField;
     qrApostasData: TDateField;
     qrApostasJogo: TStringField;
@@ -244,7 +243,9 @@ type
     procedure miImportarClick(Sender: TObject);
     procedure pcPrincipalChange(Sender: TObject);
     procedure qrApostasAfterOpen(DataSet: TDataSet);
+    procedure qrApostasAfterPost(DataSet: TDataSet);
     procedure qrApostasAfterRefresh(DataSet: TDataSet);
+    procedure qrApostasBeforeRefresh(DataSet: TDataSet);
     procedure ReiniciarTodosOsQueries;
     procedure MudarCorLucro;
     procedure PerfilDoInvestidor;
@@ -414,6 +415,7 @@ begin
     qrDadosAposta.Post;
     qrDadosAposta.ApplyUpdates;
     transactionBancoDados.CommitRetaining;
+    AtualizaQRApostas;
   end;
 end;
 
@@ -426,10 +428,18 @@ procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
 begin
   if (qrApostas.State in [dsInsert, dsEdit]) then
   begin
+    try
+    writeln('Postando');
     qrApostas.Post;
+    writeln('Aplicando');
     qrApostas.ApplyUpdates;
+    writeln('Salvando');
     transactionBancoDados.CommitRetaining;
-    qrApostas.Refresh;
+    AtualizaQRApostas;
+    except
+      on E: Exception do
+      writeln('Erro: ' + E.Message);
+    end;
   end;
 end;
 
@@ -702,7 +712,7 @@ begin
     for I := 0 to qrPraReiniciar.Count - 1 do
     begin
       if TSQLQuery(qrPraReiniciar[I]).Active then
-      TSQLQuery(qrPraReiniciar[I]).Refresh;
+        TSQLQuery(qrPraReiniciar[I]).Refresh;
       writeln('Reiniciado ', TComponent(qrPraReiniciar[I]).Name);
     end;
   except
@@ -805,13 +815,18 @@ begin
 end;
 
 procedure TformPrincipal.grdDadosApEditingDone(Sender: TObject);
+var
+  Bookmark: TBookmark;
 begin
-  qrDadosAposta.Edit;
-  qrDadosAposta.Post;
-  qrDadosAposta.ApplyUpdates;
-  transactionBancoDados.CommitRetaining;
-  qrApostas.Close;
-  qrApostas.Open;
+  with qrDadosAposta do
+  begin
+    Edit;
+    Post;
+    ApplyUpdates;
+    transactionBancoDados.CommitRetaining;
+  end;
+  AtualizaQRApostas;
+  AtualizaOdd;
 end;
 
 procedure TformPrincipal.MenuItem7Click(Sender: TObject);
@@ -843,9 +858,19 @@ begin
   qrApostas.Last;
 end;
 
+procedure TformPrincipal.qrApostasAfterPost(DataSet: TDataSet);
+begin
+
+end;
+
 procedure TformPrincipal.qrApostasAfterRefresh(DataSet: TDataSet);
 begin
   qrApostas.Last;
+end;
+
+procedure TformPrincipal.qrApostasBeforeRefresh(DataSet: TDataSet);
+begin
+  conectBancoDados.ExecuteDirect('UPDATE Apostas SET Status = Status');
 end;
 
 procedure TformPrincipal.PosAtualizacao;

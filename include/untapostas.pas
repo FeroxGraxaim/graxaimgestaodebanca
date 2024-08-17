@@ -12,6 +12,9 @@ uses
   TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
   DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, untMain;
 
+procedure AtualizaQRApostas;
+procedure AtualizaOdd;
+
 type
   { TEventosApostas }
 
@@ -37,6 +40,10 @@ type
     procedure CalcularBancaFinal;
     procedure FiltrarAposta(Sender: TObject);
     procedure LimparFiltros(Sender: TObject);
+    procedure TudoGreenRed(Sender: TObject);
+
+    procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: integer; Column: TColumn; State: TGridDrawState);
   end;
 
 type
@@ -76,6 +83,11 @@ begin
 
       grdApostas.Enabled := not IsEmpty;
 
+      btnCashout.Enabled := False;
+      btnTudoGreen.Enabled := False;
+      btnTudoRed.Enabled := False;
+      grdDadosAp.Visible := False;
+
       if grdApostas.Enabled then Last;
     end;
   end;
@@ -101,6 +113,13 @@ begin
         qrApostas.FieldByName('Cod_Aposta').AsInteger;
       qrDadosAposta.Open;
       grdDadosAp.Visible := True;
+      btnTudoGreen.Enabled := True;
+      btnTudoRed.Enabled := True;
+      btnCashout.Enabled := True;
+      if qrApostas.FieldByName('Cashout').AsBoolean = False then
+        btnCashout.Caption := 'Cashout'
+      else
+        btnCashout.Caption := 'Desfazer Cashout';
       grdDadosAp.Invalidate;
     except
       on E: EDatabaseError do
@@ -159,8 +178,9 @@ begin
     end
     else
     try
-      if MessageDlg('Confirmação','Deseja realmente remover a(s) aposta(s) selecionada(s)?',
-      mtConfirmation,[mbYes, mbNo],0) = mrYes then
+      if MessageDlg('Confirmação',
+        'Deseja realmente remover a(s) aposta(s) selecionada(s)?',
+        mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       try
         Screen.Cursor := crAppStart;
         qrApostas.Close;
@@ -227,10 +247,13 @@ begin
       end;
 
       if not qrApostas.Active then qrApostas.Open
-      else qrApostas.Refresh;
+      else
+        qrApostas.Refresh;
 
       if not qrApostas.IsEmpty then grdApostas.Enabled := True
-      else grdApostas.Enabled := False;
+      else
+        grdApostas.Enabled := False;
+      qrApostas.Last;
     except
       on E: Exception do
       begin
@@ -405,54 +428,100 @@ end;
 
 procedure TEventosApostas.btnCashoutClick(Sender: TObject);
 var
-  query: TSQLQuery;
-  ValorEntrada: string;
+  ValorEntrada: string = '';
+  ValorEstorno: double;
 label
   Valor;
 begin
   with formPrincipal do
-  begin
-    Valor:
-      if InputQuery('Inserir Valor', 'Insira o valor retirado da aposta:',
-      ValorEntrada) then
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      if qrApostas.FieldByName('Cashout').AsBoolean = False then
       begin
-        if TryStrToFloat(valorEntrada, ValorEstorno) then
+        Valor:
+          if Active then Close;
+        if InputQuery('Inserir Valor', 'Insira o valor retirado da aposta:',
+          ValorEntrada) then
         begin
-          Screen.Cursor := crAppStart;
-          query := TSQLQuery.Create(nil);
-          query.Database := conectBancoDados;
-          query.SQL.Text := 'UPDATE Apostas SET Cashout = 1, Status = ''Cashout''';
-          query.ExecSQL;
-          query.ApplyUpdates;
+          case FormatSettings.DecimalSeparator of
+            '.': if Pos(',', ValorEntrada) > 0 then
+                ValorEntrada := StringReplace(ValorEntrada, ',', '.', [rfReplaceAll]);
+
+            ',': if Pos('.', ValorEntrada) > 0 then
+                ValorEntrada := StringReplace(ValorEntrada, '.', ',', [rfReplaceAll]);
+          end;
+          if TryStrToFloat(ValorEntrada, ValorEstorno) then
+          begin
+            Screen.Cursor := crAppStart;
+            SQL.Text :=
+              'UPDATE Apostas SET Cashout = 1, Status = ''Cashout'', Retorno = :Retorno WHERE Cod_Aposta = :CodAposta';
+            ParamByName('CodAposta').AsInteger :=
+              qrApostas.FieldByName('Cod_Aposta').AsInteger;
+            ParamByName('Retorno').AsFloat := ValorEstorno;
+            ExecSQL;
+            transactionBancoDados.CommitRetaining;
+          end
+          else
+          begin
+            MessageDlg('Erro', 'Insira um valor numérico!', mtError, [mbOK], 0);
+            goto Valor;
+          end;
+        end;
+      end
+      else
+      begin
+        if MessageDlg('Confirmação', 'Deseja realmente desfazer o cashout da aposta?',
+          mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        begin
+          if Active then Close;
+          SQL.Text :=
+            'UPDATE Apostas SET Cashout = 0, Retorno = Retorno WHERE Cod_Aposta = :CodAposta';
+          ParamByName('CodAposta').AsInteger :=
+            qrApostas.FieldByName('Cod_Aposta').AsInteger;
+          ExecSQL;
+          SQL.Text := 'UPDATE Mercados SET Status = Status';
+          ExecSQL;
           transactionBancoDados.CommitRetaining;
-          Screen.Cursor := crDefault;
-        end
-        else
-        begin
-          MessageDlg('Erro', 'Insira um valor numérico!', mtError, [mbOK], 0);
-          goto Valor;
+          btnCashout.Caption := 'Cashout';
         end;
       end;
-  end;
+      AtualizaQRApostas;
+      Screen.Cursor := crDefault;
+      Free;
+      qrApostas.EnableControls;
+    except
+      on E: Exception do
+      begin
+        Cancel;
+        transactionBancoDados.RollbackRetaining;
+        Screen.Cursor := crDefault;
+        Free;
+        MessageDlg('Erro',
+          'Ocorreu um erro, tente novamente. Se o problema persistir favor' +
+          'informar no GitHub com a seguinte mensagem: ' + sLineBreak +
+          sLineBreak + E.Message, mtError, [mbOK], 0);
+      end;
+    end;
 end;
 
 procedure TEventosApostas.qrApostasCalcFields(DataSet: TDataSet);
 begin
   with formPrincipal do
   begin
-    writeln('Formatando valor retorno');
+    //writeln('Formatando valor retorno');
     qrApostas.FieldByName('RSRetorno').AsString :=
       FormatFloat('R$ #,##0.00', qrApostas.FieldByName('Retorno').AsFloat);
 
-    writeln('Formatando valor lucro');
+    //writeln('Formatando valor lucro');
     qrApostas.FieldByName('RSLucro').AsString :=
       FormatFloat('R$ #,##0.00', qrApostas.FieldByName('Lucro').AsFloat);
 
-    writeln('Formatando valor Banca Final');
+    //writeln('Formatando valor Banca Final');
     qrApostas.FieldByName('RSBancaFinal').AsString :=
       FormatFloat('R$ #,##0.00', qrApostas.FieldByName('Banca_Final').AsFloat);
 
-    writeln('Finalizando qrApostasCalcFields');
+    //writeln('Finalizando qrApostasCalcFields');
   end;
 end;
 
@@ -540,6 +609,131 @@ begin
       grdApostas.Enabled := not IsEmpty;
       if grdApostas.Enabled then Last;
     end;
+  end;
+end;
+
+procedure TEventosApostas.TudoGreenRed(Sender: TObject);
+begin
+  with formPrincipal do
+    with tSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      if Sender = btnTudoGreen then
+        SQL.Text := 'UPDATE Mercados SET Status = ''Green'' WHERE Cod_Aposta = :CodAposta'
+      else if Sender = btnTudoRed then
+        SQL.Text := 'UPDATE Mercados SET Status = ''Red'' WHERE Cod_Aposta = :CodAposta';
+      ParamByName('CodAposta').AsInteger :=
+        qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      ExecSQL;
+      transactionBancoDados.CommitRetaining;
+      qrDadosAposta.Refresh;
+      AtualizaQRApostas;
+      Free;
+    except
+      on E: Exception do
+      begin
+        Cancel;
+        Free;
+        transactionBancoDados.RollbackRetaining;
+        MessageDlg('Erro', 'Erro ao mudar situação, tente novamente. Se o problema ' +
+          'persistir favor informar no GitHub com a seguinte mensagem: ' +
+          sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
+      end;
+    end;
+end;
+
+procedure AtualizaQRApostas;
+var
+  CodAposta: integer;
+begin
+  with formPrincipal do
+  begin
+    CodAposta := qrDadosAposta.FieldByName('Cod_Aposta').AsInteger;
+    with qrApostas do
+    begin
+      writeln('Atualizando qrApostas');
+      Refresh;
+      writeln('Localizando código');
+      Locate('Cod_Aposta', CodAposta, []);
+    end;
+  end;
+end;
+
+procedure AtualizaOdd;
+var
+  Odd, NovaOdd: double;
+  OddFormat: String;
+begin
+  with formPrincipal do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancODados;
+      SQL.Text := 'SELECT Odd, Status FROM Mercados WHERE Cod_Aposta = :CodAposta';
+      ParamByName('CodAposta').AsInteger :=
+        qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      Open;
+      First;
+      case FieldByName('Status').AsString of
+        'Anulada': Odd := 1;
+        'Meio Green': Odd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2 + 1, 2);
+        'Meio Red': Odd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2, 2);
+        else
+          Odd := FieldByName('Odd').AsFloat;
+      end;
+      writeln('Odd: ', Odd);
+      Next;
+      while not EOF do
+      begin
+        case FieldByName('Status').AsString of
+          'Anulada': NovaOdd := 1;
+          'Meio Green': NovaOdd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2 + 1, 2);
+          'Meio Red': NovaOdd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2, 2);
+          else
+            NovaOdd := FieldByName('Odd').AsFloat;
+        end;
+        writeln('Nova Odd: ', NovaOdd);
+        Odd := Odd * NovaOdd;
+        Next;
+      end;
+      OddFormat := FormatFloat('0.00', Odd);
+      Odd := StrToFloat(OddFormat);
+      with qrApostas do
+      begin
+        Edit;
+        FieldByName('Odd').AsFloat := Odd;
+        Post;
+        ApplyUpdates;
+      end;
+      transactionBancoDados.CommitRetaining;
+    finally
+      Free;
+    end;
+end;
+
+procedure TEventosApostas.grdApostasDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: integer; Column: TColumn; State: TGridDrawState);
+begin
+  with formPrincipal do
+  begin
+    if Column.FieldName = 'Status' then
+      with grdApostas.Canvas.Font do
+        case qrApostas.FieldByName('Status').AsString of
+          'Green': Color := clGreen;
+          'Red': Color := clRed;
+          'Cashout': Color := clBlue;
+          'Meio Green': Color := $0000B6A0;
+          'Meio Red': Color := $00007EC3;
+          'Pré-live': Color := clDefault;
+        end;
+    if Column.FieldName = 'RSLucro' then
+      with qrApostas do
+        with grdApostas.Canvas.Font do
+          case Sign(FieldByName('Lucro').AsFloat) of
+            1: Color := clGreen;
+            -1: Color := clRed;
+            0: Color := clDefault;
+          end;
+    grdApostas.DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
 end;
 
