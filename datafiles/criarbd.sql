@@ -1,4 +1,3 @@
-BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "Unidades" (
 	"Unidade"	VARCHAR
 );
@@ -348,8 +347,7 @@ AND Cashout = 0
 AND NOT EXISTS
 (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Status = 'Red')
 AND NOT EXISTS 
-(SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Status = 'Pré-live')
-AND Apostas.Retorno > Apostas.Valor_Aposta;
+(SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Status = 'Pré-live');
 
 UPDATE Apostas
 SET Status = 'Pré-live' 
@@ -379,5 +377,10 @@ AND (Apostas.Lucro < 0
 OR EXISTS (SELECT 1 FROM Mercados 
 WHERE Cod_Aposta = NEW.Cod_Aposta AND Status = 'Red'));
 
+UPDATE Apostas
+SET Status = 'Green'
+WHERE Cod_Aposta = NEW.Cod_Aposta
+AND Cashout = 0
+AND Apostas.Retorno > Apostas.Valor_Aposta;
+
 END;
-COMMIT;
