@@ -33,7 +33,7 @@ formSplash: TformSplash;
 implementation
 
 uses untMain, untUpdate, untApostas, untPainel, untDatabase, untMultipla,
-untControleMetodos;
+untControleMetodos, untControleTimes, untPaises, untContrComp;
 
 {$R *.lfm}
 
@@ -53,6 +53,9 @@ var
   EventosApostas: TEventosApostas;
   EventosMultiplas: TEventosMultiplas;
   EventosMetodos: TEventosMetodos;
+  EventosTimes: TEventosTimes;
+  EventosPaises: TEventosPaises;
+  EventosComp: TEventosComp;
 begin
   with formPrincipal do
     begin
@@ -78,6 +81,7 @@ begin
     formPrincipal.cbMes.OnChange      := @EventosPainel.cbMesChange;
     formPrincipal.cbAno.OnChange      := @EventosPainel.cbAnoChange;
     formPrincipal.cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
+    tsResumoLista.OnShow := @EventosPainel.HabilitaMesEAno;
 
     progresso.Position := 14;
     lbProgresso.Caption := 'Atribuindo eventos de apostas';
@@ -91,7 +95,6 @@ begin
     formPrincipal.tsApostas.OnShow      := @EventosApostas.tsApostasShow;
     formPrincipal.btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
     formPrincipal.btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
-    //formPrincipal.btnAtualizaApostas.OnClick := @EventosApostas.btnAtualizaApostasClick;
     grdDadosAp.OnDrawColumnCell := @EventosAPostas.grdDadosApDrawColumnCell;
     grdApostas.OnCellClick := @EventosApostas.grdApostascellClick;
     btnCashout.OnClick := @EventosApostas.btnCashoutClick;
@@ -101,6 +104,7 @@ begin
     btnTudoGreen.OnClick := @EventosApostas.TudoGreenRed;
     btnTudoRed.OnClick := @EventosApostas.TudoGreenRed;
     grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
+    grdApostas.OnExit := @EventosApostas.AoSairGrdApostas;
 
     //Definindo eventos do controle de métodos
 
@@ -110,11 +114,39 @@ begin
     btnExcluirMetodo.OnClick := @EventosMetodos.RemoverMetodo;
     tsDadosMesMetodos.OnShow := @EventosMetodos.GridMesMetodos;
     grdMetodosMes.OnClick := @EventosMetodos.GridMesLinhas;
-    tsDadosAnoMetodos.OnShow := @EventosMetodos.GridAnoMetodos;
-    grdMetodosAno.OnClick := @EventosMetodos.GridAnoLinhas;
+    //tsDadosAnoMetodos.OnShow := @EventosMetodos.GridAnoMetodos;
+    //grdMetodosAno.OnClick := @EventosMetodos.GridAnoLinhas;
     btnNovaLinha.OnClick := @EventosMetodos.NovaLinha;
     btnExcluirLinha.OnClick := @EventosMetodos.RemoverLinha;
     tsControleMetodos.OnShow := @EventosMetodos.AoExibirMetodos;
+
+    //Eventos do Controle de Times
+
+    tsContrTimes.OnShow := @EventosTimes.AoExibir;
+    btnPesquisarTime.OnClick := @EventosTimes.PesquisarTime;
+    grdTimes.OnCellClick := @EventosTimes.AoClicarTime;
+    edtPesquisarTime.OnKeyPress := @EventosTimes.DetectarEnterPesquisa;
+    btnNovoTime.OnClick := @EventosTimes.NovoTime;
+    btnExcluirTime.OnClick := @EventosTimes.RemoverTime;
+
+    //Eventos do controle de países
+
+    tsContrPaises.OnShow := @EventosPaises.AoExibir;
+    grdPaises.OnCellClick := @EventosPaises.AoClicarPais;
+    btnPesquisarPais.OnClick := @EventosPaises.PesquisarPais;
+    edtPesquisarPais.OnKeyPress := @EventosPaises.DetectarEnterPesquisa;
+    btnNovoPais.OnClick := @EventosPaises.NovoPais;
+    btnExcluirPais.OnClick := @EventosPaises.RemoverPais;
+
+    //Eventos do controle de competições
+
+    tsContrComp.OnShow := @EventosComp.AoExibir;
+    btnPesquisarComp.OnClick := @EventosComp.PesquisarCompeticao;
+    grdComp.OnCellClick := @EventosComp.AoClicarComp;
+    edtPesquisarComp.OnKeyPress := @EventosComp.DetectarEnterPesquisa;
+    btnNovaComp.OnClick := @EventosComp.NovaComp;
+    btnExcluirComp.OnClick := @EventosComp.RemoverComp;
+
 
     //Definindo eventos do do Banco de Dados e Múltiplas
 

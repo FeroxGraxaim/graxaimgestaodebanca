@@ -86,6 +86,8 @@ begin
       end;
       Free;
     end;
+    lsbMetodos.ItemIndex := 0;
+    lsbMetodosClick(nil);
   end;
 end;
 
@@ -388,8 +390,10 @@ begin
     end;
     btnExcluirMetodo.Enabled := True;
     btnNovaLinha.Enabled := True;
+    lsbLinhas.ItemIndex := 0;
   end;
   AtualizaGraficosMetodo;
+  lsbLinhasClick(nil);
 end;
 
 procedure TEventosMetodos.lsbLinhasClick(Sender: TObject);
@@ -603,8 +607,8 @@ begin
     with qrMetodosMes do
     begin
       if Active then Close;
-      ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
-      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      //ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+      //ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
       if IsEmpty then
       begin
@@ -622,8 +626,8 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
-      ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
-      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      //ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+      //ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;
@@ -638,8 +642,8 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
-      ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
-      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      //ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
+      //ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;

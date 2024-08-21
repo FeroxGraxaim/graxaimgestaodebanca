@@ -13,7 +13,8 @@ uses
   DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, untMain;
 
 procedure AtualizaQRApostas;
-procedure AtualizaOdd;
+procedure AtualizaAposta;
+//procedure DefineOdd;
 
 type
   { TEventosApostas }
@@ -41,6 +42,7 @@ type
     procedure FiltrarAposta(Sender: TObject);
     procedure LimparFiltros(Sender: TObject);
     procedure TudoGreenRed(Sender: TObject);
+    procedure AoSairGrdApostas(Sender: TObject);
 
     procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: integer; Column: TColumn; State: TGridDrawState);
@@ -391,10 +393,18 @@ begin
       qrSituacao.Next;
     end;
     //Criando lista de competições da coluna "Competição"
-    while not qrCompeticoes.EOF do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'SELECT Competicao FROM Competicoes';
+      Open;
+    while not EOF do
     begin
-      Competicao.Add(qrCompeticoes.FieldByName('Competição').AsString);
-      qrCompeticoes.Next;
+      Competicao.Add(FieldByName('Competicao').AsString);
+      Next;
+    end;
+    finally
+      Free;
     end;
     //Criando lista de unidades da coluna "unidade"
     while not qrUnidades.EOF do
@@ -642,6 +652,87 @@ begin
     end;
 end;
 
+procedure TEventosApostas.AoSairGrdApostas(Sender: TObject);
+begin
+  //with formPrincipal do
+  //grdDadosAp.Visible := false;
+end;
+
+procedure AtualizaAposta;
+var
+  Odd, NovaOdd: double;
+  OddFormat: string;
+  CodAposta: integer;
+begin
+  with formPrincipal do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT Odd, Status FROM Mercados WHERE Mercados.Cod_Aposta = :CodAposta';
+      ParamByName('CodAposta').AsInteger :=
+        qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      Open;
+      First;
+      Odd := FieldByName('Odd').AsFloat;
+      case FieldByName('Status').AsString of
+        'Meio Green': Odd := (Odd - 1) / 2 + 1;
+        'Meio Red': Odd := (Odd - 1) / 2;
+        'Anulada': Odd := 1;
+      end;
+      Next;
+      while not EOF do
+      begin
+        NovaOdd := FieldByName('Odd').AsFloat;
+        case FieldByName('Status').AsString of
+          'Meio Green': NovaOdd := (NovaOdd - 1) / 2 + 1;
+          'Meio Red': NovaOdd := (NovaOdd - 1) / 2;
+          'Anulada': NovaOdd := 1;
+        end;
+        Odd := Odd * NovaOdd;
+        OddFormat := FormatFloat('0.00', Odd);
+        Odd := StrToFloat(OddFormat);
+        Next;
+      end;
+      qrApostas.Edit;
+      qrApostas.FieldByName('Odd').AsFloat := Odd;
+      qrApostas.Post;
+      qrApostas.ApplyUpdates;
+      Close;
+      SQL.Text := 'UPDATE Apostas SET Retorno = IFNULL((Odd * Valor_Aposta), 0) ' +
+                  'WHERE Status <> ''Red'' AND Status <> ''Pré-live''' +
+                  'AND Cod_Aposta = :CodAposta';
+      ParamByName('CodAposta').AsInteger :=
+      qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      ExecSQL;
+      SQL.Text := 'UPDATE Apostas SET Lucro = IFNULL((CASE               ' +
+                  'WHEN Status = ''Green'' THEN Retorno - Valor_Aposta   ' +
+                  'WHEN Status = ''Red'' THEN -Valor_Aposta              ' +
+                  'WHEN Status = ''Anulada'' THEN Apostas.Valor_Aposta   ' +
+                  'WHEN Status = ''Cashout'' THEN Retorno - Valor_Aposta ' +
+                  'END), 0)                                              ' +
+                  'WHERE Cod_Aposta = :CodAposta                         ';
+      ParamByName('CodAposta').AsInteger :=
+      qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      ExecSQL;
+      SQL.Text := 'UPDATE Apostas SET Status = ''Red''         ' +
+                  'WHERE Cod_Aposta = :CodAposta AND Lucro < 0 ';
+      ParamByName('CodAposta').AsInteger :=
+      qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      ExecSQL;
+      transactionBancoDados.CommitRetaining;
+      Free;
+    Except
+      On E: Exception do
+      begin
+      Cancel;
+      transactionBancoDados.RollbackRetaining;
+      writeln('Erro: ' + E.Message + ' SQL: ' + SQL.Text);
+      Free;
+      end;
+    end;
+end;
+
 procedure AtualizaQRApostas;
 var
   CodAposta: integer;
@@ -652,7 +743,8 @@ begin
     with qrApostas do
     begin
       writeln('Atualizando qrApostas');
-      Refresh;
+      Close;
+      Open;
       writeln('Localizando código');
       Locate('Cod_Aposta', CodAposta, []);
     end;
@@ -662,7 +754,7 @@ end;
 procedure AtualizaOdd;
 var
   Odd, NovaOdd: double;
-  OddFormat: String;
+  OddFormat: string;
 begin
   with formPrincipal do
     with TSQLQuery.Create(nil) do

@@ -31,6 +31,7 @@ type
     procedure PreencherBancaInicial;
     procedure AtualizarGraficoLucro;
     procedure AtualizaMesEAno;
+    procedure HabilitaMesEAno(Sender: TObject);
   end;
 
   TDateDoubleMap = specialize TFPGMap<TDateTime, double>;
@@ -312,13 +313,36 @@ begin
         begin
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
           (chrtLucroMes.Series[0] as TLineSeries).Clear;
+
+          if not qrMes.Active then qrMes.Open;
+
           for i := 1 to 31 do
           begin
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+           { (chrtLucroMes.Series[0] as TLineSeries).AddXY(
               i,
               qrMes.FieldByName('SomaLucro').AsFloat);
-            qrMes.Next;
+            qrMes.Next; }
+            ContFloat := i;
+            if i < qrMes.FieldByName('Dia').AsInteger then
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('SomaLucro').AsFloat, ContFloat)
+            else if i > qrMes.FieldByName('Dia').AsInteger then
+            begin
+              qrMes.Last;
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('SomaLucro').AsFloat, ContFloat);
+              qrMes.First;
+            end
+            else
+            begin
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+                i,
+                qrMes.FieldByName('SomaLucro').AsFloat,
+                ContFloat);
+              qrMes.Next;
+            end;
           end;
+
         end
         else if cbGraficos.Text = 'Lucro %' then
         begin
@@ -326,10 +350,29 @@ begin
           (chrtLucroMes.Series[0] as TLineSeries).Clear;
           for i := 1 to 31 do
           begin
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+            {(chrtLucroMes.Series[0] as TLineSeries).AddXY(
               i,
               qrMes.FieldByName('PorCentoLucro').AsFloat);
-            qrMes.Next;
+            qrMes.Next;}
+            ContFloat := i;
+            if i < qrMes.FieldByName('Dia').AsInteger then
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat)
+            else if i > qrMes.FieldByName('Dia').AsInteger then
+            begin
+              qrMes.Last;
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat);
+              qrMes.First;
+            end
+            else
+            begin
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+                i,
+                qrMes.FieldByName('PorCentoLucro').AsFloat,
+                ContFloat);
+              qrMes.Next;
+            end;
           end;
         end;
       except
@@ -527,6 +570,15 @@ begin
     goto AtualizaNoBD;
 
     Fim: ;
+  end;
+end;
+
+procedure TEventosPainel.HabilitaMesEAno(Sender: TObject);
+begin
+  with formPrincipal do
+  begin
+    qrMes.Open;
+    qrAno.Open;
   end;
 end;
 

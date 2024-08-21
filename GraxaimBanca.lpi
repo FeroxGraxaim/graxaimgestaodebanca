@@ -16,11 +16,10 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="2"/>
-      <RevisionNr Value="3"/>
-      <BuildNr Value="17"/>
+      <MinorVersionNr Value="3"/>
+      <BuildNr Value="18"/>
       <Language Value="0416"/>
-      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.2"/>
+      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.3"/>
     </VersionInfo>
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="gtk2"/>
@@ -164,6 +163,21 @@
         <Filename Value="include/untcontrolemetodos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untControleMetodos"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontroletimes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untControleTimes"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untpaises.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untPaises"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontrcomp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untContrComp"/>
       </Unit>
     </Units>
   </ProjectOptions>
