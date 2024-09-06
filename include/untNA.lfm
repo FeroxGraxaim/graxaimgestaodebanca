@@ -101,6 +101,7 @@ object formNovaAposta: TformNovaAposta
           TabOrder = 0
           OnCellClick = grdNovaApostaCellClick
           OnEditingDone = grdNovaApostaEditingDone
+          OnKeyPress = grdNovaApostaKeyPress
         end
       end
       object deAposta: TDateEdit
@@ -163,7 +164,7 @@ object formNovaAposta: TformNovaAposta
         Style = csDropDownList
         TabOrder = 3
         Text = '1 Un'
-        OnChange = cbUnidadeChange
+        OnChange = MudarUnidade
       end
       object edtValor: TEdit
         Left = 120
@@ -217,7 +218,6 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 6
-        OnChange = cbMandanteChange
       end
       object cbVisitante: TComboBox
         AnchorSideBottom.Side = asrBottom
@@ -324,6 +324,7 @@ object formNovaAposta: TformNovaAposta
           TabOrder = 0
           OnCellClick = grdLinhaMultCellClick
           OnEditingDone = grdLinhaMultEditingDone
+          OnKeyPress = grdLinhaMultKeyPress
         end
       end
       object deApostaMult: TDateEdit
@@ -385,7 +386,7 @@ object formNovaAposta: TformNovaAposta
         Style = csDropDownList
         TabOrder = 3
         Text = '1 Un'
-        OnChange = cbUnidadeMultChange
+        OnChange = MudarUnidade
       end
       object edtValorMult: TEdit
         Left = 472

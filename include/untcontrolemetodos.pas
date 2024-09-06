@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl;
+  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl, Math;
 
 type
 
@@ -391,6 +391,84 @@ begin
     btnExcluirMetodo.Enabled := True;
     btnNovaLinha.Enabled := True;
     lsbLinhas.ItemIndex := 0;
+
+    //Dados Escritos
+
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT ' + 'Métodos.Cod_Metodo, ' + 'Métodos.Nome AS Método, ' +
+        'COUNT(Mercados.Cod_Metodo) AS TotalApostas, ' +
+        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS LucroGreens, ' +
+        'SUM(CASE WHEN Apostas.Lucro < 0 THEN 1 ELSE 0 END) AS LucroReds, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Green'' THEN 1 ELSE 0 END) AS Greens, '
+        +
+        'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
+        +
+        'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
+        +
+        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
+        '(CASE WHEN COUNT(Mercados.Cod_Metodo) = 0 THEN 0 ' + 'ELSE  ' +
+        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) /  ' +
+        'CAST(COUNT(Mercados.Cod_Metodo) AS FLOAT) * 100  ' +
+        'END) AS PcentLucro, ' + '(CASE ' +
+        'WHEN COUNT(Mercados.Cod_Metodo) = 0 THEN 0 ' + 'ELSE  ' +
+        '(SUM(CASE WHEN Mercados.Status = ''Green'' OR ''Meio Green''  ' +
+        'THEN 1 ELSE 0 END) / CAST(COUNT(Mercados.Cod_Metodo) AS FLOAT) * 100) ' +
+        'END) AS PcentAcertos ' + 'FROM Mercados  ' +
+        'LEFT JOIN Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta  ' +
+        'LEFT JOIN Métodos ON Mercados.Cod_Metodo = Métodos.Cod_Metodo ' +
+        'WHERE Métodos.Cod_Metodo = :codMet ' + 'GROUP BY Métodos.Nome ';
+      ParamByName('codMet').AsInteger := GlobalCodMetodo;
+      Open;
+
+      if IsEmpty then
+      begin
+        lbMercadosMet.Caption :=
+          ('Mercados: 0');
+        lbAcertosMet.Caption :=
+          ('Acertos: 0');
+        lbErrosMet.Caption :=
+          ('Erros: 0');
+        lbNuloMet.Caption :=
+          ('Anulados: 0');
+        lbMeioAcertMet.Caption :=
+          ('Meios Acertos: 0');
+        lbMeioErroMet.Caption :=
+          ('Meios Erros: 0');
+        lbLucroMet.Caption :=
+          ('Lucro Total: 0%');
+      end
+      else
+      begin
+        lbMercadosMet.Caption :=
+          ('Mercados: ' + IntToStr(FieldByName('TotalApostas').AsInteger));
+        lbAcertosMet.Caption :=
+          ('Acertos: ' + IntToStr(FieldByName('Greens').AsInteger));
+        lbErrosMet.Caption :=
+          ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
+        lbNuloMet.Caption :=
+          ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
+        lbMeioAcertMet.Caption :=
+          ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
+        lbMeioErroMet.Caption :=
+          ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
+        lbLucroMet.Caption :=
+          ('Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat,
+          -1)) + '%');
+      end;
+      Free;
+    except
+      on E: Exception do
+      begin
+        writeln('Erro: ' + E.Message);
+        Cancel;
+        Free;
+      end;
+    end;
   end;
   AtualizaGraficosMetodo;
   lsbLinhasClick(nil);
@@ -418,6 +496,83 @@ begin
       AtualizaGraficosLinha;
     end;
     btnExcluirLinha.Enabled := True;
+
+    //Dados Escritos
+
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT ' + 'Linhas.Cod_Linha, Linhas.Nome AS Linha, ' +
+        'COUNT(Mercados.Cod_Linha) AS TotalApostas, ' +
+        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS LucroGreens, ' +
+        'SUM(CASE WHEN Apostas.Lucro < 0 THEN 1 ELSE 0 END) AS LucroReds, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Green'' THEN 1 ELSE 0 END) AS Greens, '
+        +
+        'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
+        +
+        'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
+        +
+        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
+        '(CASE WHEN COUNT(Mercados.Cod_Linha) = 0 THEN 0 ELSE  ' +
+        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) /  ' +
+        'CAST(COUNT(Mercados.Cod_Linha) AS FLOAT) * 100  ' +
+        'END) AS PcentLucro, (CASE ' +
+        'WHEN COUNT(Mercados.Cod_Linha) = 0 THEN 0 ' + 'ELSE  ' +
+        '(SUM(CASE WHEN Mercados.Status = ''Green'' OR ''Meio Green''  ' +
+        'THEN 1 ELSE 0 END) / CAST(COUNT(Mercados.Cod_Linha) AS FLOAT) * 100) ' +
+        'END) AS PcentAcertos ' + 'FROM Mercados  ' +
+        'LEFT JOIN Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta  ' +
+        'LEFT JOIN Linhas ON Mercados.Cod_Linha = Linhas.Cod_Linha ' +
+        'WHERE Linhas.Cod_Linha = :codLin ' + 'GROUP BY Linhas.Nome ';
+      ParamByName('codLin').AsInteger := GlobalCodLinha;
+      Open;
+      if IsEmpty then
+      begin
+        lbMercadosLin.Caption :=
+          ('Mercados: 0');
+        lbAcertosLin.Caption :=
+          ('Acertos: 0');
+        lbErrosLin.Caption :=
+          ('Erros: 0');
+        lbNuloLin.Caption :=
+          ('Anulados: 0');
+        lbMeioAcertLin.Caption :=
+          ('Meios Acertos: 0');
+        lbMeioErroLin.Caption :=
+          ('Meios Erros: 0');
+        lbLucroLin.Caption :=
+          ('Lucro Total: 0%');
+      end
+      else
+      begin
+        lbMercadosLin.Caption :=
+          ('Mercados: ' + IntToStr(FieldByName('TotalApostas').AsInteger));
+        lbAcertosLin.Caption :=
+          ('Acertos: ' + IntToStr(FieldByName('Greens').AsInteger));
+        lbErrosLin.Caption :=
+          ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
+        lbNuloLin.Caption :=
+          ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
+        lbMeioAcertLin.Caption :=
+          ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
+        lbMeioErroLin.Caption :=
+          ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
+        lbLucroLin.Caption :=
+          'Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat,
+          -1)) + '%';
+      end;
+      Free;
+    except
+      on E: Exception do
+      begin
+        writeln('Erro: ' + E.Message);
+        Cancel;
+        Free;
+      end;
+    end;
   end;
 end;
 
@@ -701,10 +856,12 @@ begin
   begin
     with qrMetodosMes do
       if not Active then Open
-      else Refresh;
+      else
+        Refresh;
     with qrMetodosAno do
       if not Active then Open
-      else Refresh;
+      else
+        Refresh;
   end;
 end;
 

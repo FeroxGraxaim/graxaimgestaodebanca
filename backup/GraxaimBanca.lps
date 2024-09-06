@@ -133,7 +133,6 @@
       <Unit>
         <Filename Value="include/untUpdate.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <CursorPos X="32" Y="61"/>
         <UsageCount Value="201"/>
@@ -163,9 +162,10 @@
         <Filename Value="include/untcontrolemetodos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untControleMetodos"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="666"/>
-        <CursorPos X="58" Y="696"/>
+        <CursorPos X="10" Y="692"/>
         <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit>
@@ -449,7 +449,7 @@
         <UsageCount Value="8"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="28">
+    <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="include/untmain.pas"/>
         <Caret Line="383" Column="8" TopLine="349"/>
@@ -565,6 +565,10 @@
       <Position>
         <Filename Value="include/untcontrolemetodos.pas"/>
         <Caret Line="33" Column="46" TopLine="8"/>
+      </Position>
+      <Position>
+        <Filename Value="include/untUpdate.pas"/>
+        <Caret Line="61" Column="32"/>
       </Position>
     </JumpHistory>
     <RunParams>

@@ -13,7 +13,7 @@ uses
   DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, untMain;
 
 procedure AtualizaQRApostas;
-procedure AtualizaAposta;
+procedure CalculaDadosAposta;
 //procedure DefineOdd;
 
 type
@@ -21,6 +21,7 @@ type
 
   TEventosApostas = class(TformPrincipal)
   public
+    GlobalCodAposta: integer;
     procedure tsApostasShow(Sender: TObject);
     procedure grdApostasColEnter(Sender: TObject);
     procedure grdApostasColExit(Sender: TObject);
@@ -43,6 +44,8 @@ type
     procedure LimparFiltros(Sender: TObject);
     procedure TudoGreenRed(Sender: TObject);
     procedure AoSairGrdApostas(Sender: TObject);
+    procedure TrocarSeparadorDecimal(Sender: TObject; var Key: char);
+    procedure AbrirEditarAposta(Sender: TObject);
 
     procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: integer; Column: TColumn; State: TGridDrawState);
@@ -63,7 +66,7 @@ var
 
 implementation
 
-uses untNA;
+uses untNA, untEditSimples, untEditMult;
 
 procedure TEventosApostas.tsApostasShow(Sender: TObject);
 begin
@@ -232,37 +235,40 @@ end;
 
 procedure TEventosApostas.btnNovaApostaClick(Sender: TObject);
 var
+  CodAposta: integer;
   NovaApostaForm: TformNovaAposta;
-begin
-  with formPrincipal do
+  Query: TSQLQuery;
   begin
+  with formPrincipal do
+  try
     Screen.Cursor := crAppStart;
     try
       NovaApostaForm := TformNovaAposta.Create(nil);
-      try
-        Screen.Cursor := crDefault;
-        conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
-        transactionBancoDados.CommitRetaining;
-        NovaApostaForm.ShowModal;
-      finally
-        NovaApostaForm.Free;
-      end;
-
-      if not qrApostas.Active then qrApostas.Open
-      else
-        qrApostas.Refresh;
-
-      if not qrApostas.IsEmpty then grdApostas.Enabled := True
-      else
-        grdApostas.Enabled := False;
-      qrApostas.Last;
+      Screen.Cursor := crDefault;
+      conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
+      transactionBancoDados.CommitRetaining;
+      NovaApostaForm.ShowModal;
     except
       on E: Exception do
-      begin
-        MessageDlg('Erro', 'Erro ao criar o formulário de nova aposta: ' +
-          E.Message, mtError, [mbOK], 0);
-      end;
+        raise Exception.Create('Erro ao criar o formulário de nova aposta: ' +
+          E.Message);
     end;
+
+    if not qrApostas.Active then qrApostas.Open
+    else
+      qrApostas.Refresh;
+
+    if not qrApostas.IsEmpty then
+    begin
+      grdApostas.Enabled := True;
+      qrApostas.Last;
+    end
+    else
+      grdApostas.Enabled := False;
+    CalculaDadosAposta;
+  except
+    On E: Exception do
+      MessageDlg('Erro', 'Ocorreu um erro: ' + E.Message, mtError, [mbOK], 0);
   end;
 end;
 
@@ -373,7 +379,6 @@ begin
     if not qrApostas.Active then qrApostas.Open;
     qrApostas.EnableControls;
 
-    writeln('Exibida aba Apostas!');
     if not qrApostas.Active then
     begin
       writeln('Abrindo o query...');
@@ -398,11 +403,11 @@ begin
       DataBase := conectBancoDados;
       SQL.Text := 'SELECT Competicao FROM Competicoes';
       Open;
-    while not EOF do
-    begin
-      Competicao.Add(FieldByName('Competicao').AsString);
-      Next;
-    end;
+      while not EOF do
+      begin
+        Competicao.Add(FieldByName('Competicao').AsString);
+        Next;
+      end;
     finally
       Free;
     end;
@@ -471,6 +476,7 @@ begin
             ParamByName('Retorno').AsFloat := ValorEstorno;
             ExecSQL;
             transactionBancoDados.CommitRetaining;
+            btnCashout.Caption := 'Desfazer Cashout';
           end
           else
           begin
@@ -486,7 +492,9 @@ begin
         begin
           if Active then Close;
           SQL.Text :=
-            'UPDATE Apostas SET Cashout = 0, Retorno = Retorno WHERE Cod_Aposta = :CodAposta';
+            'UPDATE Apostas SET Cashout = 0, Retorno = (CASE WHEN Status = ''Green'' ' +
+            'THEN (Valor_Aposta * Odd) ELSE 0 END), Lucro = (CASE WHEN Status = ''Green'' '
+            + 'THEN (Retorno - Valor_Aposta) ELSE -Valor_Aposta END)WHERE Cod_Aposta = :CodAposta';
           ParamByName('CodAposta').AsInteger :=
             qrApostas.FieldByName('Cod_Aposta').AsInteger;
           ExecSQL;
@@ -496,7 +504,7 @@ begin
           btnCashout.Caption := 'Cashout';
         end;
       end;
-      AtualizaQRApostas;
+      CalculaDadosAposta;
       Screen.Cursor := crDefault;
       Free;
       qrApostas.EnableControls;
@@ -637,7 +645,7 @@ begin
       ExecSQL;
       transactionBancoDados.CommitRetaining;
       qrDadosAposta.Refresh;
-      AtualizaQRApostas;
+      CalculaDadosAposta;
       Free;
     except
       on E: Exception do
@@ -658,13 +666,51 @@ begin
   //grdDadosAp.Visible := false;
 end;
 
-procedure AtualizaAposta;
+procedure TEventosApostas.TrocarSeparadorDecimal(Sender: TObject; var Key: char);
+begin
+  if FormatSettings.DecimalSeparator = ',' then
+    if Key = '.' then
+      Key := ','
+    else if FormatSettings.DecimalSeparator = '.' then
+      if Key = ',' then
+        Key := '.';
+end;
+
+procedure TEventosApostas.AbrirEditarAposta(Sender: TObject);
 var
-  Odd, NovaOdd: double;
-  OddFormat: string;
+  EditarSimples, EditarMultipla: TForm;
+begin
+  EditarSimples := formEditSimples;
+  EditarMultipla := formEditMult;
+
+  with formPrincipal do
+    with qrApostas do
+    try
+      GlobalCodAposta := FieldByName('Cod_Aposta').AsInteger;
+
+      if not FieldByName('Múltipla').AsBoolean then
+        formEditSimples.ShowModal
+      else
+        formEditMult.ShowModal;
+    except
+      On E: Exception do
+      begin
+        writeln('Erro ao abrir formulário para editar aposta: ' + E.Message);
+        MessageDlg('Erro', 'Erro ao abrir janela de editar aposta, tente novamente. ' +
+          'Se o problema persistir favor informar no GitHub com a seguinte mensagem: ' +
+          sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
+      end;
+    end;
+end;
+
+procedure CalculaDadosAposta;
+var
+  Odd, NovaOdd, Retorno, Lucro, BancaFinal: double;
+  OddFormat, BancaFormat, RetornoFormat, LucroFormat: string;
   CodAposta: integer;
 begin
   with formPrincipal do
+  begin
     with TSQLQuery.Create(nil) do
     try
       DataBase := conectBancoDados;
@@ -694,43 +740,96 @@ begin
         Odd := StrToFloat(OddFormat);
         Next;
       end;
-      qrApostas.Edit;
-      qrApostas.FieldByName('Odd').AsFloat := Odd;
-      qrApostas.Post;
-      qrApostas.ApplyUpdates;
+      with qrApostas do
+      begin
+        Edit;
+        FieldByName('Odd').AsFloat := Odd;
+        Post;
+        ApplyUpdates;
+      end;
       Close;
-      SQL.Text := 'UPDATE Apostas SET Retorno = IFNULL((Odd * Valor_Aposta), 0) ' +
-                  'WHERE Status <> ''Red'' AND Status <> ''Pré-live''' +
-                  'AND Cod_Aposta = :CodAposta';
-      ParamByName('CodAposta').AsInteger :=
-      qrApostas.FieldByName('Cod_Aposta').AsInteger;
-      ExecSQL;
-      SQL.Text := 'UPDATE Apostas SET Lucro = IFNULL((CASE               ' +
-                  'WHEN Status = ''Green'' THEN Retorno - Valor_Aposta   ' +
-                  'WHEN Status = ''Red'' THEN -Valor_Aposta              ' +
-                  'WHEN Status = ''Anulada'' THEN Apostas.Valor_Aposta   ' +
-                  'WHEN Status = ''Cashout'' THEN Retorno - Valor_Aposta ' +
-                  'END), 0)                                              ' +
-                  'WHERE Cod_Aposta = :CodAposta                         ';
-      ParamByName('CodAposta').AsInteger :=
-      qrApostas.FieldByName('Cod_Aposta').AsInteger;
-      ExecSQL;
-      SQL.Text := 'UPDATE Apostas SET Status = ''Red''         ' +
-                  'WHERE Cod_Aposta = :CodAposta AND Lucro < 0 ';
-      ParamByName('CodAposta').AsInteger :=
-      qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      SQL.Text := 'UPDATE Mercados SET Status = Status';
       ExecSQL;
       transactionBancoDados.CommitRetaining;
+      SQL.Text := 'SELECT Valor_Inicial FROM Banca WHERE Mês = ' +
+        '(SELECT Mês FROM "Selecionar Mês e Ano") AND Ano =       ' +
+        '(SELECT Ano FROM "Selecionar Mês e Ano")                 ';
+      Open;
+      BancaFinal := FieldByName('Valor_Inicial').AsFloat;
       Free;
-    Except
+    except
       On E: Exception do
       begin
-      Cancel;
-      transactionBancoDados.RollbackRetaining;
-      writeln('Erro: ' + E.Message + ' SQL: ' + SQL.Text);
-      Free;
+        Cancel;
+        transactionBancoDados.RollbackRetaining;
+        writeln('Erro: ' + E.Message + ' SQL: ' + SQL.Text);
+        Free;
       end;
     end;
+
+
+    with qrApostas do
+    try
+      First;
+      while not EOF do
+      begin
+        BancaFormat := FormatFloat('0.00', BancaFinal);
+        case FieldByName('Status').AsString of
+          'Green': begin
+            Retorno :=
+              (FieldByName('Valor_Aposta').AsFloat) *
+              (FieldByName('Odd').AsFloat);
+            Lucro := Retorno - (FieldByName('Valor_aposta').AsFloat);
+            RetornoFormat := FormatFloat('0.00', Retorno);
+            LucroFormat := FormatFloat('0.00', Lucro);
+          end;
+          'Red': begin
+            Retorno := 0;
+            Lucro := 0 - (FieldByName('Valor_Aposta').AsFloat);
+            RetornoFormat := FormatFloat('0.00', Retorno);
+            LucroFormat := FormatFloat('0.00', Lucro);
+          end;
+          'Anulada': begin
+            Retorno := FieldByName('Valor_Aposta').AsFloat;
+            Lucro := 0;
+            RetornoFormat := FormatFloat('0.00', Retorno);
+            LucroFormat := FormatFloat('0.00', Lucro);
+          end;
+          'Cashout': begin
+            Retorno := FieldByName('Retorno').AsFloat;
+            Lucro := Retorno - (FieldByName('Valor_aposta').AsFloat);
+            RetornoFormat := FormatFloat('0.00', Retorno);
+            LucroFormat := FormatFloat('0.00', Lucro);
+          end;
+          'Pré-live': begin
+            Retorno := 0;
+            Lucro := 0;
+            RetornoFormat := FormatFloat('0.00', Retorno);
+            LucroFormat := FormatFloat('0.00', Lucro);
+          end;
+        end;
+        BancaFinal := BancaFinal + FieldByName('Lucro').AsFloat;
+        BancaFormat := FormatFloat('0.00', BancaFinal);
+
+        Edit;
+        FieldByName('Retorno').AsFloat := StrToFloat(RetornoFormat);
+        FieldByName('Lucro').AsFloat := StrToFloat(LucroFormat);
+        FieldByName('Banca_Final').AsFloat := StrToFloat(BancaFormat);
+        Post;
+        Next;
+      end;
+      ApplyUpdates;
+      transactionBancoDados.CommitRetaining;
+    except
+      On E: Exception do
+      begin
+        Cancel;
+        transactionBancoDados.RollbackRetaining;
+        writeln('Erro: ' + E.Message);
+      end;
+    end;
+    AtualizaQRApostas;
+  end;
 end;
 
 procedure AtualizaQRApostas;

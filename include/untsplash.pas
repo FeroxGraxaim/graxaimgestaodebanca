@@ -83,7 +83,6 @@ begin
     formPrincipal.cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
     tsResumoLista.OnShow := @EventosPainel.HabilitaMesEAno;
 
-    progresso.Position := 14;
     lbProgresso.Caption := 'Atribuindo eventos de apostas';
     Application.ProcessMessages;
     sleep(50);
@@ -105,6 +104,8 @@ begin
     btnTudoRed.OnClick := @EventosApostas.TudoGreenRed;
     grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
     grdApostas.OnExit := @EventosApostas.AoSairGrdApostas;
+    grdApostas.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
+    grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
 
     //Definindo eventos do controle de métodos
 
@@ -151,16 +152,15 @@ begin
     //Definindo eventos do do Banco de Dados e Múltiplas
 
 
-    progresso.Position := 28;
-    lbProgresso.Caption := 'Atribuindo eventos de múltiplas';
-    Application.ProcessMessages;
-    sleep(50);
-    progresso.Invalidate;
+    //lbProgresso.Caption := 'Atribuindo eventos de múltiplas';
+    //Application.ProcessMessages;
+    //sleep(50);
+    //progresso.Invalidate;
 
     writeln('Criando eventos do banco de dados...');
     formPrincipal.qrBanca.OnCalcFields := @BancoDados.qrBancaCalcFields;
 
-    progresso.Position := 42;
+    progresso.Position := 20;
     Application.ProcessMessages;
     sleep(50);
     progresso.Invalidate;
@@ -174,7 +174,7 @@ begin
 
     // Definindo a variável perfilInvestidor
 
-    progresso.Position := 57;
+    progresso.Position := 40;
     lbProgresso.Caption := 'Definindo variáveis';
     Application.ProcessMessages;
     sleep(50);
@@ -186,7 +186,7 @@ begin
 
     //Procedimentos do Painel Principal
 
-    progresso.Position := 71;
+    progresso.Position := 60;
     lbProgresso.Caption := 'Atribuindo procedimentos do painel principal';
     Application.ProcessMessages;
     sleep(50);
@@ -217,7 +217,7 @@ begin
 
     //Procedimentos das apostas
 
-    progresso.Position := 85;
+    progresso.Position := 80;
     lbProgresso.Caption := 'Atribuindo procedimentos de apostas';
     Application.ProcessMessages;
     sleep(50);
@@ -229,11 +229,6 @@ begin
     @EventosMetodos.CarregaMetodos;
 
     //Procedimentos das múltiplas
-
-    progresso.Position := 100;
-    Application.ProcessMessages;
-    sleep(50);
-    progresso.Invalidate;
 
     if not conectBancoDados.Connected then conectBancoDados.Connected := True;
       begin
@@ -252,6 +247,10 @@ begin
   lbProgresso.Caption := 'Verificando se há atualizações';
   Application.ProcessMessages;
   VerificarAtualizacoes(currentVersion);
+  progresso.Position := 100;
+  Application.ProcessMessages;
+  //sleep(50);
+  progresso.Invalidate;
   Close;
 end;
 

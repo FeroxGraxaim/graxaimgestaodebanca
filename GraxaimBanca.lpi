@@ -17,7 +17,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="3"/>
-      <BuildNr Value="18"/>
+      <RevisionNr Value="1"/>
+      <BuildNr Value="19"/>
       <Language Value="0416"/>
       <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.3"/>
     </VersionInfo>
@@ -67,6 +68,9 @@
       <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages>
+      <Item>
+        <PackageName Value="lazdbexport"/>
+      </Item>
       <Item>
         <PackageName Value="TAChartLazarusPkg"/>
       </Item>
@@ -178,6 +182,22 @@
         <Filename Value="include/untcontrcomp.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untContrComp"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/unteditsimples.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formEditSimples"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untEditSimples"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/unteditmult.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formEditMult"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untEditMult"/>
       </Unit>
     </Units>
   </ProjectOptions>
