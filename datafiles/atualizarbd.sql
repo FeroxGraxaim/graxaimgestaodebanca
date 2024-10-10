@@ -47,4 +47,4 @@ AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mer
 AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
 END;
 
-UPDATE ControleVersao SET Versao = 14;
+UPDATE ControleVersao SET Versao = 15;
