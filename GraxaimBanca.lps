@@ -58,10 +58,9 @@
         <Filename Value="include/untapostas.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untApostas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="427"/>
-        <CursorPos Y="439"/>
+        <TopLine Value="463"/>
+        <CursorPos X="3" Y="451"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
       </Unit>
@@ -134,7 +133,9 @@
       <Unit>
         <Filename Value="include/untUpdate.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
+        <TopLine Value="32"/>
         <CursorPos X="32" Y="61"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
@@ -185,6 +186,24 @@
         <Filename Value="include/untcontrcomp.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untContrComp"/>
+        <UsageCount Value="20"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/unteditsimples.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formEditSimples"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untEditSimples"/>
+        <UsageCount Value="20"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/unteditmult.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formEditMult"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untEditMult"/>
         <UsageCount Value="20"/>
       </Unit>
       <Unit>
@@ -470,10 +489,6 @@
     <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="include/untmain.pas"/>
-        <Caret Line="382" Column="8" TopLine="348"/>
-      </Position>
-      <Position>
-        <Filename Value="include/untmain.pas"/>
         <Caret Line="381" Column="8" TopLine="347"/>
       </Position>
       <Position>
@@ -587,6 +602,10 @@
       <Position>
         <Filename Value="include/untapostas.pas"/>
         <Caret Line="39" Column="25" TopLine="22"/>
+      </Position>
+      <Position>
+        <Filename Value="include/untapostas.pas"/>
+        <Caret Line="40" Column="26" TopLine="27"/>
       </Position>
     </JumpHistory>
     <RunParams>

@@ -530,7 +530,7 @@ end;
 
 procedure TformNovaAposta.grdNovaApostaKeyPress(Sender: TObject; var Key: char);
 begin
-    if FormatSettings.DecimalSeparator = ',' then
+  if FormatSettings.DecimalSeparator = ',' then
     if Key = '.' then
       Key := ','
     else if FormatSettings.DecimalSeparator = '.' then
@@ -590,7 +590,7 @@ end;
 
 procedure TformNovaAposta.tsMultiplaShow(Sender: TObject);
 begin
-  GlobalMultipla := true;
+  GlobalMultipla := True;
   deApostaMult.SetFocus;
   formPrincipal.transactionBancoDados.RollbackRetaining;
   with TSQLQuery.Create(nil) do
@@ -625,7 +625,7 @@ end;
 
 procedure TformNovaAposta.tsSimplesShow(Sender: TObject);
 begin
-  GlobalMultipla := false;
+  GlobalMultipla := False;
   deAposta.SetFocus;
   formPrincipal.transactionBancoDados.RollbackRetaining;
   writeln('Exibida aba de aposta simples');
@@ -751,8 +751,8 @@ begin
   begin
     if (deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
       (edtOddMult.Text <> '') and (edtOddMult.Text <> '0') and not
-      qrLinhaMultipla.FieldByName('Método').IsNull and
-      not qrLinhaMultipla.FieldByName('Linha').IsNull and not
+      qrLinhaMultipla.FieldByName('Método').IsNull and not
+      qrLinhaMultipla.FieldByName('Linha').IsNull and not
       qrLinhaMultipla.FieldByName('Situacao').IsNull then btnOk.Enabled := True
     else
       btnOk.Enabled := False;
@@ -1089,16 +1089,13 @@ begin
 
     with formPrincipal do
     begin
-
       with TSQLQuery.Create(nil) do
       begin
         try
-
-
           DataBase := formPrincipal.conectBancoDados;
           writeln('Excluindo registros vazios');
           SQL.Text :=
-          'DELETE FROM Mercados WHERE Cod_Metodo IS NULL AND Cod_Linha IS NULL';
+            'DELETE FROM Mercados WHERE Cod_Metodo IS NULL AND Cod_Linha IS NULL';
           ExecSQL;
           writeln('Atualizando tabela "Apostas"');
           SQL.Text :=
@@ -1189,8 +1186,8 @@ begin
 
       Cancelar:
 
-        if not excecao then
-        begin
+          writeln
+          ('Desfazendo alterações no banco de dados');
           with TSQLQuery.Create(nil) do
           try
             DataBase := conectBancoDados;
@@ -1200,10 +1197,13 @@ begin
             ExecSQL;
             SQL.Text := 'DELETE FROM Mercados WHERE Mercados.Cod_Aposta = ' +
               '(SELECT MAX(Cod_Aposta) FROM Apostas)';
+            writeln('SQL: ', SQL.Text);
             SQL.Text :=
               'DELETE FROM Apostas WHERE Cod_Aposta = ' +
               '(SELECT MAX(Cod_Aposta) FROM Apostas)';
+            writeln('SQL: ', SQL.Text);
             ExecSQL;
+            writeln('Salvando processos no banco de dados');
             transactionBancoDados.CommitRetaining;
             Free;
           except
@@ -1214,15 +1214,14 @@ begin
               Free;
             end;
           end;
-        end
-        else
-          CloseAction := caNone;
+
       Fim:
 
         qrSavePoint.Free;
       for i := 0 to ListaJogo.Count - 1 do
         TItemInfo(ListaJogo[i]).Free;
       ListaJogo.Free;
+      Exit;
     end;
   end;
 end;
@@ -1334,7 +1333,9 @@ begin
                 ParamByName('time').AsString := ComparaVisitante;
                 ExecSQL;
               end;
-            end;
+            end
+            else
+              Nao := True;
             transactionBancoDados.CommitRetaining;
           end
           else
@@ -1381,9 +1382,9 @@ begin
       while not EOF do
       begin
         if FieldByName('Odd').IsNull then
-        Odd := Odd * 1
+          Odd := Odd * 1
         else
-        Odd := Odd * FieldByName('Odd').AsFloat;
+          Odd := Odd * FieldByName('Odd').AsFloat;
         OddFormat := FormatFloat('0.00', Odd);
         Odd := StrToFloat(OddFormat);
         Next;

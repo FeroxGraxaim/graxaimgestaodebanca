@@ -403,10 +403,11 @@ begin
         'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS LucroGreens, ' +
         'SUM(CASE WHEN Apostas.Lucro < 0 THEN 1 ELSE 0 END) AS LucroReds, ' +
         'SUM(CASE WHEN Mercados.Status = ''Green'' THEN 1 ELSE 0 END) AS Greens, '
-        + 'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
+        +
+        'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
         + 'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, '
-        + 'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, '
-        + 'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
+        + 'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
         + 'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
         '(CASE WHEN COUNT(Mercados.Cod_Metodo) = 0 THEN 0 ' + 'ELSE  ' +
         'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) /  ' +
@@ -418,8 +419,7 @@ begin
         'END) AS PcentAcertos ' + 'FROM Mercados  ' +
         'LEFT JOIN Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta  ' +
         'LEFT JOIN Métodos ON Mercados.Cod_Metodo = Métodos.Cod_Metodo ' +
-        'WHERE Métodos.Cod_Metodo = :codMet ' +
-        'GROUP BY Métodos.Nome ';
+        'WHERE Métodos.Cod_Metodo = :codMet ' + 'GROUP BY Métodos.Nome ';
       ParamByName('codMet').AsInteger := GlobalCodMetodo;
       Open;
 
@@ -432,30 +432,31 @@ begin
         lbErrosMet.Caption :=
           ('Erros: 0');
         lbNuloMet.Caption :=
-        ('Anulados: 0');
+          ('Anulados: 0');
         lbMeioAcertMet.Caption :=
-        ('Meios Acertos: 0');
+          ('Meios Acertos: 0');
         lbMeioErroMet.Caption :=
-        ('Meios Erros: 0');
+          ('Meios Erros: 0');
         lbLucroMet.Caption :=
           ('Lucro Total: 0%');
       end
       else
       begin
-      lbMercadosMet.Caption :=
-        ('Mercados: ' + IntToStr(FieldByName('TotalApostas').AsInteger));
-      lbAcertosMet.Caption :=
-        ('Acertos: ' + IntToStr(FieldByName('Greens').AsInteger));
-      lbErrosMet.Caption :=
-        ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
-      lbNuloMet.Caption :=
-        ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
-      lbMeioAcertMet.Caption :=
-        ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
-      lbMeioErroMet.Caption :=
-        ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
-      lbLucroMet.Caption :=
-        ('Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat, -1)) + '%');
+        lbMercadosMet.Caption :=
+          ('Mercados: ' + IntToStr(FieldByName('TotalApostas').AsInteger));
+        lbAcertosMet.Caption :=
+          ('Acertos: ' + IntToStr(FieldByName('Greens').AsInteger));
+        lbErrosMet.Caption :=
+          ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
+        lbNuloMet.Caption :=
+          ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
+        lbMeioAcertMet.Caption :=
+          ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
+        lbMeioErroMet.Caption :=
+          ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
+        lbLucroMet.Caption :=
+          ('Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat,
+          -1)) + '%');
       end;
       Free;
     except
@@ -505,10 +506,11 @@ begin
         'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS LucroGreens, ' +
         'SUM(CASE WHEN Apostas.Lucro < 0 THEN 1 ELSE 0 END) AS LucroReds, ' +
         'SUM(CASE WHEN Mercados.Status = ''Green'' THEN 1 ELSE 0 END) AS Greens, '
-        + 'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
+        +
+        'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
         + 'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, '
-        + 'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, '
-        + 'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
+        + 'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
+        'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
         + 'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
         '(CASE WHEN COUNT(Mercados.Cod_Linha) = 0 THEN 0 ELSE  ' +
         'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) /  ' +
@@ -531,6 +533,12 @@ begin
           ('Acertos: 0');
         lbErrosLin.Caption :=
           ('Erros: 0');
+        lbNuloLin.Caption :=
+          ('Anulados: 0');
+        lbMeioAcertLin.Caption :=
+          ('Meios Acertos: 0');
+        lbMeioErroLin.Caption :=
+          ('Meios Erros: 0');
         lbLucroLin.Caption :=
           ('Lucro Total: 0%');
       end
@@ -543,13 +551,14 @@ begin
         lbErrosLin.Caption :=
           ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
         lbNuloLin.Caption :=
-        ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
-      lbMeioAcertLin.Caption :=
-        ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
-      lbMeioErroLin.Caption :=
-        ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
+          ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
+        lbMeioAcertLin.Caption :=
+          ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
+        lbMeioErroLin.Caption :=
+          ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
         lbLucroLin.Caption :=
-          'Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat, -1)) + '%';
+          'Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat,
+          -1)) + '%';
       end;
       Free;
     except
@@ -787,6 +796,18 @@ begin
       //ParamByName('mesSelec').AsString := Format('%.2d', [mesSelecionado]);
       //ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
+    end;
+    with qrMetodosMes do
+    begin
+      if qrMT.Active then qrMT.Close;
+      if qrMC.Active then qrMC.Close;
+      if qrMP.Active then qrMP.Close;
+      qrMT.ParamByName('codmet').AsInteger := FieldByName('Cod_Metodo').AsInteger;
+      qrMC.ParamByName('codmet').AsInteger := FieldByName('Cod_Metodo').AsInteger;
+      qrMP.ParamByName('codmet').AsInteger := FieldByName('Cod_Metodo').AsInteger;
+      qrMT.Open;
+      qrMC.Open;
+      qrMP.Open;
     end;
   end;
 end;

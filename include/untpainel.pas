@@ -49,8 +49,8 @@ begin
     qrBanca.ParamByName('mesSelec').AsInteger := MonthOf(Now);
     qrBanca.ParamByName('anoSelec').AsInteger := YearOf(Now);
     qrBanca.Open;
+    MudarCorLucro;
   end;
-  formPrincipal.MudarCorLucro;
   AtualizarGraficoLucro;
 end;
 
@@ -294,83 +294,79 @@ end;
 
 procedure TEventosPainel.AtualizarGraficoLucro;
 var
-  i, j, Contador, mesGreen, mesRed, diaGreen, diaRed: integer;
-  ContFloat: double;
+  i, j, Contador, anoGreen, anoRed, mesGreen, mesRed, diaGreen, diaRed,
+  anoNeutro, mesNeutro, diaNeutro, MaxInt, MinInt: integer;
+  ContFloat, LAP, LAR, LAPA, LARA: double;
 begin
   with formPrincipal do
   begin
     (chrtLucroMes.Series[0] as TLineSeries).Clear;
     (chrtLucroAno.Series[0] as TLineSeries).Clear;
+    (chrtLucroTodosAnos.Series[0] as TLineSeries).Clear;
 
-    // Gráfico de lucro do mês
+{*********************************LUCRO DO MÊS*********************************}
     try
       if not qrMes.Active then qrMes.Open;
       if qrMes.RecordCount = 0 then Exit;
 
       writeln('Registros encontrados para o mês: ' + IntToStr(qrMes.RecordCount));
-      if cbGraficos.Text = 'Lucro R$' then
-      begin
-        chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
-        (chrtLucroMes.Series[0] as TLineSeries).Clear;
 
-        if not qrMes.Active then qrMes.Open;
+      case cbGraficos.Text of
 
-        for i := 1 to 31 do
+        'Lucro R$':
         begin
-           { (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-              i,
-              qrMes.FieldByName('SomaLucro').AsFloat);
-            qrMes.Next; }
-          ContFloat := i;
-          if i < qrMes.FieldByName('Dia').AsInteger then
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-              qrMes.FieldByName('SomaLucro').AsFloat, ContFloat)
-          else if i > qrMes.FieldByName('Dia').AsInteger then
+          chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
+          (chrtLucroMes.Series[0] as TLineSeries).Clear;
+          if not qrMes.Active then qrMes.Open;
+          for i := 1 to 31 do
           begin
-            qrMes.Last;
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-              qrMes.FieldByName('SomaLucro').AsFloat, ContFloat);
-            qrMes.First;
-          end
-          else
-          begin
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-              i,
-              qrMes.FieldByName('SomaLucro').AsFloat,
-              ContFloat);
-            qrMes.Next;
+            ContFloat := i;
+            if i < qrMes.FieldByName('Dia').AsInteger then
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('SomaLucro').AsFloat, ContFloat)
+            else if i > qrMes.FieldByName('Dia').AsInteger then
+            begin
+              qrMes.Last;
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('SomaLucro').AsFloat, ContFloat);
+              qrMes.First;
+            end
+            else
+            begin
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+                i,
+                qrMes.FieldByName('SomaLucro').AsFloat,
+                ContFloat);
+              qrMes.Next;
+            end;
           end;
         end;
 
-      end
-      else if cbGraficos.Text = 'Lucro %' then
-      begin
-        chrtLucroMes.AxisList[1].Marks.Format := '%0:.2n%%';
-        (chrtLucroMes.Series[0] as TLineSeries).Clear;
-        for i := 1 to 31 do
+        'Lucro %':
         begin
-            {(chrtLucroMes.Series[0] as TLineSeries).AddXY(
-              i,
-              qrMes.FieldByName('PorCentoLucro').AsFloat);
-            qrMes.Next;}
-          ContFloat := i;
-          if i < qrMes.FieldByName('Dia').AsInteger then
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-              qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat)
-          else if i > qrMes.FieldByName('Dia').AsInteger then
+          chrtLucroMes.AxisList[1].Marks.Format := '%0:.2n%%';
+          (chrtLucroMes.Series[0] as TLineSeries).Clear;
+          for i := 1 to 31 do
           begin
-            qrMes.Last;
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-              qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat);
-            qrMes.First;
-          end
-          else
-          begin
-            (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-              i,
-              qrMes.FieldByName('PorCentoLucro').AsFloat,
-              ContFloat);
-            qrMes.Next;
+            ContFloat := i;
+            if i < qrMes.FieldByName('Dia').AsInteger then
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat)
+            else if i > qrMes.FieldByName('Dia').AsInteger then
+            begin
+              qrMes.Last;
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat);
+              qrMes.First;
+            end
+            else
+            begin
+              (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+                i,
+                qrMes.FieldByName('PorCentoLucro').AsFloat,
+                ContFloat);
+              qrMes.Next;
+            end;
           end;
         end;
       end;
@@ -381,65 +377,73 @@ begin
       end;
     end;
 
-    // Gráfico de lucro do ano
+{******************************************************************************}
+{*********************************LUCRO DO ANO*********************************}
+    with qrAno do
     try
-      if not qrAno.Active then qrAno.Open;
-      if qrAno.RecordCount = 0 then Exit;
-
-      writeln('Registros encontrados para o ano: ' + IntToStr(qrAno.RecordCount));
-
+      if not Active then Open;
+      if RecordCount = 0 then Exit;
+      writeln
+      ('Registros encontrados para o ano: ' + IntToStr(qrAno.RecordCount));
       begin
         if cbGraficos.Text = 'Lucro %' then
         begin
           chrtLucroAno.AxisList[0].Marks.Format := '%0:.2n%%';
-
-          qrAno.First;
+          First;
+          LAP := FieldByName('LucroTotalPorCento').AsFloat;
           for Contador := 1 to 12 do
+          with (chrtLucroAno.Series[0] as TLineSeries) do
           begin
             ContFloat := Contador;
-            if Contador < qrAno.FieldByName('Mês').AsInteger then
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
-                qrAno.FieldByName('LucroTotalPorCento').AsFloat, ContFloat)
-            else if Contador > qrAno.FieldByName('Mês').AsInteger then
+            if Contador <= FieldByName('Mês').AsInteger then
             begin
-              qrAno.Last;
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
-                qrAno.FieldByName('LucroTotalPorCento').AsFloat, ContFloat);
-              qrAno.First;
+              AddXY(Contador, 0, ContFloat);
             end
             else
             begin
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(
-                Contador,
-                qrAno.FieldByName('LucroTotalPorCento').AsFloat,
-                ContFloat);
-              qrAno.Next;
+              Next;
+              if not EOF then
+              begin
+                  LAP := LAP + FieldByName('LucroTotalPorCento').AsFloat;
+                AddXY(Contador, LAP, ContFloat);
+              end
+              else
+              begin
+                LAP := LAP;
+                AddXY(Contador, LAP, ContFloat);
+              end;
             end;
           end;
         end
         else if cbGraficos.Text = 'Lucro R$' then
         begin
           chrtLucroAno.AxisList[0].Marks.Format := '%0:.2m';
+          First;
+          LAR := FieldByName('LucroAnualReais').AsFloat;
           for Contador := 1 to 12 do
+          with (chrtLucroAno.Series[0] as TLineSeries) do
           begin
             ContFloat := Contador;
-            if Contador < qrAno.FieldByName('Mês').AsInteger then
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
-                qrAno.FieldByName('LucroAnualReais').AsFloat, ContFloat)
-            else if Contador > qrAno.FieldByName('Mês').AsInteger then
-            begin
-              qrAno.Last;
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(Contador,
-                qrAno.FieldByName('LucroAnualReais').AsFloat, ContFloat);
-              qrAno.First;
-            end
+            if Contador <= FieldByName('Mês').AsInteger then
+              AddXY(Contador, 0,
+                ContFloat)
             else
             begin
-              (chrtLucroAno.Series[0] as TLineSeries).AddXY(
-                Contador,
-                qrAno.FieldByName('LucroAnualReais').AsFloat,
-                ContFloat);
-              qrAno.Next;
+              Next;
+              if not EOF then
+              begin
+                if (LAR < 0) and (FieldByName('LucroAnualReais').AsFloat < 0)
+                then
+                  LAR := LAR - FieldByName('LucroAnualReais').AsFloat
+                else
+                  LAR := LAR + FieldByName('LucroAnualReais').AsFloat;
+                 AddXY(Contador, LAR, ContFloat);
+              end
+              else
+              begin
+                LAR := LAR;
+                AddXY(Contador, LAR, ContFloat);
+              end;
             end;
           end;
         end;
@@ -453,7 +457,120 @@ begin
     chrtLucroMes.Invalidate;
     chrtLucroAno.Invalidate;
 
-    //Atualizar gráficos pizza
+{******************************************************************************}
+{****************************LUCRO DE TODOS OS ANOS****************************}
+
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT Banca.Mês, Banca.Ano,                               ' +
+        'SUM(Banca.Valor_Final - Banca.Valor_Inicial) / COUNT(*)    ' +
+        'AS lcrAnosReais,                                           ' +
+        '(SUM(Banca.Valor_Final - Banca.Valor_Inicial) /            ' +
+        'SUM(CASE WHEN Banca.Valor_Inicial IS NULL THEN 0           ' +
+        'ELSE Banca.Valor_Inicial END)) * 100 AS lcrAnosPcent       ' +
+        'FROM Banca                                                 ' +
+        'LEFT JOIN                                                  ' +
+        'Apostas ON strftime(''%m'', Apostas.Data) = Banca.Mês      ' +
+        'AND strftime(''%Y'', Apostas.Data) = Banca.Ano             ' +
+        'WHERE Banca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano") ' +
+        'GROUP BY Banca.Ano;                                        ';
+      Open;
+
+      if RecordCount = 0 then Exit;
+
+      with chrtLucroTodosAnos.AxisList[1].Range do
+      begin
+        First;
+        Min := FieldByName('Ano').AsInteger;
+        Max := FieldByName('Ano').AsInteger + 10;
+        Last;
+        if Max < RecordCount then Max := RecordCount;
+        MinInt := Round(Min);
+        MaxInt := Round(Max);
+        writeln('Valor mínimo: ',MinInt);
+        writeln('Valor Máximo: ',MaxInt);
+      end;
+
+      if cbGraficos.Text = 'Lucro %' then
+      begin
+        chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2n%%';
+        First;
+        LAPA := FieldByName('lcrAnosPcent').AsFloat;
+        with chrtLucroTodosAnos.AxisList[1].Range do
+        with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
+        for Contador := MinInt to MaxInt do
+        begin
+          ContFloat := Contador;
+          if Contador < FieldByName('Ano').AsInteger then
+          begin
+            AddXY(Contador, 0, ContFloat);
+          end
+          else
+          begin
+            Next;
+            if not EOF then
+            begin
+              if (LAPA < 0) and (FieldByName('lcrAnosPcent').AsFloat < 0) then
+                LAPA := LAPA - FieldByName('lcrAnosPcent').AsFloat
+              else
+                LAPA := LAPA + FieldByName('lcrAnosPcent').AsFloat;
+              AddXY(Contador, LAPA, ContFloat);
+            end
+            else
+            begin
+              AddXY(Contador, LAPA, ContFloat);
+            end;
+          end;
+        end;
+      end
+      else if cbGraficos.Text = 'Lucro R$' then
+
+      begin
+        chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2m';
+        First;
+        LARA := FieldByName('lcrAnosReais').AsFloat;
+        with chrtLucroTodosAnos.AxisList[1].Range do
+        with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
+        for Contador := MinInt to MaxInt do
+        begin
+          ContFloat := Contador;
+          if Contador <= FieldByName('Mês').AsInteger then
+            AddXY(Contador, 0, ContFloat)
+          else
+          begin
+            Next;
+            if not EOF then
+            begin
+              if (LARA < 0) and (FieldByName('lcrAnosReais').AsFloat < 0) then
+                LARA := LARA - FieldByName('lcrAnosReais').AsFloat
+              else
+                LARA := LARA + FieldByName('lcrAnosReais').AsFloat;
+              AddXY(Contador, LARA,
+              ContFloat);
+            end
+            else
+            begin
+              AddXY(Contador, LARA, ContFloat);
+            end;
+          end;
+        end;
+      end;
+      Free;
+    except
+      on E: Exception do
+      begin
+        writeln('Falha ao atualizar o gráfico de lucro de todos os anos: ' +
+          E.Message);
+        Free;
+      end;
+    end;
+    chrtLucroTodosAnos.Invalidate;
+
+{******************************************************************************}
+{*********************************GRÁFICOS PIZZA*******************************}
+
     try
       (chrtAcertMes.Series[0] as TPieSeries).Clear;
       (chrtAcertAno.Series[0] as TPieSeries).Clear;
@@ -469,14 +586,14 @@ begin
         diaGreen := diaGreen + qrMes.FieldByName('Green').AsInteger;
         diaRed := diaRed + qrMes.FieldByName('Red').AsInteger;
       end;
-
+      with (chrtAcertMes.Series[0] as TPieSeries) do
+      begin
       if diaGreen <> 0 then
-      (chrtAcertMes.Series[0] as TPieSeries).AddPie(diaGreen,
-        'Dias de Lucro ', clGreen);
+        AddPie(diaGreen, 'Dias Bons ', clGreen);
 
       if diaRed <> 0 then
-      (chrtAcertMes.Series[0] as TPieSeries).AddPie(diaRed,
-        'Dias de Perejuízo ', clRed);
+         AddPie(diaRed, 'Dias Ruins ', clRed);
+      end;
 
       with TSQLQuery.Create(nil) do
       try
@@ -501,7 +618,9 @@ begin
           'WHERE Ano = :ano                                                        ';
         ParamByName('Ano').AsInteger := anoSelecionado;
         Open;
-        (chrtAcertAno.Series[0] as TPieSeries).Clear;
+        with (chrtAcertAno.Series[0] as TPieSeries) do
+        begin
+        Clear;
         mesGreen := 0;
         mesRed := 0;
         First;
@@ -515,13 +634,11 @@ begin
             mesGreen := mesGreen + 1;
         end;
         if mesGreen <> 0 then
-          (chrtAcertAno.Series[0] as TPieSeries).AddPie(mesGreen, 'Meses de Lucro',
-            clGreen);
+          AddPie(mesGreen, 'Meses Bons', clGreen);
 
         if mesRed <> 0 then
-          (chrtAcertAno.Series[0] as TPieSeries).AddPie(mesRed,
-            'Meses de Prejuízo', clRed);
-
+          AddPie(mesRed, 'Meses Ruins', clRed);
+        end;
         Free;
       except
         On E: Exception do
@@ -530,13 +647,71 @@ begin
           raise Exception.Create(E.Message);
         end;
       end;
+
+      //Gráfico de Assertividade Todos os Anos
+      writeln('Mudando gráfico de assertividade de todos os anos');
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        writeln('Definindo o SQL do Query');
+        SQL.Text :=
+        'WITH SomaValores AS (                                         ' +
+        'SELECT                                                        ' +
+        'Ano, SUM(Valor_Final) AS SomaValorFinal, SUM(Valor_Inicial)   ' +
+        'AS SomaValorInicial                                           ' +
+        'FROM Banca GROUP BY Ano)                                      ' +
+        'SELECT                                                        ' +
+        'COUNT(CASE WHEN SomaValorFinal > SomaValorInicial THEN 1 END) ' +
+        'AS AnoGreen,                                                  ' +
+        'COUNT(CASE WHEN SomaValorFinal < SomaValorInicial THEN 1 END) ' +
+        'AS AnoRed,                                                    ' +
+        'COUNT(CASE WHEN SomaValorFinal = SomaValorInicial THEN 1 END) ' +
+        'AS AnoNeutro                                                  ' +
+        'FROM SomaValores                                              ' ;
+        Open;
+        First;
+
+        writeln('Verificando situação de cada ano');
+        while not EOF do
+        begin
+        RecNo;
+        anoGreen := FieldByName('AnoGreen').AsInteger;
+        anoRed := FieldByName('AnoRed').AsInteger;
+        anoNeutro := FieldByName('AnoNeutro').AsInteger;
+        anoGreen := anoGreen + FieldByName('AnoGreen').AsInteger;
+        anoRed := anoRed + FieldByName('AnoRed').AsInteger;
+        anoNeutro := anoNeutro + FieldByName('AnoNeutro').AsInteger;
+        Next;
+        end;
+
+        writeln('Adicionando dados no gráfico');
+        with (chrtAcertTodosAnos.Series[0] as TPieSeries) do
+        begin
+        Clear;
+        if anoGreen <> 0 then
+        AddPie(anoGreen, 'Anos Bons', clGreen);
+        if anoRed <> 0 then
+        AddPie(anoRed, 'Anos Ruins', clRed);
+        if anoNeutro <> 0 then
+        AddPie(anoNeutro, 'Anos Neutros', clGray);
+        end;
+        Free;
+      except
+        on E: Exception do
+        raise Exception.Create('Erro no gráfico de assertividade de todos os anos, ' +
+        E.Message);
+      end;
     except
       on E: Exception do
       begin
-        writeln('Falha ao atualizar o gráfico do mês: ' + E.Message);
+        writeln('Falha ao atualizar os gráficos: ' + E.Message);
       end;
     end;
+{******************************************************************************}
+
     chrtAcertMes.Invalidate;
+    chrtAcertAno.Invalidate;
+    chrtAcertTodosAnos.Invalidate;
     qrMesesGreenRed.Close;
     qrMes.Close;
     qrAno.Close;
@@ -624,6 +799,7 @@ begin
     qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
     qrBanca.Open;
     edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
+    MudarCorLucro;
   end;
 end;
 
@@ -638,6 +814,7 @@ begin
     qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
     qrBanca.Open;
     edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
+    MudarCorLucro;
   end;
 end;
 

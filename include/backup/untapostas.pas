@@ -109,10 +109,13 @@ begin
       if Column.Field is TBooleanField then
       begin
         writeln('Detectada coluna booleana!');
+        BarraStatus.Panels[0].Text := 'Aposta marcada para remoção!';
         qrApostas.Edit;
         SalvarEdicaoGrid;
         qrApostas.Edit;
-      end;
+      end
+      else
+        BarraStatus.Panels[0].Text := 'Aposta selecionada!';
       if qrDadosAposta.Active then qrDadosAposta.Close;
       qrDadosAposta.ParamByName('CodAposta').AsInteger :=
         qrApostas.FieldByName('Cod_Aposta').AsInteger;
@@ -188,12 +191,17 @@ begin
         mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       try
         Screen.Cursor := crAppStart;
+        BarraStatus.Panels[0].Text := 'Removendo aposta...';
         qrApostas.Close;
         writeln('Salvando alterações pendentes');
+        progStatus.Position := 25;
         transactionBancoDados.CommitRetaining;
+        progStatus.Position := 50;
         writeln('Executando script para remover aposta');
         scriptRemoverAposta.Execute;
+        progStatus.Position := 75;
         transactionBancoDados.CommitRetaining;
+        progStatus.Position := 100;
       except
         on E: Exception do
         begin
@@ -217,12 +225,14 @@ begin
         raise Exception.Create('"Erro de banco de dados: ' + MensagemE +
           sLineBreak + sLineBreak + 'Comando: ' + sLineBreak + ComandoErro)
       else
-        ShowMessage('Aposta(s) Removida(s)!');
-      Screen.Cursor := crDefault;
+        Screen.Cursor := crDefault;
+      ShowMessage('Aposta(s) Removida(s)!');
     except
       on E: Exception do
       begin
         Screen.Cursor := crDefault;
+        BarraStatus.Panels[0].Text := 'Erro!';
+        progStatus.Color := clRed;
         MessageDlg('Erro',
           'Ocorreu um erro, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: '
           + sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
@@ -230,6 +240,8 @@ begin
         transactionBancoDados.RollbackRetaining;
       end;
     end;
+    progStatus.Position := 0;
+    progStatus.Color := clDefault;
   end;
 end;
 
@@ -238,38 +250,75 @@ var
   CodAposta: integer;
   NovaApostaForm: TformNovaAposta;
   Query: TSQLQuery;
-  begin
+begin
   with formPrincipal do
-  try
-    Screen.Cursor := crAppStart;
+  begin
+    BarraStatus.Panels[0].Text := 'Criando nova aposta...';
     try
-      NovaApostaForm := TformNovaAposta.Create(nil);
-      Screen.Cursor := crDefault;
-      conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
-      transactionBancoDados.CommitRetaining;
-      NovaApostaForm.ShowModal;
+      try
+        Screen.Cursor := crAppStart;
+        NovaApostaForm := TformNovaAposta.Create(nil);
+        progStatus.Position := 33;
+        conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
+        progStatus.Position := 66;
+        transactionBancoDados.CommitRetaining;
+        progStatus.Position := 100;
+        Screen.Cursor := crDefault;
+        NovaApostaForm.ShowModal;
+      finally
+        NovaApostaForm.Free;
+      end;
     except
       on E: Exception do
-        raise Exception.Create('Erro ao criar o formulário de nova aposta: ' +
-          E.Message);
+      begin
+        BarraStatus.Panels[0].Text := 'Erro!';
+        progStatus.Color := clRed;
+        MessageDlg('Erro ao criar o formulário de nova aposta: ' + E.Message,
+          mtError, [mbOK], 0);
+        Exit;
+      end;
     end;
+    progStatus.Position := 0;
+    progStatus.Color := clDefault;
 
     if not qrApostas.Active then qrApostas.Open
     else
       qrApostas.Refresh;
-
-    if not qrApostas.IsEmpty then
-    begin
-      grdApostas.Enabled := True;
-      qrApostas.Last;
-    end
-    else
-      grdApostas.Enabled := False;
-
-    CalculaDadosAposta;
-  except
-    On E: Exception do
-      MessageDlg('Erro', 'Ocorreu um erro: ' + E.Message, mtError, [mbOK], 0);
+    progStatus.Position := 50;
+    try
+      writeln('Verificando se a tabela está vazia');
+      if not qrApostas.IsEmpty then
+      begin
+        CalculaDadosAposta;
+        grdApostas.Enabled := True;
+        qrApostas.EnableControls;
+        with TSQLQuery.Create(nil) do
+        try
+          writeln('Selecionando última linha da tabela');
+          DataBase := conectBancoDados;
+          SQL.Text := 'SELECT MAX(Cod_Aposta) AS CodAposta FROM Apostas';
+          Open;
+          CodAposta := FieldByName('CodAposta').AsInteger;
+          qrApostas.Locate('Cod_Aposta', CodAposta, []);
+          Free;
+          progStatus.Position := 100;
+        except
+          On E: Exception do
+          begin
+            Cancel;
+            Free;
+            writeln('Erro ao localizar aposta criada: ' + E.Message);
+          end;
+        end;
+      end
+      else
+        grdApostas.Enabled := False;
+    except
+      on E: Exception do
+        writeln('Erro: ' + E.Message);
+    end;
+    progStatus.Position := 0;
+    BarraStatus.Panels[0].Text := 'Pronto';
   end;
 end;
 
@@ -278,38 +327,46 @@ begin
   Screen.Cursor := crAppStart;
   with formPrincipal do
   begin
+    BarraStatus.Panels[0].Text := 'Salvando tabela...';
     //Salvar alterações
     if not (qrApostas.State in [dsEdit, dsInsert]) then
-      qrApostas.Edit
-    else
-    begin
-      try
-        writeln('Postando alterações...');
-        qrApostas.Post;
-        qrApostas.ApplyUpdates;
-        transactionBancoDados.CommitRetaining;
-      except
-        on E: EDatabaseError do
-        begin
-          MessageDlg('Erro',
-            'Erro de banco de dados. Se o problema persistir, favor informar no Github com a seguinte mensagem: '
-            + E.Message, mtError, [mbOK], 0);
-          qrApostas.Cancel;
-          writeln('Ocorreu um erro: ' + E.Message + '. Revertendo alterações...');
-          transactionBancoDados.RollbackRetaining;
-        end;
-        on E: Exception do
-        begin
-          MessageDlg('Erro',
-            'Erro ao salvar dados, tente novamente. Se o problema persistir, favor informar no Github com a seguinte mensagem: '
-            + E.Message, mtError, [mbOK], 0);
-          writeln('Ocorreu um erro: ' + E.Message + '. Revertendo alterações...');
-          transactionBancoDados.RollbackRetaining;
-        end;
+      qrApostas.Edit;
+    try
+      writeln('Postando alterações...');
+      qrApostas.Post;
+      progStatus.Position := 33;
+      qrApostas.ApplyUpdates;
+      progStatus.Position := 66;
+      transactionBancoDados.CommitRetaining;
+      progStatus.Position := 100;
+    except
+      on E: EDatabaseError do
+      begin
+        BarraStatus.Panels[0].Text := 'Erro!';
+        progStatus.Color := clRed;
+        MessageDlg('Erro',
+          'Erro de banco de dados. Se o problema persistir, favor informar no Github com a seguinte mensagem: '
+          + E.Message, mtError, [mbOK], 0);
+        qrApostas.Cancel;
+        writeln('Ocorreu um erro: ' + E.Message + '. Revertendo alterações...');
+        transactionBancoDados.RollbackRetaining;
+      end;
+      on E: Exception do
+      begin
+        BarraStatus.Panels[0].Text := 'Erro!';
+        progStatus.Color := clRed;
+        MessageDlg('Erro',
+          'Erro ao salvar dados, tente novamente. Se o problema persistir, favor informar no Github com a seguinte mensagem: '
+          + E.Message, mtError, [mbOK], 0);
+        writeln('Ocorreu um erro: ' + E.Message + '. Revertendo alterações...');
+        transactionBancoDados.RollbackRetaining;
       end;
     end;
+    progStatus.Position := 0;
+    progStatus.Color := clDefault;
+    BarraStatus.Panels[0].Text := 'Pronto';
+    Screen.Cursor := crDefault;
   end;
-  Screen.Cursor := crDefault;
 end;
 
 procedure TEventosApostas.CorrigeBancaFinalApostas;
@@ -477,7 +534,6 @@ begin
             ParamByName('Retorno').AsFloat := ValorEstorno;
             ExecSQL;
             transactionBancoDados.CommitRetaining;
-            btnCashout.Caption := 'Desfazer Cashout';
           end
           else
           begin
@@ -493,9 +549,7 @@ begin
         begin
           if Active then Close;
           SQL.Text :=
-            'UPDATE Apostas SET Cashout = 0, Retorno = (CASE WHEN Status = ''Green'' ' +
-            'THEN (Valor_Aposta * Odd) ELSE 0 END), Lucro = (CASE WHEN Status = ''Green'' '
-            + 'THEN (Retorno - Valor_Aposta) ELSE -Valor_Aposta END)WHERE Cod_Aposta = :CodAposta';
+            'UPDATE Apostas SET Cashout = 0, Retorno = Retorno WHERE Cod_Aposta = :CodAposta';
           ParamByName('CodAposta').AsInteger :=
             qrApostas.FieldByName('Cod_Aposta').AsInteger;
           ExecSQL;
@@ -505,7 +559,7 @@ begin
           btnCashout.Caption := 'Cashout';
         end;
       end;
-      CalculaDadosAposta;
+      AtualizaQRApostas;
       Screen.Cursor := crDefault;
       Free;
       qrApostas.EnableControls;
@@ -522,6 +576,7 @@ begin
           sLineBreak + E.Message, mtError, [mbOK], 0);
       end;
     end;
+  CalculaDadosAposta;
 end;
 
 procedure TEventosApostas.qrApostasCalcFields(DataSet: TDataSet);
@@ -659,6 +714,7 @@ begin
           sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
       end;
     end;
+  CalculaDadosAposta;
 end;
 
 procedure TEventosApostas.AoSairGrdApostas(Sender: TObject);
@@ -710,17 +766,19 @@ var
   OddFormat, BancaFormat, RetornoFormat, LucroFormat: string;
   CodAposta: integer;
 begin
+  writeln('Calculando dados das apostas');
   with formPrincipal do
   begin
     with TSQLQuery.Create(nil) do
     try
-      DataBase := conectBancoDados;
+      writeln('Procurando dados da aposta localizada');
       SQL.Text :=
         'SELECT Odd, Status FROM Mercados WHERE Mercados.Cod_Aposta = :CodAposta';
       ParamByName('CodAposta').AsInteger :=
-        qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      qrApostas.FieldByName('Cod_Aposta').AsInteger;;
       Open;
       First;
+      writeln('Calculando a odd da aposta selecionada');
       Odd := FieldByName('Odd').AsFloat;
       case FieldByName('Status').AsString of
         'Meio Green': Odd := (Odd - 1) / 2 + 1;
@@ -741,6 +799,7 @@ begin
         Odd := StrToFloat(OddFormat);
         Next;
       end;
+      writeln('Definindo a odd calculada da aposta selecionada');
       with qrApostas do
       begin
         Edit;
@@ -749,9 +808,11 @@ begin
         ApplyUpdates;
       end;
       Close;
+      writeln('Executando gatilho "Atualiza Apostas"');
       SQL.Text := 'UPDATE Mercados SET Status = Status';
       ExecSQL;
       transactionBancoDados.CommitRetaining;
+      writeln('Procurando valor inicial da banca do mês atual');
       SQL.Text := 'SELECT Valor_Inicial FROM Banca WHERE Mês = ' +
         '(SELECT Mês FROM "Selecionar Mês e Ano") AND Ano =       ' +
         '(SELECT Ano FROM "Selecionar Mês e Ano")                 ';
@@ -763,12 +824,14 @@ begin
       begin
         Cancel;
         transactionBancoDados.RollbackRetaining;
-        writeln('Erro: ' + E.Message + ' SQL: ' + SQL.Text);
+        writeln('Erro ao calcular dados da aposta: ' + E.Message +
+          ' SQL: ' + SQL.Text);
         Free;
+        Exit;
       end;
     end;
 
-
+    writeln('Atualizando dados de todas as apostas do mês atual');
     with qrApostas do
     try
       First;
@@ -821,6 +884,7 @@ begin
       end;
       ApplyUpdates;
       transactionBancoDados.CommitRetaining;
+      Refresh;
     except
       On E: Exception do
       begin
@@ -839,6 +903,8 @@ var
 begin
   with formPrincipal do
   begin
+    if not qrDadosAposta.Active then Exit;
+    writeln('Lozalizando o código da aposta no qrDadosAposta');
     CodAposta := qrDadosAposta.FieldByName('Cod_Aposta').AsInteger;
     with qrApostas do
     begin

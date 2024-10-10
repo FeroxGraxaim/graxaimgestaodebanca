@@ -7,11 +7,10 @@ interface
 uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, BufDataset, fpcsvexport, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, DBGrids, DBCtrls, DBExtCtrls, Menus, ActnList, CheckLst, Buttons,
+  ComCtrls, DBGrids, DBCtrls, Menus, ActnList, Buttons,
   ExtCtrls, JSONPropStorage, EditBtn, TASources, TAGraph, TARadialSeries, Types,
-  TASeries, TACustomSource, TADbSource, TACustomSeries, TAChartLiveView,
-  TAChartCombos, TAMultiSeries, DateUtils, Math, Grids, ValEdit,
-  TAChartAxisUtils, FileUtil, fpdataexporter, HTTPDefs;
+  TASeries, TADbSource, TACustomSeries, TAMultiSeries, DateUtils, Math, Grids,
+  ValEdit, TAChartAxisUtils, FileUtil, HTTPDefs, untSalvarDados;
 
 type
 
@@ -54,6 +53,7 @@ type
     chrtAcertTimePieSeries1: TPieSeries;
     chrtAcertTimePieSeries2: TPieSeries;
     chrtAcertTimePieSeries3: TPieSeries;
+    chrtAcertTodosAnos: TChart;
     chrtLucratTime: TChart;
     chrtLucratPais: TChart;
     chrtLucratComp: TChart;
@@ -61,10 +61,23 @@ type
     chrtLucratTimePieSeries2: TPieSeries;
     chrtLucratTimePieSeries3: TPieSeries;
     chrtLucroAno: TChart;
+    chrtLucroTodosAnos: TChart;
     chrtLucroLinha: TChart;
     chrtLucroMes: TChart;
     chrtLucroMetodo: TChart;
     conectBancoDados: TSQLite3Connection;
+    dsMP: TDataSource;
+    dsMT: TDataSource;
+    dsMC: TDataSource;
+    grbLinha: TGroupBox;
+    grbLinha1: TGroupBox;
+    grbMetComp: TGroupBox;
+    grbMetodo: TGroupBox;
+    grbMetPais: TGroupBox;
+    grbMetTime: TGroupBox;
+    grdLinhasMes: TDBGrid;
+    grdMC: TDBGrid;
+    grdMetodosMes: TDBGrid;
     ExportarDados: TCSVExporter;
     dsComp: TDataSource;
     dsCompMenosAcert: TDataSource;
@@ -85,7 +98,6 @@ type
     edtPesquisarComp: TEdit;
     gbListaLinha: TGroupBox;
     gbListaMetodo: TGroupBox;
-    grbLinha: TGroupBox;
     grbTimes: TGroupBox;
     grbPaises: TGroupBox;
     grbComp: TGroupBox;
@@ -116,10 +128,9 @@ type
     grbDetalhesAp: TGroupBox;
     grdAno: TDBGrid;
     grdApostas: TDBGrid;
-    grdLinhasMes: TDBGrid;
     grdMes: TDBGrid;
-    grdMetodosMes: TDBGrid;
-    grbMetodo: TGroupBox;
+    grdMP: TDBGrid;
+    grdMT: TDBGrid;
     grdTimes: TDBGrid;
     grdPaises: TDBGrid;
     grdComp: TDBGrid;
@@ -129,23 +140,32 @@ type
     grdTimesMaisAcert: TDBGrid;
     grdPaisesMenosAcert: TDBGrid;
     grdCompMenosLucr: TDBGrid;
+    grbMetodos: TGroupBox;
+    grbLinhas: TGroupBox;
     JSONPropStorage1: TJSONPropStorage;
     lbAcertosLin: TLabel;
-    lbMeioAcertMet: TLabel;
-    lbMeioErroMet: TLabel;
-    lbLucroMet: TLabel;
-    lbMeioAcertLin: TLabel;
-    lbErrosLin: TLabel;
-    lbMeioErroLin: TLabel;
-    lbNuloLin: TLabel;
-    lbLucroLin: TLabel;
-    lbNuloMet: TLabel;
-    lbErrosMet: TLabel;
+    lbAcertosLin1: TLabel;
     lbAcertosMet: TLabel;
-    lbMercadosMet: TLabel;
     lbDataFim: TLabel;
     lbDataInicio: TLabel;
+    lbErrosLin: TLabel;
+    lbErrosLin1: TLabel;
+    lbErrosMet: TLabel;
+    lbLucroLin: TLabel;
+    lbLucroLin1: TLabel;
+    lbLucroMet: TLabel;
+    lbMeioAcertLin: TLabel;
+    lbMeioAcertLin1: TLabel;
+    lbMeioAcertMet: TLabel;
+    lbMeioErroLin: TLabel;
+    lbMeioErroLin1: TLabel;
+    lbMeioErroMet: TLabel;
     lbMercadosLin: TLabel;
+    lbMercadosLin1: TLabel;
+    lbMercadosMet: TLabel;
+    lbNuloLin: TLabel;
+    lbNuloLin1: TLabel;
+    lbNuloMet: TLabel;
     lbSelecioneAposta: TLabel;
     lbAno: TLabel;
     lbBancaAtual: TLabel;
@@ -155,6 +175,7 @@ type
     lbPerfil: TLabel;
     lbUnidade: TLabel;
     lnGraficoLucroAno: TLineSeries;
+    lnGraficoLucroAno1: TLineSeries;
     lnGraficoLucroMes: TLineSeries;
     lsbLinhas: TListBox;
     lsbMetodos: TListBox;
@@ -177,8 +198,10 @@ type
     pnGraficosMetodos: TPanel;
     pnTabelas: TPanel;
     popupLinhas: TPopupMenu;
+    progStatus: TProgressBar;
     psGraficoGreensReds: TPieSeries;
     psGraficoGreensReds1: TPieSeries;
+    psGraficoGreensReds2: TPieSeries;
     qrAno: TSQLQuery;
     qrAnoAno: TLargeintField;
     qrAnoLucroAnualReais: TFloatField;
@@ -269,7 +292,11 @@ type
     qrComp: TSQLQuery;
     qrCompMaisAcert: TSQLQuery;
     qrCompMenosAcert: TSQLQuery;
-    StatusBar1: TStatusBar;
+    qrMP: TSQLQuery;
+    qrMT: TSQLQuery;
+    qrMC: TSQLQuery;
+    ScrollBox2: TScrollBox;
+    BarraStatus: TStatusBar;
     tsContrTimes: TTabSheet;
     tsContrPaises: TTabSheet;
     tsContrComp: TTabSheet;
@@ -414,66 +441,79 @@ var
   larguraPizza, larguraLinhas, larguraGrafico, alturaGrafico: integer;
 begin
 
-  //Gráficos do painel principal
+  {*******************************PAINEL PRINCIPAL*******************************}
 
+  //Gráficos
   larguraTotal := pnGraficos.ClientWidth;
   alturaTotal := pnGraficos.ClientHeight;
-
   metadeLargura := larguraTotal div 2;
-  alturaObjeto := trunc(alturaTotal * AspectRatio);
+  alturaObjeto := alturaTotal div 3;
   larguraPizza := alturaObjeto;
-  larguraLinhas := metadeLargura + (metadeLargura - alturaObjeto);
+  larguraLinhas := larguraTotal - larguraPizza;
   chrtLucroMes.SetBounds(0, 0, larguraLinhas, alturaObjeto);
   chrtAcertMes.SetBounds(larguraLinhas, 0, larguraPizza, alturaObjeto);
   chrtLucroAno.SetBounds(0, larguraLinhas, larguraLinhas, alturaObjeto);
-  chrtAcertAno.SetBounds(larguraLinhas, alturaObjeto, larguraPizza, alturaObjeto);
+  chrtAcertAno.SetBounds(larguraLinhas, alturaObjeto, larguraPizza,
+    alturaObjeto);
+  chrtLucroTodosAnos.SetBounds(0, alturaObjeto * 2, larguraLinhas, alturaObjeto);
+  chrtAcertTodosAnos.SetBounds(larguraLinhas, alturaObjeto * 2, larguraPizza,
+    alturaObjeto);
 
-  //Tabelas do painel principal
-
+  //Tabelas
   larguraTotal := pnTabelas.ClientWidth;
   alturaTotal := pnTabelas.ClientHeight;
-
   larguraObjeto := larguraTotal div 2;
-
   grdMes.SetBounds(0, 0, larguraObjeto, alturaTotal);
   grdAno.SetBounds(larguraObjeto, 0, larguraObjeto, alturaTotal);
 
-  //Gráficos de métodos/linhas
+  {******************************************************************************}
 
-  larguraTotal := pnGraficosMetodos.ClientWidth;
-  alturaTotal := pnGraficosMetodos.ClientHeight;
+  {******************************CONTROLE DE MÉTODOS*****************************}
 
-  if larguraTotal < 2 then
-    larguraGrafico := larguraTotal
-  else
-    larguraGrafico := larguraTotal div 2;
+  //Largura e altura total da aba
+  larguraTotal := tsGraficosMesMetodos.ClientWidth;
+  alturaTotal := tsGraficosMesMetodos.ClientHeight;
+  larguraObjeto := larguraTotal div 3;
+  alturaObjeto := alturaTotal div 2;
 
-  alturaGrafico := trunc(alturaTotal * AspectRatio);
 
+  //Proporções das listas de método e linha da aba de gráficos
+  gbListaMetodo.SetBounds(0, 0, larguraObjeto div 2, alturaObjeto);
+  gbListaLinha.SetBounds(0, alturaObjeto, larguraObjeto div 2, alturaObjeto);
+
+  //proporção dos gráficos
+  larguraGrafico := pnGraficosMetodos.ClientWidth div 2;
+  alturaGrafico := pnGraficosMetodos.ClientHeight div 2;
   chrtLucroMetodo.SetBounds(0, 0, larguraGrafico, alturaGrafico);
   chrtAcertMetodo.SetBounds(larguraGrafico, 0, larguraGrafico, alturaGrafico);
   chrtLucroLinha.SetBounds(0, alturaGrafico, larguraGrafico, alturaGrafico);
-  chrtAcertLinha.SetBounds(larguraGrafico, alturaGrafico, larguraGrafico, alturaGrafico);
+  chrtAcertLinha.SetBounds(larguraGrafico, alturaGrafico, larguraGrafico,
+    alturaGrafico);
 
-  alturaTotal := tsGraficosMesMetodos.ClientHeight;
-  larguraObjeto := gbListaMetodo.ClientWidth;
-  alturaObjeto := trunc(alturaTotal * AspectRatio);
+  //Proporção dos grids de método por PTC
+  larguraTotal := tsDadosMesMetodos.ClientWidth;
+  alturaTotal := tsDadosMesMetodos.ClientHeight;
 
-  gbListaMetodo.SetBounds(0, 0, gbListaMetodo.ClientWidth, alturaObjeto);
-  gbListaLinha.SetBounds(0, alturaObjeto, larguraObjeto, alturaObjeto);
+  larguraObjeto := larguraTotal div 2;
+  alturaObjeto := alturaTotal div 3;
+
+  grbMetPais.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
+  grbMetTime.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto, alturaObjeto);
+  grbMetComp.SetBounds(larguraObjeto, alturaObjeto * 2, larguraObjeto, alturaObjeto);
 
   //Grids dos métodos/linhas
 
   larguraTotal := tsDadosMesMetodos.ClientWidth;
   alturaTotal := tsDadosMesMetodos.ClientHeight;
 
-  larguraObjeto := larguraTotal div 2;
-  alturaObjeto := alturaTotal;
+  alturaObjeto := alturaTotal div 2;
 
-  grdMetodosMes.SetBounds(0, 0, larguraObjeto, alturaObjeto);
-  grdLinhasMes.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
+  grbMetodos.SetBounds(0, 0, larguraObjeto, alturaObjeto);
+  grbLinhas.SetBounds(0, alturaObjeto, larguraObjeto, alturaObjeto);
 
-  //Controle de Times
+  {******************************************************************************}
+
+  {*******************************CONTROLE DE TIMES******************************}
   larguraTotal := tsContrTimes.ClientWidth;
   alturaTotal := tsContrTimes.ClientHeight;
 
@@ -482,12 +522,16 @@ begin
 
   grbTimes.SetBounds(0, 0, larguraObjeto, alturaTotal);
   chrtAcertTime.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
-  chrtLucratTime.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto, alturaObjeto);
-  grbTimesMaisLucr.SetBounds((larguraObjeto * 2), 0, larguraObjeto, alturaObjeto);
-  grbTimesMenosLucr.SetBounds((larguraObjeto * 2), alturaObjeto,
-    larguraObjeto, alturaObjeto);
+  chrtLucratTime.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto,
+    alturaObjeto);
+  grbTimesMaisLucr.SetBounds((larguraObjeto * 2), 0, larguraObjeto,
+    alturaObjeto);
+  grbTimesMenosLucr.SetBounds((larguraObjeto * 2), alturaObjeto, larguraObjeto,
+    alturaObjeto);
 
-  //Controle de Países
+  {******************************************************************************}
+
+  {*******************************CONTROLE DE PAÍSES*****************************}
   larguraTotal := tsContrPaises.ClientWidth;
   alturaTotal := tsContrPaises.ClientHeight;
 
@@ -496,12 +540,14 @@ begin
 
   grbPaises.SetBounds(0, 0, larguraObjeto, alturaTotal);
   chrtAcertPais.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
-  chrtLucratPais.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto, alturaObjeto);
-  grbPaisesMaisAcert.SetBounds((larguraObjeto * 2), 0, larguraObjeto, alturaObjeto);
-  grbPaisesMenosAcert.SetBounds((larguraObjeto * 2), alturaObjeto,
-    larguraObjeto, alturaObjeto);
+  chrtLucratPais.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto,
+    alturaObjeto);
+  grbPaisesMaisAcert.SetBounds(larguraObjeto * 2, 0, larguraObjeto,
+    alturaObjeto);
+  grbPaisesMenosAcert.SetBounds(larguraObjeto * 2, alturaObjeto, larguraObjeto,
+    alturaObjeto);
 
-  //Controle de Competições
+  {****************************CONTROLE DE COMPETIçÕES***************************}
   larguraTotal := tsContrComp.ClientWidth;
   alturaTotal := tsContrComp.ClientHeight;
 
@@ -510,10 +556,13 @@ begin
 
   grbComp.SetBounds(0, 0, larguraObjeto, alturaTotal);
   chrtAcertComp.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
-  chrtLucratComp.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto, alturaObjeto);
+  chrtLucratComp.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto,
+    alturaObjeto);
   grbCompMaisLucr.SetBounds((larguraObjeto * 2), 0, larguraObjeto, alturaObjeto);
-  grbCompMenosLucr.SetBounds((larguraObjeto * 2), alturaObjeto,
-    larguraObjeto, alturaObjeto);
+  grbCompMenosLucr.SetBounds((larguraObjeto * 2), alturaObjeto, larguraObjeto,
+    alturaObjeto);
+
+  {******************************************************************************}
 
 end;
 
@@ -668,241 +717,69 @@ end;
 
 procedure TformPrincipal.SalvarDadosBD(Sender: TObject);
 var
-  SaveDialog: TSaveDialog;
-  i: integer;
-  qrExportApostas,
-  qrExportMetodos,
-  qrExportLinhas,
-  qrExportPaises,
-  qrExportTimes,
-  qrExportCompeticoes: TSQLQuery;
+  formSalvarDados: TformSalvarDados;
 begin
-  Screen.Cursor := crAppStart;
- SaveDialog := TSaveDialog.Create(nil);
-  Arquivo := nil;
-    SaveDialog.Filter := 'Arquivo SQL (*.sql)|*.sql';
-    SaveDialog.DefaultExt := 'sql';
-    if SaveDialog.Execute then
-    try
-      qrExportPaises := TSQLQuery.Create(nil);
-      with qrExportPaises do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Países';
-        Open;
-        bufExportar.CopyFromDataSet(qrExportPaises);
-        Free;
-      except
-        On E: Exception do
-        begin
-          Free;
-          raise Exception.Create('Erro ao exportar países: ' + E.Message);
-        end;
-      end;
-
-      qrExportTimes := TSQLQuery.Create(nil);
-      with qrExportTimes do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Times';
-        Open;
-        bufExportar.Append;
-        bufExportar.CopyFromDataSet(qrExportTimes);
-        Free;
-      except
-        On E: Exception do
-        begin
-          Free;
-          raise Exception.Create('Erro ao coletar times: ' + E.Message);
-        end;
-      end;
-
-
-      qrExportCompeticoes := TSQLQuery.Create(nil);
-      with qrExportCompeticoes do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Competicoes';
-        Open;
-        bufExportar.Append;
-        bufExportar.CopyFromDataSet(qrExportCompeticoes);
-        Close;
-      except
-        on E: Exception do
-        begin
-          Free;
-          raise Exception.Create('Erro ao coletar competições: ' + E.Message);
-        end;
-      end;
-
-
-      qrExportMetodos := TSQLQuery.Create(nil);
-      with qrExportMetodos do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Métodos';
-        Open;
-        bufExportar.Append;
-        bufExportar.CopyFromDataSet(qrExportMetodos);
-        Close;
-      except
-        on E: Exception do
-        begin
-          Free;
-          raise Exception.Create('Erro ao coletar Métodos: ' + E.Message);
-        end;
-      end;
-
-      qrExportLinhas := TSQLQuery.Create(nil);
-      with qrExportLinhas do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Linhas';
-        Open;
-        bufExportar.Append;
-        bufExportar.CopyFromDataSet(qrExportLinhas);
-        Free;
-      except
-        on E: Exception do
-        begin
-          Free;
-          raise Exception.Create('Erro ao coletar linhas: ' + E.Message);
-        end;
-      end;
-
-      qrExportApostas := TSQLQuery.Create(nil);
-      with qrExportApostas do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Apostas';
-        Open;
-        bufExportar.Append;
-        bufExportar.CopyFromDataSet(qrExportApostas);
-        Free;
-      except
-        on E: Exception do
-        begin
-          Free;
-          raise Exception.Create('Erro ao coletar apostas: ' + E.Message);
-        end;
-      end;
-
-      bufExportar.Open;
-      ExportarDados.Execute;
-      Screen.Cursor := crDefault;
-      Free;
-  except
-    On E: Exception do
-    begin
-      Screen.Cursor := crDefault;
-      Free;
-      MessageDlg('Erro ao exportar dados','Ocorreu um erro, tente novamente. ' +
-      'Se o problema persistir favor informar no GitHub com a seguinte mensagem:'
-      + sLineBreak + sLineBreak + E.Message,mtError,[mbOk],0);
-    end;
-  end;
+  formSalvarDados := TformSalvarDados.Create(nil);
+  formSalvarDados.ShowModal;
+  formSalvarDados.Free;
 end;
 
 
 procedure TformPrincipal.ImportarDadosBD(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
-  Arquivo: TFileStream;
-  Texto: TStringList;
-  Linha: string;
+  Script: TStringList;
+  i: integer;
 begin
-  OpenDialog := TOpenDialog.Create(nil);
-  Texto := TStringList.Create;
+  Script := TStringList.Create;
   try
-    with TSQLQuery.Create(nil) do
-    begin
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'DELETE FROM Jogo';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Mercados';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Apostas';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Times';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Competicoes';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Países';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Linhas';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Métodos';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        SQL.Text := 'DELETE FROM Banca';
-        writeln('SQL: ', SQL.Text);
-        ExecSQL;
-        transactionBancoDados.CommitRetaining;
-        Free;
-      except
-        on E: Exception do
+    with TOpenDialog.Create(nil) do
+    try
+      Filter :=
+        'Arquivo de Texto (*.txt)|*.txt|Arquivo CSV (*.csv)|*.csv|' +
+        'Arquivo SQL (*.sql)|*.sql|Todos os Arquivos (*.*)|*.*';
+      DefaultExt := 'txt';
+      if Execute then
+      begin
+        Script.LoadFromFile(FileName);
+
+        with TSQLQuery.Create(nil) do
+        try
           try
-            writeln('Erro: ' + E.Message + 'SQL: ' + SQL.Text);
-            Cancel;
-            raise Exception.Create('Não foi possível excluir dados obsoletos.');
-          finally
+            DataBase := conectBancoDados;
+
+            for i := 0 to Script.Count - 1 do
+            begin
+              SQL.Text := Script[i];
+              ExecSQL;
+            end;
+            transactionBancoDados.CommitRetaining;
+            ShowMessage('Dados importados com sucesso!');
             Free;
+          except
+            On E: Exception do
+            begin
+              Cancel;
+              transactionBancoDados.RollbackRetaining;
+              raise Exception.Create(E.Message + sLineBreak + sLineBreak +
+                'Linha SQL: ' + sLineBreak + SQL.Text);
+            end;
           end;
-      end;
-    end;
-    OpenDialog.Filter := 'Arquivo SQL (*.sql)|*.sql';
-    OpenDialog.DefaultExt := 'sql';
-    if OpenDialog.Execute then
-    begin
-      Arquivo := TFileStream.Create(OpenDialog.FileName, fmOpenRead);
-      Texto.LoadFromStream(Arquivo, TEncoding.UTF8);
-      with TSQLQuery.Create(nil) do
-      try
-        DataBase := conectBancoDados;
-        for Linha in Texto do
-        begin
-          if Trim(Linha) <> '' then
-          begin
-            SQL.Text := Linha;
-            ExecSQL;
-            writeln('Inserida linha ', Linha);
-          end;
+        finally
+          Free;
         end;
-        transactionBancoDados.CommitRetaining;
-        ShowMessage('Dados importados com sucesso!');
-        Free;
-      except
-        on E: Exception do
-          try
-            raise Exception.Create('Erro ao inserir novos dados: ' +
-              E.Message + sLineBreak + sLineBreak + 'Comando SQL: ' +
-              sLineBreak + SQL.Text);
-          finally
-            Free;
-          end;
       end;
+    finally
+      Free;
     end;
+    Script.Free;
   except
-    on E: Exception do
+    On E: Exception do
     begin
-      transactionBancoDados.RollbackRetaining;
-      MessageDlg('Erro',
-        'Erro ao importar os dados. Tente novamente. Se o problema persistir ' +
-        'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
-        sLineBreak + E.Message, mtError, [mbOK], 0);
+      MessageDlg('Erro', 'Ocorreu um erro ao importar os dados: ' + E.Message,
+        mtError, [mbOK], 0);
     end;
   end;
-  OpenDialog.Free;
-  Texto.Free;
-  Arquivo.Free;
+
 end;
 
 procedure TformPrincipal.ReiniciarTodosOsQueries;

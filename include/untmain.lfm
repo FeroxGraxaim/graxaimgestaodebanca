@@ -1,11 +1,11 @@
 object formPrincipal: TformPrincipal
   Left = 198
-  Height = 706
+  Height = 813
   Top = 565
-  Width = 1082
+  Width = 1199
   Caption = 'Graxaim Gestão de Banca [BETA]'
-  ClientHeight = 706
-  ClientWidth = 1082
+  ClientHeight = 813
+  ClientWidth = 1199
   Menu = MenuPrincipal
   OnCreate = FormCreate
   OnResize = FormResize
@@ -15,20 +15,20 @@ object formPrincipal: TformPrincipal
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Side = asrBottom
+    AnchorSideBottom.Control = BarraStatus
     Left = 0
-    Height = 694
+    Height = 792
     Top = 0
-    Width = 1082
-    ActivePage = tsPainel
+    Width = 1199
+    ActivePage = tsContrTimes
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 0
     OnChange = pcPrincipalChange
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
-      ClientHeight = 667
-      ClientWidth = 1078
+      ClientHeight = 765
+      ClientWidth = 1195
       object txtBancaAtual: TDBText
         Left = 31
         Height = 67
@@ -83,34 +83,34 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 670
+        Height = 768
         Top = 0
-        Width = 791
+        Width = 908
         ActivePage = tsGraficos
         Anchors = [akTop, akLeft, akRight, akBottom]
         TabIndex = 0
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 643
-          ClientWidth = 787
+          ClientHeight = 741
+          ClientWidth = 904
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 608
+            Height = 706
             Top = 31
-            Width = 788
+            Width = 905
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 608
-            ClientWidth = 788
+            ClientHeight = 706
+            ClientWidth = 905
             TabOrder = 0
             object chrtLucroMes: TChart
               AnchorSideRight.Control = chrtAcertMes
-              Left = 1
-              Height = 289
+              Left = 108
+              Height = 201
               Top = 1
               Width = 432
               AxisList = <              
@@ -144,7 +144,7 @@ object formPrincipal: TformPrincipal
                   Title.LabelBrush.Style = bsClear
                 end>
               Title.Text.Strings = (
-                'Lucro do Mês'
+                'Lucro do Mês Atual'
               )
               Title.Visible = True
               object lnGraficoLucroMes: TLineSeries
@@ -155,8 +155,8 @@ object formPrincipal: TformPrincipal
             object chrtAcertMes: TChart
               AnchorSideLeft.Side = asrBottom
               AnchorSideRight.Side = asrBottom
-              Left = 437
-              Height = 270
+              Left = 544
+              Height = 192
               Top = 8
               Width = 432
               AxisList = <              
@@ -192,7 +192,7 @@ object formPrincipal: TformPrincipal
               Legend.UseSidebar = False
               Legend.Visible = True
               Title.Text.Strings = (
-                'Assertividade do Mês'
+                'Assertividade do Mês Atual'
               )
               Title.Visible = True
               object psGraficoGreensReds: TPieSeries
@@ -206,9 +206,9 @@ object formPrincipal: TformPrincipal
               AnchorSideTop.Control = chrtLucroMes
               AnchorSideTop.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 7
-              Height = 289
-              Top = 290
+              Left = 114
+              Height = 206
+              Top = 202
               Width = 432
               AllowPanning = False
               AllowZoom = False
@@ -227,7 +227,9 @@ object formPrincipal: TformPrincipal
                   Intervals.MinLength = 0
                   Intervals.NiceSteps = '0.0 | 0.5 | 1.0'
                   Alignment = calBottom
+                  Marks.Format = '%1g'
                   Marks.LabelBrush.Style = bsClear
+                  Marks.Style = smsCustom
                   Minors = <>
                   Range.Max = 12
                   Range.Min = 1
@@ -236,7 +238,7 @@ object formPrincipal: TformPrincipal
                   Title.LabelBrush.Style = bsClear
                 end>
               Title.Text.Strings = (
-                'Lucro do Ano'
+                'Lucro do Ano Atual'
               )
               Title.Visible = True
               object lnGraficoLucroAno: TLineSeries
@@ -246,15 +248,16 @@ object formPrincipal: TformPrincipal
             object chrtAcertAno: TChart
               AnchorSideLeft.Side = asrBottom
               AnchorSideRight.Side = asrBottom
-              Left = 437
-              Height = 270
-              Top = 290
+              Left = 544
+              Height = 166
+              Top = 224
               Width = 432
               AxisList = <              
                 item
                   Grid.EndCap = pecFlat
                   Grid.Mode = pmMergePenNot
-                  Intervals.Count = 10
+                  Intervals.Count = 12
+                  Intervals.MaxLength = 120
                   Intervals.NiceSteps = '1|2|3'
                   Visible = False
                   Alignment = calBottom
@@ -283,10 +286,103 @@ object formPrincipal: TformPrincipal
               Legend.UseSidebar = False
               Legend.Visible = True
               Title.Text.Strings = (
-                'Assertividade do Ano'
+                'Assertividade do Ano Atual'
               )
               Title.Visible = True
               object psGraficoGreensReds1: TPieSeries
+                MarkDistancePercent = True
+                MarkPositions = pmpInside
+                Marks.Format = '%2:s %1:.2f%%'
+                Marks.Style = smsLabelPercent
+              end
+            end
+            object chrtLucroTodosAnos: TChart
+              AnchorSideTop.Side = asrBottom
+              AnchorSideBottom.Side = asrBottom
+              Left = 1
+              Height = 206
+              Top = 416
+              Width = 552
+              AllowPanning = False
+              AllowZoom = False
+              AxisList = <              
+                item
+                  Marks.Format = '%0:.2m'
+                  Marks.LabelBrush.Style = bsClear
+                  Marks.Style = smsCustom
+                  Minors = <>
+                  Title.LabelFont.Orientation = 900
+                  Title.LabelBrush.Style = bsClear
+                end              
+                item
+                  Intervals.Count = 120
+                  Intervals.MaxLength = 100
+                  Intervals.MinLength = 20
+                  Intervals.NiceSteps = '1.0 | 2.0| 3.0'
+                  Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+                  Alignment = calBottom
+                  Marks.Format = '%1g'
+                  Marks.LabelBrush.Style = bsClear
+                  Marks.Style = smsCustom
+                  Minors = <>
+                  Range.Max = 20
+                  Range.UseMax = True
+                  Range.UseMin = True
+                  Title.LabelBrush.Style = bsClear
+                end>
+              Title.Text.Strings = (
+                'Lucro de Todos os Anos'
+              )
+              Title.Visible = True
+              object lnGraficoLucroAno1: TLineSeries
+                LinePen.Width = 3
+              end
+            end
+            object chrtAcertTodosAnos: TChart
+              AnchorSideLeft.Side = asrBottom
+              AnchorSideRight.Side = asrBottom
+              Left = 544
+              Height = 166
+              Top = 416
+              Width = 328
+              AxisList = <              
+                item
+                  Grid.EndCap = pecFlat
+                  Grid.Mode = pmMergePenNot
+                  Intervals.Count = 30
+                  Intervals.MinLength = 0
+                  Intervals.NiceSteps = '1|2|3'
+                  Visible = False
+                  Alignment = calBottom
+                  MarginsForMarks = False
+                  Marks.Format = '%0:.2g'
+                  Marks.LabelBrush.Style = bsClear
+                  Marks.Range.Max = 31
+                  Marks.Range.Min = 5
+                  Marks.Style = smsCustom
+                  Minors = <>
+                  Range.Max = 31
+                  Range.Min = 1
+                  Range.UseMax = True
+                  Range.UseMin = True
+                  Title.LabelBrush.Style = bsClear
+                end              
+                item
+                  Visible = False
+                  Marks.Format = '%0:.2m'
+                  Marks.LabelBrush.Style = bsClear
+                  Marks.Style = smsCustom
+                  Minors = <>
+                  Title.LabelBrush.Style = bsClear
+                end>
+              Legend.ColumnCount = 2
+              Legend.UseSidebar = False
+              Legend.Visible = True
+              Title.Text.Strings = (
+                'Assertividade de Todos os Anos'
+              )
+              Title.Visible = True
+              object psGraficoGreensReds2: TPieSeries
                 MarkDistancePercent = True
                 MarkPositions = pmpInside
                 Marks.Format = '%2:s %1:.2f%%'
@@ -313,8 +409,8 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 643
-          ClientWidth = 787
+          ClientHeight = 741
+          ClientWidth = 904
           object pnTabelas: TPanel
             AnchorSideLeft.Control = tsResumoLista
             AnchorSideRight.Control = tsResumoLista
@@ -322,17 +418,17 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsResumoLista
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 612
+            Height = 710
             Top = 31
-            Width = 787
+            Width = 904
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 612
-            ClientWidth = 787
+            ClientHeight = 710
+            ClientWidth = 904
             TabOrder = 0
             object grdMes: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 610
+              Height = 708
               Top = 0
               Width = 356
               Anchors = [akTop, akLeft, akBottom]
@@ -373,7 +469,7 @@ object formPrincipal: TformPrincipal
             object grdAno: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 356
-              Height = 610
+              Height = 708
               Top = 0
               Width = 350
               Anchors = [akTop, akLeft, akBottom]
@@ -508,21 +604,21 @@ object formPrincipal: TformPrincipal
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
-      ClientHeight = 667
-      ClientWidth = 1078
+      ClientHeight = 765
+      ClientWidth = 1195
       OnContextPopup = tsApostasContextPopup
       object grbApostas: TGroupBox
         AnchorSideRight.Control = tsApostas
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 407
+        Height = 505
         Top = 12
-        Width = 1072
+        Width = 1189
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 382
-        ClientWidth = 1068
+        ClientHeight = 486
+        ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -535,71 +631,70 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 382
+          Height = 486
           Top = 0
-          Width = 1068
+          Width = 1185
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
             item
               Title.Caption = 'Selec.'
-              Width = 48
+              Width = 40
               FieldName = 'Selecao'
             end          
             item
               Title.Caption = 'Data'
-              Width = 43
+              Width = 60
               FieldName = 'Data'
             end          
             item
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Jogo'
-              Width = 43
+              Width = 580
               FieldName = 'Jogo'
             end          
             item
               Title.Caption = 'Odd'
-              Width = 41
+              Width = 40
               FieldName = 'Odd'
             end          
             item
               Title.Caption = 'Valor'
-              Width = 46
+              Width = 50
               FieldName = 'Valor_Aposta'
             end          
             item
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Situação'
-              Width = 66
+              Width = 65
               FieldName = 'Status'
             end          
             item
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Retorno'
-              Width = 64
+              Width = 65
               FieldName = 'RSRetorno'
             end          
             item
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Lucro'
-              Width = 49
+              Width = 55
               FieldName = 'RSLucro'
             end          
             item
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Banca Final'
-              Width = 82
+              Width = 80
               FieldName = 'RSBancaFinal'
             end>
           DataSource = dsApostas
           Font.Height = -13
           Font.Name = 'Sans'
-          Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns]
           ParentFont = False
           Scrollbars = ssAutoBoth
           TabOrder = 0
@@ -612,12 +707,12 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 419
-        Width = 1072
+        Top = 517
+        Width = 1189
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Detalhes da Aposta'
-        ClientHeight = 141
-        ClientWidth = 1068
+        ClientHeight = 147
+        ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -629,9 +724,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 141
+          Height = 147
           Top = 0
-          Width = 932
+          Width = 1049
           Alignment = taCenter
           Anchors = [akTop, akLeft, akRight, akBottom]
           AutoSize = False
@@ -642,9 +737,9 @@ object formPrincipal: TformPrincipal
         object btnTudoGreen: TButton
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 944
+          Left = 1061
           Height = 25
-          Top = 80
+          Top = 86
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Green'
@@ -657,9 +752,9 @@ object formPrincipal: TformPrincipal
         object btnTudoRed: TButton
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 944
+          Left = 1061
           Height = 25
-          Top = 112
+          Top = 118
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Red'
@@ -672,9 +767,9 @@ object formPrincipal: TformPrincipal
         object btnCashout: TButton
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 944
+          Left = 1061
           Height = 40
-          Top = 0
+          Top = 6
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Cashout'
@@ -692,9 +787,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = lbSelecioneAposta
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 141
+          Height = 147
           Top = 0
-          Width = 932
+          Width = 1049
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -748,7 +843,7 @@ object formPrincipal: TformPrincipal
         end
         object btnEditAposta: TButton
           AnchorSideRight.Side = asrBottom
-          Left = 944
+          Left = 1061
           Height = 25
           Top = 48
           Width = 116
@@ -764,9 +859,9 @@ object formPrincipal: TformPrincipal
       object deFiltroDataInicial: TDateEdit
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 848
+        Left = 965
         Height = 27
-        Top = 593
+        Top = 691
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -780,9 +875,9 @@ object formPrincipal: TformPrincipal
       object deFiltroDataFinal: TDateEdit
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 848
+        Left = 965
         Height = 27
-        Top = 633
+        Top = 731
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -796,9 +891,9 @@ object formPrincipal: TformPrincipal
       object btnLimparFiltroAp: TButton
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 952
+        Left = 1069
         Height = 27
-        Top = 633
+        Top = 731
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Limpar Filtros'
@@ -808,7 +903,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 184
         Height = 50
-        Top = 609
+        Top = 707
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -819,7 +914,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 50
-        Top = 609
+        Top = 707
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -828,9 +923,9 @@ object formPrincipal: TformPrincipal
       object btnFiltrarAp: TButton
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 952
+        Left = 1069
         Height = 27
-        Top = 593
+        Top = 691
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Filtrar Apostas'
@@ -839,9 +934,9 @@ object formPrincipal: TformPrincipal
       object lbDataInicio: TLabel
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 777
+        Left = 894
         Height = 17
-        Top = 593
+        Top = 691
         Width = 63
         Anchors = [akRight, akBottom]
         Caption = 'Data Inicial'
@@ -849,9 +944,9 @@ object formPrincipal: TformPrincipal
       object lbDataFim: TLabel
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 784
+        Left = 901
         Height = 17
-        Top = 633
+        Top = 731
         Width = 56
         Anchors = [akRight, akBottom]
         Caption = 'Data Final'
@@ -859,33 +954,35 @@ object formPrincipal: TformPrincipal
     end
     object tsControleMetodos: TTabSheet
       Caption = 'Controle de Métodos'
-      ClientHeight = 667
-      ClientWidth = 1078
+      ClientHeight = 765
+      ClientWidth = 1195
       object pcMesMetodos: TPageControl
+        AnchorSideLeft.Control = tsControleMetodos
+        AnchorSideTop.Control = tsControleMetodos
+        AnchorSideRight.Control = tsControleMetodos
         AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = tsControleMetodos
         AnchorSideBottom.Side = asrBottom
-        Left = -2
-        Height = 673
+        Left = 0
+        Height = 765
         Top = 0
-        Width = 1074
+        Width = 1195
         ActivePage = tsGraficosMesMetodos
         Anchors = [akTop, akLeft, akRight, akBottom]
         TabIndex = 0
         TabOrder = 0
         object tsGraficosMesMetodos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 646
-          ClientWidth = 1070
+          ClientHeight = 763
+          ClientWidth = 1191
           object gbListaLinha: TGroupBox
-            AnchorSideRight.Control = pnGraficosMetodos
             Left = 0
             Height = 296
             Top = 312
-            Width = 215
-            Anchors = [akTop, akLeft, akRight]
+            Width = 345
             Caption = 'Linhas'
-            ClientHeight = 271
-            ClientWidth = 211
+            ClientHeight = 277
+            ClientWidth = 341
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -896,9 +993,9 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 225
+              Height = 240
               Top = 0
-              Width = 211
+              Width = 341
               Anchors = [akTop, akLeft, akRight, akBottom]
               Font.Height = -13
               Font.Name = 'Sans'
@@ -908,45 +1005,44 @@ object formPrincipal: TformPrincipal
               TopIndex = -1
             end
             object btnExcluirLinha: TButton
+              AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 112
-              Height = 33
-              Top = 234
-              Width = 99
-              Anchors = [akLeft, akBottom]
+              Left = 261
+              Height = 24
+              Top = 249
+              Width = 67
+              Anchors = [akRight, akBottom]
               Caption = 'Remover'
               Enabled = False
-              Font.Height = -13
+              Font.Height = -12
               Font.Name = 'Sans'
               ParentFont = False
               TabOrder = 1
             end
             object btnNovaLinha: TButton
               AnchorSideBottom.Side = asrBottom
-              Left = 0
-              Height = 33
-              Top = 234
-              Width = 99
+              Left = 8
+              Height = 24
+              Top = 249
+              Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Nova Linha'
               Enabled = False
-              Font.Height = -13
+              Font.Height = -12
               Font.Name = 'Sans'
               ParentFont = False
               TabOrder = 2
             end
           end
           object gbListaMetodo: TGroupBox
-            AnchorSideRight.Control = pnGraficosMetodos
             AnchorSideBottom.Control = gbListaLinha
             Left = 0
             Height = 299
             Top = 8
-            Width = 215
-            Anchors = [akTop, akLeft, akRight]
+            Width = 345
             Caption = 'Métodos'
-            ClientHeight = 274
-            ClientWidth = 211
+            ClientHeight = 280
+            ClientWidth = 341
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -958,9 +1054,9 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 226
+              Height = 240
               Top = 0
-              Width = 211
+              Width = 341
               Anchors = [akTop, akLeft, akRight, akBottom]
               Font.Height = -13
               Font.Name = 'Sans'
@@ -971,45 +1067,329 @@ object formPrincipal: TformPrincipal
             end
             object btnNovoMetodo: TButton
               AnchorSideBottom.Side = asrBottom
-              Left = 0
-              Height = 33
-              Top = 234
-              Width = 99
+              Left = 8
+              Height = 24
+              Top = 249
+              Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Novo Método'
-              Font.Height = -13
+              Font.Height = -12
               Font.Name = 'Sans'
               ParentFont = False
               TabOrder = 1
             end
             object btnExcluirMetodo: TButton
+              AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 112
-              Height = 33
-              Top = 234
-              Width = 99
-              Anchors = [akLeft, akBottom]
+              Left = 261
+              Height = 24
+              Top = 249
+              Width = 67
+              Anchors = [akRight, akBottom]
               Caption = 'Remover'
               Enabled = False
-              Font.Height = -13
+              Font.Height = -12
               Font.Name = 'Sans'
               ParentFont = False
               TabOrder = 2
             end
           end
-          object pnGraficosMetodos: TPanel
-            AnchorSideTop.Control = tsGraficosMesMetodos
+          object grbLinha1: TGroupBox
+            AnchorSideTop.Control = gbListaLinha
+            AnchorSideRight.Control = tsGraficosMesMetodos
             AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 999
+            Height = 264
+            Top = 312
+            Width = 192
+            Anchors = [akTop, akRight]
+            Caption = 'Dados da Linha'
+            ClientHeight = 260
+            ClientWidth = 188
+            Font.Height = -16
+            Font.Name = 'Sans'
+            ParentFont = False
+            TabOrder = 2
+            object lbMercadosLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 8
+              Width = 79
+              Caption = 'Mercados:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbAcertosLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 32
+              Width = 62
+              Caption = 'Acertos:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbErrosLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 56
+              Width = 44
+              Caption = 'Erros:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbNuloLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 80
+              Width = 75
+              Caption = 'Anulados:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbMeioAcertLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 104
+              Width = 112
+              Caption = 'Meios Acertos:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbMeioErroLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 128
+              Width = 94
+              Caption = 'Meios Erros:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbLucroLin1: TLabel
+              Left = 11
+              Height = 23
+              Top = 152
+              Width = 46
+              Caption = 'Lucro:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+          end
+          object grbMetodo: TGroupBox
+            AnchorSideTop.Control = gbListaMetodo
+            AnchorSideRight.Control = tsGraficosMesMetodos
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Side = asrBottom
+            Left = 999
+            Height = 272
+            Top = 8
+            Width = 192
+            Anchors = [akTop, akRight]
+            Caption = 'Dados do Método'
+            ClientHeight = 268
+            ClientWidth = 188
+            Font.Height = -16
+            Font.Name = 'Sans'
+            ParentFont = False
+            TabOrder = 3
+            object grbLinha: TGroupBox
+              AnchorSideTop.Side = asrBottom
+              AnchorSideRight.Side = asrBottom
+              AnchorSideBottom.Side = asrBottom
+              Left = 236
+              Height = 264
+              Top = 360
+              Width = 192
+              Anchors = [akTop, akRight]
+              Caption = 'Dados da Linha'
+              ClientHeight = 245
+              ClientWidth = 188
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+              TabOrder = 0
+              object ScrollBox2: TScrollBox
+                AnchorSideLeft.Control = grbLinha
+                AnchorSideTop.Control = grbLinha
+                AnchorSideRight.Control = grbLinha
+                AnchorSideRight.Side = asrBottom
+                AnchorSideBottom.Control = grbLinha
+                AnchorSideBottom.Side = asrBottom
+                Left = 0
+                Height = 245
+                Top = 0
+                Width = 188
+                HorzScrollBar.Page = 123
+                VertScrollBar.Page = 175
+                Anchors = [akTop, akLeft, akRight, akBottom]
+                ClientHeight = 241
+                ClientWidth = 184
+                TabOrder = 0
+                object lbLucroLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 152
+                  Width = 46
+                  Caption = 'Lucro:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+                object lbMeioErroLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 128
+                  Width = 94
+                  Caption = 'Meios Erros:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+                object lbMeioAcertLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 104
+                  Width = 112
+                  Caption = 'Meios Acertos:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+                object lbNuloLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 80
+                  Width = 75
+                  Caption = 'Anulados:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+                object lbErrosLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 56
+                  Width = 44
+                  Caption = 'Erros:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+                object lbAcertosLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 32
+                  Width = 62
+                  Caption = 'Acertos:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+                object lbMercadosLin: TLabel
+                  Left = 11
+                  Height = 23
+                  Top = 8
+                  Width = 79
+                  Caption = 'Mercados:'
+                  Font.Height = -16
+                  Font.Name = 'Sans'
+                  ParentFont = False
+                end
+              end
+            end
+            object lbLucroMet: TLabel
+              Left = 8
+              Height = 23
+              Top = 152
+              Width = 46
+              Caption = 'Lucro:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbMeioErroMet: TLabel
+              Left = 8
+              Height = 23
+              Top = 128
+              Width = 94
+              Caption = 'Meios Erros:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbMeioAcertMet: TLabel
+              Left = 11
+              Height = 23
+              Top = 104
+              Width = 112
+              Caption = 'Meios Acertos:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbNuloMet: TLabel
+              Left = 11
+              Height = 23
+              Top = 80
+              Width = 75
+              Caption = 'Anulados:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbErrosMet: TLabel
+              Left = 11
+              Height = 23
+              Top = 56
+              Width = 44
+              Caption = 'Erros:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbAcertosMet: TLabel
+              Left = 11
+              Height = 23
+              Top = 32
+              Width = 62
+              Caption = 'Acertos:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+            object lbMercadosMet: TLabel
+              Left = 11
+              Height = 23
+              Top = 8
+              Width = 79
+              Caption = 'Mercados:'
+              Font.Height = -16
+              Font.Name = 'Sans'
+              ParentFont = False
+            end
+          end
+          object pnGraficosMetodos: TPanel
+            AnchorSideLeft.Control = gbListaMetodo
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = tsGraficosMesMetodos
+            AnchorSideRight.Control = grbMetodo
             AnchorSideBottom.Control = tsGraficosMesMetodos
             AnchorSideBottom.Side = asrBottom
-            Left = 215
-            Height = 646
+            Left = 345
+            Height = 763
             Top = 0
-            Width = 645
+            Width = 654
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 646
-            ClientWidth = 645
-            TabOrder = 2
+            ClientHeight = 759
+            ClientWidth = 650
+            TabOrder = 4
             object chrtAcertMetodo: TChart
               Left = 376
               Height = 264
@@ -1151,298 +1531,395 @@ object formPrincipal: TformPrincipal
               end
             end
           end
-          object grbMetodo: TGroupBox
-            AnchorSideTop.Control = gbListaMetodo
-            AnchorSideRight.Side = asrBottom
-            Left = 872
-            Height = 264
+        end
+        object tsDadosMesMetodos: TTabSheet
+          Caption = 'Dados'
+          ClientHeight = 763
+          ClientWidth = 1191
+          object grbMetodos: TGroupBox
+            Left = 0
+            Height = 320
             Top = 8
-            Width = 192
-            Anchors = [akTop, akRight]
-            Caption = 'Dados do Método'
-            ClientHeight = 239
-            ClientWidth = 188
+            Width = 441
+            Caption = 'Métodos'
+            ClientHeight = 301
+            ClientWidth = 437
+            Font.Height = -16
+            Font.Name = 'Sans'
+            ParentFont = False
+            TabOrder = 0
+            object grdMetodosMes: TDBGrid
+              AnchorSideLeft.Control = grbMetodos
+              AnchorSideTop.Control = grbMetodos
+              AnchorSideRight.Control = grbMetodos
+              AnchorSideRight.Side = asrBottom
+              AnchorSideBottom.Control = grbMetodos
+              AnchorSideBottom.Side = asrBottom
+              Left = 0
+              Height = 301
+              Top = 0
+              Width = 437
+              Anchors = [akTop, akLeft, akRight, akBottom]
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Método'
+                  Width = 63
+                  FieldName = 'Método'
+                end              
+                item
+                  Title.Caption = 'N° Ap'
+                  Width = 50
+                  FieldName = 'TotalApostas'
+                  DisplayFormat = '0'
+                end              
+                item
+                  Font.Color = clGreen
+                  Title.Caption = 'Acertos'
+                  Width = 60
+                  FieldName = 'Greens'
+                  DisplayFormat = '0'
+                end              
+                item
+                  Font.Color = clRed
+                  Title.Caption = 'Erros'
+                  Width = 46
+                  FieldName = 'Reds'
+                  DisplayFormat = '0'
+                end              
+                item
+                  Title.Caption = 'Nulas'
+                  Width = 49
+                  FieldName = 'Anuladas'
+                  DisplayFormat = '0'
+                end              
+                item
+                  Title.Caption = 'Lucro %'
+                  Width = 63
+                  FieldName = 'PcentLucro'
+                  DisplayFormat = '0.00%'
+                end              
+                item
+                  Title.Caption = 'Acertos %'
+                  Width = 74
+                  FieldName = 'PcentAcertos'
+                  DisplayFormat = '0.00%'
+                end>
+              DataSource = dsMetodosMes
+              Font.Height = -13
+              Font.Name = 'Sans'
+              Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns]
+              ParentFont = False
+              ReadOnly = True
+              Scrollbars = ssAutoBoth
+              TabOrder = 0
+            end
+          end
+          object grbLinhas: TGroupBox
+            Left = 0
+            Height = 312
+            Top = 328
+            Width = 441
+            Caption = 'Linhas'
+            ClientHeight = 293
+            ClientWidth = 437
+            Font.Height = -17
+            Font.Name = 'Sans'
+            ParentFont = False
+            TabOrder = 1
+            object grdLinhasMes: TDBGrid
+              AnchorSideLeft.Control = grbLinhas
+              AnchorSideTop.Control = grbLinhas
+              AnchorSideRight.Control = grbLinhas
+              AnchorSideRight.Side = asrBottom
+              AnchorSideBottom.Control = grbLinhas
+              AnchorSideBottom.Side = asrBottom
+              Left = 0
+              Height = 293
+              Top = 0
+              Width = 437
+              Anchors = [akTop, akLeft, akRight, akBottom]
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Linha'
+                  Width = 48
+                  FieldName = 'Linha'
+                end              
+                item
+                  Title.Caption = 'N° Ap'
+                  Width = 50
+                  FieldName = 'TotalApostas'
+                end              
+                item
+                  Font.Color = clGreen
+                  Title.Caption = 'Acertos'
+                  Width = 60
+                  FieldName = 'Greens'
+                end              
+                item
+                  Font.Color = clRed
+                  Title.Caption = 'Erros'
+                  Width = 46
+                  FieldName = 'Reds'
+                end              
+                item
+                  Title.Caption = 'Nulas'
+                  Width = 49
+                  FieldName = 'Anuladas'
+                end              
+                item
+                  Title.Caption = 'Lucro %'
+                  Width = 63
+                  FieldName = 'PcentLucro'
+                  DisplayFormat = '0.00%'
+                end              
+                item
+                  Title.Caption = 'Acertos %'
+                  Width = 74
+                  FieldName = 'PcentAcertos'
+                  DisplayFormat = '0.00%'
+                end>
+              DataSource = dsLinhasMes
+              Font.Height = -13
+              Font.Name = 'Sans'
+              Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns]
+              ParentFont = False
+              ReadOnly = True
+              Scrollbars = ssAutoBoth
+              TabOrder = 0
+            end
+          end
+          object grbMetPais: TGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 568
+            Height = 232
+            Top = 8
+            Width = 497
+            Caption = 'Métodos por País'
+            ClientHeight = 213
+            ClientWidth = 493
+            Font.Height = -16
+            Font.Name = 'Sans'
+            ParentFont = False
+            TabOrder = 2
+            object grdMP: TDBGrid
+              AnchorSideLeft.Control = grbMetPais
+              AnchorSideTop.Control = grbMetPais
+              AnchorSideRight.Control = grbMetPais
+              AnchorSideRight.Side = asrBottom
+              AnchorSideBottom.Control = grbMetPais
+              AnchorSideBottom.Side = asrBottom
+              Left = 0
+              Height = 213
+              Top = 0
+              Width = 493
+              Anchors = [akTop, akLeft, akRight, akBottom]
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'País'
+                  Width = 120
+                  FieldName = 'País'
+                end              
+                item
+                  Title.Caption = 'Mercados'
+                  Width = 65
+                  FieldName = 'Mercados'
+                end              
+                item
+                  Title.Caption = 'Acertos'
+                  Width = 51
+                  FieldName = 'Acertos'
+                end              
+                item
+                  Title.Caption = 'Erros'
+                  Width = 40
+                  FieldName = 'Erros'
+                end              
+                item
+                  Title.Caption = 'Nulas'
+                  Width = 40
+                  FieldName = 'Nulas'
+                end              
+                item
+                  Title.Caption = '½ Acertos'
+                  Width = 65
+                  FieldName = 'Meios Acertos'
+                end              
+                item
+                  Title.Caption = '½ Erros'
+                  Width = 50
+                  FieldName = 'Meios Erros'
+                end              
+                item
+                  Title.Caption = 'Assert.'
+                  Width = 50
+                  FieldName = 'Assert.'
+                end>
+              DataSource = dsMP
+              Font.Height = -13
+              Font.Name = 'Sans'
+              ParentFont = False
+              Scrollbars = ssAutoBoth
+              TabOrder = 0
+            end
+          end
+          object grbMetTime: TGroupBox
+            Left = 568
+            Height = 192
+            Top = 240
+            Width = 497
+            Caption = 'Métodos por Time'
+            ClientHeight = 173
+            ClientWidth = 493
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
             TabOrder = 3
-            object lbMercadosMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 8
-              Width = 97
-              Caption = 'Mercados:'
-              Font.Height = -20
+            object grdMT: TDBGrid
+              AnchorSideLeft.Control = grbMetTime
+              AnchorSideTop.Control = grbMetTime
+              AnchorSideRight.Control = grbMetTime
+              AnchorSideRight.Side = asrBottom
+              AnchorSideBottom.Control = grbMetTime
+              AnchorSideBottom.Side = asrBottom
+              Left = 0
+              Height = 173
+              Top = 0
+              Width = 493
+              Anchors = [akTop, akLeft, akRight, akBottom]
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Time'
+                  Width = 120
+                  FieldName = 'Time'
+                end              
+                item
+                  Title.Caption = 'Mercados'
+                  Width = 65
+                  FieldName = 'Mercados'
+                end              
+                item
+                  Title.Caption = 'Acertos'
+                  Width = 51
+                  FieldName = 'Acertos'
+                end              
+                item
+                  Title.Caption = 'Erros'
+                  Width = 40
+                  FieldName = 'Erros'
+                end              
+                item
+                  Title.Caption = 'Nulas'
+                  Width = 40
+                  FieldName = 'Nulas'
+                end              
+                item
+                  Title.Caption = '½ Acertos'
+                  Width = 65
+                  FieldName = 'Meios Acertos'
+                end              
+                item
+                  Title.Caption = '½ Erros'
+                  Width = 50
+                  FieldName = 'Meios Erros'
+                end              
+                item
+                  Title.Caption = 'Assert.'
+                  Width = 50
+                  FieldName = 'Assert.'
+                end>
+              DataSource = dsMT
+              Font.Height = -13
               Font.Name = 'Sans'
               ParentFont = False
-            end
-            object lbAcertosMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 40
-              Width = 76
-              Caption = 'Acertos:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbErrosMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 72
-              Width = 54
-              Caption = 'Erros:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbNuloMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 104
-              Width = 92
-              Caption = 'Anulados:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbMeioAcertMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 136
-              Width = 137
-              Caption = 'Meios Acertos:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbMeioErroMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 168
-              Width = 115
-              Caption = 'Meios Erros:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbLucroMet: TLabel
-              Left = 11
-              Height = 28
-              Top = 200
-              Width = 57
-              Caption = 'Lucro:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
+              Scrollbars = ssAutoBoth
+              TabOrder = 0
             end
           end
-          object grbLinha: TGroupBox
-            AnchorSideTop.Control = gbListaLinha
-            AnchorSideRight.Side = asrBottom
-            Left = 872
-            Height = 264
-            Top = 312
-            Width = 192
-            Anchors = [akTop, akRight]
-            Caption = 'Dados da Linha'
-            ClientHeight = 239
-            ClientWidth = 188
+          object grbMetComp: TGroupBox
+            Left = 568
+            Height = 192
+            Top = 432
+            Width = 497
+            Caption = 'Métodos por Competição'
+            ClientHeight = 173
+            ClientWidth = 493
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
             TabOrder = 4
-            object lbMercadosLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 8
-              Width = 97
-              Caption = 'Mercados:'
-              Font.Height = -20
+            object grdMC: TDBGrid
+              AnchorSideLeft.Control = grbMetComp
+              AnchorSideTop.Control = grbMetComp
+              AnchorSideRight.Control = grbMetComp
+              AnchorSideRight.Side = asrBottom
+              AnchorSideBottom.Control = grbMetComp
+              AnchorSideBottom.Side = asrBottom
+              Left = 0
+              Height = 173
+              Top = 0
+              Width = 493
+              Anchors = [akTop, akLeft, akRight, akBottom]
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Competicao'
+                  Width = 120
+                  FieldName = 'Competicao'
+                end              
+                item
+                  Title.Caption = 'Mercados'
+                  Width = 65
+                  FieldName = 'Mercados'
+                end              
+                item
+                  Title.Caption = 'Acertos'
+                  Width = 51
+                  FieldName = 'Acertos'
+                end              
+                item
+                  Title.Caption = 'Erros'
+                  Width = 40
+                  FieldName = 'Erros'
+                end              
+                item
+                  Title.Caption = 'Nulas'
+                  Width = 40
+                  FieldName = 'Nulas'
+                end              
+                item
+                  Title.Caption = '½ Acertos'
+                  Width = 65
+                  FieldName = 'Meios Acertos'
+                end              
+                item
+                  Title.Caption = '½ Erros'
+                  Width = 50
+                  FieldName = 'Meios Erros'
+                end              
+                item
+                  Title.Caption = 'Assert.'
+                  Width = 50
+                  FieldName = 'Assert.'
+                end>
+              DataSource = dsMC
+              Font.Height = -13
               Font.Name = 'Sans'
               ParentFont = False
+              Scrollbars = ssAutoBoth
+              TabOrder = 0
             end
-            object lbAcertosLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 40
-              Width = 76
-              Caption = 'Acertos:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbErrosLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 72
-              Width = 54
-              Caption = 'Erros:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbNuloLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 104
-              Width = 92
-              Caption = 'Anulados:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbMeioAcertLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 136
-              Width = 137
-              Caption = 'Meios Acertos:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbMeioErroLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 168
-              Width = 115
-              Caption = 'Meios Erros:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-            object lbLucroLin: TLabel
-              Left = 11
-              Height = 28
-              Top = 200
-              Width = 57
-              Caption = 'Lucro:'
-              Font.Height = -20
-              Font.Name = 'Sans'
-              ParentFont = False
-            end
-          end
-        end
-        object tsDadosMesMetodos: TTabSheet
-          Caption = 'Dados'
-          ClientHeight = 646
-          ClientWidth = 1070
-          object grdMetodosMes: TDBGrid
-            Left = 0
-            Height = 608
-            Top = 0
-            Width = 568
-            Color = clWindow
-            Columns = <            
-              item
-                Title.Caption = 'Método'
-                Width = 58
-                FieldName = 'Método'
-              end            
-              item
-                Title.Caption = 'N° Ap'
-                Width = 47
-                FieldName = 'TotalApostas'
-                DisplayFormat = '0'
-              end            
-              item
-                Font.Color = clGreen
-                Title.Caption = 'Acertos'
-                Width = 58
-                FieldName = 'Greens'
-                DisplayFormat = '0'
-              end            
-              item
-                Font.Color = clRed
-                Title.Caption = 'Erros'
-                Width = 45
-                FieldName = 'Reds'
-                DisplayFormat = '0'
-              end            
-              item
-                Title.Caption = 'Nulas'
-                Width = 47
-                FieldName = 'Anuladas'
-                DisplayFormat = '0'
-              end            
-              item
-                Title.Caption = 'Lucro %'
-                Width = 59
-                FieldName = 'PcentLucro'
-                DisplayFormat = '0.00%'
-              end            
-              item
-                Title.Caption = 'Acertos %'
-                Width = 71
-                FieldName = 'PcentAcertos'
-                DisplayFormat = '0.00%'
-              end>
-            DataSource = dsMetodosMes
-            Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns]
-            ReadOnly = True
-            Scrollbars = ssAutoBoth
-            TabOrder = 0
-          end
-          object grdLinhasMes: TDBGrid
-            Left = 568
-            Height = 616
-            Top = 0
-            Width = 500
-            Color = clWindow
-            Columns = <            
-              item
-                Title.Caption = 'Linha'
-                Width = 45
-                FieldName = 'Linha'
-              end            
-              item
-                Title.Caption = 'N° Ap'
-                Width = 47
-                FieldName = 'TotalApostas'
-              end            
-              item
-                Font.Color = clGreen
-                Title.Caption = 'Acertos'
-                Width = 58
-                FieldName = 'Greens'
-              end            
-              item
-                Font.Color = clRed
-                Title.Caption = 'Erros'
-                Width = 45
-                FieldName = 'Reds'
-              end            
-              item
-                Title.Caption = 'Nulas'
-                Width = 47
-                FieldName = 'Anuladas'
-              end            
-              item
-                Title.Caption = 'Lucro %'
-                Width = 59
-                FieldName = 'PcentLucro'
-                DisplayFormat = '0.00%'
-              end            
-              item
-                Title.Caption = 'Acertos %'
-                Width = 71
-                FieldName = 'PcentAcertos'
-                DisplayFormat = '0.00%'
-              end>
-            DataSource = dsLinhasMes
-            Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns]
-            ReadOnly = True
-            Scrollbars = ssAutoBoth
-            TabOrder = 1
           end
         end
       end
     end
     object tsContrTimes: TTabSheet
       Caption = 'Controle de Times'
-      ClientHeight = 667
-      ClientWidth = 1078
+      ClientHeight = 765
+      ClientWidth = 1195
       object grbTimesMenosLucr: TGroupBox
         Left = 696
         Height = 297
@@ -1779,15 +2256,15 @@ object formPrincipal: TformPrincipal
     end
     object tsContrPaises: TTabSheet
       Caption = 'Controle de Países'
-      ClientHeight = 667
-      ClientWidth = 1078
+      ClientHeight = 765
+      ClientWidth = 1195
       object grbPaises: TGroupBox
         Left = -2
         Height = 481
         Top = 8
         Width = 464
         Caption = 'Países'
-        ClientHeight = 456
+        ClientHeight = 462
         ClientWidth = 460
         Font.Height = -16
         Font.Name = 'Sans'
@@ -1799,7 +2276,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 370
+          Height = 376
           Top = 32
           Width = 460
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1905,7 +2382,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 120
           Height = 33
-          Top = 410
+          Top = 416
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -1918,7 +2395,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 33
-          Top = 410
+          Top = 416
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo País'
@@ -1995,7 +2472,7 @@ object formPrincipal: TformPrincipal
         Top = 224
         Width = 376
         Caption = 'Países Menos Assertivos'
-        ClientHeight = 272
+        ClientHeight = 278
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2009,7 +2486,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbPaisesMenosAcert
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 272
+          Height = 278
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2058,7 +2535,7 @@ object formPrincipal: TformPrincipal
         Top = -8
         Width = 376
         Caption = 'Países Mais Assertivos'
-        ClientHeight = 200
+        ClientHeight = 206
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2072,7 +2549,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbPaisesMaisAcert
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 200
+          Height = 206
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2118,15 +2595,15 @@ object formPrincipal: TformPrincipal
     end
     object tsContrComp: TTabSheet
       Caption = 'Controle de Competições'
-      ClientHeight = 667
-      ClientWidth = 1078
+      ClientHeight = 765
+      ClientWidth = 1195
       object grbComp: TGroupBox
         Left = 8
         Height = 481
         Top = 16
         Width = 464
         Caption = 'Competições'
-        ClientHeight = 456
+        ClientHeight = 462
         ClientWidth = 460
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2138,7 +2615,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 370
+          Height = 376
           Top = 32
           Width = 460
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2243,7 +2720,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 33
-          Top = 410
+          Top = 416
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Nova Comp.'
@@ -2256,7 +2733,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 120
           Height = 33
-          Top = 410
+          Top = 416
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2332,7 +2809,7 @@ object formPrincipal: TformPrincipal
         Top = 232
         Width = 376
         Caption = 'Competições Menos Assertivas'
-        ClientHeight = 272
+        ClientHeight = 278
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2346,7 +2823,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbCompMenosLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 272
+          Height = 278
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2395,7 +2872,7 @@ object formPrincipal: TformPrincipal
         Top = 0
         Width = 376
         Caption = 'Competições Mais Assertivas'
-        ClientHeight = 200
+        ClientHeight = 206
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2409,7 +2886,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbCompMaisLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 200
+          Height = 206
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2454,12 +2931,27 @@ object formPrincipal: TformPrincipal
       end
     end
   end
-  object StatusBar1: TStatusBar
+  object BarraStatus: TStatusBar
     Left = 0
     Height = 21
-    Top = 685
-    Width = 1082
-    Panels = <>
+    Top = 792
+    Width = 1199
+    Panels = <    
+      item
+        Text = 'Pronto'
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object progStatus: TProgressBar
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 941
+    Height = 17
+    Top = 796
+    Width = 236
+    Anchors = [akRight, akBottom]
+    TabOrder = 2
   end
   object conectBancoDados: TSQLite3Connection
     Connected = False
@@ -3097,12 +3589,10 @@ object formPrincipal: TformPrincipal
       Caption = 'Dados'
       object miImportar: TMenuItem
         Caption = 'Importar Dados'
-        Enabled = False
         OnClick = ImportarDadosBD
       end
       object miExportar: TMenuItem
         Caption = 'Exportar Dados'
-        Enabled = False
         OnClick = SalvarDadosBD
       end
     end
@@ -4274,6 +4764,7 @@ object formPrincipal: TformPrincipal
     SQL.Strings = (
       'SELECT'
       'Times.Time,'
+      'COUNT(Mercados.ROWID) AS TotalMercados,'
       'SUM(CASE WHEN Mercados.Status = ''Green'' OR Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS Acertos,'
       'SUM(CASE WHEN Mercados.Status = ''Red'' OR Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS Erros,'
       'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Anuladas,'
@@ -4296,7 +4787,7 @@ object formPrincipal: TformPrincipal
       'GROUP BY'
       'Times.Time'
       'ORDER BY'
-      'PcentAcertos DESC, Time ASC;'
+      'PcentAcertos DESC, TotalMercados DESC, Time ASC;'
     )
     Params = <>
     Macros = <>
@@ -4505,6 +4996,7 @@ object formPrincipal: TformPrincipal
     SQL.Strings = (
       'SELECT'
       'p.País,'
+      'COUNT(m.ROWID) AS TotalMercados,'
       'SUM(CASE WHEN m.Status = ''Green'' OR m.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS Acertos,'
       'SUM(CASE WHEN m.Status = ''Red'' OR m.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS Erros,'
       'SUM(CASE WHEN m.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Anuladas,'
@@ -4522,9 +5014,9 @@ object formPrincipal: TformPrincipal
       'FROM'
       'Países p'
       'LEFT JOIN'
-      'Times t ON t.País = p.País'
+      'Competicoes c ON c.País = p.País'
       'LEFT JOIN'
-      'Jogo j ON t.Time = j.Mandante OR j.Visitante'
+      'Jogo j ON c.Cod_Comp = j.Cod_Comp'
       'LEFT JOIN'
       'Mercados m ON j.Cod_Jogo = m.Cod_Jogo'
       'LEFT JOIN'
@@ -4532,7 +5024,7 @@ object formPrincipal: TformPrincipal
       'GROUP BY'
       'p.País'
       'ORDER BY'
-      'PcentAcertos DESC, p.País ASC;'
+      'TotalMercados DESC, PcentAcertos DESC, p.País ASC;'
       ''
     )
     Params = <>
@@ -4793,6 +5285,7 @@ object formPrincipal: TformPrincipal
     SQL.Strings = (
       'SELECT'
       'c.Competicao, p.País,'
+      'COUNT(m.ROWID) AS TotalMercados,'
       'SUM(CASE WHEN m.Status = ''Green'' OR m.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS Acertos,'
       'SUM(CASE WHEN m.Status = ''Red'' OR m.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS Erros,'
       'SUM(CASE WHEN m.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Anuladas,'
@@ -4820,7 +5313,7 @@ object formPrincipal: TformPrincipal
       'GROUP BY'
       'c.Competicao'
       'ORDER BY'
-      'PcentAcertos DESC, c.Competicao ASC, p.País ASC;'
+      'PcentAcertos DESC, TotalMercados DESC, c.Competicao ASC, p.País ASC;'
       ''
     )
     Params = <>
@@ -5030,5 +5523,270 @@ object formPrincipal: TformPrincipal
     FieldDefs = <>
     Left = 192
     Top = 40
+  end
+  object dsMP: TDataSource
+    DataSet = qrMP
+    Left = 567
+    Top = 317
+  end
+  object dsMT: TDataSource
+    DataSet = qrMT
+    Left = 663
+    Top = 331
+  end
+  object dsMC: TDataSource
+    DataSet = qrMC
+    Left = 515
+    Top = 317
+  end
+  object qrMP: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'País'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mercados'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Acertos'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Erros'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Nulas'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Meios Acertos'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Meios Erros'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Assert.'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT P.País,'
+      'COUNT(*) AS Mercados,'
+      'SUM(CASE WHEN M.Status = ''Green'' THEN 1 ELSE 0 END) AS Acertos,'
+      'SUM(CASE WHEN M.Status = ''Red'' THEN 1 ELSE 0 END) AS Erros,'
+      'SUM(CASE WHEN M.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulas,'
+      'SUM(CASE WHEN M.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS "Meios Acertos",'
+      'SUM(CASE WHEN M.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS "Meios Erros",'
+      'ROUND(SUM(CASE WHEN M.Status = ''Green'' THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0), 1) || ''%'' AS "Assert."'
+      'FROM Mercados M'
+      'LEFT JOIN Jogo J ON M.Cod_Jogo = J.Cod_Jogo'
+      'LEFT JOIN Competicoes C ON C.Cod_Comp = J.Cod_Comp'
+      'LEFT JOIN Países P ON P.País = C.País'
+      'LEFT JOIN Métodos ON Métodos.Cod_Metodo = M.Cod_Metodo'
+      'WHERE M.Cod_Metodo = :codmet'
+      'GROUP BY P.País'
+      'ORDER BY Mercados DESC, "Assert." DESC'
+      ''
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'codmet'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    Left = 574
+    Top = 309
+  end
+  object qrMT: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Time'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mercados'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Acertos'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Erros'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Nulas'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Meios Acertos'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Meios Erros'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Assert.'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT T.Time,'
+      'COUNT(*) AS Mercados,'
+      'SUM(CASE WHEN M.Status = ''Green'' THEN 1 ELSE 0 END) AS Acertos,'
+      'SUM(CASE WHEN M.Status = ''Red'' THEN 1 ELSE 0 END) AS Erros,'
+      'SUM(CASE WHEN M.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulas,'
+      'SUM(CASE WHEN M.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS "Meios Acertos",'
+      'SUM(CASE WHEN M.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS "Meios Erros",'
+      'ROUND(SUM(CASE WHEN M.Status = ''Green'' THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0), 1) || ''%'' AS "Assert."'
+      'FROM Mercados M'
+      'LEFT JOIN Jogo J ON M.Cod_Jogo = J.Cod_Jogo'
+      'LEFT JOIN Times T ON T.Time = J.Mandante OR T.Time = J.Visitante'
+      'LEFT JOIN Competicoes C ON C.Cod_Comp = J.Cod_Comp'
+      'LEFT JOIN Países P ON P.País = C.País'
+      'LEFT JOIN Métodos ON Métodos.Cod_Metodo = M.Cod_Metodo'
+      'WHERE M.Cod_Metodo = :codmet'
+      'GROUP BY T.Time'
+      'ORDER BY Mercados DESC, "Assert." DESC'
+      ''
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'codmet'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    Left = 603
+    Top = 293
+  end
+  object qrMC: TSQLQuery
+    IndexName = 'DEFAULT_ORDER'
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Competicao'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mercados'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Acertos'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Erros'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Nulas'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Meios Acertos'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Meios Erros'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Assert.'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT C.Competicao,'
+      'COUNT(*) AS Mercados,'
+      'SUM(CASE WHEN M.Status = ''Green'' THEN 1 ELSE 0 END) AS Acertos,'
+      'SUM(CASE WHEN M.Status = ''Red'' THEN 1 ELSE 0 END) AS Erros,'
+      'SUM(CASE WHEN M.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulas,'
+      'SUM(CASE WHEN M.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS "Meios Acertos",'
+      'SUM(CASE WHEN M.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS "Meios Erros",'
+      'ROUND(SUM(CASE WHEN M.Status = ''Green'' THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0), 1) || ''%'' AS "Assert."'
+      'FROM Mercados M'
+      'LEFT JOIN Jogo J ON M.Cod_Jogo = J.Cod_Jogo'
+      'LEFT JOIN Competicoes C ON C.Cod_Comp = J.Cod_Comp'
+      'LEFT JOIN Países P ON P.País = C.País'
+      'LEFT JOIN Métodos ON Métodos.Cod_Metodo = M.Cod_Metodo'
+      'WHERE M.Cod_Metodo = :codmet'
+      'GROUP BY C.Competicao'
+      'ORDER BY Mercados DESC, "Assert." DESC'
+      ''
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'codmet'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    Left = 632
+    Top = 233
   end
 end

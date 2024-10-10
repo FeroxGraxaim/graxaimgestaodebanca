@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS "Métodos" (
 	PRIMARY KEY("Cod_Metodo" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Mercados" (
+	"Cod_Mercado" INTEGER NOT NULL PRIMARY KEY,
 	"Cod_Jogo"	INTEGER,
 	"Cod_Metodo"	INTEGER,
 	"Cod_Linha"	INTEGER,
@@ -520,7 +521,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (13);
+INSERT INTO "ControleVersao" ("Versao") VALUES (14);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),

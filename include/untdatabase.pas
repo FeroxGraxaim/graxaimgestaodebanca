@@ -37,7 +37,7 @@ var
 procedure TBancoDados.DefinirVariaveis;
 begin
   writeln('Definindo variáveis');
-  versaoBDEsperada := 13;
+  versaoBDEsperada := 14;
 
   {$IFDEF MSWINDOWS}
   if FileExists(GetEnvironmentVariable('PROGRAMFILES') +

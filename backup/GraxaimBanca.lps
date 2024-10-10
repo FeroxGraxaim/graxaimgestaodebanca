@@ -58,9 +58,10 @@
         <Filename Value="include/untapostas.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untApostas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="51"/>
-        <CursorPos X="84" Y="67"/>
+        <TopLine Value="427"/>
+        <CursorPos Y="439"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
       </Unit>
@@ -162,12 +163,29 @@
         <Filename Value="include/untcontrolemetodos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untControleMetodos"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="666"/>
         <CursorPos X="10" Y="692"/>
         <UsageCount Value="48"/>
         <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontroletimes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untControleTimes"/>
+        <UsageCount Value="20"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untpaises.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untPaises"/>
+        <UsageCount Value="20"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontrcomp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untContrComp"/>
+        <UsageCount Value="20"/>
       </Unit>
       <Unit>
         <Filename Value="Makefile"/>
@@ -452,10 +470,6 @@
     <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="include/untmain.pas"/>
-        <Caret Line="383" Column="8" TopLine="349"/>
-      </Position>
-      <Position>
-        <Filename Value="include/untmain.pas"/>
         <Caret Line="382" Column="8" TopLine="348"/>
       </Position>
       <Position>
@@ -569,6 +583,10 @@
       <Position>
         <Filename Value="include/untUpdate.pas"/>
         <Caret Line="61" Column="32"/>
+      </Position>
+      <Position>
+        <Filename Value="include/untapostas.pas"/>
+        <Caret Line="39" Column="25" TopLine="22"/>
       </Position>
     </JumpHistory>
     <RunParams>

@@ -12,7 +12,8 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, tachartlazaruspkg, lazdbexport, untMain, untApostas, untDatabase,
   untNA, untPainel, untSobre, untSplash, untUpdate, untControleMetodos,
-  untControleTimes, untPaises, untContrComp, untEditSimples, untEditMult;
+  untControleTimes, untPaises, untContrComp, untEditSimples, untEditMult,
+  untSalvarDados;
 
 {$R *.res}
 
@@ -27,6 +28,7 @@ begin
   Application.CreateForm(TformSplash, formSplash);
   Application.CreateForm(TformEditSimples, formEditSimples);
   Application.CreateForm(TformEditMult, formEditMult);
+  Application.CreateForm(TformSalvarDados, formSalvarDados);
   Application.Run;
 end.
 

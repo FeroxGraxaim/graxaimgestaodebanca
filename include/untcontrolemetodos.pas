@@ -405,12 +405,10 @@ begin
         'SUM(CASE WHEN Mercados.Status = ''Green'' THEN 1 ELSE 0 END) AS Greens, '
         +
         'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
-        +
-        'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, ' +
-        'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
+        + 'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, '
+        + 'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
         'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
-        +
-        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
+        + 'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
         '(CASE WHEN COUNT(Mercados.Cod_Metodo) = 0 THEN 0 ' + 'ELSE  ' +
         'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) /  ' +
         'CAST(COUNT(Mercados.Cod_Metodo) AS FLOAT) * 100  ' +
@@ -510,12 +508,10 @@ begin
         'SUM(CASE WHEN Mercados.Status = ''Green'' THEN 1 ELSE 0 END) AS Greens, '
         +
         'SUM(CASE WHEN Mercados.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
-        +
-        'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, ' +
-        'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
+        + 'SUM(CASE WHEN Mercados.Status = ''Meio Red'' THEN 1 ELSE 0 END) AS MeioRed, '
+        + 'SUM(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Nulo, ' +
         'SUM(CASE WHEN Mercados.Status = ''Red'' OR ''Meio Red'' THEN 1 ELSE 0 END) AS Reds, '
-        +
-        'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
+        + 'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) AS ApLucro, ' +
         '(CASE WHEN COUNT(Mercados.Cod_Linha) = 0 THEN 0 ELSE  ' +
         'SUM(CASE WHEN Apostas.Lucro > 0 THEN 1 ELSE 0 END) /  ' +
         'CAST(COUNT(Mercados.Cod_Linha) AS FLOAT) * 100  ' +
@@ -801,6 +797,18 @@ begin
       //ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
       Open;
     end;
+    with qrMetodosMes do
+    begin
+      if qrMT.Active then qrMT.Close;
+      if qrMC.Active then qrMC.Close;
+      if qrMP.Active then qrMP.Close;
+      qrMT.ParamByName('codmet').AsInteger := FieldByName('Cod_Metodo').AsInteger;
+      qrMC.ParamByName('codmet').AsInteger := FieldByName('Cod_Metodo').AsInteger;
+      qrMP.ParamByName('codmet').AsInteger := FieldByName('Cod_Metodo').AsInteger;
+      qrMT.Open;
+      qrMC.Open;
+      qrMP.Open;
+    end;
   end;
 end;
 
@@ -863,6 +871,7 @@ begin
       else
         Refresh;
   end;
+  GridMesLinhas(nil);
 end;
 
 end.
