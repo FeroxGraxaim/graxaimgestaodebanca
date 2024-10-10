@@ -29,4 +29,22 @@ DROP TABLE Mercados;
 
 ALTER TABLE Nova_Mercados RENAME TO Mercados;
 
+CREATE TRIGGER "Atualiza Apostas" 
+AFTER UPDATE ON Mercados 
+FOR EACH ROW 
+BEGIN 
+UPDATE Apostas SET Status = 'Red' 
+WHERE Cod_Aposta = NEW.Cod_Aposta 
+AND Cashout = 0 
+AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red'); 
+
+UPDATE Apostas SET Status = 'Green' WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red') 
+AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
+
+UPDATE Apostas SET Status = 'Pré-live' WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red') 
+AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
+END;
+
 UPDATE ControleVersao SET Versao = 14;
