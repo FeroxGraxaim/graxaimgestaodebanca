@@ -43,6 +43,7 @@ var
 
 procedure TEventosPainel.tsPainelShow(Sender: TObject);
 begin
+  writeln('Exibido painel principal');
   with formPrincipal do
   begin
     if qrBanca.Active then qrBanca.Close;
@@ -298,6 +299,7 @@ var
   anoNeutro, mesNeutro, diaNeutro, MaxInt, MinInt: integer;
   ContFloat, LAP, LAR, LAPA, LARA: double;
 begin
+  writeln('Atualizando gráficos do painel principal');
   with formPrincipal do
   begin
     (chrtLucroMes.Series[0] as TLineSeries).Clear;
@@ -315,9 +317,13 @@ begin
 
         'Lucro R$':
         begin
+          writeln('alterando gráfico do mês para porcentagem');
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
+          writeln('Limpando gráfico');
           (chrtLucroMes.Series[0] as TLineSeries).Clear;
+          writeln('Abrindo qrMes');
           if not qrMes.Active then qrMes.Open;
+          writeln('Preenchendo gráfico do mês');
           for i := 1 to 31 do
           begin
             ContFloat := i;
@@ -395,23 +401,15 @@ begin
           with (chrtLucroAno.Series[0] as TLineSeries) do
           begin
             ContFloat := Contador;
-            if Contador <= FieldByName('Mês').AsInteger then
-            begin
-              AddXY(Contador, 0, ContFloat);
-            end
+            if Contador <= FieldByName('Mês').AsInteger
+            then AddXY(Contador, 0, ContFloat)
             else
             begin
               Next;
-              if not EOF then
-              begin
-                  LAP := LAP + FieldByName('LucroTotalPorCento').AsFloat;
-                AddXY(Contador, LAP, ContFloat);
-              end
-              else
-              begin
-                LAP := LAP;
-                AddXY(Contador, LAP, ContFloat);
-              end;
+              if not EOF
+              then LAP := LAP + FieldByName('LucroTotalPorCento').AsFloat
+              else LAP := LAP;
+              AddXY(Contador, LAP, ContFloat);
             end;
           end;
         end
@@ -424,26 +422,15 @@ begin
           with (chrtLucroAno.Series[0] as TLineSeries) do
           begin
             ContFloat := Contador;
-            if Contador <= FieldByName('Mês').AsInteger then
-              AddXY(Contador, 0,
-                ContFloat)
+            if Contador <= FieldByName('Mês').AsInteger
+              then AddXY(Contador, 0, ContFloat)
             else
             begin
               Next;
-              if not EOF then
-              begin
-                if (LAR < 0) and (FieldByName('LucroAnualReais').AsFloat < 0)
-                then
-                  LAR := LAR - FieldByName('LucroAnualReais').AsFloat
-                else
-                  LAR := LAR + FieldByName('LucroAnualReais').AsFloat;
-                 AddXY(Contador, LAR, ContFloat);
-              end
-              else
-              begin
-                LAR := LAR;
-                AddXY(Contador, LAR, ContFloat);
-              end;
+              if not EOF
+              then LAR := LAR + FieldByName('LucroAnualReais').AsFloat
+              else LAR := LAR;
+              AddXY(Contador, LAR, ContFloat);
             end;
           end;
         end;
@@ -710,6 +697,8 @@ begin
 {******************************************************************************}
 
     chrtAcertMes.Invalidate;
+    chrtAcertAno.Invalidate;
+    chrtAcertTodosAnos.Invalidate;
     qrMesesGreenRed.Close;
     qrMes.Close;
     qrAno.Close;

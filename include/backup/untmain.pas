@@ -70,7 +70,6 @@ type
     dsMT: TDataSource;
     dsMC: TDataSource;
     grbLinha: TGroupBox;
-    grbLinha1: TGroupBox;
     grbMetComp: TGroupBox;
     grbMetodo: TGroupBox;
     grbMetPais: TGroupBox;
@@ -144,27 +143,20 @@ type
     grbLinhas: TGroupBox;
     JSONPropStorage1: TJSONPropStorage;
     lbAcertosLin: TLabel;
-    lbAcertosLin1: TLabel;
     lbAcertosMet: TLabel;
     lbDataFim: TLabel;
     lbDataInicio: TLabel;
     lbErrosLin: TLabel;
-    lbErrosLin1: TLabel;
     lbErrosMet: TLabel;
     lbLucroLin: TLabel;
-    lbLucroLin1: TLabel;
     lbLucroMet: TLabel;
     lbMeioAcertLin: TLabel;
-    lbMeioAcertLin1: TLabel;
     lbMeioAcertMet: TLabel;
     lbMeioErroLin: TLabel;
-    lbMeioErroLin1: TLabel;
     lbMeioErroMet: TLabel;
     lbMercadosLin: TLabel;
-    lbMercadosLin1: TLabel;
     lbMercadosMet: TLabel;
     lbNuloLin: TLabel;
-    lbNuloLin1: TLabel;
     lbNuloMet: TLabel;
     lbSelecioneAposta: TLabel;
     lbAno: TLabel;
@@ -295,7 +287,6 @@ type
     qrMP: TSQLQuery;
     qrMT: TSQLQuery;
     qrMC: TSQLQuery;
-    ScrollBox2: TScrollBox;
     BarraStatus: TStatusBar;
     tsContrTimes: TTabSheet;
     tsContrPaises: TTabSheet;
@@ -754,7 +745,6 @@ begin
             end;
             transactionBancoDados.CommitRetaining;
             ShowMessage('Dados importados com sucesso!');
-            Free;
           except
             On E: Exception do
             begin

@@ -17,7 +17,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="4"/>
-      <BuildNr Value="20"/>
+      <RevisionNr Value="2"/>
+      <BuildNr Value="22"/>
       <Language Value="0416"/>
       <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.4"/>
     </VersionInfo>

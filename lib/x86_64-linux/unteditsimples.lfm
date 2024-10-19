@@ -1,0 +1,197 @@
+object formEditSimples: TformEditSimples
+  Left = 460
+  Height = 480
+  Top = 250
+  Width = 351
+  Caption = 'Editar Aposta'
+  ClientHeight = 480
+  ClientWidth = 351
+  OnClose = FormClose
+  OnShow = FormShow
+  object lbCompeticao: TLabel
+    Left = 0
+    Height = 17
+    Top = 8
+    Width = 67
+    Caption = 'Competição'
+  end
+  object cbCompeticao: TComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 27
+    Top = 25
+    Width = 351
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
+    TabOrder = 0
+  end
+  object cbMandante: TComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 27
+    Top = 73
+    Width = 160
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
+    TabOrder = 1
+  end
+  object lbMandante2: TLabel
+    Left = 0
+    Height = 17
+    Top = 56
+    Width = 57
+    Caption = 'Mandante'
+  end
+  object cbVisitante: TComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 168
+    Height = 27
+    Top = 73
+    Width = 183
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
+    TabOrder = 2
+  end
+  object lbVisitante2: TLabel
+    Left = 168
+    Height = 17
+    Top = 56
+    Width = 48
+    Caption = 'Visitante'
+  end
+  object grbNovaLinha: TGroupBox
+    Left = 0
+    Height = 296
+    Top = 109
+    Width = 352
+    Caption = 'Clique duas vezes sobre uma célula para editar'
+    ClientHeight = 272
+    ClientWidth = 348
+    Font.Height = -15
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 3
+    object grdEditarAposta: TDBGrid
+      AnchorSideLeft.Control = grbNovaLinha
+      AnchorSideTop.Control = grbNovaLinha
+      AnchorSideRight.Control = grbNovaLinha
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = grbNovaLinha
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 272
+      Top = 0
+      Width = 348
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Color = clWindow
+      Columns = <      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Método'
+          Width = 115
+          FieldName = 'Método'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Linha'
+          Width = 115
+          FieldName = 'Linha'
+        end      
+        item
+          Title.Caption = 'Odd'
+          Width = 40
+          FieldName = 'Odd'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Situação'
+          Width = 61
+          FieldName = 'Situacao'
+        end>
+      DataSource = dsEditarAposta
+      Enabled = False
+      Font.Height = -13
+      Font.Name = 'Sans'
+      ParentFont = False
+      Scrollbars = ssAutoVertical
+      TabOrder = 0
+      OnEditingDone = grdEditarApostaEditingDone
+    end
+  end
+  object btnNovaLinha: TButton
+    Left = 0
+    Height = 25
+    Top = 413
+    Width = 352
+    Caption = 'Nova Linha'
+    Enabled = False
+    TabOrder = 4
+  end
+  object btnOk: TButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 80
+    Height = 25
+    Top = 448
+    Width = 75
+    Anchors = [akBottom]
+    Caption = 'Ok'
+    Enabled = False
+    TabOrder = 5
+    OnClick = btnOkClick
+  end
+  object btnCancelar: TButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 200
+    Height = 25
+    Top = 448
+    Width = 75
+    Anchors = [akBottom]
+    Caption = 'Cancelar'
+    TabOrder = 6
+    OnClick = btnCancelarClick
+  end
+  object dsEditarAposta: TDataSource
+    DataSet = qrEditarAposta
+    Left = 183
+  end
+  object qrEditarAposta: TSQLQuery
+    FieldDefs = <>
+    Database = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT'
+      'Métodos.Nome AS Método,'
+      'Linhas.Nome AS Linha,'
+      'Mercados.Odd,'
+      'Mercados.Status AS Situacao'
+      'FROM Mercados'
+      'LEFT JOIN Métodos ON Métodos.Cod_Metodo = Mercados.Cod_Metodo'
+      'LEFT JOIN Linhas ON Linhas.Cod_Linha = Mercados.Cod_Linha'
+      ''
+      'WHERE Mercados.Cod_Aposta = :CodAposta'
+    )
+    UpdateSQL.Strings = (
+      'UPDATE Mercados'
+      'JOIN Métodos ON Métodos.Cod_Metodo = Mercados.Cod_Metodo'
+      'JOIN Linhas ON Linhas.Cod_Linha = Mercados.Cod_Linha'
+      'SET'
+      'Mercados.Cod_Metodo = Métodos.Cod_Metodo,'
+      'Mercados.Cod_Linha = Linhas.Cod_Linha'
+      'WHERE Mercados.Cod_Aposta = :CodAposta'
+      'AND Métodos.Nome = :Método'
+      'AND Linhas.Nome = :Linha;'
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'CodAposta'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    Left = 235
+    Top = 7
+  end
+end
