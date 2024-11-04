@@ -5,7 +5,8 @@ unit untSalvarDados;
 interface
 
 uses
-  Classes, SysUtils, SQLDB, DB, Forms, Controls, Graphics, Dialogs, DBExtCtrls,
+  Classes, SysUtils, DateUtils, SQLDB, DB, Forms, Controls, Graphics,
+  Dialogs, DBExtCtrls,
   ActnList, StdCtrls, DBCtrls, EditBtn, DBGrids, Menus, ComCtrls, Math;
 
 type
@@ -65,7 +66,7 @@ procedure TformSalvarDados.ExportarDados(Sender: TObject);
 var
   Script: TStringList;
   i: integer;
-  TextoSQL: string;
+  TextoSQL, DataFormatada, S: string;
 begin
   Script := TStringList.Create;
   try
@@ -143,7 +144,18 @@ begin
             TextoSQL := TextoSQL + '") SELECT ';
             for i := 0 to FieldCount - 1 do
             begin
-              TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+              case Fields[i].DataType of
+                ftDate, ftDateTime:
+                  begin
+                  DataFormatada := FloatToStr(DateTimeToJulianDate(Fields[i].AsDateTime));
+                  DataFormatada := StringReplace(DataFormatada, ',', '.', [rfReplaceAll]);
+                  TextoSQL := TextoSQL + DataFormatada;
+                  end;
+                ftString, ftWideString:
+                  TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+                else
+                  TextoSQL := TextoSQL + Fields[i].AsString;
+              end;
               if i < FieldCount - 1 then
                 TextoSQL := TextoSQL + ', ';
             end;
@@ -153,13 +165,14 @@ begin
             Next;
           end;
 
+          Close;
           if chbDatas.Checked then
           begin
             SQL.Text :=
-            'SELECT * FROM Jogo WHERE (SELECT Data FROM Apostas JOIN Mercados ' +
-            'ON Mercados.Cod_Jogo = Jogo.Cod_Jogo WHERE Mercados.Cod_Jogo = ' +
-            'Jogo.Cod_Jogo AND Mercados.Cod_Aposta = Apostas.Cod_Aposta) ' +
-            'BETWEEN :prim AND :fim';
+              'SELECT * FROM Jogo WHERE (SELECT Data FROM Apostas JOIN Mercados ' +
+              'ON Mercados.Cod_Jogo = Jogo.Cod_Jogo WHERE Mercados.Cod_Jogo = ' +
+              'Jogo.Cod_Jogo AND Mercados.Cod_Aposta = Apostas.Cod_Aposta) ' +
+              'BETWEEN :prim AND :fim';
             ParamByName('prim').AsDateTime := deInicio.Date;
             ParamByName('fim').AsDateTime := deFim.Date;
           end
@@ -189,12 +202,13 @@ begin
             Next;
           end;
 
+          Close;
           if chbDatas.Checked then
           begin
             SQL.Text := 'SELECT * FROM Mercados WHERE (SELECT Data ' +
-            'FROM Apostas JOIN Mercados ON Mercados.Cod_Aposta = ' +
-            'Apostas.Cod_Aposta WHERE Mercados.Cod_Aposta = ' +
-            'Apostas.Cod_Aposta) BETWEEN :prim AND :fim';
+              'FROM Apostas JOIN Mercados ON Mercados.Cod_Aposta = ' +
+              'Apostas.Cod_Aposta WHERE Mercados.Cod_Aposta = ' +
+              'Apostas.Cod_Aposta) BETWEEN :prim AND :fim';
             ParamByName('prim').AsDateTime := deInicio.Date;
             ParamByName('fim').AsDateTime := deFim.Date;
           end
@@ -376,8 +390,8 @@ begin
         with TSaveDialog.Create(nil) do
         try
           Filter :=
-          'Arquivo de Texto (*.txt)|*.txt|Arquivo CSV (*.csv)|*.csv|' +
-          'Arquivo SQL (*.sql)|*.sql|Todos os Arquivos (*.*)|*.*';
+            'Arquivo de Texto (*.txt)|*.txt|Arquivo CSV (*.csv)|*.csv|' +
+            'Arquivo SQL (*.sql)|*.sql|Todos os Arquivos (*.*)|*.*';
           DefaultExt := 'txt';
           while Execute do
           begin
@@ -387,8 +401,8 @@ begin
             if FileExists(FileName) then
             begin
               if MessageDlg('O arquivo "' + FileName +
-              '" já existe. Deseja substituí-lo?',
-                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+                '" já existe. Deseja substituí-lo?', mtConfirmation,
+                [mbYes, mbNo], 0) = mrYes then
               begin
                 Script.SaveToFile(FileName);
                 Break;

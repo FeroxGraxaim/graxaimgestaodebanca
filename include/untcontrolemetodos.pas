@@ -477,7 +477,7 @@ var
   CodLinha, i: integer;
 begin
   with formPrincipal do
-  begin
+  try
     if lsbLinhas.ItemIndex <> -1 then
     begin
       CodLinha := -1;
@@ -569,6 +569,9 @@ begin
         Free;
       end;
     end;
+  except
+    on E: Exception do
+    writeln('Erro: ' + E.Message);
   end;
 end;
 

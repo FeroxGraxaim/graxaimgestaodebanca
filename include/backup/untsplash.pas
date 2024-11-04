@@ -56,6 +56,7 @@ var
   EventosTimes: TEventosTimes;
   EventosPaises: TEventosPaises;
   EventosComp: TEventosComp;
+  FormPrincipal: TformPrincipal;
 begin
   with formPrincipal do
     begin
@@ -63,7 +64,7 @@ begin
     Show;
     Screen.Cursor := crHourGlass;
     progresso.Position := 0;
-    lbProgresso.Caption := '';
+    lbProgresso.Caption := 'Iniciando o programa...';
     Application.ProcessMessages;
     progresso.Invalidate;
     sleep(50);
@@ -104,7 +105,7 @@ begin
     btnTudoRed.OnClick := @EventosApostas.TudoGreenRed;
     grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
     grdApostas.OnExit := @EventosApostas.AoSairGrdApostas;
-    grdApostas.OnKeyPrass := @EventosApostas.TrocarSeparadorDecimal;
+    grdApostas.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
     grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
 
     //Definindo eventos do controle de métodos

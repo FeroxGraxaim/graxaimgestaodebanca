@@ -253,6 +253,24 @@ var
 begin
   with formPrincipal do
   begin
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'SELECT Valor_Inicial FROM Banca WHERE Mês = :mesSelec AND ' +
+        'Ano = :anoSelec';
+      ParamByName('mesSelec').AsInteger := mesSelecionado;
+      ParamByName('anoSelec').AsInteger := anoSelecionado;
+      Open;
+      with FieldByName('Valor_Inicial') do
+        if IsEmpty or (AsFloat = 0) then
+        begin
+          ShowMessage('A banca inicial do mês selecionado não foi preenchida, ' +
+            'preencha a banca inicial e tente novamente.');
+          Exit;
+        end;
+    finally
+      Free;
+    end;
     BarraStatus.Panels[0].Text := 'Criando nova aposta...';
     try
       try
@@ -776,7 +794,8 @@ begin
       SQL.Text :=
         'SELECT Odd, Status FROM Mercados WHERE Mercados.Cod_Aposta = :CodAposta';
       ParamByName('CodAposta').AsInteger :=
-      qrApostas.FieldByName('Cod_Aposta').AsInteger;;
+        qrApostas.FieldByName('Cod_Aposta').AsInteger;
+      ;
       Open;
       First;
       writeln('Calculando a odd da aposta selecionada');
@@ -813,6 +832,7 @@ begin
       SQL.Text := 'UPDATE Mercados SET Status = Status';
       ExecSQL;
       transactionBancoDados.CommitRetaining;
+      qrApostas.Refresh;
       writeln('Procurando valor inicial da banca do mês atual');
       SQL.Text := 'SELECT Valor_Inicial FROM Banca WHERE Mês = ' +
         '(SELECT Mês FROM "Selecionar Mês e Ano") AND Ano =       ' +
@@ -838,7 +858,7 @@ begin
       First;
       while not EOF do
       begin
-        BancaFormat := FormatFloat('0.00', BancaFinal);
+        //BancaFormat := FormatFloat('0.00', BancaFinal);
         case FieldByName('Status').AsString of
           'Green': begin
             Retorno :=
@@ -873,7 +893,8 @@ begin
             LucroFormat := FormatFloat('0.00', Lucro);
           end;
         end;
-        BancaFinal := BancaFinal + FieldByName('Lucro').AsFloat;
+        //BancaFinal := BancaFinal + FieldByName('Lucro').AsFloat;
+        BancaFinal := BancaFinal + Lucro;
         BancaFormat := FormatFloat('0.00', BancaFinal);
 
         Edit;
@@ -904,15 +925,15 @@ var
 begin
   with formPrincipal do
   begin
-    if not qrDadosAposta.Active then Exit;
+    Application.ProcessMessages;
     writeln('Lozalizando o código da aposta no qrDadosAposta');
+    if qrDadosAposta.Active then
     CodAposta := qrDadosAposta.FieldByName('Cod_Aposta').AsInteger;
     with qrApostas do
     begin
       writeln('Atualizando qrApostas');
-      Close;
-      Open;
-      writeln('Localizando código');
+      Refresh;
+      writeln('Re-selecionando última aposta selecionada');
       Locate('Cod_Aposta', CodAposta, []);
     end;
   end;

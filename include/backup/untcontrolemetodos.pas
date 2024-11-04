@@ -871,6 +871,7 @@ begin
       else
         Refresh;
   end;
+  GridMesLinhas(nil);
 end;
 
 end.

@@ -247,6 +247,7 @@ type
     qrMesDia: TStringField;
     qrMesesGreenRed: TSQLQuery;
     qrMesGreen: TLargeintField;
+    qrMesNeutro: TLargeintField;
     qrMesNumGreen: TLargeintField;
     qrMesNumRed: TLargeintField;
     qrMesPorCentoLucro: TFloatField;
@@ -269,6 +270,8 @@ type
     qrUnidades: TSQLQuery;
     qrUnidadesUnidade: TStringField;
     qrUnidadesUnidade1: TStringField;
+    rbGestPcent: TRadioButton;
+    rbGestUn: TRadioButton;
     scriptRemoverAposta: TSQLScript;
     qrDadosAposta: TSQLQuery;
     qrMetodosMes: TSQLQuery;
@@ -311,6 +314,7 @@ type
 
     procedure AtualizaMetodoLinha(Sender: TObject);
     procedure CriaMultipla(Contador: integer);
+    procedure FormShow(Sender: TObject);
     procedure grdApostasEditingDone(Sender: TObject);
     procedure grdDadosApCellClick(Column: TColumn);
     procedure grdDadosApEditingDone(Sender: TObject);
@@ -332,19 +336,21 @@ type
       var Handled: boolean);
     procedure SalvarDadosBD(Sender: TObject);
     procedure ImportarDadosBD(Sender: TObject);
+    procedure GestaoUnidadePcent(Sender: TObject);
+    procedure DefinirStake;
   private
 
   public
+    GestaoUnidade: boolean;
     procedure PosAtualizacao;
     procedure ExportTable(const TableName: string);
+    procedure ExcecaoGlobal(Sender: TObject; E: Exception);
   end;
 
 var
   ColunaAtual: TColumn;
   Arquivo: TFileStream;
   Linha: string;
-
-procedure DefinirStake;
 
 var
   formPrincipal: TformPrincipal;
@@ -353,6 +359,7 @@ var
   contMult: integer;
   mesSelecionado: integer;
   anoSelecionado: integer;
+  GestaoPcent: boolean;
 
 implementation
 
@@ -361,7 +368,7 @@ uses
   untControleMetodos, untControleTimes, untPaises, untContrComp,
   fpjson, fphttpclient, jsonparser, LCLIntf;
 
-procedure DefinirStake;
+procedure TformPrincipal.DefinirStake;
 var
   query: TSQLQuery;
 begin
@@ -373,7 +380,7 @@ begin
       if not query.Active then query.Close;
       query.SQL.Text :=
         'UPDATE Banca SET "Stake" = :stake WHERE Mês = :mesSelec AND Ano = :anoSelec';
-      formPrincipal.PerfilDoInvestidor;
+      PerfilDoInvestidor;
       query.ParamByName('stake').AsFloat := stakeAposta;
       query.ParamByName('mesSelec').AsInteger := mesSelecionado;
       query.ParamByName('anoSelec').AsInteger := anoSelecionado;
@@ -388,6 +395,8 @@ begin
     end;
     query.Free;
   end;
+  if qrBanca.Active then qrBanca.Refresh
+  else qrBanca.Open;
 end;
 
 {$R *.lfm}
@@ -408,6 +417,8 @@ begin
 
   mesSelecionado := MonthOf(Now);
   anoSelecionado := YearOf(Now);
+
+  Application.OnException := @ExcecaoGlobal;
 
   writeln('Exibindo tela splash');
   TelaSplash := TformSplash.Create(nil);
@@ -465,15 +476,16 @@ begin
   //Largura e altura total da aba
   larguraTotal := tsGraficosMesMetodos.ClientWidth;
   alturaTotal := tsGraficosMesMetodos.ClientHeight;
-  larguraObjeto := larguraTotal div 3;
   alturaObjeto := alturaTotal div 2;
 
 
   //Proporções das listas de método e linha da aba de gráficos
-  gbListaMetodo.SetBounds(0, 0, larguraObjeto div 2, alturaObjeto);
-  gbListaLinha.SetBounds(0, alturaObjeto, larguraObjeto div 2, alturaObjeto);
+  larguraObjeto := gbListaMetodo.Width;
+  gbListaMetodo.SetBounds(0, 0, larguraObjeto, alturaObjeto);
+  gbListaLinha.SetBounds(0, alturaObjeto, larguraObjeto, alturaObjeto);
 
   //proporção dos gráficos
+  larguraObjeto := larguraTotal div 3;
   larguraGrafico := pnGraficosMetodos.ClientWidth div 2;
   alturaGrafico := pnGraficosMetodos.ClientHeight div 2;
   chrtLucroMetodo.SetBounds(0, 0, larguraGrafico, alturaGrafico);
@@ -580,6 +592,12 @@ begin
 
 end;
 
+procedure TformPrincipal.FormShow(Sender: TObject);
+begin
+  cbMes.Text := IntToStr(MonthOf(Now));
+  cbAno.Text := IntToStr(YearOf(Now));
+end;
+
 procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
 begin
   if (qrApostas.State in [dsInsert, dsEdit]) then
@@ -627,15 +645,29 @@ end;
 
 procedure TformPrincipal.PerfilDoInvestidor;
 begin
-
   if perfilInvestidor = 'Conservador' then
+  begin
+    if GestaoUnidade then
     stakeAposta := RoundTo(valorInicial / 100, -2)
+    else
+    stakeAposta := RoundTo(1 * valorInicial / 100, -2);
+  end
   else
   if perfilInvestidor = 'Moderado' then
+  begin
+    if GestaoUnidade then
     stakeAposta := RoundTo(valorInicial / 70, -2)
+    else
+    stakeAposta := RoundTo(3 * valorInicial / 100, -2);
+  end
   else
   if perfilInvestidor = 'Agressivo' then
-    stakeAposta := RoundTo(valorInicial / 40, -2);
+  begin
+    if GestaoUnidade then
+    stakeAposta := RoundTo(valorInicial / 40, -2)
+    else
+    stakeAposta := RoundTo(5 * valorInicial / 100, -2);
+  end;
 end;
 
 procedure TformPrincipal.tsApostasContextPopup(Sender: TObject;
@@ -706,6 +738,12 @@ begin
   end;   }
 end;
 
+procedure TformPrincipal.ExcecaoGlobal(Sender: TObject; E: Exception);
+begin
+  writeln('Erro: ' + E.Message);
+  Application.ProcessMessages;
+end;
+
 
 procedure TformPrincipal.SalvarDadosBD(Sender: TObject);
 var
@@ -745,14 +783,16 @@ begin
               ExecSQL;
             end;
             transactionBancoDados.CommitRetaining;
+            ReiniciarTodosOsQueries;
+            if not qrApostas.IsEmpty then grdApostas.Enabled := True;
             ShowMessage('Dados importados com sucesso!');
           except
             On E: Exception do
             begin
               Cancel;
               transactionBancoDados.RollbackRetaining;
-              raise Exception.Create(E.Message + sLineBreak + sLineBreak +
-                'Linha SQL: ' + sLineBreak + SQL.Text);
+              raise Exception.Create(E.Message + sLineBreak +
+                sLineBreak + 'Linha SQL: ' + sLineBreak + SQL.Text);
             end;
           end;
         finally
@@ -770,13 +810,39 @@ begin
         mtError, [mbOK], 0);
     end;
   end;
+end;
 
+procedure TformPrincipal.GestaoUnidadePcent(Sender: TObject);
+begin
+  with TSQLQuery.Create(nil) do
+  try
+    DataBase := conectBancoDados;
+    if (Sender = rbGestPcent) then
+    begin
+      SQL.Text := 'UPDATE "Selecionar Perfil" SET GestaoPcent = 1';
+      GestaoUnidade := false;
+      ExecSQL;
+      writeln('Gestão como porcentagem!');
+    end;
+    if (Sender = rbGestUn) then
+    begin
+      SQL.Text := 'UPDATE "Selecionar Perfil" SET GestaoPcent = 0';
+      GestaoUnidade := true;
+      ExecSQL;
+      writeln('Gestão como unidade!');
+    end;
+    transactionBancoDados.CommitRetaining;
+  finally
+    Free;
+  end;
+  DefinirStake;
 end;
 
 procedure TformPrincipal.ReiniciarTodosOsQueries;
 var
   qrPraReiniciar: TList;
   I: integer;
+  EventosMetodos: TEventosMetodos;
 begin
   qrPraReiniciar := TList.Create;
   try
@@ -786,6 +852,19 @@ begin
     qrPraReiniciar.Add(qrUnidades);
     qrPraReiniciar.Add(qrPerfis);
     qrPraReiniciar.Add(qrSelecionarPerfil);
+    qrPraReiniciar.Add(qrMes);
+    qrPraReiniciar.Add(qrAno);
+    qrPraReiniciar.Add(qrMesesGreenRed);
+    qrPraReiniciar.Add(qrMetodosMes);
+    qrPraReiniciar.Add(qrTimes);
+    qrPraReiniciar.Add(qrTimesMaisAcert);
+    qrPraReiniciar.Add(qrTimesMenosAcert);
+    qrPraReiniciar.Add(qrComp);
+    qrPraReiniciar.Add(qrCompMaisAcert);
+    qrPraReiniciar.Add(qrCompMenosAcert);
+    qrPraReiniciar.Add(qrMP);
+    qrPraReiniciar.Add(qrMT);
+    qrPraReiniciar.Add(qrMC);
 
     //qrApostas.ParamByName('mesSelecionado').AsInteger := MonthOf(Now);
     //qrApostas.ParamByName('anoSelecionado').AsInteger := YearOf(Now);
@@ -796,13 +875,11 @@ begin
         TSQLQuery(qrPraReiniciar[I]).Refresh;
       writeln('Reiniciado ', TComponent(qrPraReiniciar[I]).Name);
     end;
+    EventosMetodos.CarregaMetodos;
   except
     on E: Exception do
     begin
-      writeln('Erro ao reiniciar os queries.' + E.Message);
-      MessageDlg('Erro',
-        'Ocorreu um erro. Se o problema persistir favor informar no Github com a seguinte mensagem: '
-        + E.Message, mtError, [mbOK], 0);
+      writeln('Erro ao reiniciar os queries: ' + E.Message);
     end;
   end;
   qrPraReiniciar.Free;

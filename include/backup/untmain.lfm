@@ -9,13 +9,13 @@ object formPrincipal: TformPrincipal
   Menu = MenuPrincipal
   OnCreate = FormCreate
   OnResize = FormResize
+  OnShow = FormShow
   Position = poDesktopCenter
   object pcPrincipal: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = BarraStatus
     Left = 0
     Height = 792
     Top = 0
@@ -32,7 +32,7 @@ object formPrincipal: TformPrincipal
       object txtBancaAtual: TDBText
         Left = 31
         Height = 67
-        Top = 252
+        Top = 313
         Width = 314
         DataField = 'BancaFinalCalc'
         DataSource = dsBanca
@@ -51,7 +51,7 @@ object formPrincipal: TformPrincipal
       object lbBancaAtual: TLabel
         Left = 31
         Height = 23
-        Top = 227
+        Top = 288
         Width = 89
         Caption = 'Banca Final:'
         Font.Height = -16
@@ -83,7 +83,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 768
+        Height = 769
         Top = 0
         Width = 908
         ActivePage = tsGraficos
@@ -92,19 +92,19 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 741
+          ClientHeight = 742
           ClientWidth = 904
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 706
+            Height = 708
             Top = 31
             Width = 905
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 706
+            ClientHeight = 708
             ClientWidth = 905
             TabOrder = 0
             object chrtLucroMes: TChart
@@ -321,11 +321,15 @@ object formPrincipal: TformPrincipal
                   Intervals.NiceSteps = '1.0 | 2.0| 3.0'
                   Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
                   Alignment = calBottom
+                  Marks.Format = '%0:.10g'
                   Marks.LabelBrush.Style = bsClear
+                  Marks.Range.Max = 10
+                  Marks.Range.Min = 5
+                  Marks.Style = smsCustom
                   Minors = <>
-                  Range.Max = 20
+                  Range.Max = 50
+                  Range.Min = 30
                   Range.UseMax = True
-                  Range.UseMin = True
                   Title.LabelBrush.Style = bsClear
                 end>
               Title.Text.Strings = (
@@ -406,7 +410,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 741
+          ClientHeight = 742
           ClientWidth = 904
           object pnTabelas: TPanel
             AnchorSideLeft.Control = tsResumoLista
@@ -415,17 +419,17 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsResumoLista
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 710
+            Height = 711
             Top = 31
             Width = 904
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 710
+            ClientHeight = 711
             ClientWidth = 904
             TabOrder = 0
             object grdMes: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 708
+              Height = 709
               Top = 0
               Width = 356
               Anchors = [akTop, akLeft, akBottom]
@@ -466,7 +470,7 @@ object formPrincipal: TformPrincipal
             object grdAno: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 356
-              Height = 708
+              Height = 709
               Top = 0
               Width = 350
               Anchors = [akTop, akLeft, akBottom]
@@ -509,7 +513,7 @@ object formPrincipal: TformPrincipal
       object txtLucroMoeda: TDBText
         Left = 31
         Height = 67
-        Top = 350
+        Top = 411
         Width = 342
         DataField = 'LucroR$Calc'
         DataSource = dsBanca
@@ -520,7 +524,7 @@ object formPrincipal: TformPrincipal
       object txtLucroPorCento: TDBText
         Left = 31
         Height = 67
-        Top = 412
+        Top = 473
         Width = 396
         DataField = 'Lucro%Calc'
         DataSource = dsBanca
@@ -531,7 +535,7 @@ object formPrincipal: TformPrincipal
       object lbLucro: TLabel
         Left = 31
         Height = 23
-        Top = 326
+        Top = 387
         Width = 46
         Caption = 'Lucro:'
         Font.Height = -16
@@ -549,8 +553,8 @@ object formPrincipal: TformPrincipal
         Left = 147
         Height = 17
         Top = 178
-        Width = 50
-        Caption = 'Unidade:'
+        Width = 134
+        Caption = 'Valor Padrão de Aposta:'
       end
       object cbAno: TComboBox
         Left = 147
@@ -563,10 +567,24 @@ object formPrincipal: TformPrincipal
       end
       object cbMes: TComboBox
         Left = 31
-        Height = 29
+        Height = 25
         Top = 80
         Width = 100
         ItemHeight = 0
+        Items.Strings = (
+          '1'
+          '2'
+          '3'
+          '4'
+          '5'
+          '6'
+          '7'
+          '8'
+          '9'
+          '10'
+          '11'
+          '12'
+        )
         Style = csDropDownList
         TabOrder = 3
       end
@@ -598,6 +616,26 @@ object formPrincipal: TformPrincipal
         Font.Name = 'Sans'
         ParentFont = False
       end
+      object rbGestUn: TRadioButton
+        Left = 31
+        Height = 21
+        Top = 232
+        Width = 226
+        Caption = 'Gestão por Unidade (Recomendado)'
+        Checked = True
+        TabOrder = 6
+        TabStop = True
+        OnClick = GestaoUnidadePcent
+      end
+      object rbGestPcent: TRadioButton
+        Left = 31
+        Height = 21
+        Top = 256
+        Width = 163
+        Caption = 'Gestão por Porcentagem'
+        TabOrder = 7
+        OnClick = GestaoUnidadePcent
+      end
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
@@ -609,12 +647,12 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 505
+        Height = 506
         Top = 12
         Width = 1189
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 480
+        ClientHeight = 487
         ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
@@ -628,7 +666,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 480
+          Height = 487
           Top = 0
           Width = 1185
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -704,11 +742,11 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 517
+        Top = 518
         Width = 1189
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Detalhes da Aposta'
-        ClientHeight = 141
+        ClientHeight = 147
         ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
@@ -721,7 +759,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 141
+          Height = 147
           Top = 0
           Width = 1049
           Alignment = taCenter
@@ -736,7 +774,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 1061
           Height = 25
-          Top = 80
+          Top = 86
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Green'
@@ -751,7 +789,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 1061
           Height = 25
-          Top = 112
+          Top = 118
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Red'
@@ -766,7 +804,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 1061
           Height = 40
-          Top = 0
+          Top = 6
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Cashout'
@@ -784,7 +822,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = lbSelecioneAposta
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 141
+          Height = 147
           Top = 0
           Width = 1049
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -858,7 +896,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 965
         Height = 27
-        Top = 691
+        Top = 692
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -874,7 +912,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 965
         Height = 27
-        Top = 731
+        Top = 732
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -890,7 +928,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 1069
         Height = 27
-        Top = 731
+        Top = 732
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Limpar Filtros'
@@ -900,7 +938,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 184
         Height = 50
-        Top = 707
+        Top = 708
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -911,7 +949,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 50
-        Top = 707
+        Top = 708
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -922,7 +960,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 1069
         Height = 27
-        Top = 691
+        Top = 692
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Filtrar Apostas'
@@ -933,7 +971,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 894
         Height = 17
-        Top = 691
+        Top = 692
         Width = 63
         Anchors = [akRight, akBottom]
         Caption = 'Data Inicial'
@@ -943,7 +981,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 901
         Height = 17
-        Top = 731
+        Top = 732
         Width = 56
         Anchors = [akRight, akBottom]
         Caption = 'Data Final'
@@ -973,13 +1011,16 @@ object formPrincipal: TformPrincipal
           ClientHeight = 763
           ClientWidth = 1191
           object gbListaLinha: TGroupBox
+            AnchorSideBottom.Control = pnGraficosMetodos
+            AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 296
+            Height = 451
             Top = 312
-            Width = 345
+            Width = 201
+            Anchors = [akTop, akLeft, akBottom]
             Caption = 'Linhas'
-            ClientHeight = 277
-            ClientWidth = 341
+            ClientHeight = 432
+            ClientWidth = 197
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -990,9 +1031,9 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 240
+              Height = 395
               Top = 0
-              Width = 341
+              Width = 197
               Anchors = [akTop, akLeft, akRight, akBottom]
               Font.Height = -13
               Font.Name = 'Sans'
@@ -1004,9 +1045,9 @@ object formPrincipal: TformPrincipal
             object btnExcluirLinha: TButton
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 261
+              Left = 117
               Height = 24
-              Top = 249
+              Top = 404
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1020,7 +1061,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 8
               Height = 24
-              Top = 249
+              Top = 404
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Nova Linha'
@@ -1036,10 +1077,10 @@ object formPrincipal: TformPrincipal
             Left = 0
             Height = 299
             Top = 8
-            Width = 345
+            Width = 201
             Caption = 'Métodos'
             ClientHeight = 280
-            ClientWidth = 341
+            ClientWidth = 197
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -1053,7 +1094,7 @@ object formPrincipal: TformPrincipal
               Left = 0
               Height = 240
               Top = 0
-              Width = 341
+              Width = 197
               Anchors = [akTop, akLeft, akRight, akBottom]
               Font.Height = -13
               Font.Name = 'Sans'
@@ -1078,7 +1119,7 @@ object formPrincipal: TformPrincipal
             object btnExcluirMetodo: TButton
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 261
+              Left = 117
               Height = 24
               Top = 249
               Width = 67
@@ -1274,13 +1315,13 @@ object formPrincipal: TformPrincipal
             AnchorSideRight.Control = grbMetodo
             AnchorSideBottom.Control = tsGraficosMesMetodos
             AnchorSideBottom.Side = asrBottom
-            Left = 345
+            Left = 201
             Height = 763
             Top = 0
-            Width = 654
+            Width = 798
             Anchors = [akTop, akLeft, akRight, akBottom]
             ClientHeight = 759
-            ClientWidth = 650
+            ClientWidth = 794
             TabOrder = 4
             object chrtAcertMetodo: TChart
               Left = 376
@@ -2016,7 +2057,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 376
+          Height = 370
           Top = 32
           Width = 460
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2122,7 +2163,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 120
           Height = 33
-          Top = 416
+          Top = 410
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2135,7 +2176,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 33
-          Top = 416
+          Top = 410
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo Time'
@@ -2836,13 +2877,17 @@ object formPrincipal: TformPrincipal
     SimplePanel = False
   end
   object progStatus: TProgressBar
+    AnchorSideTop.Control = BarraStatus
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BarraStatus
     AnchorSideBottom.Side = asrBottom
     Left = 941
-    Height = 17
+    Height = 15
     Top = 796
     Width = 236
-    Anchors = [akRight, akBottom]
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 2
     TabOrder = 2
   end
   object conectBancoDados: TSQLite3Connection
@@ -3690,6 +3735,11 @@ object formPrincipal: TformPrincipal
         Precision = -1
       end    
       item
+        Name = 'Neutro'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
         Name = 'NumRed'
         DataType = ftLargeint
         Precision = -1
@@ -3756,6 +3806,16 @@ object formPrincipal: TformPrincipal
       '    GROUP BY strftime(''%d'', A4.Data)'
       '    HAVING SUM(Lucro) < 0'
       '  ), 0) AS Red,'
+      ''
+      '   IFNULL(('
+      '    SELECT 1'
+      '    FROM Apostas AS A4'
+      '    WHERE strftime(''%m'', A4.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
+      '      AND strftime(''%Y'', A4.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      '      AND strftime(''%d'', A4.Data) = strftime(''%d'', Apostas.Data)'
+      '    GROUP BY strftime(''%d'', A4.Data)'
+      '    HAVING SUM(Lucro) = 0'
+      '  ), 0) AS Neutro,'
       ''
       '  (SELECT COUNT(*) FROM Apostas AS A5'
       '  WHERE strftime(''%m'', A5.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
@@ -3836,6 +3896,15 @@ object formPrincipal: TformPrincipal
       FieldKind = fkData
       FieldName = 'NumRed'
       Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrMesNeutro: TLargeintField
+      FieldKind = fkData
+      FieldName = 'Neutro'
+      Index = 7
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
