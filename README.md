@@ -3,18 +3,18 @@ Sistema de gestão de banca para apostas esportivas.
 
 ## Introdução
 Este programa tem o intuito de substituir o uso de planilhas de gestão de banca por um sistema de gestão intuitivo e simples de usar, tanto para apostadores iniciantes quanto para os profissionais. 
-*Atenção:* o programa está no início de seu desenvolvimento, e ainda não está em condições de uso para a sua finalidade. Aos curiosos que quiserem testar o projeto em seu estado atual, sintam-se livres para fazer suas sugestões e críticas.
+*Atenção:* O programa já está em condições de uso, mas ainda está em desenvolvimento! Não me responsabilizo por perda dos dados registrados, recomendo manter uma planilha para a gestão principal enquanto o programa é testado! 
+Caso tenha encontrado algum bug, <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/issues"> favor relatar. </a> 
 
-### Recursos utilizáveis: 
+### Recursos: 
 - Inserção de registros de novas apostas, com data, time mandante, time visitante, estratégia, unidade, etc.
 - Determinação do valor inicial da banca.
-### Recursos em desenvolvimento: 
 - Edição de registros no banco de dados;
 - Filtragem das apostas;
 - Gráficos de controle do lucro;
 - Inserção e remoção de times, campeonatos e estratégias.
-### Recursos que serão implementados no futuro:
 - Inserção de países no banco de dados, com controle de perda e ganho total de cada país registrado;
+### Recursos que serão implementados no futuro:
 - Possibilidade de salvar o banco de dados na nuvem, pensando num futuro desenvolvimento de sistema para aparelhos móveis;
 - Demais recursos que forem sugeridos.
 
@@ -32,8 +32,7 @@ Navegar até os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/re
 Acesse os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest"> lançamentos </a> e baixe a versão de acordo com sua distro:
 - Debian, Ubuntu, Linux Mint, Pop!_OS e derivados: baixar e executar o arquivo **DEB.**
 - Fedora, OpenSUSE, RedHat e derivados: baixar e executar o arquivo **RPM.**
-- Manjaro e Arch Linux: Baixe e execute o arquivo **.SH**, certifique-se de que esteja com permissões para ser executado nas propriedades do arquivo.
-
+- Compilação automática (todas as distros): baixar e executar o arquivo **SH.**
 #### Instalação Manual (Compilação)    
 Instale o git para fazer o clone do repositório, e instale o make para fazer a compilação.
 
