@@ -10,6 +10,7 @@ object formSalvarDados: TformSalvarDados
   FormStyle = fsSystemStayOnTop
   OnClose = FecharFormulario
   OnShow = FormShow
+  LCLVersion = '3.4.0.0'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner

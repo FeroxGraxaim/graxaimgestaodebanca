@@ -171,14 +171,15 @@ type
     lnGraficoLucroMes: TLineSeries;
     lsbLinhas: TListBox;
     lsbMetodos: TListBox;
+    miExibirBoasVindas: TMenuItem;
     MenuPrincipal: TMainMenu;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
+    MenuOpcoes: TMenuItem;
+    MenuAjuda: TMenuItem;
     miImportar: TMenuItem;
     miExportar: TMenuItem;
-    MenuItem6: TMenuItem;
-    MenuItem7: TMenuItem;
-    MenuItem8: TMenuItem;
+    MenuComoUsar: TMenuItem;
+    MenuSobre: TMenuItem;
+    MenuApoie: TMenuItem;
     pcMesMetodos: TPageControl;
     pcPrincipal: TPageControl;
     pcResumo: TPageControl;
@@ -307,33 +308,24 @@ type
     txtLucroMoeda: TDBText;
     txtLucroPorCento: TDBText;
     txtStake: TDBText;
-    procedure DrawGrid1Click(Sender: TObject);
     procedure dsBancaDataChange(Sender: TObject; Field: TField);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
 
     procedure AtualizaMetodoLinha(Sender: TObject);
-    procedure CriaMultipla(Contador: integer);
-    procedure FormShow(Sender: TObject);
     procedure grdApostasEditingDone(Sender: TObject);
     procedure grdDadosApCellClick(Column: TColumn);
     procedure grdDadosApEditingDone(Sender: TObject);
     procedure MenuItem7Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
-    procedure miExportarClick(Sender: TObject);
-    procedure miImportarClick(Sender: TObject);
-    procedure pcPrincipalChange(Sender: TObject);
+    procedure miExibirBoasVindasClick(Sender: TObject);
     procedure qrApostasAfterOpen(DataSet: TDataSet);
-    procedure qrApostasAfterPost(DataSet: TDataSet);
     procedure qrApostasAfterRefresh(DataSet: TDataSet);
     procedure qrApostasBeforeRefresh(DataSet: TDataSet);
     procedure ReiniciarTodosOsQueries;
     procedure MudarCorLucro;
     procedure PerfilDoInvestidor;
-    procedure tsApostasContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: boolean);
-    procedure tsGrafMetContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: boolean);
     procedure SalvarDadosBD(Sender: TObject);
     procedure ImportarDadosBD(Sender: TObject);
     procedure GestaoUnidadePcent(Sender: TObject);
@@ -343,14 +335,15 @@ type
   public
     GestaoUnidade: boolean;
     procedure PosAtualizacao;
-    procedure ExportTable(const TableName: string);
     procedure ExcecaoGlobal(Sender: TObject; E: Exception);
+    procedure CarregaConfig;
   end;
 
 var
   ColunaAtual: TColumn;
   Arquivo: TFileStream;
   Linha: string;
+  ExibirBoasVindas: boolean;
 
 var
   formPrincipal: TformPrincipal;
@@ -366,7 +359,28 @@ implementation
 uses
   untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre,
   untControleMetodos, untControleTimes, untPaises, untContrComp,
-  fpjson, fphttpclient, jsonparser, LCLIntf;
+  fpjson, fphttpclient, jsonparser, LCLIntf, untBoasVindas;
+
+var
+  BoasVindas: TformBoasVindas;
+
+procedure TformPrincipal.CarregaConfig;
+begin
+  writeln('Carregando configurações');
+  with TSQLQuery.Create(nil) do
+  try
+    DataBase := conectBancoDados;
+    SQL.Text := 'SELECT * FROM ConfigPrograma';
+    Open;
+    writeln('Query aberto');
+    if FieldByName('ExibirTelaBoasVindas').AsBoolean = True then
+      ExibirBoasVindas := True
+    else
+      ExibirBoasVindas := False;
+  finally
+    Free;
+  end;
+end;
 
 procedure TformPrincipal.DefinirStake;
 var
@@ -396,7 +410,8 @@ begin
     query.Free;
   end;
   if qrBanca.Active then qrBanca.Refresh
-  else qrBanca.Open;
+  else
+    qrBanca.Open;
 end;
 
 {$R *.lfm}
@@ -424,16 +439,25 @@ begin
   TelaSplash := TformSplash.Create(nil);
   TelaSplash.ShowModal;
   TelaSplash.Free;
-end;
-
-procedure TformPrincipal.DrawGrid1Click(Sender: TObject);
-begin
-
+  CarregaConfig;
 end;
 
 procedure TformPrincipal.dsBancaDataChange(Sender: TObject; Field: TField);
 begin
 
+end;
+
+procedure TformPrincipal.FormActivate(Sender: TObject);
+var
+  BoasVindas: TformBoasVindas;
+begin
+  tsPainel.Show;
+  if ExibirBoasVindas then
+  begin
+    BoasVindas := TformBoasVindas.Create(nil);
+    BoasVindas.ShowModal;
+    BoasVindas.Free;
+  end;
 end;
 
 procedure TformPrincipal.FormResize(Sender: TObject);
@@ -587,17 +611,6 @@ begin
   end;
 end;
 
-procedure TformPrincipal.CriaMultipla(Contador: integer);
-begin
-
-end;
-
-procedure TformPrincipal.FormShow(Sender: TObject);
-begin
-  cbMes.Text := IntToStr(MonthOf(Now));
-  cbAno.Text := IntToStr(YearOf(Now));
-end;
-
 procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
 begin
   if (qrApostas.State in [dsInsert, dsEdit]) then
@@ -648,99 +661,33 @@ begin
   if perfilInvestidor = 'Conservador' then
   begin
     if GestaoUnidade then
-    stakeAposta := RoundTo(valorInicial / 100, -2)
+      stakeAposta := RoundTo(valorInicial / 100, -2)
     else
-    stakeAposta := RoundTo(1 * valorInicial / 100, -2);
+      stakeAposta := RoundTo(1 * valorInicial / 100, -2);
   end
   else
   if perfilInvestidor = 'Moderado' then
   begin
     if GestaoUnidade then
-    stakeAposta := RoundTo(valorInicial / 70, -2)
+      stakeAposta := RoundTo(valorInicial / 70, -2)
     else
-    stakeAposta := RoundTo(3 * valorInicial / 100, -2);
+      stakeAposta := RoundTo(3 * valorInicial / 100, -2);
   end
   else
   if perfilInvestidor = 'Agressivo' then
   begin
     if GestaoUnidade then
-    stakeAposta := RoundTo(valorInicial / 40, -2)
+      stakeAposta := RoundTo(valorInicial / 40, -2)
     else
-    stakeAposta := RoundTo(5 * valorInicial / 100, -2);
+      stakeAposta := RoundTo(5 * valorInicial / 100, -2);
   end;
-end;
-
-procedure TformPrincipal.tsApostasContextPopup(Sender: TObject;
-  MousePos: TPoint; var Handled: boolean);
-begin
-
-end;
-
-procedure TformPrincipal.tsGrafMetContextPopup(Sender: TObject;
-  MousePos: TPoint; var Handled: boolean);
-begin
-
-end;
-
-procedure TformPrincipal.ExportTable(const TableName: string);
-var
-  i: integer;
-  Linha: string;
-begin
-{  with TSQLQuery.Create(nil) do
-  try
-    DataBase := formPrincipal.conectBancoDados;
-    SQL.Text := Format('SELECT * FROM %s', [TableName]);
-    Open;
-
-    Arquivo.Write(Pointer(Linha)^, Length(Linha) * SizeOf(char));
-
-    First;
-    while not EOF do
-    begin
-      Linha := Format('INSERT INTO %s (', [TableName]);
-      i := 0;
-      while i < FieldCount do
-      begin
-        if i > 0 then
-          Linha := Linha + ',';
-        Linha := Linha + '"' + StringReplace(Fields[i].AsString, '"',
-          '""', [rfReplaceAll]) + '"';
-        Linha := Linha + Format('%s', [Fields[i].FieldName]);
-        Inc(i);
-      end;
-      Linha := Linha + ') VALUES (';
-
-      i := 0;
-      while i < FieldCount do
-      begin
-        if i > 0 then
-          Linha := Linha + ',';
-        Linha := Linha + '"' + StringReplace(Fields[i].AsString, '"',
-          '""', [rfReplaceAll]) + '"';
-        Inc(i);
-      end;
-      Linha := Linha + ');' + sLineBreak;
-      Arquivo.Write(Pointer(Linha)^, Length(Linha) * SizeOf(char));
-      Next;
-    end;
-
-    Arquivo.Write(Pointer(sLineBreak)^, Length(sLineBreak) * SizeOf(char));
-    Free;
-  except
-    on E: Exception do
-    begin
-      Free;
-      MessageDlg('Erro', 'Erro ao salvar arquivo, tente novamente. Se o problema ' +
-        'persistir favor informar no GitHub com a seguinte mensagem: ' +
-        sLineBreak + E.Message, mtError, [mbOK], 0);
-    end;
-  end;   }
 end;
 
 procedure TformPrincipal.ExcecaoGlobal(Sender: TObject; E: Exception);
 begin
   writeln('Erro: ' + E.Message);
+  Application.ProcessMessages;
+  Application.ProcessMessages;
 end;
 
 
@@ -819,14 +766,14 @@ begin
     if (Sender = rbGestPcent) then
     begin
       SQL.Text := 'UPDATE "Selecionar Perfil" SET GestaoPcent = 1';
-      GestaoUnidade := false;
+      GestaoUnidade := False;
       ExecSQL;
       writeln('Gestão como porcentagem!');
     end;
     if (Sender = rbGestUn) then
     begin
       SQL.Text := 'UPDATE "Selecionar Perfil" SET GestaoPcent = 0';
-      GestaoUnidade := true;
+      GestaoUnidade := True;
       ExecSQL;
       writeln('Gestão como unidade!');
     end;
@@ -995,28 +942,16 @@ begin
   openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
 end;
 
-procedure TformPrincipal.miExportarClick(Sender: TObject);
+procedure TformPrincipal.miExibirBoasVindasClick(Sender: TObject);
 begin
-
-end;
-
-procedure TformPrincipal.miImportarClick(Sender: TObject);
-begin
-
-end;
-
-procedure TformPrincipal.pcPrincipalChange(Sender: TObject);
-begin
+  BoasVindas := TformBoasVindas.Create(nil);
+  BoasVindas.ShowModal;
+  BoasVindas.Free;
 end;
 
 procedure TformPrincipal.qrApostasAfterOpen(DataSet: TDataSet);
 begin
   qrApostas.Last;
-end;
-
-procedure TformPrincipal.qrApostasAfterPost(DataSet: TDataSet);
-begin
-
 end;
 
 procedure TformPrincipal.qrApostasAfterRefresh(DataSet: TDataSet);
@@ -1058,5 +993,7 @@ begin
     programAtualizado := True;
   end;
 end;
+
+initialization
 
 end.

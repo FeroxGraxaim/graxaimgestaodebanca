@@ -56,7 +56,7 @@ var
   EventosTimes: TEventosTimes;
   EventosPaises: TEventosPaises;
   EventosComp: TEventosComp;
-  FormPrincipal: TformPrincipal;
+  //FormPrincipal: TformPrincipal;
 begin
   with formPrincipal do
     begin
@@ -250,6 +250,7 @@ begin
   VerificarAtualizacoes(currentVersion);
   progresso.Position := 100;
   Application.ProcessMessages;
+  CarregaConfig;
   //sleep(50);
   progresso.Invalidate;
   Close;

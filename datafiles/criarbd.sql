@@ -5,8 +5,9 @@ CREATE TABLE IF NOT EXISTS "Perfis" (
 	"Perfil"	VARCHAR,
 	PRIMARY KEY("Perfil")
 );
-CREATE TABLE IF NOT EXISTS "Selecionar Perfil" (
-	"Perfil Selecionado"	VARCHAR NOT NULL DEFAULT 'Conservador'
+CREATE TABLE "Selecionar Perfil" (
+	"Perfil Selecionado"	VARCHAR NOT NULL DEFAULT 'Conservador',
+	"GestaoPcent"	BOOLEAN DEFAULT (0)
 );
 CREATE TABLE IF NOT EXISTS "Selecionar Mês e Ano" (
 	"Mês"	INTEGER,
@@ -114,6 +115,9 @@ CREATE TABLE IF NOT EXISTS "Jogo" (
 CREATE TABLE IF NOT EXISTS "Selecaoionar Mês e Ano" (
 	"Mês"	INTEGER,
 	"Ano"	INTEGER
+);
+CREATE TABLE "ConfigPrograma" (
+	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1
 );
 INSERT INTO "Unidades" ("Unidade") VALUES ('0,25 Un'),
  ('0,5 Un'),
@@ -521,7 +525,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (15);
+INSERT INTO "ControleVersao" ("Versao") VALUES (17);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),

@@ -7,10 +7,11 @@ object formPrincipal: TformPrincipal
   ClientHeight = 813
   ClientWidth = 1199
   Menu = MenuPrincipal
+  OnActivate = FormActivate
   OnCreate = FormCreate
   OnResize = FormResize
-  OnShow = FormShow
   Position = poDesktopCenter
+  ShowHint = True
   object pcPrincipal: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -22,9 +23,10 @@ object formPrincipal: TformPrincipal
     Width = 1199
     ActivePage = tsPainel
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ParentShowHint = False
+    ShowHint = True
     TabIndex = 0
     TabOrder = 0
-    OnChange = pcPrincipalChange
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
       ClientHeight = 765
@@ -32,6 +34,7 @@ object formPrincipal: TformPrincipal
       object txtBancaAtual: TDBText
         Left = 31
         Height = 67
+        Hint = 'O valor atual da sua banca, seja com lucro ou prejuízo. '
         Top = 313
         Width = 314
         DataField = 'BancaFinalCalc'
@@ -43,9 +46,12 @@ object formPrincipal: TformPrincipal
       object btnSalvarBancaInicial: TButton
         Left = 147
         Height = 25
+        Hint = 'Salva o valor da banca digitado ao lado para o mês e ano selecionados.'
         Top = 129
         Width = 100
         Caption = 'Salvar'
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
       end
       object lbBancaAtual: TLabel
@@ -83,7 +89,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 769
+        Height = 770
         Top = 0
         Width = 908
         ActivePage = tsGraficos
@@ -92,25 +98,26 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 742
+          ClientHeight = 743
           ClientWidth = 904
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 708
+            Height = 710
             Top = 31
             Width = 905
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 708
+            ClientHeight = 710
             ClientWidth = 905
             TabOrder = 0
             object chrtLucroMes: TChart
               AnchorSideRight.Control = chrtAcertMes
               Left = 108
               Height = 201
+              Hint = 'Gráfico que mostra a lucratividade do mês atual.'
               Top = 1
               Width = 432
               AxisList = <              
@@ -157,6 +164,7 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               Left = 544
               Height = 192
+              Hint = 'Gráfico que mostra a média de dias bons, ruins e neutros do mês atual.'
               Top = 8
               Width = 432
               AxisList = <              
@@ -208,6 +216,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 114
               Height = 206
+              Hint = 'Gráfico que mostra a lucratividade total de cada mês do ano atual.'
               Top = 202
               Width = 432
               AllowPanning = False
@@ -250,6 +259,7 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               Left = 544
               Height = 166
+              Hint = 'Gráfico que mostra a média de meses bons, ruins e neutros do ano atual.'
               Top = 224
               Width = 432
               AxisList = <              
@@ -301,6 +311,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 1
               Height = 206
+              Hint = 'Gráfico que mostra a lucratividade de todos os anos onde há apostas registradas.'
               Top = 416
               Width = 552
               AllowPanning = False
@@ -345,6 +356,7 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               Left = 544
               Height = 166
+              Hint = 'Gráfico que mostra a média de anos bons, ruins e neutros.'
               Top = 416
               Width = 328
               AxisList = <              
@@ -395,6 +407,7 @@ object formPrincipal: TformPrincipal
           object cbGraficos: TComboBox
             Left = 12
             Height = 25
+            Hint = 'Alterna a exibição dos gráficos entre porcentagem de lucro e o valor em dinheiro.'
             Top = 6
             Width = 86
             ItemHeight = 0
@@ -410,7 +423,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 742
+          ClientHeight = 743
           ClientWidth = 904
           object pnTabelas: TPanel
             AnchorSideLeft.Control = tsResumoLista
@@ -419,17 +432,17 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsResumoLista
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 711
+            Height = 712
             Top = 31
             Width = 904
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 711
+            ClientHeight = 712
             ClientWidth = 904
             TabOrder = 0
             object grdMes: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 709
+              Height = 710
               Top = 0
               Width = 356
               Anchors = [akTop, akLeft, akBottom]
@@ -470,7 +483,7 @@ object formPrincipal: TformPrincipal
             object grdAno: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 356
-              Height = 709
+              Height = 710
               Top = 0
               Width = 350
               Anchors = [akTop, akLeft, akBottom]
@@ -559,15 +572,19 @@ object formPrincipal: TformPrincipal
       object cbAno: TComboBox
         Left = 147
         Height = 29
+        Hint = 'Seleciona o ano das apostas registradas (padrão ano atual)'
         Top = 80
         Width = 100
         ItemHeight = 0
+        ParentShowHint = False
+        ShowHint = True
         Style = csDropDownList
         TabOrder = 2
       end
       object cbMes: TComboBox
         Left = 31
         Height = 25
+        Hint = 'Seleciona o mês das apostas registradas (padrão mês atual)'
         Top = 80
         Width = 100
         ItemHeight = 0
@@ -585,23 +602,31 @@ object formPrincipal: TformPrincipal
           '11'
           '12'
         )
+        ParentShowHint = False
+        ShowHint = True
         Style = csDropDownList
         TabOrder = 3
       end
       object edtBancaInicial: TEdit
         Left = 31
         Height = 27
+        Hint = 'Insira aqui o valor inicial da banca que está na casa de apostas que tu operas, pode ser a soma do valor de várias bancas em várias casas de apostas.'
         Top = 129
         Width = 100
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 4
         Text = 'Banca Inicial'
       end
       object cbPerfil: TComboBox
         Left = 31
         Height = 29
+        Hint = 'Selecione aqui seu perfil de investidor. '#10#10'GESTÃO POR UNIDADE:'#10'Conservador = banca ÷ 100'#10'Moderado = banca ÷ 70'#10'Agressivo = banca ÷ 40'#10#10'GESTÃO POR PORCENTAGEM:'#10'Conservador = 1% da banca'#10'Moderado = 3% da banca'#10'Agressivo = 5% da banca'
         Top = 197
         Width = 100
         ItemHeight = 0
+        ParentShowHint = False
+        ShowHint = True
         Style = csDropDownList
         TabOrder = 5
       end
@@ -619,6 +644,7 @@ object formPrincipal: TformPrincipal
       object rbGestUn: TRadioButton
         Left = 31
         Height = 21
+        Hint = 'Gestão de banca por unidade, é o mais seguro e menos agressivo de se apostar nos perfis moderado e agressivo, no perfil conservador é a mesma coisa que gestão por porcentagem. (Mais detalhes posicione o mouse sobre a caixa de seleção acima).'
         Top = 232
         Width = 226
         Caption = 'Gestão por Unidade (Recomendado)'
@@ -630,6 +656,7 @@ object formPrincipal: TformPrincipal
       object rbGestPcent: TRadioButton
         Left = 31
         Height = 21
+        Hint = 'Gestão de banca normalmente usada por iniciantes, um pouco mais agressiva, ideal para bancas muito pequenas (Exemplo: R$ 100,00). Não é recomendado usar esse tipo de gestão para bancas maiores.'
         Top = 256
         Width = 163
         Caption = 'Gestão por Porcentagem'
@@ -641,18 +668,17 @@ object formPrincipal: TformPrincipal
       Caption = 'Apostas'
       ClientHeight = 765
       ClientWidth = 1195
-      OnContextPopup = tsApostasContextPopup
       object grbApostas: TGroupBox
         AnchorSideRight.Control = tsApostas
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 506
+        Height = 507
         Top = 12
         Width = 1189
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 487
+        ClientHeight = 482
         ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
@@ -666,7 +692,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 487
+          Height = 482
+          Hint = 'Todas as apostas registradas do mês selecionado.'
           Top = 0
           Width = 1185
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -732,6 +759,7 @@ object formPrincipal: TformPrincipal
           Font.Name = 'Sans'
           ParentFont = False
           Scrollbars = ssAutoBoth
+          ShowHint = True
           TabOrder = 0
           OnEditingDone = grdApostasEditingDone
         end
@@ -742,11 +770,11 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 518
+        Top = 519
         Width = 1189
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Detalhes da Aposta'
-        ClientHeight = 147
+        ClientHeight = 141
         ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
@@ -759,7 +787,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 147
+          Height = 141
+          Hint = 'Ao selecionar uma aposta, aparecerá uma tabela com detalhes da aposta, contendo o jogo (campeonato - mandante X visitante) e o método e linha usado na aposta, podendo alterá-los, e a odd e a situação de cada linha, que também podem ser alteradas.'
           Top = 0
           Width = 1049
           Alignment = taCenter
@@ -774,7 +803,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 1061
           Height = 25
-          Top = 86
+          Hint = 'Altera todas as linhas da aposta como bem-sucedidas (Green)'
+          Top = 74
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Green'
@@ -782,6 +812,8 @@ object formPrincipal: TformPrincipal
           Font.Height = -13
           Font.Name = 'Sans'
           ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 0
         end
         object btnTudoRed: TButton
@@ -789,7 +821,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 1061
           Height = 25
-          Top = 118
+          Hint = 'Altera todas as linhas da aposta como mal-sucedidas (Red)'
+          Top = 106
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Red'
@@ -804,7 +837,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 1061
           Height = 40
-          Top = 6
+          Hint = 'Caso tenha retirado o valor da aposta antes dela ser finalizada, clique aqui e digite o valor em dinheiro que retornou da aposta na caixa de diálogo que aparecerá.'
+          Top = -6
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Cashout'
@@ -812,6 +846,8 @@ object formPrincipal: TformPrincipal
           Font.Height = -13
           Font.Name = 'Sans'
           ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 2
         end
         object grdDadosAp: TDBGrid
@@ -822,7 +858,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = lbSelecioneAposta
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 147
+          Height = 141
+          Hint = 'Tabela com detalhes da aposta. Apenas o método, linha, odd e situação são editáveis.'
           Top = 0
           Width = 1049
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -871,6 +908,7 @@ object formPrincipal: TformPrincipal
           Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowEditor, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           ParentFont = False
           Scrollbars = ssAutoBoth
+          ShowHint = True
           TabOrder = 3
           Visible = False
           OnCellClick = grdDadosApCellClick
@@ -880,6 +918,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           Left = 1061
           Height = 25
+          Hint = 'Recurso em desenvolvimento!'
           Top = 48
           Width = 116
           Anchors = [akTop, akRight]
@@ -888,6 +927,8 @@ object formPrincipal: TformPrincipal
           Font.Height = -13
           Font.Name = 'Sans'
           ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 4
         end
       end
@@ -896,7 +937,8 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 965
         Height = 27
-        Top = 692
+        Hint = 'Insira aqui a partir de qual data quer filtrar a aposta, podendo ser de meses anteriores.'
+        Top = 693
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -912,7 +954,8 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 965
         Height = 27
-        Top = 732
+        Hint = 'Insira aqui a data final na qual quer filtrar as apostas, podendo ser de meses posteriores ao selecionado.'
+        Top = 733
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -928,7 +971,8 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 1069
         Height = 27
-        Top = 732
+        Hint = 'Limpa os filtros de datas e volta a exibir apenas as apostas do mês selecionado.'
+        Top = 733
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Limpar Filtros'
@@ -938,10 +982,13 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 184
         Height = 50
-        Top = 708
+        Hint = 'Remove aposta(s) selecionada(s).'
+        Top = 709
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 5
       end
       object btnNovaAposta: TButton
@@ -949,10 +996,13 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 50
-        Top = 708
+        Hint = 'Abre um janela para criar uma nova aposta'
+        Top = 709
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 6
       end
       object btnFiltrarAp: TButton
@@ -960,7 +1010,8 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 1069
         Height = 27
-        Top = 692
+        Hint = 'Aplica o filtro de datas inseridos nos campos ao lado.'
+        Top = 693
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Filtrar Apostas'
@@ -971,7 +1022,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 894
         Height = 17
-        Top = 692
+        Top = 693
         Width = 63
         Anchors = [akRight, akBottom]
         Caption = 'Data Inicial'
@@ -981,7 +1032,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 901
         Height = 17
-        Top = 732
+        Top = 733
         Width = 56
         Anchors = [akRight, akBottom]
         Caption = 'Data Final'
@@ -1008,18 +1059,18 @@ object formPrincipal: TformPrincipal
         TabOrder = 0
         object tsGraficosMesMetodos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 763
+          ClientHeight = 738
           ClientWidth = 1191
           object gbListaLinha: TGroupBox
             AnchorSideBottom.Control = pnGraficosMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 451
+            Height = 426
             Top = 312
             Width = 201
             Anchors = [akTop, akLeft, akBottom]
             Caption = 'Linhas'
-            ClientHeight = 432
+            ClientHeight = 401
             ClientWidth = 197
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1031,7 +1082,8 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 395
+              Height = 364
+              Hint = 'Lista de linhas do método selecionado'
               Top = 0
               Width = 197
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1047,7 +1099,8 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 117
               Height = 24
-              Top = 404
+              Hint = 'Remove linha selecionada'
+              Top = 373
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1061,7 +1114,8 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 8
               Height = 24
-              Top = 404
+              Hint = 'Cria nova linha'
+              Top = 373
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Nova Linha'
@@ -1079,7 +1133,7 @@ object formPrincipal: TformPrincipal
             Top = 8
             Width = 201
             Caption = 'Métodos'
-            ClientHeight = 280
+            ClientHeight = 274
             ClientWidth = 197
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1092,7 +1146,8 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 240
+              Height = 234
+              Hint = 'Lista de métodos para apostar'
               Top = 0
               Width = 197
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1107,7 +1162,8 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 8
               Height = 24
-              Top = 249
+              Hint = 'Cria novo método'
+              Top = 243
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Novo Método'
@@ -1121,7 +1177,8 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Side = asrBottom
               Left = 117
               Height = 24
-              Top = 249
+              Hint = 'Remove método selecionado'
+              Top = 243
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1143,7 +1200,7 @@ object formPrincipal: TformPrincipal
             Width = 192
             Anchors = [akTop, akRight]
             Caption = 'Dados da Linha'
-            ClientHeight = 260
+            ClientHeight = 239
             ClientWidth = 188
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1231,7 +1288,7 @@ object formPrincipal: TformPrincipal
             Width = 192
             Anchors = [akTop, akRight]
             Caption = 'Dados do Método'
-            ClientHeight = 268
+            ClientHeight = 247
             ClientWidth = 188
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1316,16 +1373,17 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsGraficosMesMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 201
-            Height = 763
+            Height = 738
             Top = 0
             Width = 798
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 759
-            ClientWidth = 794
+            ClientHeight = 738
+            ClientWidth = 798
             TabOrder = 4
             object chrtAcertMetodo: TChart
               Left = 376
               Height = 264
+              Hint = 'Média de acertos e erros do método selecionado'
               Top = 0
               Width = 331
               AxisList = <              
@@ -1361,6 +1419,7 @@ object formPrincipal: TformPrincipal
             object chrtLucroMetodo: TChart
               Left = 32
               Height = 264
+              Hint = 'Média de lucro/prejuízo do método selecionado'
               Top = 0
               Width = 331
               AxisList = <              
@@ -1396,6 +1455,7 @@ object formPrincipal: TformPrincipal
             object chrtLucroLinha: TChart
               Left = 56
               Height = 264
+              Hint = 'Média de lucro/prejuízo da linha selecionada'
               Top = 296
               Width = 331
               AxisList = <              
@@ -1431,6 +1491,7 @@ object formPrincipal: TformPrincipal
             object chrtAcertLinha: TChart
               Left = 469
               Height = 264
+              Hint = 'Média de acertos/erros da linha selecionada'
               Top = 314
               Width = 331
               AxisList = <              
@@ -1467,15 +1528,16 @@ object formPrincipal: TformPrincipal
         end
         object tsDadosMesMetodos: TTabSheet
           Caption = 'Dados'
-          ClientHeight = 763
+          ClientHeight = 738
           ClientWidth = 1191
           object grbMetodos: TGroupBox
             Left = 0
             Height = 320
+            Hint = 'Lista de métodos em tabela de dados'
             Top = 8
             Width = 441
             Caption = 'Métodos'
-            ClientHeight = 301
+            ClientHeight = 295
             ClientWidth = 437
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1489,7 +1551,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetodos
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 301
+              Height = 295
               Top = 0
               Width = 437
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1551,10 +1613,11 @@ object formPrincipal: TformPrincipal
           object grbLinhas: TGroupBox
             Left = 0
             Height = 312
+            Hint = 'Lista de linhas do método selecionado em tabela de dados'
             Top = 328
             Width = 441
             Caption = 'Linhas'
-            ClientHeight = 293
+            ClientHeight = 286
             ClientWidth = 437
             Font.Height = -17
             Font.Name = 'Sans'
@@ -1568,7 +1631,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbLinhas
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 293
+              Height = 286
               Top = 0
               Width = 437
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1627,10 +1690,11 @@ object formPrincipal: TformPrincipal
             AnchorSideLeft.Side = asrBottom
             Left = 568
             Height = 232
+            Hint = 'Mostra os dados de assertividade por país do método selecionado'
             Top = 8
             Width = 497
             Caption = 'Métodos por País'
-            ClientHeight = 213
+            ClientHeight = 207
             ClientWidth = 493
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1644,7 +1708,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetPais
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 213
+              Height = 207
               Top = 0
               Width = 493
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1701,10 +1765,11 @@ object formPrincipal: TformPrincipal
           object grbMetTime: TGroupBox
             Left = 568
             Height = 192
+            Hint = 'Mostra os dados de assertividade por time do método selecionado'
             Top = 240
             Width = 497
             Caption = 'Métodos por Time'
-            ClientHeight = 173
+            ClientHeight = 167
             ClientWidth = 493
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1718,7 +1783,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetTime
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 173
+              Height = 167
               Top = 0
               Width = 493
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1775,10 +1840,11 @@ object formPrincipal: TformPrincipal
           object grbMetComp: TGroupBox
             Left = 568
             Height = 192
+            Hint = 'Mostra os dados de assertividade por competição do método selecionado'
             Top = 432
             Width = 497
             Caption = 'Métodos por Competição'
-            ClientHeight = 173
+            ClientHeight = 167
             ClientWidth = 493
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1792,7 +1858,7 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetComp
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 173
+              Height = 167
               Top = 0
               Width = 493
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1859,7 +1925,7 @@ object formPrincipal: TformPrincipal
         Top = 232
         Width = 376
         Caption = 'Times Menos Assertivos'
-        ClientHeight = 278
+        ClientHeight = 272
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -1873,7 +1939,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbTimesMenosLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 278
+          Height = 272
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1922,7 +1988,7 @@ object formPrincipal: TformPrincipal
         Top = 0
         Width = 376
         Caption = 'Times Mais Assertivos'
-        ClientHeight = 206
+        ClientHeight = 200
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -1936,7 +2002,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbTimesMaisLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 206
+          Height = 200
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1982,6 +2048,7 @@ object formPrincipal: TformPrincipal
       object chrtAcertTime: TChart
         Left = 456
         Height = 200
+        Hint = 'Média de acertos/erros do time selecionado'
         Top = -8
         Width = 300
         AxisList = <        
@@ -2012,6 +2079,7 @@ object formPrincipal: TformPrincipal
       object chrtLucratTime: TChart
         Left = 392
         Height = 200
+        Hint = 'Média de lucro/prejuízo do time selecionado'
         Top = 272
         Width = 300
         AxisList = <        
@@ -2045,7 +2113,7 @@ object formPrincipal: TformPrincipal
         Top = 16
         Width = 464
         Caption = 'Times'
-        ClientHeight = 462
+        ClientHeight = 456
         ClientWidth = 460
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2057,7 +2125,8 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 370
+          Height = 358
+          Hint = 'Lista de times registrados'
           Top = 32
           Width = 460
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2154,6 +2223,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           Left = 8
           Height = 33
+          Hint = 'Pesquisa por um time'
           Top = 0
           Width = 400
           Anchors = [akTop, akLeft, akRight]
@@ -2163,7 +2233,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 120
           Height = 33
-          Top = 410
+          Hint = 'Remove time selecionado'
+          Top = 398
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2176,7 +2247,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 33
-          Top = 410
+          Hint = 'Registra um novo time'
+          Top = 398
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo Time'
@@ -2197,7 +2269,7 @@ object formPrincipal: TformPrincipal
         Top = 8
         Width = 464
         Caption = 'Países'
-        ClientHeight = 462
+        ClientHeight = 456
         ClientWidth = 460
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2209,7 +2281,8 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 376
+          Height = 370
+          Hint = 'Lista de países registrados'
           Top = 32
           Width = 460
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2306,6 +2379,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           Left = 8
           Height = 33
+          Hint = 'Pesquisa por um país'
           Top = 0
           Width = 400
           Anchors = [akTop, akLeft, akRight]
@@ -2315,7 +2389,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 120
           Height = 33
-          Top = 416
+          Hint = 'Remove país selecionado'
+          Top = 410
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2328,7 +2403,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 33
-          Top = 416
+          Hint = 'Registra um novo país'
+          Top = 410
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo País'
@@ -2341,6 +2417,7 @@ object formPrincipal: TformPrincipal
       object chrtAcertPais: TChart
         Left = 488
         Height = 200
+        Hint = 'Média de acertos/erros do país selecionado'
         Top = 24
         Width = 300
         AxisList = <        
@@ -2372,6 +2449,7 @@ object formPrincipal: TformPrincipal
       object chrtLucratPais: TChart
         Left = 408
         Height = 200
+        Hint = 'Média de lucros/prejuízos do país selecionado'
         Top = 248
         Width = 300
         AxisList = <        
@@ -2405,7 +2483,7 @@ object formPrincipal: TformPrincipal
         Top = 224
         Width = 376
         Caption = 'Países Menos Assertivos'
-        ClientHeight = 278
+        ClientHeight = 272
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2419,7 +2497,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbPaisesMenosAcert
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 278
+          Height = 272
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2468,7 +2546,7 @@ object formPrincipal: TformPrincipal
         Top = -8
         Width = 376
         Caption = 'Países Mais Assertivos'
-        ClientHeight = 206
+        ClientHeight = 200
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2482,7 +2560,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbPaisesMaisAcert
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 206
+          Height = 200
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2536,7 +2614,7 @@ object formPrincipal: TformPrincipal
         Top = 16
         Width = 464
         Caption = 'Competições'
-        ClientHeight = 462
+        ClientHeight = 456
         ClientWidth = 460
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2548,7 +2626,8 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 376
+          Height = 370
+          Hint = 'Lista de competições registradas'
           Top = 32
           Width = 460
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2593,6 +2672,7 @@ object formPrincipal: TformPrincipal
         object edtPesquisarComp: TEdit
           Left = 8
           Height = 33
+          Hint = 'Pesquisa por uma competição registrada'
           Top = 0
           Width = 400
           Anchors = [akTop, akLeft, akRight]
@@ -2653,7 +2733,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 33
-          Top = 416
+          Hint = 'Registra uma nova competição'
+          Top = 410
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Nova Comp.'
@@ -2666,7 +2747,8 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Side = asrBottom
           Left = 120
           Height = 33
-          Top = 416
+          Hint = 'Remove competição selecionada'
+          Top = 410
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2679,6 +2761,7 @@ object formPrincipal: TformPrincipal
       object chrtAcertComp: TChart
         Left = 472
         Height = 200
+        Hint = 'Média de acertos/erros da competição selecionada'
         Top = 32
         Width = 300
         AxisList = <        
@@ -2709,6 +2792,7 @@ object formPrincipal: TformPrincipal
       object chrtLucratComp: TChart
         Left = 392
         Height = 200
+        Hint = 'Média de lucros/prejuízos da competição selecionada'
         Top = 272
         Width = 300
         AxisList = <        
@@ -2742,7 +2826,7 @@ object formPrincipal: TformPrincipal
         Top = 232
         Width = 376
         Caption = 'Competições Menos Assertivas'
-        ClientHeight = 278
+        ClientHeight = 272
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2756,7 +2840,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbCompMenosLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 278
+          Height = 272
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2805,7 +2889,7 @@ object formPrincipal: TformPrincipal
         Top = 0
         Width = 376
         Caption = 'Competições Mais Assertivas'
-        ClientHeight = 206
+        ClientHeight = 200
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2819,7 +2903,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbCompMaisLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 206
+          Height = 200
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -3522,8 +3606,12 @@ object formPrincipal: TformPrincipal
   object MenuPrincipal: TMainMenu
     Left = 952
     Top = 584
-    object MenuItem1: TMenuItem
-      Caption = 'Dados'
+    object MenuOpcoes: TMenuItem
+      Caption = 'Opções'
+      object miExibirBoasVindas: TMenuItem
+        Caption = 'Exibir Tela de Boas-Vindas'
+        OnClick = miExibirBoasVindasClick
+      end
       object miImportar: TMenuItem
         Caption = 'Importar Dados'
         OnClick = ImportarDadosBD
@@ -3533,17 +3621,17 @@ object formPrincipal: TformPrincipal
         OnClick = SalvarDadosBD
       end
     end
-    object MenuItem2: TMenuItem
+    object MenuAjuda: TMenuItem
       Caption = 'Ajuda'
-      object MenuItem6: TMenuItem
+      object MenuComoUsar: TMenuItem
         Caption = 'Como Usar o Programa'
         Enabled = False
       end
-      object MenuItem8: TMenuItem
+      object MenuApoie: TMenuItem
         Caption = 'Apóie o Projeto'
         OnClick = MenuItem8Click
       end
-      object MenuItem7: TMenuItem
+      object MenuSobre: TMenuItem
         Caption = 'Sobre'
         OnClick = MenuItem7Click
       end
@@ -3973,7 +4061,8 @@ object formPrincipal: TformPrincipal
       'FROM'
       'Banca'
       'WHERE'
-      'Ano = (SELECT Ano FROM "Selecionar Mês e Ano");'
+      'Ano = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      'ORDER BY Mês, Ano;'
     )
     Params = <>
     Macros = <>

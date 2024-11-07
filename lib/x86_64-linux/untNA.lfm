@@ -12,28 +12,47 @@ object formNovaAposta: TformNovaAposta
   OnClose = FormClose
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '3.4.0.0'
+  ShowHint = True
   object btnOk: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pcApostas
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnCancelar
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 264
-    Height = 25
-    Top = 392
-    Width = 75
-    Anchors = [akBottom]
+    Left = 250
+    Height = 31
+    Hint = 'Confirma a criação da aposta'
+    Top = 386
+    Width = 99
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 250
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 15
+    BorderSpacing.Bottom = 10
     Caption = 'Ok'
     Enabled = False
-    TabOrder = 0
+    TabOrder = 1
     OnClick = btnOkClick
   end
   object btnCancelar: TButton
+    AnchorSideTop.Control = pcApostas
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 370
-    Height = 25
-    Top = 392
-    Width = 75
-    Anchors = [akBottom]
+    Left = 364
+    Height = 31
+    Hint = 'Cancela a criação da aposta'
+    Top = 386
+    Width = 99
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 249
+    BorderSpacing.Bottom = 10
     Caption = 'Cancelar'
-    TabOrder = 1
+    TabOrder = 2
     OnClick = btnCancelarClick
   end
   object pcApostas: TPageControl
@@ -43,16 +62,23 @@ object formNovaAposta: TformNovaAposta
     Width = 728
     ActivePage = tsSimples
     TabIndex = 0
-    TabOrder = 2
+    TabOrder = 0
     OnChange = pcApostasChange
+    OnChanging = pcApostasChanging
+    OnCloseTabClicked = LimparControle
+    OnEnter = LimparControle
     object tsSimples: TTabSheet
+      Hint = 'Cria aposta de bilhete simples'
       Caption = 'Bilhete Simples'
-      ClientHeight = 348
+      ClientHeight = 349
       ClientWidth = 724
+      OnEnter = LimparControle
+      OnHide = LimparControle
       OnShow = tsSimplesShow
       object grbNovaLinha: TGroupBox
         Left = 344
         Height = 296
+        Hint = 'Métodos e linhas da aposta'
         Top = 8
         Width = 352
         Caption = 'Clique duas vezes sobre uma célula para editar'
@@ -98,6 +124,7 @@ object formNovaAposta: TformNovaAposta
             end>
           DataSource = dsNovaAposta
           Enabled = False
+          Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
           Scrollbars = ssAutoVertical
           TabOrder = 0
           OnCellClick = grdNovaApostaCellClick
@@ -106,27 +133,35 @@ object formNovaAposta: TformNovaAposta
         end
       end
       object deAposta: TDateEdit
+        AnchorSideTop.Control = lbData
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = cbCompeticao
+        AnchorSideBottom.Control = cbCompeticao
+        AnchorSideBottom.Side = asrBottom
         Left = 8
         Height = 27
-        Top = 24
-        Width = 100
+        Hint = 'Data da aposta'
+        Top = 25
+        Width = 104
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
         DateFormat = 'dd/mm/yyyy'
         ButtonWidth = 23
+        Anchors = [akTop, akLeft, akBottom]
         NumGlyphs = 1
         FocusOnButtonClick = True
         MaxLength = 0
         OnChange = deApostaChange
+        OnExit = LimparControle
         TabOrder = 0
       end
       object cbCompeticao: TComboBox
         AnchorSideBottom.Side = asrBottom
         Left = 120
         Height = 27
-        Top = 26
+        Hint = 'Competição da aposta'
+        Top = 25
         Width = 216
-        Anchors = [akLeft, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
@@ -134,24 +169,28 @@ object formNovaAposta: TformNovaAposta
         OnChange = cbCompeticaoChange
       end
       object cbMandante: TComboBox
+        AnchorSideTop.Control = lbMandante2
+        AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 8
         Height = 27
-        Top = 72
+        Hint = 'Time da Casa'
+        Top = 69
         Width = 160
-        Anchors = [akLeft, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 2
       end
       object cbVisitante: TComboBox
+        AnchorSideTop.Control = lbVisitante2
+        AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 176
         Height = 27
-        Top = 74
+        Hint = 'Time Visitante'
+        Top = 69
         Width = 160
-        Anchors = [akLeft, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
@@ -159,10 +198,16 @@ object formNovaAposta: TformNovaAposta
         OnChange = cbVisitanteChange
       end
       object cbUnidade: TComboBox
+        AnchorSideTop.Control = lbUnidade
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = edtValor
+        AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 25
-        Top = 118
+        Height = 27
+        Hint = 'Seleciona o valor da aposta (Selecione "outro valor" para inserir um valor personalizado)'
+        Top = 113
         Width = 100
+        Anchors = [akTop, akLeft, akBottom]
         ItemHeight = 0
         ItemIndex = 3
         Items.Strings = (
@@ -182,9 +227,12 @@ object formNovaAposta: TformNovaAposta
         OnChange = MudarUnidade
       end
       object edtValor: TEdit
+        AnchorSideTop.Control = lbValorAp
+        AnchorSideTop.Side = asrBottom
         Left = 120
         Height = 27
-        Top = 118
+        Hint = 'Exibe o valor apostado, ao selecionar "outro valor" na caixa de seleção ao lado, esse campo poderá ser editado.'
+        Top = 113
         Width = 100
         Color = clInactiveBorder
         ReadOnly = True
@@ -197,6 +245,7 @@ object formNovaAposta: TformNovaAposta
       object btnNovaLinha: TButton
         Left = 344
         Height = 25
+        Hint = 'Adiciona uma nova linha (linhas em branco serão apagadas ao finalizar a criação da aposta)'
         Top = 312
         Width = 352
         Caption = 'Nova Linha'
@@ -204,31 +253,47 @@ object formNovaAposta: TformNovaAposta
         TabOrder = 6
         OnClick = btnNovaLinhaClick
       end
-      object Label7: TLabel
+      object lbUnidade: TLabel
+        AnchorSideTop.Control = cbMandante
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = lbValorAp
         Left = 8
         Height = 17
-        Top = 100
-        Width = 47
+        Top = 96
+        Width = 112
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Unidade'
       end
-      object Label8: TLabel
+      object lbValorAp: TLabel
+        AnchorSideLeft.Control = lbCompeticao
+        AnchorSideTop.Control = cbMandante
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = lbOdd
         Left = 120
         Height = 17
-        Top = 100
-        Width = 85
+        Top = 96
+        Width = 156
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Valor Apostado'
       end
-      object Label1: TLabel
+      object lbData: TLabel
+        AnchorSideTop.Control = grbNovaLinha
+        AnchorSideRight.Control = lbCompeticao
         Left = 8
         Height = 17
         Top = 8
-        Width = 27
+        Width = 112
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Data'
       end
       object edtOdd: TEdit
+        AnchorSideLeft.Control = lbOdd
+        AnchorSideTop.Control = lbOdd
+        AnchorSideTop.Side = asrBottom
         Left = 276
         Height = 27
-        Top = 118
+        Hint = 'Exibe a odd total da aposta'
+        Top = 113
         Width = 60
         Color = clInactiveBorder
         ReadOnly = True
@@ -240,58 +305,88 @@ object formNovaAposta: TformNovaAposta
         OnMouseLeave = edtOddMouseLeave
       end
       object lbOdd: TLabel
+        AnchorSideTop.Control = cbVisitante
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = grbNovaLinha
         Left = 276
         Height = 17
-        Top = 100
-        Width = 23
+        Top = 96
+        Width = 68
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Odd'
       end
       object lbCompeticao: TLabel
+        AnchorSideLeft.Control = cbCompeticao
+        AnchorSideTop.Control = grbNovaLinha
+        AnchorSideRight.Control = grbNovaLinha
         Left = 120
         Height = 17
         Top = 8
-        Width = 67
+        Width = 224
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Competição'
       end
       object lbMandante2: TLabel
+        AnchorSideTop.Control = deAposta
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = lbVisitante2
         Left = 8
         Height = 17
-        Top = 56
-        Width = 57
+        Top = 52
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Mandante'
       end
       object lbVisitante2: TLabel
+        AnchorSideTop.Control = cbCompeticao
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = grbNovaLinha
         Left = 176
         Height = 17
-        Top = 56
-        Width = 48
+        Top = 52
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Visitante'
       end
     end
     object tsMultipla: TTabSheet
+      Hint = 'Cria aposta de múltiplos jogos'
       Caption = 'Múltipla'
-      ClientHeight = 348
+      ClientHeight = 349
       ClientWidth = 724
+      OnHide = LimparControle
       OnShow = tsMultiplaShow
       object deApostaMult: TDateEdit
+        AnchorSideLeft.Control = lbDataMult
+        AnchorSideTop.Control = lbDataMult
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = cbCompMult
+        AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 27
+        Height = 29
+        Hint = 'Data da aposta'
         Top = 25
         Width = 100
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
         ButtonWidth = 23
+        Anchors = [akTop, akLeft, akBottom]
         NumGlyphs = 1
         FocusOnButtonClick = True
         MaxLength = 0
         OnChange = deApostaMultChange
+        OnExit = LimparControle
         TabOrder = 0
       end
       object cbCompMult: TComboBox
+        AnchorSideLeft.Control = lbCompeticao1
+        AnchorSideTop.Control = lbCompeticao1
+        AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 120
         Height = 27
-        Top = 26
+        Hint = 'Competição do jogo'
+        Top = 27
         Width = 216
         Anchors = [akLeft, akBottom]
         AutoComplete = True
@@ -301,12 +396,15 @@ object formNovaAposta: TformNovaAposta
         OnChange = cbCompMultChange
       end
       object cbMandanteMult: TComboBox
+        AnchorSideLeft.Control = lbMandanteMult
+        AnchorSideTop.Control = lbMandanteMult
+        AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 8
         Height = 27
-        Top = 72
+        Hint = 'Time da Casa'
+        Top = 71
         Width = 120
-        Anchors = [akLeft, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
@@ -314,12 +412,15 @@ object formNovaAposta: TformNovaAposta
         OnChange = cbMandanteMultChange
       end
       object cbVisitanteMult: TComboBox
+        AnchorSideLeft.Control = lbVisitanteMult
+        AnchorSideTop.Control = lbVisitanteMult
+        AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 136
         Height = 27
-        Top = 72
+        Hint = 'Time Visitante'
+        Top = 71
         Width = 120
-        Anchors = [akLeft, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
@@ -327,23 +428,41 @@ object formNovaAposta: TformNovaAposta
         OnChange = cbVisitanteMultChange
       end
       object btnAddJogo: TButton
+        AnchorSideTop.Control = cbVisitanteMult
+        AnchorSideRight.Control = lsbJogos
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = cbVisitanteMult
+        AnchorSideBottom.Side = asrBottom
         Left = 264
-        Height = 25
-        Top = 72
-        Width = 75
+        Height = 27
+        Hint = 'Insere um novo jogo com os dados selecionados'
+        Top = 71
+        Width = 83
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Novo Jogo'
         Enabled = False
         TabOrder = 4
         OnClick = btnAddJogoClick
       end
       object grbNovaLinha1: TGroupBox
-        Left = 352
-        Height = 240
-        Top = 104
-        Width = 353
+        AnchorSideLeft.Control = lsbJogos
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = lbMandanteMult
+        AnchorSideRight.Control = tsMultipla
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = btnNovaLinhaMult
+        Left = 362
+        Height = 263
+        Hint = 'Lista de métodos e linhas do jogo selecionado'
+        Top = 54
+        Width = 342
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 15
+        BorderSpacing.Right = 20
+        BorderSpacing.Bottom = 2
         Caption = 'Clique duas vezes sobre uma célula para editar'
-        ClientHeight = 221
-        ClientWidth = 349
+        ClientHeight = 244
+        ClientWidth = 338
         TabOrder = 9
         object grdLinhaMult: TDBGrid
           AnchorSideLeft.Control = grbNovaLinha1
@@ -353,9 +472,9 @@ object formNovaAposta: TformNovaAposta
           AnchorSideBottom.Control = grbNovaLinha1
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 221
+          Height = 244
           Top = 0
-          Width = 349
+          Width = 338
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -384,6 +503,7 @@ object formNovaAposta: TformNovaAposta
             end>
           DataSource = dsLinhaMultipla
           Enabled = False
+          Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
           Scrollbars = ssAutoVertical
           TabOrder = 0
           OnCellClick = grdLinhaMultCellClick
@@ -392,44 +512,71 @@ object formNovaAposta: TformNovaAposta
         end
       end
       object lsbJogos: TListBox
+        AnchorSideTop.Control = cbMandanteMult
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = btnNovaLinhaMult
+        AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 224
-        Top = 120
-        Width = 328
+        Height = 246
+        Hint = 'Lista de jogos inseridos na nova aposta múltipla'
+        Top = 98
+        Width = 339
+        Anchors = [akTop, akLeft, akBottom]
         ItemHeight = 0
         TabOrder = 8
         TopIndex = -1
         OnClick = lsbJogosClick
       end
       object btnNovaLinhaMult: TButton
-        Left = 605
+        AnchorSideLeft.Control = grbNovaLinha1
+        AnchorSideRight.Control = grbNovaLinha1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 362
         Height = 25
-        Top = 71
-        Width = 100
+        Hint = 'Adiciona uma nova linha no jogo selecionado (linhas em branco serão apagadas ao finalizar a criação da aposta)'
+        Top = 319
+        Width = 342
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Nova Linha'
         Enabled = False
         TabOrder = 7
         OnClick = btnNovaLinhaMultClick
       end
-      object Label9: TLabel
-        Left = 352
+      object lbUnidadeMult: TLabel
+        AnchorSideLeft.Control = cbUnidadeMult
+        AnchorSideTop.Control = lbCompeticao1
+        AnchorSideRight.Control = lbValorApMult
+        Left = 362
         Height = 17
-        Top = 54
-        Width = 47
+        Top = 8
+        Width = 102
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Unidade'
       end
-      object Label10: TLabel
-        Left = 472
+      object lbValorApMult: TLabel
+        AnchorSideTop.Control = lbCompeticao1
+        AnchorSideRight.Control = lbOdd1
+        Left = 464
         Height = 17
-        Top = 52
-        Width = 85
+        Top = 8
+        Width = 112
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Valor Apostado'
       end
       object cbUnidadeMult: TComboBox
-        Left = 352
-        Height = 25
-        Top = 72
+        AnchorSideLeft.Control = grbNovaLinha1
+        AnchorSideTop.Control = lbUnidadeMult
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = cbCompMult
+        AnchorSideBottom.Side = asrBottom
+        Left = 362
+        Height = 29
+        Hint = 'Seleciona o valor da aposta (Selecione "outro valor" para inserir um valor personalizado)'
+        Top = 25
         Width = 100
+        Anchors = [akTop, akLeft, akBottom]
         ItemHeight = 0
         ItemIndex = 3
         Items.Strings = (
@@ -449,28 +596,44 @@ object formNovaAposta: TformNovaAposta
         OnChange = MudarUnidade
       end
       object edtValorMult: TEdit
-        Left = 472
-        Height = 27
-        Top = 70
+        AnchorSideLeft.Control = lbValorApMult
+        AnchorSideTop.Control = lbValorApMult
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = cbUnidadeMult
+        AnchorSideBottom.Side = asrBottom
+        Left = 464
+        Height = 29
+        Hint = 'Exibe o valor apostado, ao selecionar "outro valor" na caixa de seleção ao lado, esse campo poderá ser editado.'
+        Top = 25
         Width = 100
+        Anchors = [akTop, akLeft, akBottom]
         Color = clInactiveBorder
         ReadOnly = True
         TabOrder = 5
         OnChange = edtValorChange
         OnKeyPress = edtValorKeyPress
       end
-      object Label2: TLabel
+      object lbDataMult: TLabel
+        AnchorSideRight.Control = lbCompeticao1
         Left = 8
         Height = 17
         Top = 8
-        Width = 27
+        Width = 112
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Data'
       end
       object edtOddMult: TEdit
-        Left = 645
-        Height = 27
-        Top = 24
+        AnchorSideLeft.Control = lbOdd1
+        AnchorSideTop.Control = lbOdd1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = edtValorMult
+        AnchorSideBottom.Side = asrBottom
+        Left = 576
+        Height = 29
+        Hint = 'Exibe a odd total da aposta'
+        Top = 25
         Width = 60
+        Anchors = [akTop, akLeft, akBottom]
         Color = clInactiveBorder
         ReadOnly = True
         TabOrder = 10
@@ -480,31 +643,46 @@ object formNovaAposta: TformNovaAposta
         OnMouseLeave = edtOddMultMouseLeave
       end
       object lbOdd1: TLabel
-        Left = 645
+        AnchorSideRight.Control = tsMultipla
+        AnchorSideRight.Side = asrBottom
+        Left = 576
         Height = 17
         Top = 8
-        Width = 23
+        Width = 148
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Odd'
       end
       object lbCompeticao1: TLabel
+        AnchorSideRight.Control = lsbJogos
+        AnchorSideRight.Side = asrBottom
         Left = 120
         Height = 17
         Top = 8
-        Width = 67
+        Width = 227
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Competição'
       end
-      object lbMandante3: TLabel
+      object lbMandanteMult: TLabel
+        AnchorSideTop.Control = deApostaMult
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = lbVisitanteMult
         Left = 8
         Height = 17
         Top = 54
-        Width = 57
+        Width = 128
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Mandante'
       end
-      object lbVisitante3: TLabel
+      object lbVisitanteMult: TLabel
+        AnchorSideTop.Control = cbCompMult
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = lsbJogos
+        AnchorSideRight.Side = asrBottom
         Left = 136
         Height = 17
         Top = 54
-        Width = 48
+        Width = 211
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'Visitante'
       end
     end

@@ -257,7 +257,6 @@ begin
   tsMultipla.OnClick := @LimparControle;
   tsMultipla.OnHide := @LimparControle;
   pcApostas.OnClick := @LimparControle;
-  Application.OnException := @ExcecaoNaoTratada;
 
   HabilitarBotaoOk;
   writeln('Criando aposta');

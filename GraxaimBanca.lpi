@@ -17,8 +17,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="4"/>
-      <RevisionNr Value="3"/>
-      <BuildNr Value="23"/>
+      <RevisionNr Value="4"/>
+      <BuildNr Value="24"/>
       <Language Value="0416"/>
       <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.4"/>
     </VersionInfo>
@@ -206,6 +206,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="untSalvarDados"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untboasvindas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formBoasVindas"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untBoasVindas"/>
       </Unit>
     </Units>
   </ProjectOptions>

@@ -273,11 +273,14 @@ begin
       SQL.Text := 'SELECT Ano FROM Banca GROUP BY Ano';
       Open;
       First;
-      while not EOF do
-      begin
-        cbAno.Items.Add(IntToStr(FieldByName('Ano').AsInteger));
-        Next;
-      end;
+      if IsEmpty then
+        cbAno.Items.Add(IntToStr(YearOf(Now)))
+      else
+        while not EOF do
+        begin
+          cbAno.Items.Add(IntToStr(FieldByName('Ano').AsInteger));
+          Next;
+        end;
     finally
       Free;
     end;
@@ -291,9 +294,9 @@ begin
     writeln('definido ano padrão como ' + cbAno.Text);
 
     //Definir as variáveis mesSelecionado e anoSelecionado de acordo com o texto do ComboBox
-    writeln('Mês selecionado: ',cbMes.Text);
+    writeln('Mês selecionado: ', cbMes.Text);
     mesSelecionado := StrToInt(cbMes.Text);
-    writeln('Ano Selecionado: ',cbAno.Text);
+    writeln('Ano Selecionado: ', cbAno.Text);
     anoSelecionado := StrToInt(cbAno.Text);
   end;
 end;
@@ -606,6 +609,8 @@ begin
       diaGreen := 0;
       diaRed := 0;
       diaNeutro := 0;
+
+      //Gráfico pizza do mês
       with qrMes do
         for i := 0 to RecordCount - 1 do
         begin
@@ -626,6 +631,7 @@ begin
           AddPie(diaNeutro, IntToStr(diaNeutro) + ' Dias Neutros,', clGray);
       end;
 
+      //Gráfico pizza do ano
       with TSQLQuery.Create(nil) do
       try
         DataBase := conectBancoDados;
@@ -709,17 +715,10 @@ begin
         First;
 
         writeln('Verificando situação de cada ano');
-        while not EOF do
-        begin
-          RecNo;
-          anoGreen := FieldByName('AnoGreen').AsInteger;
-          anoRed := FieldByName('AnoRed').AsInteger;
-          anoNeutro := FieldByName('AnoNeutro').AsInteger;
-          anoGreen := anoGreen + FieldByName('AnoGreen').AsInteger;
-          anoRed := anoRed + FieldByName('AnoRed').AsInteger;
-          anoNeutro := anoNeutro + FieldByName('AnoNeutro').AsInteger;
-          Next;
-        end;
+
+        anoGreen := FieldByName('AnoGreen').AsInteger;
+        anoRed := FieldByName('AnoRed').AsInteger;
+        anoNeutro := FieldByName('AnoNeutro').AsInteger;
 
         writeln('Adicionando dados no gráfico');
         with (chrtAcertTodosAnos.Series[0] as TPieSeries) do

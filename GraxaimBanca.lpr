@@ -13,7 +13,7 @@ uses
   Forms, tachartlazaruspkg, lazdbexport, untMain, untApostas, untDatabase,
   untNA, untPainel, untSobre, untSplash, untUpdate, untControleMetodos,
   untControleTimes, untPaises, untContrComp, untEditSimples, untEditMult,
-  untSalvarDados;
+  untSalvarDados, untBoasVindas;
 
 {$R *.res}
 
@@ -29,6 +29,7 @@ begin
   Application.CreateForm(TformEditSimples, formEditSimples);
   Application.CreateForm(TformEditMult, formEditMult);
   Application.CreateForm(TformSalvarDados, formSalvarDados);
+  Application.CreateForm(TformBoasVindas, formBoasVindas);
   Application.Run;
 end.
 
