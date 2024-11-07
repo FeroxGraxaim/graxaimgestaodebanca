@@ -33,7 +33,7 @@ Acesse os <a href="https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases
 - Debian, Ubuntu, Linux Mint, Pop!_OS e derivados: baixar e executar o arquivo **DEB.**
 - Fedora, OpenSUSE, RedHat e derivados: baixar e executar o arquivo **RPM.**
 - Outras distros (compilação automática): baixar e executar o arquivo **SH.**
-#### Instalação Manual (Compilação)    
+#### Compilação Manual    
 Instale o git para fazer o clone do repositório, e instale o make para fazer a compilação.
 
 - Debian, Ubuntu, Linux Mint, Pop!_OS e derivados:
