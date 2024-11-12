@@ -10,8 +10,10 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, tachartlazaruspkg, untMain, untApostas, untDatabase, untNA,
-  untPainel, untSobre, untSplash, untUpdate;
+  Forms, tachartlazaruspkg, lazdbexport, untMain, untApostas, untDatabase,
+  untNA, untPainel, untSobre, untSplash, untUpdate, untControleMetodos,
+  untControleTimes, untPaises, untContrComp, untEditSimples, untEditMult,
+  untSalvarDados, untBoasVindas;
 
 {$R *.res}
 
@@ -24,6 +26,10 @@ begin
   Application.CreateForm(TformNovaAposta, formNovaAposta);
   Application.CreateForm(TformSobre, formSobre);
   Application.CreateForm(TformSplash, formSplash);
+  Application.CreateForm(TformEditSimples, formEditSimples);
+  Application.CreateForm(TformEditMult, formEditMult);
+  Application.CreateForm(TformSalvarDados, formSalvarDados);
+  Application.CreateForm(TformBoasVindas, formBoasVindas);
   Application.Run;
 end.
 

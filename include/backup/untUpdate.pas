@@ -22,7 +22,7 @@ implementation
 
 uses
   fpjson, HTTPDefs, fphttpclient,
-  jsonparser, LCLIntf, ssl_openssl3, opensslsockets;
+  jsonparser, LCLIntf, opensslsockets;
 
 function CompareVersion(version1, version2: string): integer;
 var
@@ -56,73 +56,74 @@ var
   json: TJSONObject;
   userResponse: integer;
   httpClient: TFPHTTPClient;
+label
+  Fim;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.1.2.11'; // Atualize conforme necessário
+  currentVersion := '0.4.5.25';
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');
   httpClient := TFPHTTPClient.Create(nil);
 
+
+  writeln('Tentando se conectar com o repositório...');
   try
-    writeln('Tentando se conectar com o repositório...');
+    httpClient.AddHeader('User-Agent', 'MyApp/1.0');
+    httpClient.Get(apiUrl, response);
+    writeln('Resposta recebida!');
+    //writeln('Resposta recebida: ' + response.DataString);
+
+    if response.DataString = '' then
+    begin
+      writeln('Resposta nula recebida da API.');
+      goto Fim;
+    end;
+    if Pos('API rate limit exceeded', response.DataString) > 0 then
+      writeln('Limite de requisições da API excedido. Tente novamente mais tarde.'
+      + 'Resposta: ' + response.DataString)
+    else
     try
-      // Adiciona o cabeçalho User-Agent
-      httpClient.AddHeader('User-Agent', 'MyApp/1.0');
-      httpClient.Get(apiUrl, response);
-      writeln('Resposta recebida: ' + response.DataString);
-
-      if response.DataString = '' then
+      json := TJSONObject(GetJSON(response.DataString));
+      latestVersion := json.Get('tag_name', '');
+      if latestVersion <> '' then
       begin
-        writeln('Resposta nula recebida da API.');
-        Exit;
-      end;
-
-      if Pos('API rate limit exceeded', response.DataString) > 0 then
-        writeln('Limite de requisições da API excedido. Tente novamente mais tarde.')
-      else
-      begin
-        try
-          json := TJSONObject(GetJSON(response.DataString));
-          try
-            latestVersion := json.Get('tag_name', '');
-            if latestVersion <> '' then
-            begin
-              if CompareText(currentVersion, latestVersion) < 0 then
-              begin
-                userResponse := MessageDlg('Nova versão disponível: ' +
-                  latestVersion + sLineBreak +
-                  'Deseja atualizar agora?', mtConfirmation, [mbYes, mbNo], 0);
-                if userResponse = mrYes then
-                begin
-                  OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest');
-                  writeln('Fechando aplicação...');
-                  halt;
-                end;
-              end
-              else
-                writeln('Programa já está atualizado.');
-            end
-            else
-              writeln('Versão não encontrada no JSON.');
-          except
-            on E: Exception do
-              writeln('Erro ao processar JSON: ' + E.Message);
+        if CompareText(currentVersion, latestVersion) < 0 then
+        begin
+          userResponse :=
+            MessageDlg('Nova versão disponível: ' + latestVersion +
+            sLineBreak + 'Deseja atualizar agora?', mtConfirmation,
+            [mbYes, mbNo], 0);
+          if userResponse = mrYes then
+          begin
+            OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca/releases/latest');
+            writeln('Fechando aplicação...');
+            halt;
           end;
-        finally
-          json.Free;
-        end;
-      end;
+        end
+        else
+          writeln('Programa já está atualizado.');
+      end
+      else
+        writeln('Versão não encontrada no JSON.');
     except
       on E: Exception do
-      begin
-        writeln('Erro ao fazer a solicitação HTTP: ' + E.Message);
-        MessageDlg('Não foi possível verificar se há atualizações, verifique a conexão e tente novamente.', mtError, [mbOK], 0);
-      end;
+        writeln('Erro ao processar JSON: ' + E.Message);
     end;
-  finally
+  Fim:
+    json.Free;
     response.Free;
     httpClient.Free;
+  except
+    on E: Exception do
+    begin
+      writeln('Erro ao fazer a solicitação HTTP: ' + E.Message);
+      response.Free;
+      httpClient.Free;
+      MessageDlg(
+        'Não foi possível verificar se há atualizações, verifique a conexão e tente novamente.',
+        mtError, [mbOK], 0);
+    end;
   end;
 end;
 

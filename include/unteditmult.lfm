@@ -1,0 +1,434 @@
+object formEditMult: TformEditMult
+  Left = 452
+  Height = 335
+  Top = 250
+  Width = 717
+  Caption = 'Editar Aposta'
+  ClientHeight = 335
+  ClientWidth = 717
+  OnClose = FormClose
+  OnShow = FormShow
+  object btnNovaLinha: TButton
+    Left = 357
+    Height = 25
+    Top = 271
+    Width = 168
+    Caption = 'Nova Linha'
+    TabOrder = 0
+    OnClick = btnNovaLinhaClick
+  end
+  object grbLinhas: TGroupBox
+    Left = 357
+    Height = 264
+    Top = 0
+    Width = 352
+    Caption = 'Métodos/Linhas'
+    ClientHeight = 240
+    ClientWidth = 348
+    Font.Height = -15
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 1
+    object grdLinhas: TDBGrid
+      AnchorSideLeft.Control = grbLinhas
+      AnchorSideTop.Control = grbLinhas
+      AnchorSideRight.Control = grbLinhas
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = grbLinhas
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 240
+      Top = 0
+      Width = 348
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Color = clWindow
+      Columns = <      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Método'
+          Width = 115
+          FieldName = 'Método'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Linha'
+          Width = 115
+          FieldName = 'Linha'
+        end      
+        item
+          Title.Caption = 'Odd'
+          Width = 40
+          FieldName = 'Odd'
+        end      
+        item
+          ButtonStyle = cbsButtonColumn
+          Title.Caption = 'Situação'
+          Width = 61
+          FieldName = 'Status'
+        end>
+      DataSource = dsMetodo
+      Font.Height = -13
+      Font.Name = 'Sans'
+      ParentFont = False
+      Scrollbars = ssAutoVertical
+      TabOrder = 0
+      OnCellClick = EditaGridMetiodosLinhas
+      OnEditingDone = grdLinhasEditingDone
+    end
+  end
+  object grbJogos: TGroupBox
+    Left = 0
+    Height = 264
+    Top = 0
+    Width = 352
+    Caption = 'Jogos'
+    ClientHeight = 240
+    ClientWidth = 348
+    Font.Height = -15
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 2
+    object grdJogos: TDBGrid
+      AnchorSideLeft.Control = grbJogos
+      AnchorSideTop.Control = grbJogos
+      AnchorSideRight.Control = grbJogos
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = grbJogos
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 240
+      Top = 0
+      Width = 348
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Color = clWindow
+      Columns = <      
+        item
+          ButtonStyle = cbsPickList
+          Title.Caption = 'Competição'
+          Width = 115
+          FieldName = 'Competicao'
+        end      
+        item
+          ButtonStyle = cbsPickList
+          Title.Caption = 'Mandante'
+          Width = 115
+          FieldName = 'Mandante'
+        end      
+        item
+          ButtonStyle = cbsPickList
+          Title.Caption = 'Visitante'
+          Width = 61
+          FieldName = 'Visitante'
+        end>
+      DataSource = dsJogo
+      Font.Height = -13
+      Font.Name = 'Sans'
+      ParentFont = False
+      Scrollbars = ssAutoVertical
+      TabOrder = 0
+      OnCellClick = grdJogosCellClick
+      OnEditingDone = grdJogosEditingDone
+    end
+  end
+  object btnNovoJogo: TButton
+    Left = 0
+    Height = 25
+    Top = 272
+    Width = 168
+    Caption = 'Novo Jogo'
+    TabOrder = 3
+    OnClick = btnNovoJogoClick
+  end
+  object btnRemoverJogo: TButton
+    Left = 184
+    Height = 25
+    Top = 272
+    Width = 168
+    Caption = 'Remover Seleção'
+    TabOrder = 4
+    OnClick = btnRemoverJogoClick
+  end
+  object btnRemoverLinha: TButton
+    Left = 541
+    Height = 25
+    Top = 271
+    Width = 168
+    Caption = 'Remover Seleção'
+    TabOrder = 5
+    OnClick = btnRemoverLinhaClick
+  end
+  object btnOk: TBitBtn
+    Left = 256
+    Height = 30
+    Top = 304
+    Width = 91
+    Default = True
+    DefaultCaption = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = btnOkClick
+    TabOrder = 6
+  end
+  object btnCancel: TBitBtn
+    Left = 368
+    Height = 30
+    Top = 304
+    Width = 91
+    Caption = 'Cancelar'
+    Kind = bkCancel
+    ModalResult = 2
+    OnClick = btnCancelClick
+    TabOrder = 7
+  end
+  object dsJogo: TDataSource
+    DataSet = qrJogo
+    Left = 44
+    Top = 314
+  end
+  object dsMetodo: TDataSource
+    DataSet = qrMetodo
+    Left = 84
+    Top = 320
+  end
+  object qrJogo: TSQLQuery
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Cod_Jogo'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
+        Name = 'Competicao'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Mandante'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Visitante'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT'
+      'J.Cod_Jogo,'
+      'C.Competicao,'
+      'J.Mandante,'
+      'J.Visitante'
+      'From Jogo J'
+      'LEFT JOIN Competicoes C ON C.Cod_Comp = J.Cod_Comp'
+      'LEFT JOIN Mercados M ON M.Cod_Jogo = J.Cod_Jogo'
+      'WHERE M.Cod_Aposta = :CodAposta'
+      'GROUP BY J.Cod_Jogo'
+    )
+    InsertSQL.Strings = (
+      'INSERT INTO Jogo (Cod_Comp, Mandante, Visitante)'
+      'VALUES('
+      '(SELECT Cod_Comp FROM Competicoes C WHERE C.Competicao = :Competicao),'
+      ':Mandante, :Visitante)'
+      ''
+      ''
+    )
+    UpdateSQL.Strings = (
+      'UPDATE Jogo'
+      'SET'
+      'Cod_Comp = (SELECT Cod_Comp FROM Competicoes C WHERE C.Competicao = :Competicao),'
+      'Mandante = :Mandante,'
+      'Visitante = :Visitante'
+      'WHERE Cod_Jogo = :Cod_Jogo'
+      ''
+    )
+    DeleteSQL.Strings = (
+      'DELETE FROM Jogo WHERE Cod_Jogo = :Cod_Jogo;'
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'CodAposta'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    Left = 129
+    Top = 320
+    object qrJogoCod_Jogo: TLargeintField
+      FieldKind = fkData
+      FieldName = 'Cod_Jogo'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qrJogoCompeticao: TStringField
+      FieldKind = fkData
+      FieldName = 'Competicao'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrJogoMandante: TStringField
+      FieldKind = fkData
+      FieldName = 'Mandante'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrJogoVisitante: TStringField
+      FieldKind = fkData
+      FieldName = 'Visitante'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+  end
+  object qrMetodo: TSQLQuery
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Cod_Mercado'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
+        Name = 'Método'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Linha'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Odd'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Status'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
+    Database = formPrincipal.conectBancoDados
+    Transaction = formPrincipal.transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT'
+      'Cod_Mercado,'
+      'Métodos.Nome AS Método,'
+      'L.Nome AS Linha,'
+      'Odd,'
+      'Status'
+      'FROM'
+      'Mercados'
+      'LEFT JOIN Métodos ON Métodos.Cod_Metodo = Mercados.Cod_Metodo'
+      'LEFT JOIN Linhas L ON L.Cod_Linha = Mercados.Cod_Linha'
+      'WHERE Cod_Jogo = :CodJogo'
+    )
+    InsertSQL.Strings = (
+      'INSERT INTO Mercados (Cod_Mercado, Cod_Jogo, Cod_Aposta)'
+      'VALUES (Cod_Mercado, :CodJogo, :CodAposta)'
+    )
+    UpdateSQL.Strings = (
+      'UPDATE Mercados'
+      'SET'
+      '    Cod_Metodo = Met.Cod_Metodo,'
+      '    Cod_Linha = Lin.Cod_Linha,'
+      '    Odd = :Odd,'
+      '    Status = :Status'
+      'FROM Mercados M'
+      'JOIN Métodos Met ON Met.Nome = :Método'
+      'JOIN Linhas Lin ON Lin.Nome = :Linha'
+      'JOIN Jogo J ON M.Cod_Jogo = J.Cod_Jogo'
+      'WHERE Mercados.Cod_Mercado = :Cod_Mercado'
+      ''
+    )
+    DeleteSQL.Strings = (
+      'DELETE FROM Mercados WHERE Cod_Mercado = :Cod_Mercado;'
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'CodJogo'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    UpdateMode = upWhereAll
+    Left = 177
+    Top = 323
+    object qrMetodoMtodo: TStringField
+      FieldKind = fkData
+      FieldName = 'Método'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrMetodoLinha: TStringField
+      FieldKind = fkData
+      FieldName = 'Linha'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrMetodoOdd: TBCDField
+      FieldKind = fkData
+      FieldName = 'Odd'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrMetodoStatus: TStringField
+      FieldKind = fkData
+      FieldName = 'Status'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrMetodoCod_Mercado: TLargeintField
+      FieldKind = fkData
+      FieldName = 'Cod_Mercado'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+  end
+end

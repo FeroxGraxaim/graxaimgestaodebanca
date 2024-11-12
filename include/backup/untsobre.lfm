@@ -7,12 +7,14 @@ object formSobre: TformSobre
   Caption = 'Sobre'
   ClientHeight = 470
   ClientWidth = 381
+  Position = poMainFormCenter
   Scaled = False
   object graxaimFoto: TImage
-    Left = 72
+    Left = 74
     Height = 224
     Top = 72
-    Width = 240
+    Width = 232
+    Align = alCustom
     OnClick = graxaimFotoClick
     Picture.Data = {
       0A544A706567496D616765045C0500FFD8FFE000104A46494600010101012B01
@@ -10996,30 +10998,40 @@ object formSobre: TformSobre
     Stretch = True
   end
   object lbFerox: TLabel
-    Left = 72
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 49
     Top = 304
-    Width = 240
+    Width = 381
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Ferox Graxaim'
     Font.Height = -35
     Font.Name = 'Sans'
     ParentFont = False
   end
   object Label1: TLabel
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 24
     Top = 24
-    Width = 358
+    Width = 381
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Projeto autônomo de código aberto feito por:'
     Font.Height = -17
     Font.Name = 'Sans'
     ParentFont = False
   end
   object btnGithub: TBitBtn
-    Left = 88
+    Left = 74
     Height = 50
     Top = 352
-    Width = 218
+    Width = 232
     Caption = 'Página do Github'
     Glyph.Data = {
       460E0000424D460E00000000000036000000280000001E0000001E0000000100
@@ -11142,10 +11154,10 @@ object formSobre: TformSobre
     TabOrder = 0
   end
   object btnApoie: TBitBtn
-    Left = 88
+    Left = 74
     Height = 50
     Top = 408
-    Width = 218
+    Width = 232
     Caption = 'Apoie o Projeto!'
     Glyph.Data = {
       AE0F0000424DAE0F00000000000036000000280000002C0000001E0000000100

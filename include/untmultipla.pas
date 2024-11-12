@@ -21,7 +21,6 @@ type
     procedure SalvaContadorNovaMultipla;
     procedure CarregaContadorNovaMultipla;
     procedure tsMultiplaShow(Sender: TObject);
-    procedure btnNovaMultClick(Sender: TObject);
     procedure btnExcMultClick(Sender: TObject);
   end;
 
@@ -59,12 +58,6 @@ begin
     end;
     qrContMult.Free;
   end;
-  CriaMultipla(contMult);
-end;
-
-procedure TEventosMultiplas.btnNovaMultClick(Sender: TObject);
-begin
-  formPrincipal.CriaMultipla(1);
 end;
 
 procedure TEventosMultiplas.btnExcMultClick(Sender: TObject);

@@ -16,9 +16,10 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="1"/>
-      <RevisionNr Value="2"/>
-      <BuildNr Value="11"/>
+      <MinorVersionNr Value="5"/>
+      <BuildNr Value="25"/>
+      <Language Value="0416"/>
+      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.5"/>
     </VersionInfo>
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="gtk2"/>
@@ -58,7 +59,7 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="/home/ferox/Documentos/Programação/GraxaimBanca BetaRepo"/>
+      <DestinationDirectory Value="/home/ferox/Documentos/Programação/GraxaimBanca Final"/>
       <CompressFinally Value="False"/>
       <UseFileFilters Value="True"/>
     </PublishOptions>
@@ -66,6 +67,9 @@
       <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages>
+      <Item>
+        <PackageName Value="lazdbexport"/>
+      </Item>
       <Item>
         <PackageName Value="TAChartLazarusPkg"/>
       </Item>
@@ -157,6 +161,58 @@
       <Unit>
         <Filename Value="datafiles/criarbd.sql"/>
         <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontrolemetodos.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untControleMetodos"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontroletimes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untControleTimes"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untpaises.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untPaises"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untcontrcomp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="untContrComp"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/unteditsimples.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formEditSimples"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untEditSimples"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/unteditmult.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formEditMult"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untEditMult"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untsalvardados.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formSalvarDados"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untSalvarDados"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untboasvindas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formBoasVindas"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untBoasVindas"/>
       </Unit>
     </Units>
   </ProjectOptions>

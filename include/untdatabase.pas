@@ -24,18 +24,20 @@ type
     procedure ExecutarSQLDeArquivo(const VarArquivo: string);
     function FimDoTexto(const Ending, FullString: string): boolean;
     procedure qrBancaCalcFields(DataSet: TDataSet);
+    procedure BackupAtualizacaoBD;
+    procedure CarregarDadosSalvos;
   end;
 
 implementation
 
 var
-  CriarBD, AtualizarBD, LocalizarBD: string;
+  CriarBD, AtualizarBD, LocalizarBD, Backup: string;
   versaoBDEsperada: integer;
 
 procedure TBancoDados.DefinirVariaveis;
 begin
   writeln('Definindo variáveis');
-  versaoBDEsperada := 6;
+  versaoBDEsperada := 17;
 
   {$IFDEF MSWINDOWS}
   if FileExists(GetEnvironmentVariable('PROGRAMFILES') +
@@ -58,12 +60,15 @@ begin
 
   LocalizarBD := ExpandFileName(GetEnvironmentVariable('APPDATA') +
     '\GraxaimBanca\database.db');
+
+  Backup := ExpandFileName(GetEnvironmentVariable('TEMP') + 'backupgraxaimbanca.sql');
   {$ENDIF}
 
   {$IFDEF LINUX}
   LocalizarBD := ExpandFileName('~/.config/GraxaimBanca/database.db');
   CriarBD := ExpandFileName(IncludeTrailingPathDelimiter(GetCurrentDir) + 'datafiles/criarbd.sql');
   AtualizarBD := ExpandFileName(IncludeTrailingPathDelimiter(GetCurrentDir) + 'datafiles/atualizarbd.sql');
+  Backup := ExpandFileName('/tmp/backupgraxaimbanca.sql');
 
   if not FileExists(CriarBD) then
     if not FileExists(AtualizarBD)
@@ -79,7 +84,7 @@ begin
      'não existem ou não estão no diretório correto. Caso tenha instalado o ' +
      'programa através de um arquivo de instalação DEB ou RPM, tente ' +
      'reinstalar o programa. ' +
-     'Caso esteja compilando o código-fonte baixado do Github, certifique-se que' +
+     'Caso esteja compilando o código-fonte usando apenas o comando "make", certifique-se que' +
      'os arquivos "criarbd.sql" e "atualizarbd.sql" estejam na subpasta "datafiles" ' +
      'dentro da mesma pasta do binário "GraxaimBanca"',mtError,[mbOk],0);
      writeln('Caminho fracassado para CriarBD: ',CriarBD);
@@ -373,5 +378,77 @@ begin
       'R$ ' + FormatFLoat('0.00', DataSet.FieldByName('Valor_Final').AsFloat);
   end;
 end;
+
+procedure TBancoDados.BackupAtualizacaoBD;
+var
+  i: integer;
+  Arquivo: TFileStream;
+begin
+  {Arquivo := nil;
+  try
+    Arquivo := TFileStream.Create(Backup, fmCreate);
+
+    @formPrincipal.ExportTable('Banca');
+    @formPrincipal.ExportTable('Países');
+    @formPrincipal.ExportTable('Times');
+    @formPrincipal.ExportTable('Competicoes');
+    @formPrincipal.ExportTable('Métodos');
+    @formPrincipal.ExportTable('Linhas');
+    @formPrincipal.ExportTable('Jogo');
+    @formPrincipal.ExportTable('Mercados');
+
+    writeln('Dados salvos com sucesso em ', Backup);
+
+  finally
+    Arquivo.Free;
+  end;}
+end;
+
+procedure TBancoDados.CarregarDadosSalvos;
+var
+  Arquivo: TFileStream;
+  Texto: TStringList;
+  Linha: string;
+  Query: TSQLQuery;
+begin
+  Texto := TStringList.Create;
+  with formPrincipal do
+  try
+    Arquivo := TFileStream.Create(Backup, fmOpenRead);
+      Texto.LoadFromStream(Arquivo, TEncoding.UTF8);
+
+      with TSQLQuery.Create(nil) do
+      try
+        Database := conectBancoDados;
+        for Linha in Texto do
+        begin
+          if Trim(Linha) <> '' then
+          begin
+            SQL.Text := Linha;
+            ExecSQL;
+            writeln('Inserida linha: ', Linha);
+          end;
+        end;
+
+        transactionBancoDados.CommitRetaining;
+        writeln('Dados importados com sucesso!');
+        Free;
+      except
+        on E: Exception do
+        begin
+          MessageDlg('Erro',
+            'Erro ao importar os dados. Tente novamente. Se o problema persistir ' +
+            'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak + E.Message,
+            mtError, [mbOK], 0);
+          transactionBancoDados.RollbackRetaining;
+          Free;
+        end;
+      end;
+  finally
+    Texto.Free;
+    Arquivo.Free;
+  end;
+end;
+
 
 end.

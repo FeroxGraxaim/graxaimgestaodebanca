@@ -5,8 +5,9 @@ CREATE TABLE IF NOT EXISTS "Perfis" (
 	"Perfil"	VARCHAR,
 	PRIMARY KEY("Perfil")
 );
-CREATE TABLE IF NOT EXISTS "Selecionar Perfil" (
-	"Perfil Selecionado"	VARCHAR NOT NULL DEFAULT 'Conservador'
+CREATE TABLE "Selecionar Perfil" (
+	"Perfil Selecionado"	VARCHAR NOT NULL DEFAULT 'Conservador',
+	"GestaoPcent"	BOOLEAN DEFAULT (0)
 );
 CREATE TABLE IF NOT EXISTS "Selecionar Mês e Ano" (
 	"Mês"	INTEGER,
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS "Status_Aposta" (
 	PRIMARY KEY("Cod_Status" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Países" (
-	"Selec."	BOOLEAN DEFAULT 0,
+	"Selecao"	BOOLEAN DEFAULT 0,
 	"País"	VARCHAR NOT NULL,
 	"Mercados"	INTEGER DEFAULT 0,
 	"Greens"	INTEGER DEFAULT 0,
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS "Países" (
 	PRIMARY KEY("País")
 );
 CREATE TABLE IF NOT EXISTS "Times" (
-	"Selec."	BOOLEAN DEFAULT 0,
+	"Selecao"	BOOLEAN DEFAULT 0,
 	"Time"	VARCHAR NOT NULL,
 	"País"	VARCHAR NOT NULL,
 	"Mandante"	INTEGER DEFAULT 0,
@@ -49,18 +50,10 @@ CREATE TABLE IF NOT EXISTS "Times" (
 CREATE TABLE IF NOT EXISTS "ControleVersao" (
 	"Versao"	INTEGER NOT NULL
 );
-CREATE TABLE IF NOT EXISTS "Estratégias" (
-	"Cod_Estratégia"	INTEGER,
-	"Selec."	BOOLEAN DEFAULT 0,
-	"Estratégia"	VARCHAR,
-	"Mercados_Estr"	INTEGER DEFAULT 0,
-	"Profit_Estr"	REAL DEFAULT 0.00,
-	PRIMARY KEY("Cod_Estratégia" AUTOINCREMENT)
-);
-CREATE TABLE IF NOT EXISTS "Competições" (
+CREATE TABLE IF NOT EXISTS "Competicoes" (
 	"Cod_Comp"	INTEGER NOT NULL,
-	"Selec."	BOOLEAN DEFAULT 0,
-	"Competição"	VARCHAR,
+	"Selecao"	BOOLEAN DEFAULT 0,
+	"Competicao"	VARCHAR,
 	"País"	VARCHAR,
 	"Mercados"	INTEGER DEFAULT 0,
 	"Green"	INTEGER DEFAULT 0,
@@ -76,24 +69,14 @@ CREATE TABLE IF NOT EXISTS "Linhas" (
 	FOREIGN KEY("Cod_Metodo") REFERENCES "Métodos"("Cod_Metodo"),
 	PRIMARY KEY("Cod_Linha" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "Jogo" (
-	"Cod_Jogo"	INTEGER NOT NULL,
-	"Cod_Comp"	VARCHAR,
-	"Mandante"	VARCHAR,
-	"Visitante"	VARCHAR,
-	"Cod_Aposta"	INTEGER,
-	FOREIGN KEY("Visitante") REFERENCES "Times"("Time"),
-	PRIMARY KEY("Cod_Jogo" AUTOINCREMENT),
-	FOREIGN KEY("Mandante") REFERENCES "Times"("Time"),
-	FOREIGN KEY("Cod_Comp") REFERENCES "Competições"("Cod_Comp")
-);
 CREATE TABLE IF NOT EXISTS "Métodos" (
 	"Cod_Metodo"	INTEGER,
-	"Selec."	BOOLEAN DEFAULT 0,
+	"Selecao"	BOOLEAN DEFAULT 0,
 	"Nome"	VARCHAR,
 	PRIMARY KEY("Cod_Metodo" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Mercados" (
+	"Cod_Mercado" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"Cod_Jogo"	INTEGER,
 	"Cod_Metodo"	INTEGER,
 	"Cod_Linha"	INTEGER,
@@ -106,13 +89,12 @@ CREATE TABLE IF NOT EXISTS "Mercados" (
 );
 CREATE TABLE IF NOT EXISTS "Apostas" (
 	"Cod_Aposta"	INTEGER,
-	"Selec."	BOOLEAN DEFAULT 0,
+	"Selecao"	BOOLEAN DEFAULT 0,
 	"Data"	DATE,
 	"Múltipla"	BOOLEAN DEFAULT 0,
 	"Odd"	NUMERIC(9, 2),
 	"Valor_Aposta"	NUMERIC(9, 2),
 	"Status"	VARCHAR,
-	"Cod_Jogo"	INTEGER,
 	"Tipo"	BOOLEAN DEFAULT 0,
 	"Cashout"	BOOLEAN DEFAULT 0,
 	"Retorno"	NUMERIC(9, 2) DEFAULT 0,
@@ -120,7 +102,87 @@ CREATE TABLE IF NOT EXISTS "Apostas" (
 	"Banca_Final"	NUMERIC(9, 2) DEFAULT 0,
 	PRIMARY KEY("Cod_Aposta" AUTOINCREMENT)
 );
+CREATE TABLE IF NOT EXISTS "Jogo" (
+	"Cod_Jogo"	INTEGER NOT NULL,
+	"Cod_Comp"	VARCHAR,
+	"Mandante"	VARCHAR,
+	"Visitante"	VARCHAR,
+	FOREIGN KEY("Cod_Comp") REFERENCES "Competicoes"("Cod_Comp"),
+	FOREIGN KEY("Mandante") REFERENCES "Times"("Time"),
+	PRIMARY KEY("Cod_Jogo" AUTOINCREMENT),
+	FOREIGN KEY("Visitante") REFERENCES "Times"("Time")
+);
+CREATE TABLE IF NOT EXISTS "Selecaoionar Mês e Ano" (
+	"Mês"	INTEGER,
+	"Ano"	INTEGER
+);
+CREATE TABLE "ConfigPrograma" (
+	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1
+);
 INSERT INTO "Unidades" ("Unidade") VALUES ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
+ ('0,5 Un'),
+ ('0,75 Un'),
+ ('1 Un'),
+ ('1,25 Un'),
+ ('1,5 Un'),
+ ('1,75 Un'),
+ ('2 Un'),
+ ('Outro Valor'),
+ ('0,25 Un'),
  ('0,5 Un'),
  ('0,75 Un'),
  ('1 Un'),
@@ -132,9 +194,8 @@ INSERT INTO "Unidades" ("Unidade") VALUES ('0,25 Un'),
 INSERT INTO "Perfis" ("Perfil") VALUES ('Conservador'),
  ('Moderado'),
  ('Agressivo');
-INSERT INTO "Selecionar Perfil" ("Perfil Selecionado") VALUES ('Moderado');
-INSERT INTO "Selecionar Mês e Ano" ("Mês","Ano") VALUES (7,2024);
-INSERT INTO "Banca" ("Mês","Ano","Valor_Inicial","Lucro_R$","Lucro_%","Valor_Final","Stake") VALUES (7,2024,222.6,16.7,7.5,0,3.18);
+INSERT INTO "Selecionar Perfil" ("Perfil Selecionado") VALUES ('Conservador');
+INSERT INTO "Selecionar Mês e Ano" ("Mês","Ano") VALUES (8,2024);
 INSERT INTO "Status_Aposta" ("Cod_Status","Status") VALUES (1,'Green'),
  (2,'Red'),
  (3,'Anulada'),
@@ -142,356 +203,411 @@ INSERT INTO "Status_Aposta" ("Cod_Status","Status") VALUES (1,'Green'),
  (5,'Pré-live'),
  (6,'Meio Green'),
  (7,'Meio Red');
-INSERT INTO "Países" ("Selec.","País","Mercados","Greens","Reds","P/L") VALUES (0,'Brasil',36,0,0,0),
- (0,'Eslováquia',0,0,0,0),
- (0,'Ucrânia',0,0,0,0),
- (0,'Holanda',1,0,0,0),
- (0,'França',1,0,0,0),
- (0,'Polônia',0,0,0,0),
- (0,'Áustria',0,0,0,0),
- (0,'Turquia',0,0,0,0),
- (0,'Alemanha',0,0,0,0),
- (0,'Argentina',0,0,0,0),
- (0,'Espanha',0,0,0,0),
- (0,'EUA',0,0,0,0),
- (0,'Inglaterra',0,0,0,0),
- (0,'Itália',1,0,0,0),
- (0,'Portugal',1,0,0,0),
- (0,'Noruega',0,0,0,0),
- (0,'Suécia',0,0,0,0),
- (0,'Sudamérica',0,0,0,0),
- (0,'Europa',0,0,0,0),
- (0,'Mundo',0,0,0,0),
- (0,'Médio Oriente',0,0,0,0),
- (0,'Extremo Oriente',0,0,0,0),
- (0,'Sudeste Asiático',0,0,0,0),
- (0,'Oceania',0,0,0,0),
- (0,'Bielorussia',0,0,0,0),
- (0,'Austria',0,0,0,0),
- (0,'Suíça',0,0,0,0),
- (0,'Dinamarca',0,0,0,0),
- (0,'Islândia',0,0,0,0),
- (0,'1',0,0,0,0),
- (0,'Hungria',0,0,0,0),
- (0,'Malta',0,0,0,0),
- (0,'Luxemburgo',0,0,0,0),
- (0,'Ilhas Faroe',0,0,0,0),
- (0,'Monaco',0,0,0,0),
- (0,'Montenegro',0,0,0,0),
- (0,'Chipre',0,0,0,0),
- (0,'Letônia',0,0,0,0),
- (0,'Bósnia e Herzegovina',0,0,0,0),
- (0,'Estônia',0,0,0,0),
- (0,'Sérvia',1,0,0,0),
- (0,'Eslovênia',0,0,0,0),
- (0,'Geórgia',0,0,0,0),
- (0,'Moldávia',0,0,0,0),
- (0,'Armênia',0,0,0,0),
- (0,'Azerbaijão',0,0,0,0),
- (0,'Kosovo',0,0,0,0),
- (0,'Andorra',0,0,0,0),
- (0,'San Marino',0,0,0,0),
- (0,'Gibraltar',0,0,0,0),
- (0,'Liechtenstein',0,0,0,0),
- (0,'Mônaco',0,0,0,0),
- (0,'Vaticano',0,0,0,0),
- (0,'Bielorrússia',0,0,0,0),
- (0,'Cazaquistão',0,0,0,0),
- (0,'Macedônia do Norte',0,0,0,0),
- (0,'São Marino',0,0,0,0),
- (0,'Curaçao',0,0,0,0),
- (0,'Paraguai',0,0,0,0),
- (0,'Irlanda',0,0,0,0),
- (0,'Bolívia',0,0,0,0),
- (0,'Chile',0,0,0,0),
- (0,'Escócia',0,0,0,0),
- (0,'República Tcheca',0,0,0,0),
- (0,'Bélgica',1,0,0,0),
- (0,'Rússia',0,0,0,0),
- (0,'Romênia',0,0,0,0),
- (0,'Japão',0,0,0,0),
- (0,'Israel',0,0,0,0),
- (0,'Finlândia',0,0,0,0),
- (0,'Croácia',0,0,0,0),
- (0,'Bulgária',0,0,0,0),
- (0,'Equador',0,0,0,0);
-INSERT INTO "Times" ("Selec.","Time","País","Mandante","Visitante","Greens","P/L","Reds") VALUES (0,'Criciúma','Brasil',2,1,2,0,1),
- (0,'Próspera','Brasil',0,0,0,0,0),
- (0,'Palmeiras','Brasil',2,0,2,3.49800000000001,0),
- (0,'Cruzeiro','Brasil',2,1,2,1.59,1),
- (0,'Atlético GO','Brasil',1,1,2,4.51559999999995,0),
- (0,'São Paulo','Brasil',0,1,1,2.6076,0),
- (0,'Fortaleza','Brasil',1,1,1,-0.5406,1),
- (0,'Grêmio','Brasil',0,1,1,2.067,0),
- (0,'Juventude','Brasil',2,0,2,4.6746,0),
- (0,'Vasco da Gama','Brasil',0,0,0,0,0),
- (0,'Internacional','Brasil',0,1,1,2.6076,0),
- (0,'Corinthians','Brasil',0,2,1,-1.90800000000001,1),
- (0,'Fluminense','Brasil',0,2,0,-6.36,2),
- (0,'Botafogo','Brasil',0,2,2,3.8796,0),
- (0,'Athletico PR','Brasil',1,1,1,2.2896,0),
- (0,'Cuiabá','Brasil',1,1,1,-1.113,1),
- (0,'Coritiba','Brasil',0,0,0,0,0),
- (0,'América MG','Brasil',0,1,1,1.8126,0),
- (0,'Eslováquia','Eslováquia',0,0,0,0,0),
- (0,'Ucrânia','Ucrânia',0,0,0,0,0),
- (0,'Holanda','Holanda',0,0,0,0,0),
- (0,'França','França',1,0,1,2.703,0),
- (0,'Polônia','Polônia',0,0,0,0,0),
- (0,'Áustria','Áustria',0,0,0,0,0),
- (0,'Turquia','Turquia',0,0,0,0,0),
- (0,'AC Milan','Itália',0,1,0,0,0),
- (0,'Tondela','Portugal',0,0,0,0,0),
- (0,'Ajax','Holanda',1,0,0,0,0),
- (0,'Alavés','Espanha',0,0,0,0,0),
- (0,'Portland Timbers','EUA',0,0,0,0,0),
- (0,'Crystal Palace','Inglaterra',0,0,0,0,0),
- (0,'Goiás','Brasil',0,0,0,0,0),
- (0,'Chapecoense','Brasil',0,1,0,-3.18,1),
- (0,'Fulham','Inglaterra',0,0,0,0,0),
- (0,'Portugal','Portugal',1,0,0,-3.18,1),
- (0,'Lille','França',0,0,0,0,0),
- (0,'Ceará','Brasil',0,1,1,1.113,0),
- (0,'Fortuna','Alemanha',0,0,0,0,0),
- (0,'Frankfurt','Alemanha',0,0,0,0,0),
- (0,'Náutico','Brasil',0,0,0,0,0),
- (0,'Operário','Brasil',0,0,0,0,0),
- (0,'Qarabağ','Azerbaijão',0,0,0,0,0),
- (0,'Genoa','Itália',0,0,0,0,0),
- (0,'Boca Juniors','Argentina',0,0,0,0,0),
- (0,'Libertad','Paraguai',0,0,0,0,0),
- (0,'Getafe','Espanha',0,0,0,0,0),
- (0,'Granada','Espanha',0,0,0,0,0),
- (0,'Espanha','Espanha',0,0,0,0,0),
- (0,'Alemanha','Alemanha',0,0,0,0,0),
- (0,'Hamburger SV','Alemanha',0,0,0,0,0),
- (0,'Hoffenheim','Alemanha',0,0,0,0,0),
- (0,'Inter Milan','Itália',0,0,0,0,0),
- (0,'København','Dinamarca',0,0,0,0,0),
- (0,'Shamrock Rovers','Irlanda',0,0,0,0,0),
- (0,'Itália','Itália',0,0,0,0,0),
- (0,'Juventus','Itália',0,0,0,0,0),
- (0,'Rayo Vallecano','Espanha',0,0,0,0,0),
- (0,'Always Ready','Bolívia',0,0,0,0,0),
- (0,'Lazio','Itália',0,0,0,0,0),
- (0,'Leicester City','Inglaterra',0,0,0,0,0),
- (0,'Minnesota United','EUA',0,0,0,0,0),
- (0,'Athletico Paranaense','Brasil',0,0,0,0,0),
- (0,'Levante','Espanha',0,0,0,0,0),
- (0,'Bayer Leverkusen','Alemanha',0,0,0,0,0),
- (0,'Universidad Católica','Chile',0,0,0,0,0),
- (0,'Liverpool','Inglaterra',0,0,0,0,0),
- (0,'Salernitana','Itália',0,0,0,0,0),
- (0,'Hungria','Hungria',0,0,0,0,0),
- (0,'Middlesbrough','Inglaterra',0,0,0,0,0),
- (0,'Lyon','França',0,0,0,0,0),
- (0,'Atlético Goianiense','Brasil',0,0,0,0,0),
- (0,'Escócia','Escócia',0,0,0,0,0),
- (0,'Mainz','Alemanha',0,0,0,0,0),
- (0,'Malmö FF','Suécia',0,0,0,0,0),
- (0,'Manchester City','Inglaterra',0,0,0,0,0),
- (0,'Manchester United','Inglaterra',0,0,0,0,0),
- (0,'Strasbourg','França',0,0,0,0,0),
- (0,'República Tcheca','República Tcheca',0,0,0,0,0),
- (0,'Napoli','Itália',0,0,0,0,0),
- (0,'Newcastle United','Inglaterra',0,0,0,0,0),
- (0,'Nice','França',0,0,0,0,0),
- (0,'Norwich City','Inglaterra',0,0,0,0,0),
- (0,'Nürnberg','Alemanha',0,0,0,0,0),
- (0,'Ingolstadt','Alemanha',0,0,0,0,0),
- (0,'Paderborn','Alemanha',0,0,0,0,0),
- (0,'Bélgica','Bélgica',0,1,1,2.703,0),
- (0,'Austria Wien','Áustria',0,0,0,0,0),
- (0,'Paris Saint-Germain','França',0,0,0,0,0),
- (0,'Sérvia','Sérvia',0,0,0,0,0),
- (0,'Rússia','Rússia',0,0,0,0,0),
- (0,'Ponte Preta','Brasil',1,0,0,-3.18,1),
- (0,'Porto','Portugal',0,0,0,0,0),
- (0,'Portimonense','Portugal',0,0,0,0,0),
- (0,'PSV Eindhoven','Holanda',0,0,0,0,0),
- (0,'Rangers','Escócia',0,0,0,0,0),
- (0,'Bordeaux','França',0,0,0,0,0),
- (0,'RB Leipzig','Alemanha',0,0,0,0,0),
- (0,'Real Madrid','Espanha',0,0,0,0,0),
- (0,'Real Sociedad','Espanha',0,0,0,0,0),
- (0,'Romênia','Romênia',0,0,0,0,0),
- (0,'Roma','Itália',0,0,0,0,0),
- (0,'Eintracht Braunschweig','Alemanha',0,0,0,0,0),
- (0,'Hatayspor','Turquia',0,0,0,0,0),
- (0,'Kawasaki Frontale','Japão',0,0,0,0,0),
- (0,'RB Salzburg','Áustria',0,0,0,0,0),
- (0,'Sampdoria','Itália',0,0,0,0,0),
- (0,'San Marino','San Marino',0,0,0,0,0),
- (0,'Santos','Brasil',1,0,0,-3.18,1),
- (0,'Sassuolo','Itália',0,0,0,0,0),
- (0,'Schalke 04','Alemanha',0,0,0,0,0),
- (0,'Sevilla','Espanha',0,0,0,0,0),
- (0,'Shakhtar Donetsk','Ucrânia',0,0,0,0,0),
- (0,'St Gilloise','Bélgica',0,0,0,0,0),
- (0,'Yokohama Marinos','Japão',0,0,0,0,0),
- (0,'Arsenal','Inglaterra',0,0,0,0,0),
- (0,'Aston Villa','Inglaterra',0,0,0,0,0),
- (0,'Atalanta','Itália',0,0,0,0,0),
- (0,'Athletic Bilbao','Espanha',0,0,0,0,0),
- (0,'Atlético Madrid','Espanha',0,0,0,0,0),
- (0,'Los Angeles FC','EUA',0,0,0,0,0),
- (0,'Atlético Mineiro','Brasil',0,0,0,0,0),
- (0,'Los Angeles Galaxy','EUA',0,0,0,0,0),
- (0,'Watford','Inglaterra',0,0,0,0,0),
- (0,'Augsburg','Alemanha',0,0,0,0,0),
- (0,'Lillestrøm','Noruega',0,0,0,0,0),
- (0,'Fenerbahçe','Turquia',0,0,0,0,0),
- (0,'Bodø/Glimt','Noruega',0,0,0,0,0),
- (0,'Brøndby','Dinamarca',0,0,0,0,0),
- (0,'Bahia','Brasil',1,0,0,-3.18,1),
- (0,'Barcelona','Espanha',0,0,0,0,0),
- (0,'FC Zürich','Suíça',0,0,0,0,0),
- (0,'Başakşehir','Turquia',0,0,0,0,0),
- (0,'Basel','Suíça',0,0,0,0,0),
- (0,'BATE Borisov','Bielorrússia',0,0,0,0,0),
- (0,'Bayern Munich','Alemanha',0,0,0,0,0),
- (0,'América Mineiro','Brasil',0,0,0,0,0),
- (0,'Benfica','Portugal',0,0,0,0,0),
- (0,'Beşiktaş','Turquia',0,0,0,0,0),
- (0,'Real Betis','Espanha',0,0,0,0,0),
- (0,'Maccabi Haifa','Israel',0,0,0,0,0),
- (0,'Bologna','Itália',0,0,0,0,0),
- (0,'Bournemouth','Inglaterra',0,0,0,0,0),
- (0,'Braga','Portugal',0,0,0,0,0),
- (0,'Bragantino','Brasil',0,1,1,2.226,0),
- (0,'Slavia Praga','República Tcheca',0,0,0,0,0),
- (0,'Brescia','Itália',0,0,0,0,0),
- (0,'Brighton','Inglaterra',0,0,0,0,0),
- (0,'Trabzonspor','Turquia',0,0,0,0,0),
- (0,'Cagliari','Itália',0,0,0,0,0),
- (0,'Konyaspor','Turquia',0,0,0,0,0),
- (0,'Celta Vigo','Espanha',0,0,0,0,0),
- (0,'West Ham','Inglaterra',0,0,0,0,0),
- (0,'Chelsea','Inglaterra',0,0,0,0,0),
- (0,'Partizan','Sérvia',0,0,0,0,0),
- (0,'Crvena Zvezda','Sérvia',0,0,0,0,0),
- (0,'Molde','Noruega',0,0,0,0,0),
- (0,'St. Gallen','Suíça',0,0,0,0,0),
- (0,'Osasuna','Espanha',0,0,0,0,0),
- (0,'Metz','França',0,0,0,0,0),
- (0,'Figueirense','Brasil',0,0,0,0,0),
- (0,'HJK','Finlândia',0,0,0,0,0),
- (0,'Vålerenga','Noruega',0,0,0,0,0),
- (0,'Real Salt Lake','EUA',0,0,0,0,0),
- (0,'Borussia Dortmund','Alemanha',0,0,0,0,0),
- (0,'Croácia','Croácia',0,0,0,0,0),
- (0,'Ludogorets','Bulgária',0,0,0,0,0),
- (0,'Dynamo Dresden','Alemanha',0,0,0,0,0),
- (0,'Cluj','Romênia',0,0,0,0,0),
- (0,'FC Sion','Suíça',0,0,0,0,0),
- (0,'St. Pauli','Alemanha',0,0,0,0,0),
- (0,'Espanyol','Espanha',0,0,0,0,0),
- (0,'Everton','Inglaterra',0,0,0,0,0),
- (0,'Liechtenstein','Liechtenstein',0,0,0,0,0),
- (0,'FC Heidenheim','Alemanha',0,0,0,0,0),
- (0,'FC Köln','Alemanha',0,0,0,0,0),
- (0,'Lokomotiv Plovdiv','Bulgária',0,0,0,0,0),
- (0,'Saint-Étienne','França',0,0,0,0,0),
- (0,'Ind. del Valle','Equador',0,0,0,0,0),
- (0,'Flamengo','Brasil',1,0,1,2,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (6);
-INSERT INTO "Competições" ("Cod_Comp","Selec.","Competição","País","Mercados","Green","Red","P/L","Total") VALUES (1,0,'Brasileirão Série A','Brasil',32,0,0,0,0),
- (2,0,'Brasileirão Série B','Brasil',5,0,0,0,0),
- (3,0,'Eurocopa','Europa',2,0,0,0,0),
- (4,0,'Bundesliga 1','Alemanha',0,0,0,0,0),
- (5,0,'Bundesliga 2','Alemanha',0,0,0,0,0),
- (6,0,'DFB Pokal','Alemanha',0,0,0,0,0),
- (7,0,'Supercopa da Alemanha','Alemanha',0,0,0,0,0),
- (8,0,'Supercopa Intern. Argentina','Argentina',0,0,0,0,0),
- (9,0,'Campeonato Argentino','Argentina',0,0,0,0,0),
- (10,0,'Copa Argentina','Argentina',0,0,0,0,0),
- (11,0,'Copa do Brasil','Brasil',2,0,0,0,0),
- (12,0,'Estaduais','Brasil',0,0,0,0,0),
- (13,0,'La Liga','Espanha',0,0,0,0,0),
- (14,0,'La Liga 2','Espanha',0,0,0,0,0),
- (15,0,'Copa do Rei','Espanha',0,0,0,0,0),
- (16,0,'Supercopa da Espanha','Espanha',0,0,0,0,0),
- (17,0,'MLS','Estados Unidos',0,0,0,0,0),
- (18,0,'Ligue 1','França',0,0,0,0,0),
- (19,0,'Ligue 2','França',0,0,0,0,0),
- (20,0,'Copa da França','França',0,0,0,0,0),
- (21,0,'Supercopa da França','França',0,0,0,0,0),
- (22,0,'Eredivisie','Holanda',0,0,0,0,0),
- (23,0,'Premier League','Inglaterra',0,0,0,0,0),
- (24,0,'Championship','Inglaterra',0,0,0,0,0),
- (25,0,'FA Cup','Inglaterra',0,0,0,0,0),
- (26,0,'Copa da Liga','Inglaterra',0,0,0,0,0),
- (27,0,'Serie A','Itália',0,0,0,0,0),
- (28,0,'Copa da Itália','Itália',0,0,0,0,0),
- (29,0,'Supercopa da Itália','Itália',0,0,0,0,0),
- (30,0,'Primeira Liga','Portugal',0,0,0,0,0),
- (31,0,'Copa de Portugal','Portugal',0,0,0,0,0),
- (32,0,'Eliteserien','Noruega',0,0,0,0,0),
- (33,0,'Allsvenskan','Suécia',0,0,0,0,0),
- (34,0,'Super Lig','Turquia',0,0,0,0,0),
- (35,0,'Copa Sulamericana','América do Sul',0,0,0,0,0),
- (36,0,'Copa Libertadores','América do Sul',0,0,0,0,0),
- (37,0,'Recopa','América do Sul',0,0,0,0,0),
- (38,0,'Eliminatórias América Do Sul','América do Sul',0,0,0,0,0),
- (39,0,'Copa América','América do Sul',0,0,0,0,0),
- (40,0,'Champions League','Europa',0,0,0,0,0),
- (41,0,'Europa League','Europa',0,0,0,0,0),
- (42,0,'Nations','Internacional',0,0,0,0,0),
- (43,0,'Eliminatórias Europa','Europa',0,0,0,0,0),
- (44,0,'Mundial Interclubes','Internacional',0,0,0,0,0),
- (45,0,'Copa do Mundo','Internacional',0,0,0,0,0),
- (46,0,'Copa das Confederações','Internacional',0,0,0,0,0),
- (47,0,'Amistosos','Internacional',0,0,0,0,0),
- (48,0,'AFC Champions League','Ásia',0,0,0,0,0),
- (49,0,'Arábia Saudita','Ásia',0,0,0,0,0),
- (50,0,'Bahrein','Ásia',0,0,0,0,0),
- (51,0,'Emirados Árabes','Ásia',0,0,0,0,0),
- (52,0,'Irã','Ásia',0,0,0,0,0),
- (53,0,'Iraque','Ásia',0,0,0,0,0),
- (54,0,'Kuwait','Ásia',0,0,0,0,0),
- (55,0,'Catar','Ásia',0,0,0,0,0),
- (56,0,'China','Ásia',0,0,0,0,0),
- (57,0,'K League','Coreia do Sul',0,0,0,0,0),
- (58,0,'J League','Japão',0,0,0,0,0),
- (59,0,'Indonésia','Ásia',0,0,0,0,0),
- (60,0,'Tailândia','Ásia',0,0,0,0,0),
- (61,0,'Australiano','Austrália',0,0,0,0,0),
- (62,0,'Tajiquistão','Ásia',0,0,0,0,0),
- (63,0,'Bielorussia','Europa',0,0,0,0,0),
- (64,0,'Austriaco','Áustria',0,0,0,0,0),
- (65,0,'Suiço','Suíça',0,0,0,0,0),
- (66,0,'Dinamarques','Dinamarca',0,0,0,0,0),
- (67,0,'Islandês','Islândia',0,0,0,0,0);
-INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (1,'+ 0,5 Gols Casa',7),
- (2,'+ 0,5 Gols Fora',7),
- (3,'+ 0,5 Gols',7),
- (4,'+ 1,5 Gols',7),
- (5,'+ 2,5 Gols',7),
- (6,'+ 3,5 Gols',7),
- (7,'- 3,5 Gols',6),
- (8,'- 2,5 Gols',6),
- (9,'- 1,5 Gols',6),
- (10,'- 0,5 Gols',6),
- (11,'+ 0,5 Casa',5),
- (12,'+ 0,5 Fora',5),
- (13,'+ 0,5',5),
- (14,'+ 1,5',5),
- (15,'+ 2,5',5),
- (16,'+ 3,5',5),
- (17,'- 0,5',5),
- (18,'- 1,5',5),
- (19,'- 2,5',5),
- (20,'- 3,5',5),
- (21,'- 4,5',5),
- (22,'- 5,5',5),
- (23,'- 6,5',5),
- (24,'- 7,5',5),
- (25,'- 8,5',5),
- (26,'- 9,5',5),
- (27,'- 10,5',5),
- (28,'- 11,5',5),
- (29,'- 12,5',5),
- (30,'Europeu -3',4),
+INSERT INTO "Países" ("Selecao","País","Mercados","Greens","Reds","P/L") VALUES ('False','Brasil',36,0,0,0),
+ ('False','Eslováquia',0,0,0,0),
+ ('False','Ucrânia',0,0,0,0),
+ ('False','Holanda',1,0,0,0),
+ ('False','França',1,0,0,0),
+ ('False','Polônia',0,0,0,0),
+ ('False','Áustria',0,0,0,0),
+ ('False','Turquia',0,0,0,0),
+ ('False','Alemanha',0,0,0,0),
+ ('False','Argentina',0,0,0,0),
+ ('False','Espanha',0,0,0,0),
+ ('False','EUA',0,0,0,0),
+ ('False','Inglaterra',0,0,0,0),
+ ('False','Itália',1,0,0,0),
+ ('False','Portugal',1,0,0,0),
+ ('False','Noruega',0,0,0,0),
+ ('False','Suécia',0,0,0,0),
+ ('False','Sudamérica',0,0,0,0),
+ ('False','Europa',0,0,0,0),
+ ('False','Mundo',0,0,0,0),
+ ('False','Médio Oriente',0,0,0,0),
+ ('False','Extremo Oriente',0,0,0,0),
+ ('False','Sudeste Asiático',0,0,0,0),
+ ('False','Oceania',0,0,0,0),
+ ('False','Bielorussia',0,0,0,0),
+ ('False','Austria',0,0,0,0),
+ ('False','Suíça',0,0,0,0),
+ ('False','Dinamarca',0,0,0,0),
+ ('False','Islândia',0,0,0,0),
+ ('False','Hungria',0,0,0,0),
+ ('False','Malta',0,0,0,0),
+ ('False','Luxemburgo',0,0,0,0),
+ ('False','Ilhas Faroe',0,0,0,0),
+ ('False','Monaco',0,0,0,0),
+ ('False','Montenegro',0,0,0,0),
+ ('False','Chipre',0,0,0,0),
+ ('False','Letônia',0,0,0,0),
+ ('False','Bósnia e Herzegovina',0,0,0,0),
+ ('False','Estônia',0,0,0,0),
+ ('False','Sérvia',1,0,0,0),
+ ('False','Eslovênia',0,0,0,0),
+ ('False','Geórgia',0,0,0,0),
+ ('False','Moldávia',0,0,0,0),
+ ('False','Armênia',0,0,0,0),
+ ('False','Azerbaijão',0,0,0,0),
+ ('False','Kosovo',0,0,0,0),
+ ('False','Andorra',0,0,0,0),
+ ('False','San Marino',0,0,0,0),
+ ('False','Gibraltar',0,0,0,0),
+ ('False','Liechtenstein',0,0,0,0),
+ ('False','Mônaco',0,0,0,0),
+ ('False','Vaticano',0,0,0,0),
+ ('False','Bielorrússia',0,0,0,0),
+ ('False','Cazaquistão',0,0,0,0),
+ ('False','Macedônia do Norte',0,0,0,0),
+ ('False','São Marino',0,0,0,0),
+ ('False','Curaçao',0,0,0,0),
+ ('False','Paraguai',0,0,0,0),
+ ('False','Irlanda',0,0,0,0),
+ ('False','Bolívia',0,0,0,0),
+ ('False','Chile',0,0,0,0),
+ ('False','Escócia',0,0,0,0),
+ ('False','República Tcheca',0,0,0,0),
+ ('False','Bélgica',1,0,0,0),
+ ('False','Rússia',0,0,0,0),
+ ('False','Romênia',0,0,0,0),
+ ('False','Japão',0,0,0,0),
+ ('False','Israel',0,0,0,0),
+ ('False','Finlândia',0,0,0,0),
+ ('False','Croácia',0,0,0,0),
+ ('False','Bulgária',0,0,0,0),
+ ('False','Equador',0,0,0,0),
+ (0,'América',0,0,0,0),
+ (0,'Uruguai',0,0,0,0);
+INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P/L","Reds") VALUES ('False','Criciúma','Brasil',2,1,2,0,1),
+ ('False','Próspera','Brasil',0,0,0,0,0),
+ ('False','Palmeiras','Brasil',2,0,2,3,0),
+ ('False','Cruzeiro','Brasil',2,1,2,1,1),
+ ('False','Atlético GO','Brasil',1,1,2,4,0),
+ ('False','São Paulo','Brasil',0,1,1,2,0),
+ ('False','Fortaleza','Brasil',1,1,1,0,1),
+ ('False','Grêmio','Brasil',0,1,1,2,0),
+ ('False','Juventude','Brasil',2,0,2,4,0),
+ ('False','Vasco da Gama','Brasil',0,0,0,0,0),
+ ('False','Internacional','Brasil',0,1,1,2,0),
+ ('False','Corinthians','Brasil',0,2,1,-1,1),
+ ('False','Fluminense','Brasil',0,2,0,-6,2),
+ ('False','Botafogo','Brasil',0,2,2,3,0),
+ ('False','Athletico PR','Brasil',1,1,1,2,0),
+ ('False','Cuiabá','Brasil',1,1,1,-1,1),
+ ('False','Coritiba','Brasil',0,0,0,0,0),
+ ('False','América MG','Brasil',0,1,1,1,0),
+ ('False','Eslováquia','Eslováquia',0,0,0,0,0),
+ ('False','Ucrânia','Ucrânia',0,0,0,0,0),
+ ('False','Holanda','Holanda',0,0,0,0,0),
+ ('False','França','França',1,0,1,2,0),
+ ('False','Polônia','Polônia',0,0,0,0,0),
+ ('False','Áustria','Áustria',0,0,0,0,0),
+ ('False','Turquia','Turquia',0,0,0,0,0),
+ ('False','AC Milan','Itália',0,1,0,0,0),
+ ('False','Tondela','Portugal',0,0,0,0,0),
+ ('False','Ajax','Holanda',1,0,0,0,0),
+ ('False','Alavés','Espanha',0,0,0,0,0),
+ ('False','Portland Timbers','EUA',0,0,0,0,0),
+ ('False','Crystal Palace','Inglaterra',0,0,0,0,0),
+ ('False','Goiás','Brasil',0,0,0,0,0),
+ ('False','Chapecoense','Brasil',0,1,0,-3,1),
+ ('False','Fulham','Inglaterra',0,0,0,0,0),
+ ('False','Portugal','Portugal',1,0,0,-3,1),
+ ('False','Lille','França',0,0,0,0,0),
+ ('False','Ceará','Brasil',0,1,1,1,0),
+ ('False','Fortuna','Alemanha',0,0,0,0,0),
+ ('False','Frankfurt','Alemanha',0,0,0,0,0),
+ ('False','Náutico','Brasil',0,0,0,0,0),
+ ('False','Operário','Brasil',0,0,0,0,0),
+ ('False','Qarabağ','Azerbaijão',0,0,0,0,0),
+ ('False','Genoa','Itália',0,0,0,0,0),
+ ('False','Boca Juniors','Argentina',0,0,0,0,0),
+ ('False','Libertad','Paraguai',0,0,0,0,0),
+ ('False','Getafe','Espanha',0,0,0,0,0),
+ ('False','Granada','Espanha',0,0,0,0,0),
+ ('False','Espanha','Espanha',0,0,0,0,0),
+ ('False','Alemanha','Alemanha',0,0,0,0,0),
+ ('False','Hamburger SV','Alemanha',0,0,0,0,0),
+ ('False','Hoffenheim','Alemanha',0,0,0,0,0),
+ ('False','Inter Milan','Itália',0,0,0,0,0),
+ ('False','København','Dinamarca',0,0,0,0,0),
+ ('False','Shamrock Rovers','Irlanda',0,0,0,0,0),
+ ('False','Itália','Itália',0,0,0,0,0),
+ ('False','Juventus','Itália',0,0,0,0,0),
+ ('False','Rayo Vallecano','Espanha',0,0,0,0,0),
+ ('False','Always Ready','Bolívia',0,0,0,0,0),
+ ('False','Lazio','Itália',0,0,0,0,0),
+ ('False','Leicester City','Inglaterra',0,0,0,0,0),
+ ('False','Minnesota United','EUA',0,0,0,0,0),
+ ('False','Athletico Paranaense','Brasil',0,0,0,0,0),
+ ('False','Levante','Espanha',0,0,0,0,0),
+ ('False','Bayer Leverkusen','Alemanha',0,0,0,0,0),
+ ('False','Universidad Católica','Chile',0,0,0,0,0),
+ ('False','Liverpool','Inglaterra',0,0,0,0,0),
+ ('False','Salernitana','Itália',0,0,0,0,0),
+ ('False','Hungria','Hungria',0,0,0,0,0),
+ ('False','Middlesbrough','Inglaterra',0,0,0,0,0),
+ ('False','Lyon','França',0,0,0,0,0),
+ ('False','Atlético Goianiense','Brasil',0,0,0,0,0),
+ ('False','Escócia','Escócia',0,0,0,0,0),
+ ('False','Mainz','Alemanha',0,0,0,0,0),
+ ('False','Malmö FF','Suécia',0,0,0,0,0),
+ ('False','Manchester City','Inglaterra',0,0,0,0,0),
+ ('False','Manchester United','Inglaterra',0,0,0,0,0),
+ ('False','Strasbourg','França',0,0,0,0,0),
+ ('False','República Tcheca','República Tcheca',0,0,0,0,0),
+ ('False','Napoli','Itália',0,0,0,0,0),
+ ('False','Newcastle United','Inglaterra',0,0,0,0,0),
+ ('False','Nice','França',0,0,0,0,0),
+ ('False','Norwich City','Inglaterra',0,0,0,0,0),
+ ('False','Nürnberg','Alemanha',0,0,0,0,0),
+ ('False','Ingolstadt','Alemanha',0,0,0,0,0),
+ ('False','Paderborn','Alemanha',0,0,0,0,0),
+ ('False','Bélgica','Bélgica',0,1,1,2,0),
+ ('False','Austria Wien','Áustria',0,0,0,0,0),
+ ('False','Paris Saint-Germain','França',0,0,0,0,0),
+ ('False','Sérvia','Sérvia',0,0,0,0,0),
+ ('False','Rússia','Rússia',0,0,0,0,0),
+ ('False','Ponte Preta','Brasil',1,0,0,-3,1),
+ ('False','Porto','Portugal',0,0,0,0,0),
+ ('False','Portimonense','Portugal',0,0,0,0,0),
+ ('False','PSV Eindhoven','Holanda',0,0,0,0,0),
+ ('False','Rangers','Escócia',0,0,0,0,0),
+ ('False','Bordeaux','França',0,0,0,0,0),
+ ('False','RB Leipzig','Alemanha',0,0,0,0,0),
+ ('False','Real Madrid','Espanha',0,0,0,0,0),
+ ('False','Real Sociedad','Espanha',0,0,0,0,0),
+ ('False','Romênia','Romênia',0,0,0,0,0),
+ ('False','Roma','Itália',0,0,0,0,0),
+ ('False','Eintracht Braunschweig','Alemanha',0,0,0,0,0),
+ ('False','Hatayspor','Turquia',0,0,0,0,0),
+ ('False','Kawasaki Frontale','Japão',0,0,0,0,0),
+ ('False','RB Salzburg','Áustria',0,0,0,0,0),
+ ('False','Sampdoria','Itália',0,0,0,0,0),
+ ('False','San Marino','San Marino',0,0,0,0,0),
+ ('False','Santos','Brasil',1,0,0,-3,1),
+ ('False','Sassuolo','Itália',0,0,0,0,0),
+ ('False','Schalke 04','Alemanha',0,0,0,0,0),
+ ('False','Sevilla','Espanha',0,0,0,0,0),
+ ('False','Shakhtar Donetsk','Ucrânia',0,0,0,0,0),
+ ('False','St Gilloise','Bélgica',0,0,0,0,0),
+ ('False','Yokohama Marinos','Japão',0,0,0,0,0),
+ ('False','Arsenal','Inglaterra',0,0,0,0,0),
+ ('False','Aston Villa','Inglaterra',0,0,0,0,0),
+ ('False','Atalanta','Itália',0,0,0,0,0),
+ ('False','Athletic Bilbao','Espanha',0,0,0,0,0),
+ ('False','Atlético Madrid','Espanha',0,0,0,0,0),
+ ('False','Los Angeles FC','EUA',0,0,0,0,0),
+ ('False','Atlético Mineiro','Brasil',0,0,0,0,0),
+ ('False','Los Angeles Galaxy','EUA',0,0,0,0,0),
+ ('False','Watford','Inglaterra',0,0,0,0,0),
+ ('False','Augsburg','Alemanha',0,0,0,0,0),
+ ('False','Lillestrøm','Noruega',0,0,0,0,0),
+ ('False','Fenerbahçe','Turquia',0,0,0,0,0),
+ ('False','Bodø/Glimt','Noruega',0,0,0,0,0),
+ ('False','Brøndby','Dinamarca',0,0,0,0,0),
+ ('False','Bahia','Brasil',1,0,0,-3,1),
+ ('False','Barcelona','Espanha',0,0,0,0,0),
+ ('False','FC Zürich','Suíça',0,0,0,0,0),
+ ('False','Başakşehir','Turquia',0,0,0,0,0),
+ ('False','Basel','Suíça',0,0,0,0,0),
+ ('False','BATE Borisov','Bielorrússia',0,0,0,0,0),
+ ('False','Bayern Munich','Alemanha',0,0,0,0,0),
+ ('False','América Mineiro','Brasil',0,0,0,0,0),
+ ('False','Benfica','Portugal',0,0,0,0,0),
+ ('False','Beşiktaş','Turquia',0,0,0,0,0),
+ ('False','Real Betis','Espanha',0,0,0,0,0),
+ ('False','Maccabi Haifa','Israel',0,0,0,0,0),
+ ('False','Bologna','Itália',0,0,0,0,0),
+ ('False','Bournemouth','Inglaterra',0,0,0,0,0),
+ ('False','Braga','Portugal',0,0,0,0,0),
+ ('False','Bragantino','Brasil',0,1,1,2,0),
+ ('False','Slavia Praga','República Tcheca',0,0,0,0,0),
+ ('False','Brescia','Itália',0,0,0,0,0),
+ ('False','Brighton','Inglaterra',0,0,0,0,0),
+ ('False','Trabzonspor','Turquia',0,0,0,0,0),
+ ('False','Cagliari','Itália',0,0,0,0,0),
+ ('False','Konyaspor','Turquia',0,0,0,0,0),
+ ('False','Celta Vigo','Espanha',0,0,0,0,0),
+ ('False','West Ham','Inglaterra',0,0,0,0,0),
+ ('False','Chelsea','Inglaterra',0,0,0,0,0),
+ ('False','Partizan','Sérvia',0,0,0,0,0),
+ ('False','Crvena Zvezda','Sérvia',0,0,0,0,0),
+ ('False','Molde','Noruega',0,0,0,0,0),
+ ('False','St. Gallen','Suíça',0,0,0,0,0),
+ ('False','Osasuna','Espanha',0,0,0,0,0),
+ ('False','Metz','França',0,0,0,0,0),
+ ('False','Figueirense','Brasil',0,0,0,0,0),
+ ('False','HJK','Finlândia',0,0,0,0,0),
+ ('False','Vålerenga','Noruega',0,0,0,0,0),
+ ('False','Real Salt Lake','EUA',0,0,0,0,0),
+ ('False','Borussia Dortmund','Alemanha',0,0,0,0,0),
+ ('False','Croácia','Croácia',0,0,0,0,0),
+ ('False','Ludogorets','Bulgária',0,0,0,0,0),
+ ('False','Dynamo Dresden','Alemanha',0,0,0,0,0),
+ ('False','Cluj','Romênia',0,0,0,0,0),
+ ('False','FC Sion','Suíça',0,0,0,0,0),
+ ('False','St. Pauli','Alemanha',0,0,0,0,0),
+ ('False','Espanyol','Espanha',0,0,0,0,0),
+ ('False','Everton','Inglaterra',0,0,0,0,0),
+ ('False','Liechtenstein','Liechtenstein',0,0,0,0,0),
+ ('False','FC Heidenheim','Alemanha',0,0,0,0,0),
+ ('False','FC Köln','Alemanha',0,0,0,0,0),
+ ('False','Lokomotiv Plovdiv','Bulgária',0,0,0,0,0),
+ ('False','Saint-Étienne','França',0,0,0,0,0),
+ ('False','Ind. del Valle','Equador',0,0,0,0,0),
+ ('False','Flamengo','Brasil',1,0,1,2,0),
+ (0,'Maccabi Petah Tikva','Europa',0,0,0,0,0),
+ (0,'Vojvodina','Europa',0,0,0,0,0),
+ (0,'Brusque','Brasil',0,0,0,0,0),
+ (0,'Newells Old Boys','Argentina',0,0,0,0,0),
+ (0,'Estudiantes de La Plata','Argentina',0,0,0,0,0),
+ (0,'Sport Recife','Brasil',0,0,0,0,0),
+ (0,'Velez Sarsfield','Argentina',0,0,0,0,0),
+ (0,'Defensia y Justicia','Argentina',0,0,0,0,0),
+ (0,'Vitória','Brasil',0,0,0,0,0),
+ (0,'Talleres Cordoba','Argentina',0,0,0,0,0),
+ (0,'Instituto AC Cordoba','Argentina',0,0,0,0,0),
+ (0,'Independiente','Argentina',0,0,0,0,0),
+ (0,'San Lorenzo','Argentina',0,0,0,0,0),
+ (0,'Huracan','Argentina',0,0,0,0,0),
+ (0,'Racing Club','Argentina',0,0,0,0,0),
+ (0,'Union de Santa Fe','Argentina',0,0,0,0,0),
+ (0,'River Plate','Argentina',0,0,0,0,0),
+ (0,'Barracas Central','Argentina',0,0,0,0,0),
+ (0,'Novorizontino','Brasil',0,0,0,0,0),
+ (0,'Lanús','Argentina',0,0,0,0,0),
+ (0,'Tigre','Argentina',0,0,0,0,0),
+ (0,'Deportivo Riestra','Argentina',0,0,0,0,0),
+ (0,'Central Cordoba','Argentina',0,0,0,0,0),
+ (0,'Mirassol','Brasil',0,0,0,0,0),
+ (0,'Platense','Argentina',0,0,0,0,0),
+ (0,'BAnfield','Argentina',0,0,0,0,0),
+ (0,'Banfield','Argentina',0,0,0,0,0),
+ (0,'Vila Nova','Brasil',0,0,0,0,0),
+ (0,'Paysandu','Brasil',0,0,0,0,0),
+ (0,'Malmo FF','Europa',0,0,0,0,0),
+ (0,'PAOK','Europa',0,0,0,0,0),
+ (0,'Dinamo Kiev','Europa',0,0,0,0,0),
+ (0,'Rangers FC','Europa',0,0,0,0,0),
+ (0,'AC Sparta Praga','Europa',0,0,0,0,0),
+ (0,'FCSB','Europa',0,0,0,0,0),
+ (0,'Guarani','Brasil',0,0,0,0,0),
+ (0,'Argentinos Juniors','Argentina',0,0,0,0,0),
+ (0,'Sarmiento','Argentina',0,0,0,0,0),
+ (0,'SC Braga','Europa',0,0,0,0,0),
+ (0,'Servette FC','Europa',0,0,0,0,0),
+ (0,'CRB','Brasil',0,0,0,0,0),
+ (0,'Colo-Colo','América',0,0,0,0,0),
+ (0,'Junior','América',0,0,0,0,0),
+ (0,'Nacional de Football','Uruguai',0,0,0,0,0),
+ (0,'Belgrano','Argentina',0,0,0,0,0),
+ (0,'Santa Clara','Portugal',0,0,0,0,0),
+ (0,'Leverkusen','Alemanha',0,0,0,0,0),
+ (0,'VfB Stuttgart','Alemanha',0,0,0,0,0),
+ (0,'Valência','Espanha',0,0,0,0,0),
+ (0,'AS Roma','Itália',0,0,0,0,0),
+ (0,'SS Lazio','Itália',0,0,0,0,0),
+ (0,'Venezia','Itália',0,0,0,0,0),
+ (0,'RCD Mallorca','Espanha',0,0,0,0,0),
+ (0,'Rosario Central','Argentina',0,0,0,0,0),
+ (0,'Eslovénia','Europa',0,0,0,0,0),
+ (0,'Bolívia','América',0,0,0,0,0),
+ (0,'Panamá','América',0,0,0,0,0),
+ (0,'Santa Catarina','Brasil',0,0,0,0,0),
+ (0,'Metropol','Brasil',0,0,0,0,0),
+ (0,'Villarreal','Espanha',0,0,0,0,0),
+ (0,'Como','Itália',0,0,0,0,0),
+ (0,'Lecce','Itália',0,0,0,0,0),
+ (0,'Atlanta','Itália',0,0,0,0,0),
+ (0,'Huachipato','Chile',0,0,0,0,0),
+ (0,'Bodo/Glimt','Europa',0,0,0,0,0),
+ (0,'Ituano','Brasil',0,0,0,0,0),
+ (0,'Botafogo SP','Brasil',0,0,0,0,0),
+ (0,'LDU Quito','Equador',0,0,0,0,0),
+ (0,'Avaí','Brasil',0,0,0,0,0);
+INSERT INTO "ControleVersao" ("Versao") VALUES (18);
+INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
+ (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
+ (3,'False','Eurocopa','Europa',2,0,0,0,0),
+ (4,'False','Bundesliga 1','Alemanha',0,0,0,0,0),
+ (5,'False','Bundesliga 2','Alemanha',0,0,0,0,0),
+ (6,'False','DFB Pokal','Alemanha',0,0,0,0,0),
+ (7,'False','Supercopa da Alemanha','Alemanha',0,0,0,0,0),
+ (8,'False','Supercopa Intern. Argentina','Argentina',0,0,0,0,0),
+ (9,'False','Campeonato Argentino','Argentina',0,0,0,0,0),
+ (10,'False','Copa Argentina','Argentina',0,0,0,0,0),
+ (11,'False','Copa do Brasil','Brasil',2,0,0,0,0),
+ (12,'False','Estaduais','Brasil',0,0,0,0,0),
+ (13,'False','La Liga','Espanha',0,0,0,0,0),
+ (14,'False','La Liga 2','Espanha',0,0,0,0,0),
+ (15,'False','Copa do Rei','Espanha',0,0,0,0,0),
+ (16,'False','Supercopa da Espanha','Espanha',0,0,0,0,0),
+ (17,'False','MLS','Estados Unidos',0,0,0,0,0),
+ (18,'False','Ligue 1','França',0,0,0,0,0),
+ (19,'False','Ligue 2','França',0,0,0,0,0),
+ (20,'False','Copa da França','França',0,0,0,0,0),
+ (21,'False','Supercopa da França','França',0,0,0,0,0),
+ (22,'False','Eredivisie','Holanda',0,0,0,0,0),
+ (23,'False','Premier League','Inglaterra',0,0,0,0,0),
+ (24,'False','Championship','Inglaterra',0,0,0,0,0),
+ (25,'False','FA Cup','Inglaterra',0,0,0,0,0),
+ (26,'False','Copa da Liga','Inglaterra',0,0,0,0,0),
+ (27,'False','Serie A','Itália',0,0,0,0,0),
+ (28,'False','Copa da Itália','Itália',0,0,0,0,0),
+ (29,'False','Supercopa da Itália','Itália',0,0,0,0,0),
+ (30,'False','Primeira Liga','Portugal',0,0,0,0,0),
+ (31,'False','Copa de Portugal','Portugal',0,0,0,0,0),
+ (32,'False','Eliteserien','Noruega',0,0,0,0,0),
+ (33,'False','Allsvenskan','Suécia',0,0,0,0,0),
+ (34,'False','Super Lig','Turquia',0,0,0,0,0),
+ (35,'False','Copa Sulamericana','América do Sul',0,0,0,0,0),
+ (36,'False','Copa Libertadores','América do Sul',0,0,0,0,0),
+ (37,'False','Recopa','América do Sul',0,0,0,0,0),
+ (38,'False','Eliminatórias América Do Sul','América do Sul',0,0,0,0,0),
+ (39,'False','Copa América','América do Sul',0,0,0,0,0),
+ (40,'False','Champions League','Europa',0,0,0,0,0),
+ (41,'False','Europa League','Europa',0,0,0,0,0),
+ (42,'False','Nations','Internacional',0,0,0,0,0),
+ (43,'False','Eliminatórias Europa','Europa',0,0,0,0,0),
+ (44,'False','Mundial Interclubes','Internacional',0,0,0,0,0),
+ (45,'False','Copa do Mundo','Internacional',0,0,0,0,0),
+ (46,'False','Copa das Confederações','Internacional',0,0,0,0,0),
+ (47,'False','Amistosos','Internacional',0,0,0,0,0),
+ (48,'False','AFC Champions League','Ásia',0,0,0,0,0),
+ (49,'False','Arábia Saudita','Ásia',0,0,0,0,0),
+ (50,'False','Bahrein','Ásia',0,0,0,0,0),
+ (51,'False','Emirados Árabes','Ásia',0,0,0,0,0),
+ (52,'False','Irã','Ásia',0,0,0,0,0),
+ (53,'False','Iraque','Ásia',0,0,0,0,0),
+ (54,'False','Kuwait','Ásia',0,0,0,0,0),
+ (55,'False','Catar','Ásia',0,0,0,0,0),
+ (56,'False','China','Ásia',0,0,0,0,0),
+ (57,'False','K League','Coreia do Sul',0,0,0,0,0),
+ (58,'False','J League','Japão',0,0,0,0,0),
+ (59,'False','Indonésia','Ásia',0,0,0,0,0),
+ (60,'False','Tailândia','Ásia',0,0,0,0,0),
+ (61,'False','Australiano','Austrália',0,0,0,0,0),
+ (62,'False','Tajiquistão','Ásia',0,0,0,0,0),
+ (63,'False','Bielorussia','Europa',0,0,0,0,0),
+ (64,'False','Austriaco','Áustria',0,0,0,0,0),
+ (65,'False','Suiço','Suíça',0,0,0,0,0),
+ (66,'False','Dinamarques','Dinamarca',0,0,0,0,0),
+ (67,'False','Islandês','Islândia',0,0,0,0,0),
+ (73,0,'Liga Europa','Europa',0,0,0,0,0),
+ (74,0,'Liga dos Campeões','Europa',0,0,0,0,0),
+ (75,0,'Liga Portugal','Portugal',0,0,0,0,0),
+ (76,0,'Itália - Série A','Itália',0,0,0,0,0),
+ (77,0,'Catarinense Série B','Brasil',0,0,0,0,0);
+ INSERT INTO "Métodos" ("Cod_Metodo","Selecao","Nome") VALUES (1,'False','Resultado Equipe'),
+ (3,'False','Handicap Asiático'),
+ (4,'False','Handicap Europeu'),
+ (15,0,'Mais Gols'),
+ (16,0,'Menos Gols'),
+ (17,0,'Mais Escanteios'),
+ (18,0,'Menos Escanteios'),
+ (19,0,'Mais Cartões'),
+ (20,0,'Menos Cartões');
+INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (30,'Europeu -3',4),
  (31,'Europeu -2',4),
  (32,'Europeu -1',4),
  (33,'Europeu +1',4),
@@ -520,29 +636,6 @@ INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (1,'+ 0,5 Gols Cas
  (56,'Asiático -1,5',3),
  (57,'Asiático -1,75',3),
  (58,'Asiático -2',3),
- (59,'+ 0,5 Cantos',8),
- (60,'+ 1,5 Cantos',8),
- (61,'+ 2,5 Cantos',8),
- (62,'+ 3,5 Cantos',8),
- (63,'+ 4,5 Cantos',8),
- (64,'+ 5,5 Cantos',8),
- (65,'+ 6,5 Cantos',8),
- (66,'+ 7,5 Cantos',8),
- (67,'+ 8,5 Cantos',8),
- (68,'-14,5 Cantos',0),
- (69,'- 13,5 Cantos',0),
- (70,'- 12,5 Cantos',0),
- (71,'- 11,5 Cantos',0),
- (72,'- 10,5 Cantos',0),
- (73,'- 9,5 Cantos',0),
- (74,'- 8,5 Cantos',0),
- (75,'- 7,5 Cantos',0),
- (76,'- 6,5 Cantos',0),
- (77,'- 5,5 Cantos',0),
- (78,'- 4,5 Cantos',0),
- (79,'- 3,5 Cantos',0),
- (80,'- 2,5 Cantos',0),
- (81,'- 1,5 Cantos',0),
  (82,'Casa Vence',1),
  (83,'Fora Vence',1),
  (84,'Empate',1),
@@ -550,188 +643,103 @@ INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (1,'+ 0,5 Gols Cas
  (86,'Fora ou Empate',1),
  (87,'Empate Anula Casa',1),
  (88,'Empate Anula Fora',1),
- (89,'Casa ou Fora',1);
-INSERT INTO "Métodos" ("Cod_Metodo","Selec.","Nome") VALUES (0,0,'Under Escanteios'),
- (1,0,'Resultado Equipe'),
- (3,0,'Handicap Asiático'),
- (4,0,'Handicap Europeu'),
- (5,0,'Cartões'),
- (6,0,'Under Gols'),
- (7,0,'Over Gols'),
- (8,0,'Over Escanteios');
-CREATE TRIGGER "Atualiza Status Aposta (Update)"
-AFTER UPDATE ON Mercados
+ (89,'Casa ou Fora',1),
+ (108,'+ 0,5 Cantos',17),
+ (109,'+ 1,5 Cantos',17),
+ (110,'+ 2,5 Cantos',17),
+ (111,'+ 3,5 Cantos',17),
+ (112,'+ 4,5 Cantos',17),
+ (113,'+ 5,5 Cantos',17),
+ (114,'+ 6,5 Cantos',17),
+ (115,'+ 7,5 Cantos',17),
+ (116,'+ 8,5 Cantos',17),
+ (117,'- 15,5 Cantos',18),
+ (118,'- 14,5 Cantos',18),
+ (119,'- 13,5 Cantos',18),
+ (120,'- 12,5 Cantos',18),
+ (121,'- 11,5 Cantos',18),
+ (122,'- 10,5 Cantos',18),
+ (123,'- 9,5 Cantos',18),
+ (124,'- 8,5 Cantos',18),
+ (125,'- 7,5 Cantos',18),
+ (126,'- 6,5 Cantos',18),
+ (127,'+ 0,5 Cartões Casa',19),
+ (128,'+ 0,5 Cartões Fora',19),
+ (129,'+ 1,5 Cartões Casa',19),
+ (130,'+ 1,5 Cartões Fora',19),
+ (132,'Ambos 1 Cartão',19),
+ (133,'Ambos + 1,5 Cartões',19),
+ (134,'+ 0,5 Cartões',19),
+ (135,'+ 1,5 Cartões',19),
+ (136,'+ 2,5 Cartões',19),
+ (137,'+ 3,5 Cartões',19),
+ (138,'+ 4,5 Cartões',19),
+ (139,'+ 5,5 Cartões',19),
+ (140,'- 7,5 Cartões',20),
+ (141,'- 6,5 Cartões',20),
+ (142,'- 5,5 Cartões',20),
+ (143,'- 4,5 Cartões',20),
+ (144,'- 3,5 cartões',20),
+ (145,'+ 0,5 Gols',15),
+ (146,'+ 1,5 Gols',15),
+ (147,'+ 2,5 Gols',15),
+ (148,'+ 3,5 Gols',15),
+ (149,'+ 4,5 Gols',15),
+ (150,'+ 5,5 Gols',15),
+ (151,'- 10,5 Gols',16),
+ (152,'- 9,5 Gols',16),
+ (153,'- 8,5 Gols',16),
+ (154,'- 7,5 Gols',16),
+ (155,'- 6,5 Gols',16),
+ (156,'- 5,5 Gols',16),
+ (157,'- 4,5 Gols',16),
+ (158,'- 3,5 Gols',16),
+ (159,'- 2,5 Gols',16),
+ (160,'- 1,5 Gols',16),
+ (161,'- 0,5 Gols',16),
+ (162,'Europeu +4',4),
+ (163,'+ 0,5 Gols Casa',15),
+ (164,'+ 0,5 Gols Fora',15),
+ (165,'+ 2,5 Cartões Casa',19),
+ (166,'+ 2,5 Cartões Fora',19),
+ (167,'Ambas Marcam',15),
+ (168,'+ 3,5 Cantos Casa',17),
+ (169,'+ 3,5 Cantos Fora',17),
+ (170,'Casa Qualificar-se',1),
+ (171,'Fora Qualificar-se',1),
+ (172,'+ 3,5 Cantos 1° Tempo',17),
+ (174,'Mais Cantos Casa',17),
+ (175,'Mais Cantos Fora',17),
+ (178,'- 2,5 Gols Casa',16),
+ (179,'- 2,5 Gols Fora',16);
+ INSERT INTO ConfigPrograma DEFAULT VALUES;
+CREATE TRIGGER "Atualiza Banca Final (Delete)" AFTER DELETE ON Apostas FOR EACH ROW BEGIN UPDATE Banca SET Valor_Final = ROUND(COALESCE( (SELECT Banca_Final FROM Apostas WHERE Cod_Aposta = ( SELECT MAX(Cod_Aposta) FROM Apostas WHERE strftime('%m', Apostas.Data) = strftime('%m', OLD.Data) AND strftime('%Y', Apostas.Data) = strftime('%Y', OLD.Data))),0), 2) WHERE Banca.Mês = strftime('%m', OLD.Data) AND Banca.Ano = strftime('%Y', OLD.Data); END;
+CREATE TRIGGER "Atualiza Banca Final (Insert)" AFTER INSERT ON Apostas FOR EACH ROW BEGIN UPDATE Banca SET Valor_Final = ROUND(COALESCE( (SELECT Banca_Final FROM Apostas WHERE Cod_Aposta = ( SELECT MAX(Cod_Aposta) FROM Apostas WHERE strftime('%m', Apostas.Data) = strftime('%m', NEW.Data) AND strftime('%Y', Apostas.Data) = strftime('%Y', NEW.Data))),0), 2) WHERE Banca.Mês = strftime('%m', NEW.Data) AND Banca.Ano = strftime('%Y', NEW.Data); END;
+CREATE TRIGGER "Atualiza Banca Final (Update)" AFTER UPDATE ON Apostas FOR EACH ROW BEGIN UPDATE Banca SET Valor_Final = ROUND(COALESCE( (SELECT Banca_Final FROM Apostas WHERE Cod_Aposta = ( SELECT MAX(Cod_Aposta) FROM Apostas WHERE strftime('%m', Apostas.Data) = strftime('%m', NEW.Data) AND strftime('%Y', Apostas.Data) = strftime('%Y', NEW.Data))),0), 2) WHERE Banca.Mês = strftime('%m', NEW.Data) AND Banca.Ano = strftime('%Y', NEW.Data); END;
+CREATE TRIGGER "Cashout"
+AFTER UPDATE ON Apostas 
+FOR EACH ROW 
+BEGIN
+UPDATE Apostas 
+SET Lucro = Retorno - Valor_Aposta
+WHERE Cod_Aposta = NEW.Cod_Aposta 
+AND Cashout = 1;
+END;
+CREATE TRIGGER "Atualiza Apostas" 
+AFTER UPDATE ON Mercados 
 FOR EACH ROW 
 BEGIN 
-    UPDATE Apostas
-    SET Status = 'Red'
-    WHERE Cod_Aposta = NEW.Cod_Aposta
-    AND Cashout = 0
-    AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Status = 'Red');
+UPDATE Apostas SET Status = 'Red' 
+WHERE Cod_Aposta = NEW.Cod_Aposta 
+AND Cashout = 0 
+AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red'); 
 
-    UPDATE Apostas
-    SET Status = 'Green'
-    WHERE Cod_Aposta = NEW.Cod_Aposta
-    AND Cashout = 0
-    AND (SELECT COUNT(*) FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta) = 
-        (SELECT COUNT(*) FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Status = 'Green');
-END;
-CREATE TRIGGER "Atualiza Status Aposta (Delete)"
-AFTER DELETE ON Mercados
-FOR EACH ROW 
-BEGIN 
-    UPDATE Apostas
-    SET Status = 'Red'
-    WHERE Cod_Aposta = OLD.Cod_Aposta
-    AND Cashout = 0
-    AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = OLD.Cod_Aposta AND Status = 'Red');
+UPDATE Apostas SET Status = 'Green' WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red') 
+AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
 
-    UPDATE Apostas
-    SET Status = 'Green'
-    WHERE Cod_Aposta = OLD.Cod_Aposta
-    AND Cashout = 0
-    AND (SELECT COUNT(*) FROM Mercados WHERE Cod_Aposta = OLD.Cod_Aposta) = 
-        (SELECT COUNT(*) FROM Mercados WHERE Cod_Aposta = OLD.Cod_Aposta AND Status = 'Green');
-END;
-CREATE TRIGGER "Atualiza Banca Final Apostas (insert)" 
-AFTER INSERT ON Apostas
-FOR EACH ROW 
-BEGIN
-    -- Atualiza o Retorno
-    UPDATE Apostas
-    SET Retorno = CASE 
-        WHEN Status = 'Green' THEN Odd * Valor_Aposta
-        WHEN Status = 'Red' THEN 0 
-        ELSE 0
-    END
-    WHERE rowid = NEW.rowid;
+UPDATE Apostas SET Status = 'Pré-live' WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red') 
+AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
 
-    -- Atualiza o Lucro
-    UPDATE Apostas
-    SET Lucro = CASE 
-        WHEN Status = 'Green' THEN Retorno - Valor_Aposta
-        WHEN Status = 'Red' THEN -Valor_Aposta
-        ELSE 0
-    END
-    WHERE rowid = NEW.rowid;
-
-    -- Atualiza a Banca_Final
-    UPDATE Apostas
-    SET Banca_Final = (
-        SELECT IFNULL(
-            (SELECT SUM(Lucro) 
-             FROM Apostas 
-             WHERE Cod_Aposta <= NEW.Cod_Aposta), 0
-        ) + (SELECT Valor_Inicial 
-             FROM Banca 
-             WHERE Ano = strftime('%Y', NEW.Data) 
-               AND Mês = strftime('%m', NEW.Data))
-    )
-    WHERE rowid = NEW.rowid;
-END;
-CREATE TRIGGER "Atualiza Banca Final Apostas (Update)" 
-AFTER UPDATE ON Apostas
-FOR EACH ROW 
-BEGIN
-    -- Atualiza o Retorno
-    UPDATE Apostas
-    SET Retorno = CASE 
-        WHEN Status = 'Green' THEN Odd * Valor_Aposta
-        WHEN Status = 'Red' THEN 0 
-        ELSE 0
-    END
-    WHERE rowid = NEW.rowid;
-
-    -- Atualiza o Lucro
-    UPDATE Apostas
-    SET Lucro = CASE 
-        WHEN Status = 'Green' THEN Retorno - Valor_Aposta
-        WHEN Status = 'Red' THEN -Valor_Aposta
-        ELSE 0
-    END
-    WHERE rowid = NEW.rowid;
-
-    -- Atualiza a Banca_Final
-    UPDATE Apostas
-    SET Banca_Final = (
-        SELECT IFNULL(
-            (SELECT SUM(Lucro) 
-             FROM Apostas 
-             WHERE Cod_Aposta <= NEW.Cod_Aposta), 0
-        ) + (SELECT Valor_Inicial 
-             FROM Banca 
-             WHERE Ano = strftime('%Y', NEW.Data) 
-               AND Mês = strftime('%m', NEW.Data))
-    )
-    WHERE rowid = NEW.rowid;
-END;
-CREATE TRIGGER "Atualiza Odd Apostas (Update)"
-AFTER UPDATE ON Mercados
-FOR EACH ROW
-BEGIN
-  UPDATE Apostas
-    SET Odd = ROUND((
-        SELECT EXP(SUM(LN(COALESCE(Odd, 1))))
-        FROM Mercados
-        WHERE Cod_Aposta = NEW.Cod_Aposta), 2)
-    WHERE Cod_Aposta = NEW.Cod_Aposta;
-END;
-CREATE TRIGGER "Atualiza Odd Apostas (Delete)"
-AFTER DELETE ON Mercados
-FOR EACH ROW
-BEGIN
-  UPDATE Apostas
-    SET Odd = ROUND((
-        SELECT EXP(SUM(LN(COALESCE(Odd, 1))))
-        FROM Mercados
-        WHERE Cod_Aposta = OLD.Cod_Aposta), 2)
-    WHERE Cod_Aposta = OLD.Cod_Aposta;
-END;
-CREATE TRIGGER "Atualiza Banca Final (Delete)"
-AFTER DELETE ON Apostas
-FOR EACH ROW
-BEGIN
-  UPDATE Banca
-  SET Valor_Final = ROUND(COALESCE(
-    (SELECT Banca_Final
-     FROM Apostas
-     WHERE Cod_Aposta = (
-       SELECT MAX(Cod_Aposta)
-       FROM Apostas
-       WHERE strftime('%m', Apostas.Data) = strftime('%m', OLD.Data)
-         AND strftime('%Y', Apostas.Data) = strftime('%Y', OLD.Data))),0), 2)
-  WHERE Banca.Mês = strftime('%m', OLD.Data)
-    AND Banca.Ano = strftime('%Y', OLD.Data);
-END;
-CREATE TRIGGER "Atualiza Banca Final (Insert)"
-AFTER INSERT ON Apostas
-FOR EACH ROW
-BEGIN
-  UPDATE Banca
-  SET Valor_Final = ROUND(COALESCE(
-    (SELECT Banca_Final
-     FROM Apostas
-     WHERE Cod_Aposta = (
-       SELECT MAX(Cod_Aposta)
-       FROM Apostas
-       WHERE strftime('%m', Apostas.Data) = strftime('%m', NEW.Data)
-         AND strftime('%Y', Apostas.Data) = strftime('%Y', NEW.Data))),0), 2)
-  WHERE Banca.Mês = strftime('%m', NEW.Data)
-    AND Banca.Ano = strftime('%Y', NEW.Data);
-END;
-CREATE TRIGGER "Atualiza Banca Final (Update)"
-AFTER UPDATE ON Apostas
-FOR EACH ROW
-BEGIN
-  UPDATE Banca
-  SET Valor_Final = ROUND(COALESCE(
-    (SELECT Banca_Final
-     FROM Apostas
-     WHERE Cod_Aposta = (
-       SELECT MAX(Cod_Aposta)
-       FROM Apostas
-       WHERE strftime('%m', Apostas.Data) = strftime('%m', NEW.Data)
-         AND strftime('%Y', Apostas.Data) = strftime('%Y', NEW.Data))),0), 2)
-  WHERE Banca.Mês = strftime('%m', NEW.Data)
-    AND Banca.Ano = strftime('%Y', NEW.Data);
 END;
