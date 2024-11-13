@@ -166,6 +166,7 @@ type
     lbMes: TLabel;
     lbPerfil: TLabel;
     lbUnidade: TLabel;
+    lsbJogos: TListBox;
     lnGraficoLucroAno: TLineSeries;
     lnGraficoLucroAno1: TLineSeries;
     lnGraficoLucroMes: TLineSeries;
@@ -600,13 +601,14 @@ var
 begin
   SelectedItem := TMenuItem(Sender);
   if Assigned(ColunaAtual) and Assigned(SelectedItem) then
+  with qrDadosAposta do
   begin
-    qrDadosAposta.Edit;
-    qrDadosAposta.FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
+    Edit;
+    FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
     writeln('Item selecionado: ', SelectedItem.Caption);
-    qrDadosAposta.Post;
-    qrDadosAposta.ApplyUpdates;
-    transactionBancoDados.CommitRetaining;
+    Post;
+    ApplyUpdates;
+    //Refresh;
     CalculaDadosAposta;
   end;
 end;
@@ -711,9 +713,10 @@ begin
     with TOpenDialog.Create(nil) do
     try
       Filter :=
-        'Arquivo de Texto (*.txt)|*.txt|Arquivo CSV (*.csv)|*.csv|' +
-        'Arquivo SQL (*.sql)|*.sql|Todos os Arquivos (*.*)|*.*';
-      DefaultExt := 'txt';
+        'Todos os Arquivos Suportados (*.sql, *.csv) | *.sql; *.csv | ' +
+        'Arquivo SQL (*.sql)|*.sql| Arquivo CSV (*.csv)|*.csv| ' +
+        'Todos os Arquivos (*.*)|*.*';
+      DefaultExt := 'sql; csv';
       if Execute then
       begin
         Script.LoadFromFile(FileName);
@@ -747,8 +750,8 @@ begin
       end;
     finally
       Free;
+      Script.Free;
     end;
-    Script.Free;
   except
     On E: Exception do
     begin
@@ -816,19 +819,18 @@ begin
     //qrApostas.ParamByName('anoSelecionado').AsInteger := YearOf(Now);
 
     for I := 0 to qrPraReiniciar.Count - 1 do
-    begin
+    try
       if TSQLQuery(qrPraReiniciar[I]).Active then
         TSQLQuery(qrPraReiniciar[I]).Refresh;
-      writeln('Reiniciado ', TComponent(qrPraReiniciar[I]).Name);
+    except
+      On E: Exception do
+      writeln('Erro ao reiniciar o query ',TComponent(qrPraReiniciar[I]).Name,
+      ', ' + E.Message);
     end;
     EventosMetodos.CarregaMetodos;
-  except
-    on E: Exception do
-    begin
-      writeln('Erro ao reiniciar os queries: ' + E.Message);
-    end;
+  finally
+    qrPraReiniciar.Free;
   end;
-  qrPraReiniciar.Free;
 end;
 
 procedure TformPrincipal.grdDadosApCellClick(Column: TColumn);
@@ -922,6 +924,7 @@ procedure TformPrincipal.grdDadosApEditingDone(Sender: TObject);
 var
   Bookmark: TBookmark;
 begin
+  writeln('Salvando edição do qrDadosAp');
   with qrDadosAposta do
   begin
     Edit;

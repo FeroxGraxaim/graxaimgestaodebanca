@@ -193,7 +193,7 @@ begin
           'VALUES (                                      ' +
           '   (SELECT Cod_Comp FROM Competicoes C         ' +
           '    WHERE C.Competicao = :Competicao),          ' +
-          '   :Mandante,                                  ' + '   :Visitante)';
+          '   :Mandante, :Visitante)';
         ParamByName('Mandante').AsString := cbMandanteMult.Text;
         ParamByName('Visitante').AsString := cbVisitanteMult.Text;
         ParamByName('Competicao').AsString := cbCompMult.Text;

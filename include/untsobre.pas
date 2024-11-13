@@ -20,7 +20,6 @@ type
     lbFerox: TLabel;
     procedure btnApoieClick(Sender: TObject);
     procedure btnGithubClick(Sender: TObject);
-    procedure graxaimFotoClick(Sender: TObject);
   private
 
   public
@@ -46,11 +45,6 @@ end;
 procedure TformSobre.btnApoieClick(Sender: TObject);
 begin
   openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
-end;
-
-procedure TformSobre.graxaimFotoClick(Sender: TObject);
-begin
-
 end;
 
 end.

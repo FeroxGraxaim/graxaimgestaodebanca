@@ -33,6 +33,7 @@ type
     procedure ExportarDados(Sender: TObject);
     procedure DefinirDatas(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure MudarExtensaoAoSalvar(Sender: TObject);
   private
   public
 
@@ -73,6 +74,191 @@ begin
     with TSQLQuery.Create(nil) do
     try
       DataBase := conectBancoDados;
+      //Salvar Métodos e Linhas
+      if chbMetodosLinhas.Checked then
+      begin
+        writeln('Salvando métodos e linhas');
+        SQL.Text := 'SELECT * FROM Métodos';
+        Open;
+        FieldDefs.Update;
+        First;
+        while not EOF do
+        begin
+          TextoSQL := 'INSERT INTO Métodos (';
+          for i := 0 to FieldCount - 1 do
+          begin
+            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + '", ';
+          end;
+          TextoSQL := TextoSQL + '") SELECT ';
+          for i := 0 to FieldCount - 1 do
+          begin
+            if Fields[i].DataType = ftInteger then
+              TextoSQL := TextoSQL + Fields[i].AsString
+            else
+              TextoSQL := TextoSQL + '"' + Fields[i].AsString + '"';
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + ', ';
+          end;
+          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Métodos WHERE ' +
+            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
+          Script.Add(TextoSQL);
+          Next;
+        end;
+
+        Close;
+        SQL.Text := 'SELECT * FROM Linhas';
+        Open;
+        FieldDefs.Update;
+        First;
+        while not EOF do
+        begin
+          TextoSQL := 'INSERT INTO Linhas (';
+          for i := 0 to FieldCount - 1 do
+          begin
+            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + '", ';
+          end;
+          TextoSQL := TextoSQL + '") SELECT ';
+          for i := 0 to FieldCount - 1 do
+          begin
+            if Fields[i].DataType = ftInteger then
+              TextoSQL := TextoSQL + Fields[i].AsString
+            else
+              TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + ', ';
+          end;
+          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Linhas WHERE ' +
+            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
+          Script.Add(TextoSQL);
+          Next;
+        end;
+        Close;
+      end;
+
+      //Salvar Países
+      if chbPaises.Checked then
+      begin
+        writeln('Salvando países');
+        SQL.Text := 'SELECT * FROM Países';
+        Open;
+        FieldDefs.Update;
+        First;
+        while not EOF do
+        begin
+          TextoSQL := 'INSERT INTO Países (';
+          for i := 0 to FieldCount - 1 do
+          begin
+            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + '", ';
+          end;
+          TextoSQL := TextoSQL + '") SELECT ';
+          for i := 0 to FieldCount - 1 do
+          begin
+            case Fields[i].DataType of
+              ftDateTime:
+                TextoSQL := TextoSQL + StringReplace(DateTimeToJulianDate(
+                  Fields[i].AsDateTime).ToString, ',', '.',
+                  [rfReplaceAll]);
+              ftFloat:
+                TextoSQL := TextoSQL + StringReplace(Fields[i].AsString,
+                  ',', '.', [rfReplaceAll]);
+              ftBoolean:
+                TextoSQL := TextoSQL + Fields[i].AsString;
+              else
+                TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+            end;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + ', ';
+          end;
+          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Países WHERE ' +
+            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
+          Script.Add(TextoSQL);
+          Next;
+        end;
+        Close;
+      end;
+
+      //Salvar Competições
+      if chbCompeticoes.Checked then
+      begin
+        writeln('Salvando competições');
+        SQL.Text := 'SELECT * FROM Competicoes';
+        Open;
+        FieldDefs.Update;
+        First;
+        while not EOF do
+        begin
+          TextoSQL := 'INSERT INTO Competicoes (';
+          for i := 0 to FieldCount - 1 do
+          begin
+            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + '", ';
+          end;
+          TextoSQL := TextoSQL + '") SELECT ';
+          for i := 0 to FieldCount - 1 do
+          begin
+            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + ', ';
+          end;
+          TextoSQL := TextoSQL +
+            ' WHERE NOT EXISTS (SELECT 1 FROM Competicoes WHERE ' +
+            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
+          Script.Add(TextoSQL);
+          Next;
+        end;
+        Close;
+      end;
+
+      //Salvar Times
+      if chbTimes.Checked then
+      begin
+        writeln('Salvando times');
+        SQL.Text := 'SELECT * FROM Times';
+        Open;
+        FieldDefs.Update;
+        First;
+        while not EOF do
+        begin
+          TextoSQL := 'INSERT INTO Times (';
+          for i := 0 to FieldCount - 1 do
+          begin
+            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + '", ';
+          end;
+          TextoSQL := TextoSQL + '") SELECT ';
+          for i := 0 to FieldCount - 1 do
+          begin
+            case Fields[i].DataType of
+              ftDateTime:
+                TextoSQL := TextoSQL + StringReplace(DateTimeToJulianDate(
+                  Fields[i].AsDateTime).ToString, ',', '.',
+                  [rfReplaceAll]);
+              ftFloat:
+                TextoSQL := TextoSQL + StringReplace(Fields[i].AsString,
+                  ',', '.', [rfReplaceAll]);
+              ftBoolean:
+                TextoSQL := TextoSQL + Fields[i].AsString;
+              else
+                TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+            end;
+            if i < FieldCount - 1 then
+              TextoSQL := TextoSQL + ', ';
+          end;
+          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Times WHERE ' +
+            Fields[1].FieldName + ' = ' + QuotedStr(Fields[1].AsString) + ');';
+          Script.Add(TextoSQL);
+          Next;
+        end;
+        Close;
+      end;
 
       //Salvar Banca
       if chbBanca.Checked then
@@ -90,6 +276,7 @@ begin
           ParamByName('fim').AsDateTime := deFim.Date;
         end;
         Open;
+        FieldDefs.Update;
         First;
         while not EOF do
         begin
@@ -130,6 +317,7 @@ begin
         else
           SQL.Text := 'SELECT * FROM Apostas';
         Open;
+        FieldDefs.Update;
         writeln('Dados de aposta selecionados');
         First;
         while not EOF do
@@ -137,14 +325,19 @@ begin
           TextoSQL := 'INSERT INTO Apostas (';
           for i := 0 to FieldCount - 1 do
           begin
-            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
+            TextoSQL := TextoSQL + '"' + Fields[i].FieldName + '"';
             if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + '", ';
+              TextoSQL := TextoSQL + ', ';
           end;
-          TextoSQL := TextoSQL + '") SELECT ';
+          TextoSQL := TextoSQL + ') SELECT ';
           for i := 0 to FieldCount - 1 do
           begin
-            TextoSQL := TextoSQL + '"' + Fields[i].AsString + '"';
+            if Fields[i].FieldName = 'Data' then
+              TextoSQL := TextoSQL + StringReplace(DateTimeToJulianDate(
+                Fields[i].AsDateTime).ToString, ',', '.', [rfReplaceAll])
+            else
+              TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString,
+              ',', '.', [rfReplaceAll]));
             if i < FieldCount - 1 then
               TextoSQL := TextoSQL + ', ';
           end;
@@ -168,6 +361,7 @@ begin
         else
           SQL.Text := 'SELECT * FROM Jogo';
         Open;
+        FieldDefs.Update;
         First;
         while not EOF do
         begin
@@ -181,7 +375,8 @@ begin
           TextoSQL := TextoSQL + '") SELECT ';
           for i := 0 to FieldCount - 1 do
           begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+            TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString),
+              ',', '.', [rfReplaceAll]);
             if i < FieldCount - 1 then
               TextoSQL := TextoSQL + ', ';
           end;
@@ -204,6 +399,7 @@ begin
         else
           SQL.Text := 'SELECT * FROM Mercados';
         Open;
+        FieldDefs.Update;
         First;
         while not EOF do
         begin
@@ -217,163 +413,13 @@ begin
           TextoSQL := TextoSQL + '") SELECT ';
           for i := 0 to FieldCount - 1 do
           begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
+            TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString),
+              ',', '.', [rfReplaceAll]);
             if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + ', ';
+            TextoSQL := TextoSQL + ', ';
           end;
           TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Mercados ' +
             'WHERE Cod_Mercado = ' + QuotedStr(Fields[0].AsString) + ');';
-          Script.Add(TextoSQL);
-          Next;
-        end;
-        Close;
-      end;
-
-      //Salvar Métodos e Linhas
-      if chbMetodosLinhas.Checked then
-      begin
-        writeln('Salvando métodos e linhas');
-        SQL.Text := 'SELECT * FROM Métodos';
-        Open;
-        First;
-        while not EOF do
-        begin
-          TextoSQL := 'INSERT INTO Métodos (';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + '", ';
-          end;
-          TextoSQL := TextoSQL + '") SELECT ';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + ', ';
-          end;
-          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Métodos WHERE ' +
-            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
-          Script.Add(TextoSQL);
-          Next;
-        end;
-
-        Close;
-        SQL.Text := 'SELECT * FROM Linhas';
-        Open;
-        First;
-        while not EOF do
-        begin
-          TextoSQL := 'INSERT INTO Linhas (';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + '", ';
-          end;
-          TextoSQL := TextoSQL + '") SELECT ';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + ', ';
-          end;
-          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Linhas WHERE ' +
-            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
-          Script.Add(TextoSQL);
-          Next;
-        end;
-        Close;
-      end;
-
-      //Salvar Países
-      if chbPaises.Checked then
-      begin
-        writeln('Salvando países');
-        SQL.Text := 'SELECT * FROM Países';
-        Open;
-        First;
-        while not EOF do
-        begin
-          TextoSQL := 'INSERT INTO Países (';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + '", ';
-          end;
-          TextoSQL := TextoSQL + '") SELECT ';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + ', ';
-          end;
-          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Países WHERE ' +
-            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
-          Script.Add(TextoSQL);
-          Next;
-        end;
-        Close;
-      end;
-
-      //Salvar Competições
-      if chbCompeticoes.Checked then
-      begin
-        writeln('Salvando competições');
-        SQL.Text := 'SELECT * FROM Competicoes';
-        Open;
-        First;
-        while not EOF do
-        begin
-          TextoSQL := 'INSERT INTO Competicoes (';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + '", ';
-          end;
-          TextoSQL := TextoSQL + '") SELECT ';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + ', ';
-          end;
-          TextoSQL := TextoSQL +
-            ' WHERE NOT EXISTS (SELECT 1 FROM Competicoes WHERE ' +
-            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
-          Script.Add(TextoSQL);
-          Next;
-        end;
-        Close;
-      end;
-
-      //Salvar Times
-      if chbTimes.Checked then
-      begin
-        writeln('Salvando times');
-        SQL.Text := 'SELECT * FROM Times';
-        Open;
-        First;
-        while not EOF do
-        begin
-          TextoSQL := 'INSERT INTO Times (';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + '"' + Fields[i].FieldName;
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + '", ';
-          end;
-          TextoSQL := TextoSQL + '") SELECT ';
-          for i := 0 to FieldCount - 1 do
-          begin
-            TextoSQL := TextoSQL + QuotedStr(Fields[i].AsString);
-            if i < FieldCount - 1 then
-              TextoSQL := TextoSQL + ', ';
-          end;
-          TextoSQL := TextoSQL + ' WHERE NOT EXISTS (SELECT 1 FROM Times WHERE ' +
-            Fields[0].FieldName + ' = ' + QuotedStr(Fields[0].AsString) + ');';
           Script.Add(TextoSQL);
           Next;
         end;
@@ -385,14 +431,12 @@ begin
       try
         writeln('Abrindo janela de salvamento');
         Filter :=
-          'Arquivo de Texto (*.txt)|*.txt|Arquivo CSV (*.csv)|*.csv|' +
-          'Arquivo SQL (*.sql)|*.sql|Todos os Arquivos (*.*)|*.*';
-        DefaultExt := 'txt';
+          'Arquivo SQL (*.sql)|*.sql| Arquivo CSV (*.csv)|*.csv';
+        DefaultExt := 'sql';
+        FileName := 'Gestão de Banca ' + FormatDateTime('dd-mm-yyyy hh-nn', Now);
+        OnTypeChange := @MudarExtensaoAoSalvar;
         while Execute do
         begin
-          if ExtractFileExt(FileName) = '' then
-            FileName := FileName + '.txt';
-
           if FileExists(FileName) then
           begin
             if MessageDlg('O arquivo "' + FileName +
@@ -420,7 +464,8 @@ begin
       begin
         Free;
         MessageDlg('Ocorreu um erro ao salvar dados, tente novamente. Se o ' +
-          'problema persistir favor informar no GitHub com a seguinte mensagem: ' +
+          'problema persistir favor informar no GitHub com a seguinte mensagem:'
+          +
           sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
       end;
     end;
@@ -457,6 +502,22 @@ end;
 procedure TformSalvarDados.FormShow(Sender: TObject);
 begin
   Ok := False;
+end;
+
+procedure TformSalvarDados.MudarExtensaoAoSalvar(Sender: TObject);
+begin
+  with TSaveDialog(Sender) do
+  begin
+    if FIleName <> '' then
+    begin
+      case FilterIndex of
+        1: if ExtractFileName(FileName) <> '.sql' then
+            FileName := ChangeFileExt(FileName, '.sql');
+        2: if ExtractFileName(FileName) <> '.csv' then
+            FileName := ChangeFileExt(FileName, '.csv');
+      end;
+    end;
+  end;
 end;
 
 procedure TformSalvarDados.Cancelar(Sender: TObject);

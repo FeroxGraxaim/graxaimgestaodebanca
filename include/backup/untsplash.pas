@@ -107,6 +107,8 @@ begin
     grdApostas.OnExit := @EventosApostas.AoSairGrdApostas;
     grdApostas.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
     grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
+    btnEditAposta.OnClick := @EventosApostas.AbrirEditarAposta;
+    lsbJogos.OnClick := @EventosApostas.ClicarNoJogo;
 
     //Definindo eventos do controle de métodos
 
@@ -250,7 +252,6 @@ begin
   VerificarAtualizacoes(currentVersion);
   progresso.Position := 100;
   Application.ProcessMessages;
-  CarregaConfig;
   //sleep(50);
   progresso.Invalidate;
   Close;

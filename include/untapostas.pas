@@ -16,15 +16,15 @@ procedure AtualizaQRApostas;
 procedure CalculaDadosAposta;
 //procedure DefineOdd;
 
+var
+  GlobalCodAposta: integer;
+
 type
   { TEventosApostas }
 
   TEventosApostas = class(TformPrincipal)
   public
-    GlobalCodAposta: integer;
     procedure tsApostasShow(Sender: TObject);
-    procedure grdApostasColEnter(Sender: TObject);
-    procedure grdApostasColExit(Sender: TObject);
     procedure grdApostasExit(Sender: TObject);
     procedure grdApostasCellClick(Column: TColumn);
     procedure btnRemoverApostaClick(Sender: TObject);
@@ -46,9 +46,16 @@ type
     procedure AoSairGrdApostas(Sender: TObject);
     procedure TrocarSeparadorDecimal(Sender: TObject; var Key: char);
     procedure AbrirEditarAposta(Sender: TObject);
+    procedure CarregaJogos;
+    procedure ClicarNoJogo(Sender: TObject);
 
     procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: integer; Column: TColumn; State: TGridDrawState);
+  end;
+
+  TItemInfo = class
+    Text: string;
+    CodJogo: integer;
   end;
 
 type
@@ -63,6 +70,9 @@ type
 var
   GridData: array of TDadosAposta;
   ValorEstorno: double;
+  ListaJogo: TList;
+  InfoJogo: TItemInfo;
+  GlobalCodJogo: integer;
 
 implementation
 
@@ -70,6 +80,8 @@ uses untNA, untEditSimples, untEditMult;
 
 procedure TEventosApostas.tsApostasShow(Sender: TObject);
 begin
+  InfoJogo := TItemInfo.Create;
+  ListaJogo := TList.Create;
   with formPrincipal do
   begin
     writeln('Exibido tsApostas');
@@ -92,8 +104,13 @@ begin
       btnTudoGreen.Enabled := False;
       btnTudoRed.Enabled := False;
       grdDadosAp.Visible := False;
+      lsbJogos.Visible := False;
 
-      if grdApostas.Enabled then Last;
+      if grdApostas.Enabled then
+      begin
+        Last;
+        grdApostasCellClick(grdApostas.Columns.ColumnByFieldname('Data'));
+      end;
     end;
   end;
 end;
@@ -102,10 +119,8 @@ procedure TEventosApostas.grdApostasCellClick(Column: TColumn);
 begin
   with formPrincipal do
   begin
+    GlobalCodAposta := qrApostas.FieldByName('Cod_Aposta').AsInteger;
     try
-      writeln('Detectado lique em célula do grdApostas!');
-      qrApostas.Edit;
-
       if Column.Field is TBooleanField then
       begin
         writeln('Detectada coluna booleana!');
@@ -116,25 +131,19 @@ begin
       end
       else
         BarraStatus.Panels[0].Text := 'Aposta selecionada!';
-      if qrDadosAposta.Active then qrDadosAposta.Close;
-      qrDadosAposta.ParamByName('CodAposta').AsInteger :=
-        qrApostas.FieldByName('Cod_Aposta').AsInteger;
-      qrDadosAposta.Open;
+      lsbJogos.Visible := True;
       grdDadosAp.Visible := True;
       btnTudoGreen.Enabled := True;
       btnTudoRed.Enabled := True;
       btnCashout.Enabled := True;
+      btnEditAposta.Enabled := True;
+      CarregaJogos;
       if qrApostas.FieldByName('Cashout').AsBoolean = False then
         btnCashout.Caption := 'Cashout'
       else
         btnCashout.Caption := 'Desfazer Cashout';
       grdDadosAp.Invalidate;
     except
-      on E: EDatabaseError do
-      begin
-        writeln('Erro: ' + E.Message);
-        qrApostas.Cancel;
-      end;
       on E: Exception do
       begin
         writeln('Erro: ' + E.Message);
@@ -144,23 +153,14 @@ begin
   end;
 end;
 
-procedure TEventosApostas.grdApostasColEnter(Sender: TObject);
-begin
-  with formPrincipal do
-  begin
-    writeln('Entrado na coluna!');
-  end;
-end;
-
-procedure TEventosApostas.grdApostasColExit(Sender: TObject);
-begin
-  writeln('Saindo da coluna');
-end;
-
 procedure TEventosApostas.grdApostasExit(Sender: TObject);
 begin
   writeln('Saindo do grid');
   grdDadosAp.Visible := False;
+  btnTudoGreen.Enabled := False;
+  btnTudoRed.Enabled := False;
+  btnCashout.Enabled := False;
+  btnEditAposta.Enabled := False;
 end;
 
 procedure TEventosApostas.btnRemoverApostaClick(Sender: TObject);
@@ -767,6 +767,9 @@ begin
         formEditSimples.ShowModal
       else
         formEditMult.ShowModal;
+      AtualizaQRApostas;
+      CarregaJogos;
+      qrDadosAposta.Refresh;
     except
       On E: Exception do
       begin
@@ -776,6 +779,95 @@ begin
           sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
       end;
     end;
+end;
+
+procedure TEventosApostas.CarregaJogos;
+var
+  comp, mand, visit: string;
+begin
+  with formPrincipal do
+  begin
+    lsbJogos.Items.Clear;
+    ListaJogo.Clear;
+    InfoJogo.Free;
+    InfoJogo := TItemInfo.Create;
+    writeln('Carregando jogos');
+    try
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        writeln('Abrindo lista de jogos');
+        SQL.Text := 'SELECT J.Cod_Jogo, C.Competicao, J.Mandante, J.Visitante ' +
+          'FROM Jogo J                                                        ' +
+          'LEFT JOIN Competicoes C ON C.Cod_Comp = J.Cod_Comp                 ' +
+          'LEFT JOIN Mercados M ON M.Cod_Jogo = J.Cod_Jogo                    ' +
+          'WHERE M.Cod_Aposta = :CodAposta GROUP BY J.Cod_Jogo                ';
+        ParamByName('CodAposta').AsInteger := GlobalCodAposta;
+        Open;
+        First;
+        while not EOF do
+        begin
+          comp := FieldByName('Competicao').AsString;
+          mand := FieldByName('Mandante').AsString;
+          visit := FieldByName('Visitante').AsString;
+
+          InfoJogo := TItemInfo.Create;
+          InfoJogo.Text := (comp + ': ' + mand + ' X ' + visit);
+          InfoJogo.CodJogo := FieldByName('Cod_Jogo').AsInteger;
+          ListaJogo.Add(InfoJogo);
+          lsbJogos.Items.Add(InfoJogo.Text);
+          Next;
+        end;
+      finally
+        Free;
+      end;
+      lsbJogos.ItemIndex := 0;
+      ClicarNoJogo(nil);
+    except
+      on E: Exception do
+        writeln('Erro: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TEventosApostas.ClicarNoJogo(Sender: TObject);
+var
+  CodJogo, i: integer;
+begin
+  with formPrincipal do
+  begin
+    if lsbJogos.ItemIndex <> -1 then
+    begin
+      CodJogo := -1;
+
+      for i := 0 to ListaJogo.Count - 1 do
+      begin
+        if TItemInfo(ListaJogo[i]).Text = lsbJogos.Items[lsbJogos.ItemIndex] then
+        begin
+          CodJogo := TItemInfo(ListaJogo[i]).CodJogo;
+          writeln('Item Selecionado: ', CodJogo);
+          Break;
+        end;
+      end;
+
+      if CodJogo <> -1 then
+      begin
+        GlobalCodJogo := CodJogo;
+        writeln('Código do jogo: ', GlobalCodJogo);
+      end
+      else
+        writeln('Código do jogo não encontrado.');
+
+      with qrDadosAposta do
+      begin
+        if Active then Close;
+        ParamByName('CodAposta').AsInteger := GlobalCodAposta;
+        ParamByName('CodJogo').AsInteger := GlobalCodJogo;
+        Open;
+        writeln('Aberto query com o código de jogo ', GlobalCodJogo);
+      end;
+    end;
+  end;
 end;
 
 procedure CalculaDadosAposta;
@@ -928,7 +1020,7 @@ begin
     Application.ProcessMessages;
     writeln('Lozalizando o código da aposta no qrDadosAposta');
     if qrDadosAposta.Active then
-    CodAposta := qrDadosAposta.FieldByName('Cod_Aposta').AsInteger;
+      CodAposta := qrDadosAposta.FieldByName('Cod_Aposta').AsInteger;
     with qrApostas do
     begin
       writeln('Atualizando qrApostas');

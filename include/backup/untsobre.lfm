@@ -10,10 +10,11 @@ object formSobre: TformSobre
   Position = poMainFormCenter
   Scaled = False
   object graxaimFoto: TImage
-    Left = 80
+    Left = 74
     Height = 224
     Top = 72
     Width = 232
+    Align = alCustom
     OnClick = graxaimFotoClick
     Picture.Data = {
       0A544A706567496D616765045C0500FFD8FFE000104A46494600010101012B01
@@ -11027,10 +11028,10 @@ object formSobre: TformSobre
     ParentFont = False
   end
   object btnGithub: TBitBtn
-    Left = 88
+    Left = 74
     Height = 50
     Top = 352
-    Width = 218
+    Width = 232
     Caption = 'Página do Github'
     Glyph.Data = {
       460E0000424D460E00000000000036000000280000001E0000001E0000000100
@@ -11153,10 +11154,10 @@ object formSobre: TformSobre
     TabOrder = 0
   end
   object btnApoie: TBitBtn
-    Left = 88
+    Left = 74
     Height = 50
     Top = 408
-    Width = 218
+    Width = 232
     Caption = 'Apoie o Projeto!'
     Glyph.Data = {
       AE0F0000424DAE0F00000000000036000000280000002C0000001E0000000100

@@ -60,7 +60,7 @@ label
   Fim;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.4.3.23';
+  currentVersion := '0.4.5.25';
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');
@@ -71,7 +71,8 @@ begin
   try
     httpClient.AddHeader('User-Agent', 'MyApp/1.0');
     httpClient.Get(apiUrl, response);
-    writeln('Resposta recebida: ' + response.DataString);
+    writeln('Resposta recebida!');
+    //writeln('Resposta recebida: ' + response.DataString);
 
     if response.DataString = '' then
     begin
@@ -79,7 +80,8 @@ begin
       goto Fim;
     end;
     if Pos('API rate limit exceeded', response.DataString) > 0 then
-      writeln('Limite de requisições da API excedido. Tente novamente mais tarde.')
+      writeln('Limite de requisições da API excedido. Tente novamente mais tarde.'
+      + 'Resposta: ' + response.DataString)
     else
     try
       json := TJSONObject(GetJSON(response.DataString));

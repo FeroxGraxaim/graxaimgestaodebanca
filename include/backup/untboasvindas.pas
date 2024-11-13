@@ -42,44 +42,53 @@ var
   Arquivo: TStringList;
 
 implementation
+
 uses
   fpjson, HTTPDefs, fphttpclient, jsonparser, LCLIntf;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TformBoasVindas }
+  { TformBoasVindas }
 
 procedure TformBoasVindas.FormShow(Sender: TObject);
 begin
   writeln('Exibindo tela de boas-vindas');
   with qrExibirJanela do
+  with chbExibirNovamente do
+  with FieldByName('ExibirTelaBoasVindas') do
+  begin
     if not Active then Open;
+    if AsBoolean = true then
+      Checked := true
+      else Checked := false;
+  end;
 end;
 
 procedure TformBoasVindas.chbExibirNovamenteClick(Sender: TObject);
 begin
   with formPrincipal do
-  with qrExibirJanela do
-  with transactionBancoDados do
-  with chbExibirNovamente do
-  try
-    if not Active then Open;
-    Edit;
-    if FieldByName('ExibirTelaBoasVindas').AsBoolean = true then
-    Checked := true
-    else Checked := false;
-    Post;
-    ApplyUpdates;
-    CommitRetaining;
-  except
-    on E: Exception do
-    begin
-      Cancel;
-      RollbackRetaining;
-      raise Exception.Create('Não foi possível salvar configurações da tela ' +
-      'de boas-vindas, ' + E.Message);
-    end;
-  end;
+    with qrExibirJanela do
+      with transactionBancoDados do
+        with chbExibirNovamente do
+        try
+          Open;
+          Edit;
+          if FieldByName('ExibirTelaBoasVindas').AsBoolean = True then
+            Checked := True
+          else
+            Checked := False;
+          Post;
+          ApplyUpdates;
+          CommitRetaining;
+        except
+          on E: Exception do
+          begin
+            Cancel;
+            RollbackRetaining;
+            raise Exception.Create('Não foi possível salvar configurações da tela ' +
+              'de boas-vindas, ' + E.Message);
+          end;
+        end;
 end;
 
 procedure TformBoasVindas.btnGitHubClick(Sender: TObject);

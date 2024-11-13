@@ -348,7 +348,6 @@ begin
       if not qrMes.Active then qrMes.Open
       else
         qrMes.Refresh;
-      //if qrMes.RecordCount = 0 then Exit;
 
       writeln('Registros encontrados para o mês: ' + IntToStr(qrMes.RecordCount));
 
@@ -358,61 +357,63 @@ begin
         begin
           writeln('alterando gráfico do mês para porcentagem');
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
-          writeln('Limpando gráfico');
-          (chrtLucroMes.Series[0] as TLineSeries).Clear;
+          {writeln('Limpando gráfico');
+          (chrtLucroMes.Series[0] as TLineSeries).Clear; }
           writeln('Abrindo qrMes');
           if not qrMes.Active then qrMes.Open;
           writeln('Preenchendo gráfico do mês');
-          for i := 1 to 31 do
-          begin
-            ContFloat := i;
-            if i < qrMes.FieldByName('Dia').AsInteger then
-              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                qrMes.FieldByName('SomaLucro').AsFloat, ContFloat)
-            else if i > qrMes.FieldByName('Dia').AsInteger then
+          if qrMes.RecordCount <> 0 then
+            for i := 1 to 31 do
             begin
-              qrMes.Last;
-              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                qrMes.FieldByName('SomaLucro').AsFloat, ContFloat);
-              qrMes.First;
-            end
-            else
-            begin
-              (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-                i,
-                qrMes.FieldByName('SomaLucro').AsFloat,
-                ContFloat);
-              qrMes.Next;
+              ContFloat := i;
+              if i < qrMes.FieldByName('Dia').AsInteger then
+                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                  qrMes.FieldByName('SomaLucro').AsFloat, ContFloat)
+              else if i > qrMes.FieldByName('Dia').AsInteger then
+              begin
+                qrMes.Last;
+                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                  qrMes.FieldByName('SomaLucro').AsFloat, ContFloat);
+                qrMes.First;
+              end
+              else
+              begin
+                (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+                  i,
+                  qrMes.FieldByName('SomaLucro').AsFloat,
+                  ContFloat);
+                qrMes.Next;
+              end;
             end;
-          end;
         end;
 
         'Lucro %':
         begin
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2n%%';
-          (chrtLucroMes.Series[0] as TLineSeries).Clear;
-          for i := 1 to 31 do
-          begin
-            ContFloat := i;
-            if i < qrMes.FieldByName('Dia').AsInteger then
-              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat)
-            else if i > qrMes.FieldByName('Dia').AsInteger then
+          //(chrtLucroMes.Series[0] as TLineSeries).Clear;
+          if qrMes.RecordCount <> 0 then
+            for i := 1 to 31 do
             begin
-              qrMes.Last;
-              (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat);
-              qrMes.First;
-            end
-            else
-            begin
-              (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-                i,
-                qrMes.FieldByName('PorCentoLucro').AsFloat,
-                ContFloat);
-              qrMes.Next;
+              ContFloat := i;
+              if i < qrMes.FieldByName('Dia').AsInteger then
+                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                  qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat)
+              else if i > qrMes.FieldByName('Dia').AsInteger then
+              begin
+                qrMes.Last;
+                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
+                  qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat);
+                qrMes.First;
+              end
+              else
+              begin
+                (chrtLucroMes.Series[0] as TLineSeries).AddXY(
+                  i,
+                  qrMes.FieldByName('PorCentoLucro').AsFloat,
+                  ContFloat);
+                qrMes.Next;
+              end;
             end;
-          end;
         end;
       end;
     except
@@ -427,53 +428,56 @@ begin
     with qrAno do
     try
       if not Active then Open;
-      if RecordCount = 0 then Exit;
       writeln
       ('Registros encontrados para o ano: ' + IntToStr(qrAno.RecordCount));
       begin
-        if cbGraficos.Text = 'Lucro %' then
-        begin
-          chrtLucroAno.AxisList[0].Marks.Format := '%0:.2n%%';
-          First;
-          LAP := FieldByName('LucroTotalPorCento').AsFloat;
-          for Contador := 1 to 12 do
-            with (chrtLucroAno.Series[0] as TLineSeries) do
-            begin
-              ContFloat := Contador;
-              if Contador <= FieldByName('Mês').AsInteger then
-                AddXY(Contador, 0, ContFloat)
-              else
-              begin
-                Next;
-                if not EOF then
-                  LAP := LAP + FieldByName('LucroTotalPorCento').AsFloat
-                else
-                  LAP := LAP;
-                AddXY(Contador, LAP, ContFloat);
-              end;
-            end;
-        end
-        else if cbGraficos.Text = 'Lucro R$' then
-        begin
-          chrtLucroAno.AxisList[0].Marks.Format := '%0:.2m';
-          First;
-          LAR := FieldByName('LucroAnualReais').AsFloat;
-          for Contador := 1 to 12 do
-            with (chrtLucroAno.Series[0] as TLineSeries) do
-            begin
-              ContFloat := Contador;
-              if Contador <= FieldByName('Mês').AsInteger then
-                AddXY(Contador, 0, ContFloat)
-              else
-              begin
-                Next;
-                if not EOF then
-                  LAR := LAR + FieldByName('LucroAnualReais').AsFloat
-                else
-                  LAR := LAR;
-                AddXY(Contador, LAR, ContFloat);
-              end;
-            end;
+        case cbGraficos.Text of
+          'Lucro %':
+          begin
+            chrtLucroAno.AxisList[0].Marks.Format := '%0:.2n%%';
+            First;
+            LAP := FieldByName('LucroTotalPorCento').AsFloat;
+            if RecordCount <> 0 then
+              for Contador := 1 to 12 do
+                with (chrtLucroAno.Series[0] as TLineSeries) do
+                begin
+                  ContFloat := Contador;
+                  if Contador <= FieldByName('Mês').AsInteger then
+                    AddXY(Contador, 0, ContFloat)
+                  else
+                  begin
+                    Next;
+                    if not EOF then
+                      LAP := LAP + FieldByName('LucroTotalPorCento').AsFloat
+                    else
+                      LAP := LAP;
+                    AddXY(Contador, LAP, ContFloat);
+                  end;
+                end;
+          end;
+          'Lucro R$':
+          begin
+            chrtLucroAno.AxisList[0].Marks.Format := '%0:.2m';
+            First;
+            LAR := FieldByName('LucroAnualReais').AsFloat;
+            if RecordCount <> 0 then
+              for Contador := 1 to 12 do
+                with (chrtLucroAno.Series[0] as TLineSeries) do
+                begin
+                  ContFloat := Contador;
+                  if Contador <= FieldByName('Mês').AsInteger then
+                    AddXY(Contador, 0, ContFloat)
+                  else
+                  begin
+                    Next;
+                    if not EOF then
+                      LAR := LAR + FieldByName('LucroAnualReais').AsFloat
+                    else
+                      LAR := LAR;
+                    AddXY(Contador, LAR, ContFloat);
+                  end;
+                end;
+          end;
         end;
       end;
     except
@@ -505,9 +509,6 @@ begin
         'WHERE Banca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano") ' +
         'GROUP BY Banca.Ano;                                        ';
       Open;
-
-      if RecordCount = 0 then Exit;
-
       with chrtLucroTodosAnos.AxisList[1].Range do
       begin
         First;
@@ -520,70 +521,73 @@ begin
         writeln('Valor mínimo: ', MinInt);
         writeln('Valor Máximo: ', MaxInt);
       end;
-
-      if cbGraficos.Text = 'Lucro %' then
-      begin
-        chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2n%%';
-        First;
-        LAPA := FieldByName('lcrAnosPcent').AsFloat;
-        with chrtLucroTodosAnos.AxisList[1].Range do
-          with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
-            for Contador := MinInt to MaxInt do
-            begin
-              ContFloat := Contador;
-              if Contador < FieldByName('Ano').AsInteger then
-              begin
-                AddXY(Contador, 0, ContFloat);
-              end
-              else
-              begin
-                Next;
-                if not EOF then
+      case cbGraficos.Text of
+        'Lucro %':
+        begin
+          chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2n%%';
+          First;
+          LAPA := FieldByName('lcrAnosPcent').AsFloat;
+          if RecordCount <> 0 then
+            with chrtLucroTodosAnos.AxisList[1].Range do
+              with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
+                for Contador := MinInt to MaxInt do
                 begin
-                  if (LAPA < 0) and (FieldByName('lcrAnosPcent').AsFloat < 0) then
-                    LAPA := LAPA - FieldByName('lcrAnosPcent').AsFloat
+                  ContFloat := Contador;
+                  if Contador < FieldByName('Ano').AsInteger then
+                  begin
+                    AddXY(Contador, 0, ContFloat);
+                  end
                   else
-                    LAPA := LAPA + FieldByName('lcrAnosPcent').AsFloat;
-                  AddXY(Contador, LAPA, ContFloat);
-                end
-                else
-                begin
-                  AddXY(Contador, LAPA, ContFloat);
+                  begin
+                    Next;
+                    if not EOF then
+                    begin
+                      if (LAPA < 0) and (FieldByName('lcrAnosPcent').AsFloat < 0) then
+                        LAPA := LAPA - FieldByName('lcrAnosPcent').AsFloat
+                      else
+                        LAPA := LAPA + FieldByName('lcrAnosPcent').AsFloat;
+                      AddXY(Contador, LAPA, ContFloat);
+                    end
+                    else
+                    begin
+                      AddXY(Contador, LAPA, ContFloat);
+                    end;
+                  end;
                 end;
-              end;
-            end;
-      end
-      else if cbGraficos.Text = 'Lucro R$' then
+        end;
+        'Lucro R$':
 
-      begin
-        chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2m';
-        First;
-        LARA := FieldByName('lcrAnosReais').AsFloat;
-        with chrtLucroTodosAnos.AxisList[1].Range do
-          with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
-            for Contador := MinInt to MaxInt do
-            begin
-              ContFloat := Contador;
-              if Contador <= FieldByName('Mês').AsInteger then
-                AddXY(Contador, 0, ContFloat)
-              else
-              begin
-                Next;
-                if not EOF then
+        begin
+          chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2m';
+          First;
+          LARA := FieldByName('lcrAnosReais').AsFloat;
+          with chrtLucroTodosAnos.AxisList[1].Range do
+            with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
+              if RecordCount <> 0 then
+                for Contador := MinInt to MaxInt do
                 begin
-                  if (LARA < 0) and (FieldByName('lcrAnosReais').AsFloat < 0) then
-                    LARA := LARA - FieldByName('lcrAnosReais').AsFloat
+                  ContFloat := Contador;
+                  if Contador <= FieldByName('Mês').AsInteger then
+                    AddXY(Contador, 0, ContFloat)
                   else
-                    LARA := LARA + FieldByName('lcrAnosReais').AsFloat;
-                  AddXY(Contador, LARA,
-                    ContFloat);
-                end
-                else
-                begin
-                  AddXY(Contador, LARA, ContFloat);
+                  begin
+                    Next;
+                    if not EOF then
+                    begin
+                      if (LARA < 0) and (FieldByName('lcrAnosReais').AsFloat < 0) then
+                        LARA := LARA - FieldByName('lcrAnosReais').AsFloat
+                      else
+                        LARA := LARA + FieldByName('lcrAnosReais').AsFloat;
+                      AddXY(Contador, LARA,
+                        ContFloat);
+                    end
+                    else
+                    begin
+                      AddXY(Contador, LARA, ContFloat);
+                    end;
+                  end;
                 end;
-              end;
-            end;
+        end;
       end;
       Free;
     except
@@ -612,6 +616,7 @@ begin
 
       //Gráfico pizza do mês
       with qrMes do
+      if RecordCount <> 0 then
         for i := 0 to RecordCount - 1 do
         begin
           RecNo := i + 1;

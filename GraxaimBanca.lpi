@@ -16,11 +16,10 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="4"/>
-      <RevisionNr Value="4"/>
-      <BuildNr Value="24"/>
+      <MinorVersionNr Value="5"/>
+      <BuildNr Value="25"/>
       <Language Value="0416"/>
-      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.4"/>
+      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.5"/>
     </VersionInfo>
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="gtk2"/>

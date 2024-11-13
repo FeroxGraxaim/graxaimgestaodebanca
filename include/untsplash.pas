@@ -92,9 +92,9 @@ begin
     //Definindo eventos das Apostas
 
     writeln('Criando eventos do tsApostas...');
-    formPrincipal.tsApostas.OnShow      := @EventosApostas.tsApostasShow;
-    formPrincipal.btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
-    formPrincipal.btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
+    tsApostas.OnShow      := @EventosApostas.tsApostasShow;
+    btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
+    btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
     grdDadosAp.OnDrawColumnCell := @EventosAPostas.grdDadosApDrawColumnCell;
     grdApostas.OnCellClick := @EventosApostas.grdApostascellClick;
     btnCashout.OnClick := @EventosApostas.btnCashoutClick;
@@ -107,6 +107,8 @@ begin
     grdApostas.OnExit := @EventosApostas.AoSairGrdApostas;
     grdApostas.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
     grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
+    btnEditAposta.OnClick := @EventosApostas.AbrirEditarAposta;
+    lsbJogos.OnClick := @EventosApostas.ClicarNoJogo;
 
     //Definindo eventos do controle de métodos
 

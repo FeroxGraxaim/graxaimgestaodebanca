@@ -8,6 +8,7 @@ object formSobre: TformSobre
   ClientHeight = 470
   ClientWidth = 381
   Position = poMainFormCenter
+  LCLVersion = '3.4.0.0'
   Scaled = False
   object graxaimFoto: TImage
     Left = 74
@@ -15,7 +16,6 @@ object formSobre: TformSobre
     Top = 72
     Width = 232
     Align = alCustom
-    OnClick = graxaimFotoClick
     Picture.Data = {
       0A544A706567496D616765045C0500FFD8FFE000104A46494600010101012B01
       2B0000FFE2025C4943435F50524F46494C450001010000024C6C636D73043000
