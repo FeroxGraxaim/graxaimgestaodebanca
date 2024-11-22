@@ -1,29 +1,37 @@
 object formEditMult: TformEditMult
   Left = 452
-  Height = 335
+  Height = 422
   Top = 250
   Width = 717
+  BorderStyle = bsDialog
   Caption = 'Editar Aposta'
-  ClientHeight = 335
+  ClientHeight = 422
   ClientWidth = 717
   OnClose = FormClose
   OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '3.4.0.0'
   object btnNovaLinha: TButton
-    Left = 357
+    AnchorSideLeft.Control = grbLinhas
+    AnchorSideTop.Control = grbLinhas
+    AnchorSideTop.Side = asrBottom
+    Left = 362
     Height = 25
-    Top = 271
+    Top = 357
     Width = 168
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
     Caption = 'Nova Linha'
     TabOrder = 0
     OnClick = btnNovaLinhaClick
   end
   object grbLinhas: TGroupBox
     Left = 357
-    Height = 264
+    Height = 352
     Top = 0
     Width = 352
     Caption = 'Métodos/Linhas'
-    ClientHeight = 240
+    ClientHeight = 333
     ClientWidth = 348
     Font.Height = -15
     Font.Name = 'Sans'
@@ -37,7 +45,7 @@ object formEditMult: TformEditMult
       AnchorSideBottom.Control = grbLinhas
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 240
+      Height = 328
       Top = 0
       Width = 348
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -78,107 +86,215 @@ object formEditMult: TformEditMult
   end
   object grbJogos: TGroupBox
     Left = 0
-    Height = 264
+    Height = 352
     Top = 0
     Width = 352
     Caption = 'Jogos'
-    ClientHeight = 240
+    ClientHeight = 333
     ClientWidth = 348
     Font.Height = -15
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 2
-    object grdJogos: TDBGrid
+    object lsbJogos: TListBox
       AnchorSideLeft.Control = grbJogos
-      AnchorSideTop.Control = grbJogos
+      AnchorSideTop.Control = btnAlterar
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbJogos
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = grbJogos
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 240
-      Top = 0
+      Height = 185
+      Top = 143
       Width = 348
       Anchors = [akTop, akLeft, akRight, akBottom]
-      Color = clWindow
-      Columns = <      
-        item
-          ButtonStyle = cbsPickList
-          Title.Caption = 'Competição'
-          Width = 115
-          FieldName = 'Competicao'
-        end      
-        item
-          ButtonStyle = cbsPickList
-          Title.Caption = 'Mandante'
-          Width = 115
-          FieldName = 'Mandante'
-        end      
-        item
-          ButtonStyle = cbsPickList
-          Title.Caption = 'Visitante'
-          Width = 61
-          FieldName = 'Visitante'
-        end>
-      DataSource = dsJogo
-      Font.Height = -13
-      Font.Name = 'Sans'
-      ParentFont = False
-      Scrollbars = ssAutoVertical
+      BorderSpacing.Top = 5
+      DoubleBuffered = False
+      ItemHeight = 0
+      ParentDoubleBuffered = False
       TabOrder = 0
-      OnCellClick = grdJogosCellClick
-      OnEditingDone = grdJogosEditingDone
+      TopIndex = -1
+      OnClick = lsbJogosClick
+    end
+    object cbMandante: TComboBox
+      AnchorSideLeft.Control = grbJogos
+      AnchorSideTop.Control = lbMandante2
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = cbVisitante
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 32
+      Top = 76
+      Width = 165
+      Anchors = [akTop, akLeft, akRight]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 0
+      TabOrder = 1
+    end
+    object cbVisitante: TComboBox
+      AnchorSideTop.Control = lbVisitante2
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grbJogos
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 165
+      Height = 32
+      Top = 76
+      Width = 183
+      Anchors = [akTop, akRight]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 0
+      TabOrder = 2
+    end
+    object lbVisitante2: TLabel
+      AnchorSideTop.Control = cbCompeticao
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grbJogos
+      AnchorSideRight.Side = asrBottom
+      Left = 165
+      Height = 22
+      Top = 54
+      Width = 183
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Visitante'
+    end
+    object lbMandante2: TLabel
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Control = cbCompeticao
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = lbVisitante2
+      Left = 3
+      Height = 22
+      Top = 54
+      Width = 162
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Mandante'
+    end
+    object cbCompeticao: TComboBox
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Control = lbCompeticao
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Owner
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 32
+      Top = 22
+      Width = 351
+      Anchors = [akTop, akLeft, akRight]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 0
+      TabOrder = 3
+    end
+    object lbCompeticao: TLabel
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Control = grbJogos
+      AnchorSideRight.Control = Owner
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 22
+      Top = 0
+      Width = 351
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Competição'
+    end
+    object btnNovoJogo: TButton
+      AnchorSideLeft.Control = cbVisitante
+      AnchorSideTop.Control = cbVisitante
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grbJogos
+      AnchorSideRight.Side = asrBottom
+      Left = 170
+      Height = 25
+      Top = 113
+      Width = 173
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = 'Novo Jogo'
+      TabOrder = 4
+      OnClick = btnNovoJogoClick
+    end
+    object btnAlterar: TButton
+      AnchorSideLeft.Control = grbJogos
+      AnchorSideTop.Control = cbMandante
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = cbMandante
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 25
+      Top = 113
+      Width = 155
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = 'Alterar'
+      TabOrder = 5
+      OnClick = btnAlterarClick
     end
   end
-  object btnNovoJogo: TButton
-    Left = 0
-    Height = 25
-    Top = 272
-    Width = 168
-    Caption = 'Novo Jogo'
-    TabOrder = 3
-    OnClick = btnNovoJogoClick
-  end
   object btnRemoverJogo: TButton
-    Left = 184
+    AnchorSideLeft.Control = grbJogos
+    AnchorSideTop.Control = grbJogos
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = grbJogos
+    AnchorSideRight.Side = asrBottom
+    Left = 5
     Height = 25
-    Top = 272
-    Width = 168
+    Top = 357
+    Width = 342
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
     Caption = 'Remover Seleção'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = btnRemoverJogoClick
   end
   object btnRemoverLinha: TButton
+    AnchorSideTop.Control = grbLinhas
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = grbLinhas
+    AnchorSideRight.Side = asrBottom
     Left = 541
     Height = 25
-    Top = 271
-    Width = 168
+    Top = 357
+    Width = 163
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
     Caption = 'Remover Seleção'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = btnRemoverLinhaClick
   end
   object btnOk: TBitBtn
     Left = 256
     Height = 30
-    Top = 304
+    Top = 392
     Width = 91
     Default = True
     DefaultCaption = True
     Kind = bkOK
     ModalResult = 1
     OnClick = btnOkClick
-    TabOrder = 6
+    TabOrder = 5
   end
   object btnCancel: TBitBtn
     Left = 368
     Height = 30
-    Top = 304
+    Top = 392
     Width = 91
     Caption = 'Cancelar'
     Kind = bkCancel
     ModalResult = 2
     OnClick = btnCancelClick
-    TabOrder = 7
+    TabOrder = 6
   end
   object dsJogo: TDataSource
     DataSet = qrJogo

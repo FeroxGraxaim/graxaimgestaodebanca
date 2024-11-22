@@ -14,18 +14,25 @@ type
   { TformEditMult }
 
   TformEditMult = class(TForm)
+    btnAlterar: TButton;
+    btnNovoJogo: TButton;
     btnOk: TBitBtn;
     btnCancel: TBitBtn;
     btnNovaLinha: TButton;
-    btnNovoJogo: TButton;
     btnRemoverJogo: TButton;
     btnRemoverLinha: TButton;
+    cbCompeticao: TComboBox;
+    cbMandante: TComboBox;
+    cbVisitante: TComboBox;
     dsJogo: TDataSource;
     dsMetodo: TDataSource;
     grbLinhas: TGroupBox;
     grbJogos: TGroupBox;
     grdLinhas: TDBGrid;
-    grdJogos: TDBGrid;
+    lbCompeticao: TLabel;
+    lbMandante2: TLabel;
+    lbVisitante2: TLabel;
+    lsbJogos: TListBox;
     qrJogo: TSQLQuery;
     qrJogoCod_Jogo: TLargeintField;
     qrJogoCompeticao: TStringField;
@@ -37,6 +44,7 @@ type
     qrMetodoMtodo: TStringField;
     qrMetodoOdd: TBCDField;
     qrMetodoStatus: TStringField;
+    procedure btnAlterarClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnNovaLinhaClick(Sender: TObject);
     procedure btnNovoJogoClick(Sender: TObject);
@@ -50,15 +58,25 @@ type
     procedure AtualizaMetLin(Sender: TObject);
     procedure grdJogosEditingDone(Sender: TObject);
     procedure grdLinhasEditingDone(Sender: TObject);
+    procedure lsbJogosClick(Sender: TObject);
   private
     Ok, GlobalExcecao, Nao: boolean;
     procedure VerificaRegistros;
+    procedure CarregaJogos;
   public
 
   end;
 
+  TItemInfo = class
+    Text: string;
+    CodJogo: integer;
+  end;
+
 var
   formEditMult: TformEditMult;
+  InfoJogo: TItemInfo;
+  ListaJogo: TList;
+  GlobalCodJogo: integer;
 
 implementation
 
@@ -70,44 +88,164 @@ uses
   { TformEditMult }
 
 procedure TformEditMult.FormShow(Sender: TObject);
+var
+  comp, Mand, Visit: string;
 begin
   Ok := False;
+  ListaJogo := TList.Create;
   with formPrincipal do
   begin
-    with grdJogos do
-      with TSQLQuery.Create(nil) do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'SELECT Competicao FROM Competicoes';
-        Open;
-        First;
-        while not EOF do
-        begin
-          Columns[0].PickList.Add(FieldByName('Competicao').AsString);
-          Next;
-        end;
-        Close;
-        SQL.Text := 'SELECT Time FROM Times';
-        Open;
-        First;
-        while not EOF do
-        begin
-          Columns[1].PickList.Add(FieldByName('Time').AsString);
-          Columns[2].PickList.Add(FieldByName('Time').AsString);
-          Next;
-        end;
-      finally
-        Free;
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'SELECT Competicao FROM Competicoes';
+      Open;
+      First;
+      while not EOF do
+      begin
+        comp := FieldByName('Competicao').AsString;
+        cbCompeticao.Items.AddObject(comp, TObject(comp));
+        Next;
       end;
+      Close;
+      SQL.Text := 'SELECT Time FROM Times';
+      Open;
+      First;
+      while not EOF do
+      begin
+        Mand := FieldByName('Time').AsString;
+        Visit := FieldByName('Time').AsString;
+        cbMandante.Items.AddObject(Mand, TObject(Mand));
+        cbVisitante.Items.AddObject(Visit, TObject(Visit));
+        Next;
+      end;
+    finally
+      Free;
+    end;
     with qrJogo do
     begin
       if Active then Close;
       ParamByName('CodAposta').AsInteger := GlobalCodAposta;
       Open;
       First;
-      grdJogosCellClick(nil);
+    end;
+    CarregaJogos;
+  end;
+end;
+
+procedure TformEditMult.lsbJogosClick(Sender: TObject);
+var
+  CodJogo, i: integer;
+begin
+  begin
+    if lsbJogos.ItemIndex <> -1 then
+    begin
+      CodJogo := -1;
+
+      for i := 0 to ListaJogo.Count - 1 do
+      begin
+        if TItemInfo(ListaJogo[i]).Text = lsbJogos.Items[lsbJogos.ItemIndex] then
+        begin
+          writeln(TItemInfo(ListaJogo[i]).Text);
+          CodJogo := TItemInfo(ListaJogo[i]).CodJogo;
+          writeln('Item Selecionado: ', CodJogo);
+          Break;
+        end;
+      end;
+
+      if CodJogo <> -1 then
+      begin
+        GlobalCodJogo := CodJogo;
+        writeln('Código do jogo: ', GlobalCodJogo);
+      end
+      else
+        writeln('Código do jogo não encontrado.');
+
+      if qrMetodo.Active then
+        qrMetodo.Close;
+      with qrJogo do
+      begin
+        Locate('Cod_Jogo', CodJogo, []);
+        cbCompeticao.Text := FieldByName('Competicao').AsString;
+        cbMandante.Text := FieldByName('Mandante').AsString;
+        cbVisitante.Text := FieldByName('Visitante').AsString;
+      end;
+      with qrMetodo do
+      begin
+        if Active then Close;
+        ParamByName('CodJogo').AsInteger := CodJogo;
+        Open;
+      end;
+      writeln('Aberto query com o código de jogo ', CodJogo);
     end;
   end;
+end;
+
+procedure TformEditMult.CarregaJogos;
+var
+  comp, Mand, Visit: string;
+begin
+  lsbJogos.Items.Clear;
+  ListaJogo.Clear;
+  InfoJogo.Free;
+  writeln('Carregando jogos');
+    with TSQLQuery.Create(nil) do
+    begin
+    try
+      DataBase := formPrincipal.conectBancoDados;
+      writeln('Abrindo lista de jogos');
+      SQL.Text := 'SELECT J.Cod_Jogo, C.Competicao, J.Mandante, J.Visitante ' +
+        'FROM Jogo J                                                        ' +
+        'LEFT JOIN Competicoes C ON C.Cod_Comp = J.Cod_Comp                 ' +
+        'LEFT JOIN Mercados M ON M.Cod_Jogo = J.Cod_Jogo                    ' +
+        'WHERE M.Cod_Aposta = :CodAposta GROUP BY J.Cod_Jogo                ';
+      ParamByName('CodAposta').AsInteger := GlobalCodAposta;
+      Open;
+      First;
+      while not EOF do
+      begin
+        comp := FieldByName('Competicao').AsString;
+        mand := FieldByName('Mandante').AsString;
+        visit := FieldByName('Visitante').AsString;
+
+        InfoJogo := TItemInfo.Create;
+        InfoJogo.Text := (comp + ': ' + mand + ' X ' + visit);
+        InfoJogo.CodJogo := FieldByName('Cod_Jogo').AsInteger;
+        ListaJogo.Add(InfoJogo);
+        lsbJogos.Items.Add(InfoJogo.Text);
+        Next;
+      end;
+    except
+      On E: Exception do
+      writeln(E.Message);
+    end;
+    Free;
+    end;
+  lsbJogos.ItemIndex := 0;
+  lsbJogosClick(nil);
+end;
+
+procedure TformEditMult.btnAlterarClick(Sender: TObject);
+begin
+  with formPrincipal do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'UPDATE Jogo                                  ' +
+        'SET Cod_Comp = (SELECT Cod_Comp FROM Competicoes C     ' +
+        'WHERE C.Competicao = :comp), Mandante = :mand,         ' +
+        'Visitante = :visit                                     ' +
+        'WHERE Cod_Jogo = :CodJogo                              ';
+      ParamByName('CodJogo').AsInteger := GlobalCodJogo;
+      ParamByName('comp').AsString := cbCompeticao.Text;
+      ParamByName('mand').AsString := cbMandante.Text;
+      ParamByName('visit').AsString := cbVisitante.Text;
+      ExecSQL;
+      qrJogo.Refresh;
+      CarregaJogos;
+    finally
+      Free;
+    end;
 end;
 
 procedure TformEditMult.btnNovoJogoClick(Sender: TObject);
@@ -132,11 +270,21 @@ begin
       ParamByName('CodAposta').AsInteger := GlobalCodAposta;
       ParamByName('CodJogo').AsInteger := CodJogo;
       ExecSQL;
+      SQL.Text := 'UPDATE Jogo SET Cod_Comp = (SELECT C.Cod_Comp     ' +
+        'FROM Competicoes C WHERE C.Competicao = :comp),   ' +
+        'Mandante = :mand, Visitante = :visit              ' +
+        'WHERE Cod_Jogo = :codjogo                         ';
+      ParamByName('codjogo').AsInteger := CodJogo;
+      ParamByName('comp').AsString := cbCompeticao.Text;
+      ParamByName('mand').AsString := cbMandante.Text;
+      ParamByName('visit').AsString := cbVisitante.Text;
+      ExecSQL;
       qrJogo.Refresh;
       qrMetodo.Refresh;
     finally
       Free;
     end;
+  CarregaJogos;
 end;
 
 procedure TformEditMult.btnOkClick(Sender: TObject);
@@ -164,6 +312,7 @@ begin
     end;
   qrJogo.Refresh;
   qrMetodo.Refresh;
+  CarregaJogos;
 end;
 
 procedure TformEditMult.btnRemoverLinhaClick(Sender: TObject);
@@ -177,7 +326,7 @@ end;
 
 procedure TformEditMult.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 label
-  Cancelar, AbortFech, SairSemSalvar;
+  Cancelar, AbortFech, SairSemSalvar, Fim;
 begin
   with formPrincipal do
   begin
@@ -194,7 +343,9 @@ begin
       MessageDlg('Erro ao salvar alterações, tente novamente.', mtError, [mbOK], 0);
       goto SairSemSalvar;
     end;
-    Exit;
+
+    transactionBancoDados.CommitRetaining;
+    goto Fim;
 
     Cancelar:
 
@@ -209,14 +360,20 @@ begin
 
         writeln('Fechando sem salvar');
       transactionBancoDados.RollbackRetaining;
-      Exit;
+      goto Fim;
     end;
 
     AbortFech:
 
       writeln('Abortando fechamento');
     CloseAction := caNone;
+    Exit;
   end;
+
+  Fim:
+
+    ListaJogo.Free;
+  InfoJogo.Free;
 end;
 
 procedure TformEditMult.btnNovaLinhaClick(Sender: TObject);

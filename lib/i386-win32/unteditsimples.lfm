@@ -1,75 +1,112 @@
 object formEditSimples: TformEditSimples
   Left = 460
-  Height = 480
+  Height = 450
   Top = 250
   Width = 351
+  BorderStyle = bsDialog
   Caption = 'Editar Aposta'
-  ClientHeight = 480
+  ClientHeight = 450
   ClientWidth = 351
   OnClose = FormClose
   OnShow = FormShow
   object lbCompeticao: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 8
-    Width = 67
+    Top = 0
+    Width = 351
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Competição'
   end
   object cbCompeticao: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbCompeticao
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 25
+    Top = 17
     Width = 351
+    Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 0
     TabOrder = 0
   end
   object cbMandante: TComboBox
+    AnchorSideTop.Control = lbMandante2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = cbVisitante
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 73
-    Width = 160
+    Top = 61
+    Width = 168
+    Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 0
     TabOrder = 1
   end
   object lbMandante2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbCompeticao
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lbVisitante2
     Left = 0
     Height = 17
-    Top = 56
-    Width = 57
+    Top = 44
+    Width = 168
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Mandante'
   end
   object cbVisitante: TComboBox
+    AnchorSideTop.Control = lbVisitante2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 168
     Height = 27
-    Top = 73
+    Top = 61
     Width = 183
+    Anchors = [akTop, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 0
     TabOrder = 2
   end
   object lbVisitante2: TLabel
+    AnchorSideTop.Control = cbCompeticao
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 168
     Height = 17
-    Top = 56
-    Width = 48
+    Top = 44
+    Width = 183
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Visitante'
   end
   object grbNovaLinha: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbMandante
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 296
-    Top = 109
-    Width = 352
+    Top = 88
+    Width = 351
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Clique duas vezes sobre uma célula para editar'
     ClientHeight = 272
-    ClientWidth = 348
+    ClientWidth = 347
     Font.Height = -15
     Font.Name = 'Sans'
     ParentFont = False
@@ -84,7 +121,7 @@ object formEditSimples: TformEditSimples
       Left = 0
       Height = 272
       Top = 0
-      Width = 348
+      Width = 347
       Anchors = [akTop, akLeft, akRight, akBottom]
       Color = clWindow
       Columns = <      
@@ -112,57 +149,136 @@ object formEditSimples: TformEditSimples
           FieldName = 'Situacao'
         end>
       DataSource = dsEditarAposta
-      Enabled = False
       Font.Height = -13
       Font.Name = 'Sans'
       ParentFont = False
       Scrollbars = ssAutoVertical
       TabOrder = 0
+      OnCellClick = grdEditarApostaCellClick
       OnEditingDone = grdEditarApostaEditingDone
     end
   end
   object btnNovaLinha: TButton
-    Left = 0
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grbNovaLinha
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnRemoverSelecionada
+    Left = 5
     Height = 25
-    Top = 413
-    Width = 352
+    Top = 386
+    Width = 168
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 5
     Caption = 'Nova Linha'
-    Enabled = False
     TabOrder = 4
+    OnClick = btnNovaLinhaClick
   end
-  object btnOk: TButton
-    AnchorSideBottom.Side = asrBottom
-    Left = 80
+  object btnRemoverSelecionada: TButton
+    AnchorSideTop.Control = grbNovaLinha
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 178
     Height = 25
-    Top = 448
-    Width = 75
-    Anchors = [akBottom]
-    Caption = 'Ok'
-    Enabled = False
+    Top = 386
+    Width = 168
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 5
+    Caption = 'Remover Selecionada'
     TabOrder = 5
-    OnClick = btnOkClick
+    OnClick = btnRemoverSelecionadaClick
   end
-  object btnCancelar: TButton
+  object btnOk: TBitBtn
+    AnchorSideLeft.Control = btnNovaLinha
+    AnchorSideTop.Control = btnRemoverSelecionada
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnNovaLinha
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 200
-    Height = 25
-    Top = 448
-    Width = 75
-    Anchors = [akBottom]
-    Caption = 'Cancelar'
+    Left = 67
+    Height = 29
+    Top = 416
+    Width = 83
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 62
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 23
+    BorderSpacing.Bottom = 5
+    DefaultCaption = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = btnOkClick
     TabOrder = 6
+  end
+  object btnCancel: TBitBtn
+    AnchorSideLeft.Control = btnRemoverSelecionada
+    AnchorSideTop.Control = btnRemoverSelecionada
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnRemoverSelecionada
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 201
+    Height = 29
+    Top = 416
+    Width = 83
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 23
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 62
+    BorderSpacing.Bottom = 5
+    Caption = 'Cancelar'
+    Kind = bkCancel
+    ModalResult = 2
     OnClick = btnCancelarClick
+    TabOrder = 7
   end
   object dsEditarAposta: TDataSource
     DataSet = qrEditarAposta
     Left = 183
   end
   object qrEditarAposta: TSQLQuery
-    FieldDefs = <>
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'Cod_Mercado'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
+        Name = 'Método'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Linha'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'Odd'
+        DataType = ftBCD
+        Precision = 9
+        Size = 2
+      end    
+      item
+        Name = 'Situacao'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end>
     Database = formPrincipal.conectBancoDados
     Transaction = formPrincipal.transactionBancoDAdos
     SQL.Strings = (
       'SELECT'
+      'Cod_Mercado,'
       'Métodos.Nome AS Método,'
       'Linhas.Nome AS Linha,'
       'Mercados.Odd,'
@@ -173,16 +289,26 @@ object formEditSimples: TformEditSimples
       ''
       'WHERE Mercados.Cod_Aposta = :CodAposta'
     )
+    InsertSQL.Strings = (
+      'INSERT INTO Mercados (Cod_Mercado, Cod_Metodo, Cod_Linha, Odd, Status, Cod_Aposta)'
+      'VALUES'
+      '(Cod_Mercado,'
+      '(SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :Método),'
+      '(SELECT Cod_Linha FROM Linhas WHERE Linhas.Nome = :Linha), :Odd, :Situacao,'
+      ':CodAposta)'
+      ''
+    )
     UpdateSQL.Strings = (
       'UPDATE Mercados'
-      'JOIN Métodos ON Métodos.Cod_Metodo = Mercados.Cod_Metodo'
-      'JOIN Linhas ON Linhas.Cod_Linha = Mercados.Cod_Linha'
       'SET'
-      'Mercados.Cod_Metodo = Métodos.Cod_Metodo,'
-      'Mercados.Cod_Linha = Linhas.Cod_Linha'
-      'WHERE Mercados.Cod_Aposta = :CodAposta'
-      'AND Métodos.Nome = :Método'
-      'AND Linhas.Nome = :Linha;'
+      'Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :Método),'
+      'Cod_Linha = (SELECT Cod_Linha FROM Linhas WHERE Linhas.Nome = :Linha),'
+      'Odd = :Odd,'
+      'Status = :Situacao'
+      'WHERE Cod_Mercado = :Cod_Mercado'
+    )
+    DeleteSQL.Strings = (
+      'DELETE FROM Mercados WHERE Cod_Mercado = :Cod_Mercado;'
     )
     Params = <    
       item
@@ -193,5 +319,58 @@ object formEditSimples: TformEditSimples
     Macros = <>
     Left = 235
     Top = 7
+    object qrEditarApostaMtodo: TStringField
+      FieldKind = fkData
+      FieldName = 'Método'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrEditarApostaLinha: TStringField
+      FieldKind = fkData
+      FieldName = 'Linha'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrEditarApostaOdd: TBCDField
+      FieldKind = fkData
+      FieldName = 'Odd'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrEditarApostaSituacao: TStringField
+      FieldKind = fkData
+      FieldName = 'Situacao'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrEditarApostaCod_Mercado: TLargeintField
+      FieldKind = fkData
+      FieldName = 'Cod_Mercado'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
   end
 end

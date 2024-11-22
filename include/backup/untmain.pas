@@ -39,6 +39,8 @@ type
     btnNovaComp: TButton;
     bufExportar: TBufDataset;
     btnEditAposta: TButton;
+    btnAporte: TButton;
+    btnRetirar: TButton;
     cbAno: TComboBox;
     cbGraficos: TComboBox;
     cbMes: TComboBox;
@@ -122,7 +124,6 @@ type
     dsSelecionarPerfil: TDataSource;
     dsSituacao: TDataSource;
     dsUnidades: TDataSource;
-    edtBancaInicial: TEdit;
     grbApostas: TGroupBox;
     grbDetalhesAp: TGroupBox;
     grdAno: TDBGrid;
@@ -142,8 +143,15 @@ type
     grbMetodos: TGroupBox;
     grbLinhas: TGroupBox;
     JSONPropStorage1: TJSONPropStorage;
+    Label1: TLabel;
+    lbValAporte: TLabel;
+    lbValBancaTotal: TLabel;
+    lbBancaTotal: TLabel;
+    lbStake: TLabel;
+    lbValorBanca: TLabel;
     lbAcertosLin: TLabel;
     lbAcertosMet: TLabel;
+    lbAporte: TLabel;
     lbDataFim: TLabel;
     lbDataInicio: TLabel;
     lbErrosLin: TLabel;
@@ -166,6 +174,7 @@ type
     lbMes: TLabel;
     lbPerfil: TLabel;
     lbUnidade: TLabel;
+    lsbJogos: TListBox;
     lnGraficoLucroAno: TLineSeries;
     lnGraficoLucroAno1: TLineSeries;
     lnGraficoLucroMes: TLineSeries;
@@ -222,6 +231,7 @@ type
     qrBanca: TSQLQuery;
     qrBancaAno: TLargeintField;
     qrBancaAno1: TLongintField;
+    qrBancaAporte: TBCDField;
     qrBancaBancaFinalCalc: TStringField;
     qrBancaInicialMoedaStake1: TStringField;
     qrBancaLucro: TFloatField;
@@ -234,9 +244,7 @@ type
     qrBancaLucro_R1: TBCDField;
     qrBancaMs: TLargeintField;
     qrBancaMs1: TLongintField;
-    qrBancaStake: TBCDField;
     qrBancaStake1: TBCDField;
-    qrBancaStakeCalc: TStringField;
     qrBancaValorCalculado1: TStringField;
     qrBancaValorFinalCalculado1: TStringField;
     qrBancaValor_Final: TFloatField;
@@ -307,7 +315,6 @@ type
     txtBancaAtual: TDBText;
     txtLucroMoeda: TDBText;
     txtLucroPorCento: TDBText;
-    txtStake: TDBText;
     procedure dsBancaDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -329,7 +336,6 @@ type
     procedure SalvarDadosBD(Sender: TObject);
     procedure ImportarDadosBD(Sender: TObject);
     procedure GestaoUnidadePcent(Sender: TObject);
-    procedure DefinirStake;
   private
 
   public
@@ -348,7 +354,7 @@ var
 var
   formPrincipal: TformPrincipal;
   estrategia, perfilInvestidor: string;
-  stakeAposta, valorInicial: double;
+  stakeAposta, valorInicial, Aporte: double;
   contMult: integer;
   mesSelecionado: integer;
   anoSelecionado: integer;
@@ -380,38 +386,6 @@ begin
   finally
     Free;
   end;
-end;
-
-procedure TformPrincipal.DefinirStake;
-var
-  query: TSQLQuery;
-begin
-  with formPrincipal do
-  begin
-    query := TSQLQuery.Create(nil);
-    query.DataBase := formPrincipal.conectBancoDados;
-    try
-      if not query.Active then query.Close;
-      query.SQL.Text :=
-        'UPDATE Banca SET "Stake" = :stake WHERE Mês = :mesSelec AND Ano = :anoSelec';
-      PerfilDoInvestidor;
-      query.ParamByName('stake').AsFloat := stakeAposta;
-      query.ParamByName('mesSelec').AsInteger := mesSelecionado;
-      query.ParamByName('anoSelec').AsInteger := anoSelecionado;
-      query.ExecSQL;
-      transactionBancoDados.CommitRetaining;
-    except
-      on E: Exception do
-      begin
-        writeln('Erro: ' + E.Message + ' Abortado');
-        transactionBancoDados.RollbackRetaining;
-      end;
-    end;
-    query.Free;
-  end;
-  if qrBanca.Active then qrBanca.Refresh
-  else
-    qrBanca.Open;
 end;
 
 {$R *.lfm}
@@ -600,15 +574,16 @@ var
 begin
   SelectedItem := TMenuItem(Sender);
   if Assigned(ColunaAtual) and Assigned(SelectedItem) then
-  begin
-    qrDadosAposta.Edit;
-    qrDadosAposta.FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
-    writeln('Item selecionado: ', SelectedItem.Caption);
-    qrDadosAposta.Post;
-    qrDadosAposta.ApplyUpdates;
-    qrDadosAPosta.Refresh;
-    CalculaDadosAposta;
-  end;
+    with qrDadosAposta do
+    begin
+      Edit;
+      FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
+      writeln('Item selecionado: ', SelectedItem.Caption);
+      Post;
+      ApplyUpdates;
+      //Refresh;
+      CalculaDadosAposta;
+    end;
 end;
 
 procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
@@ -616,6 +591,7 @@ begin
   if (qrApostas.State in [dsInsert, dsEdit]) then
   begin
     try
+      qrApostas.Edit;
       writeln('Postando');
       qrApostas.Post;
       writeln('Aplicando');
@@ -661,25 +637,30 @@ begin
   if perfilInvestidor = 'Conservador' then
   begin
     if GestaoUnidade then
-      stakeAposta := RoundTo(valorInicial / 100, -2)
+      stakeAposta := RoundTo((valorInicial + Aporte) / 100, -2)
     else
-      stakeAposta := RoundTo(1 * valorInicial / 100, -2);
+      stakeAposta := RoundTo(1 * (valorInicial + Aporte) / 100, -2);
   end
   else
   if perfilInvestidor = 'Moderado' then
   begin
     if GestaoUnidade then
-      stakeAposta := RoundTo(valorInicial / 70, -2)
+      stakeAposta := RoundTo((valorInicial + Aporte) / 70, -2)
     else
-      stakeAposta := RoundTo(3 * valorInicial / 100, -2);
+      stakeAposta := RoundTo(3 * (valorInicial + Aporte) / 100, -2);
   end
   else
   if perfilInvestidor = 'Agressivo' then
   begin
     if GestaoUnidade then
-      stakeAposta := RoundTo(valorInicial / 40, -2)
+      stakeAposta := RoundTo((valorInicial + Aporte) / 40, -2)
     else
-      stakeAposta := RoundTo(5 * valorInicial / 100, -2);
+      stakeAposta := RoundTo(5 * (valorInicial + Aporte) / 100, -2);
+  end;
+  with formPrincipal.qrBanca do
+  begin
+    if not Active then Open
+    else Refresh;
   end;
 end;
 
@@ -782,7 +763,7 @@ begin
   finally
     Free;
   end;
-  DefinirStake;
+  PerfilDoInvestidor;
 end;
 
 procedure TformPrincipal.ReiniciarTodosOsQueries;
@@ -822,8 +803,8 @@ begin
         TSQLQuery(qrPraReiniciar[I]).Refresh;
     except
       On E: Exception do
-      writeln('Erro ao reiniciar o query ',TComponent(qrPraReiniciar[I]).Name,
-      ', ' + E.Message);
+        writeln('Erro ao reiniciar o query ', TComponent(qrPraReiniciar[I]).Name,
+          ', ' + E.Message);
     end;
     EventosMetodos.CarregaMetodos;
   finally
@@ -922,6 +903,7 @@ procedure TformPrincipal.grdDadosApEditingDone(Sender: TObject);
 var
   Bookmark: TBookmark;
 begin
+  writeln('Salvando edição do qrDadosAp');
   with qrDadosAposta do
   begin
     Edit;

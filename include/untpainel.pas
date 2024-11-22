@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl;
+  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl, Math;
 
 type
 
@@ -32,11 +32,20 @@ type
     procedure AtualizarGraficoLucro;
     procedure AtualizaMesEAno;
     procedure HabilitaMesEAno(Sender: TObject);
+    procedure FazerAporte(Sender: TObject);
+    procedure AlterarBancaInicial(Sender: TObject);
+    procedure RetirarDinheiro(Sender: TObject);
+    procedure AtualizaDadosBanca(DataSet: TDataSet);
+    procedure VerificaBancaAntiga;
+    procedure AtualizaBanca;
+    procedure ParametrosBanca(DataSet: TDataSet);
   end;
 
   TDateDoubleMap = specialize TFPGMap<TDateTime, double>;
 
 implementation
+
+uses untApostas;
 
 var
   MesDoCB, AnoDoCB: integer;
@@ -46,15 +55,6 @@ begin
   writeln('Exibido painel principal');
   with formPrincipal do
   begin
-    with qrBanca do
-    begin
-      if Active then Close;
-      ParamByName('mesSelec').AsInteger := StrToInt(cbMes.Text);
-      ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
-      Open;
-      MudarCorLucro;
-    end;
-
     with TSQLQuery.Create(nil) do
     try
       DataBase := conectBancoDados;
@@ -74,7 +74,6 @@ begin
       Free;
     end;
     PerfilDoInvestidor;
-    DefinirStake;
   end;
   AtualizarGraficoLucro;
 end;
@@ -83,20 +82,21 @@ end;
 
 procedure TEventosPainel.btnSalvarBancaInicialClick(Sender: TObject);
 var
-  mes, ano, mesGreen, mesRed: integer;
+  mes, ano: integer;
   novoValor: double;
   query: TSQLQuery;
+  entrada: string;
+label
+  Valor, Fim;
 begin
   with formPrincipal do
   begin
     writeln('Clicado no botão para salvar dados da banca!');
-    writeln('Criando query...');
     query := TSQLQuery.Create(nil);
-    writeln('Definindo banco de dados do query...');
     query.DataBase := conectBancoDados;
     writeln('Lendo o edit para salvar na variável...');
-    if edtBancaInicial.Text <> '' then
-      novoValor := StrToFloat(edtBancaInicial.Text)
+    if qrBanca.FieldByName('Valor_Inicial').AsFloat <> 0 then
+      novoValor := valorInicial
     else
       novoValor := 0.00;
 
@@ -104,61 +104,68 @@ begin
     if TryStrToInt(cbMes.Text, mes) and TryStrToInt(cbAno.Text, ano) then
     begin
       try
-
         if not conectBancoDados.Connected then
-        begin
-          writeln('Conectando com o banco de dados...');
           conectBancoDados.Connected := True;
-        end;
+
         if qrBanca.RecordCount = 0 then
         begin
           writeln(
-            'Não tem valor na tabela Banca com mês e ano selecionados, inserindo novos dados');
+            'Não tem valor na tabela Banca com mês e ano selecionados, ' +
+            'inserindo novos dados');
           query.Close;
           query.SQL.Text :=
-            'INSERT INTO "Banca" ("Mês", "Ano", "Valor_Inicial", "Stake") ' +
-            'SELECT :mes, :ano, :valorInicial, :stake ' +
-            'WHERE NOT EXISTS (SELECT 1 FROM "Banca" WHERE "Mês" = :mes AND "Ano" = :ano);';
-          writeln('Inserido texto SQL no query: ' + query.SQL.Text);
-          writeln('Definindo o parâmetro "mês" do query como ', mes);
+            'INSERT INTO "Banca" ("Mês", "Ano", "Valor_Inicial") ' +
+            'SELECT :mes, :ano, :valorInicial ' +
+            'WHERE NOT EXISTS (SELECT 1 FROM "Banca" WHERE "Mês" = :mes AND ' +
+            '"Ano" = :ano);';
           query.ParamByName('mes').AsInteger := mes;
-          writeln('Definindo o parâmetro "ano" do query como ', ano);
           query.ParamByName('ano').AsInteger := ano;
-          writeln('Definindo parâmetro "valorInicial" do query como ', novoValor);
           query.ParamByName('valorInicial').AsFloat := novoValor;
-          writeln('Definindo parâmetro "stake" do query como ', stakeAposta);
-          query.ParamByName('stake').AsFloat := stakeAposta;
-          writeln('Executando ExecSQL');
           query.ExecSQL;
         end
-        else if TryStrToFloat(edtBancaInicial.Text, novoValor) then
-        begin
-          writeln('Já existe valor no mês e ano selecionados, atualizando');
-          query.Close;
-          query.SQL.Text :=
-            'UPDATE "Banca" SET "Valor_Inicial" = :novoValor, "Stake" = :stake WHERE "Mês" = :mesSelecionado AND "Ano" = :anoSelecionado';
-          writeln('Inserido texto SQL no query: ' + query.SQL.Text);
-          writeln('Definindo parâmetro "novoValor" do query como ', novoValor);
-          query.ParamByName('novoValor').AsFloat := novoValor;
-          writeln('Definindo parâmetro "stake" do query como ', stakeAposta);
-          query.ParamByName('stake').AsFloat := stakeAposta;
-          writeln('Definindo o parâmetro "mesSelecionado" do query como ', mes);
-          query.ParamByName('mesSelecionado').AsInteger := mes;
-          writeln('Definindo o parâmetro "anoSelecionado" do query como ', ano);
-          query.ParamByName('anoSelecionado').AsInteger := ano;
-          writeln('Executando ExecSQL');
-          query.ExecSQL;
-        end;
-        writeln('Alterando o valor ', valorInicial, ' para ', novoValor);
+        else
+        if qrBanca.FieldByName('Valor_Inicial').AsFloat <> 0 then
+          if MessageDlg('AVISO:' + sLineBreak + sLineBreak +
+            'A banca inicial já está preenchida, caso tenha ' +
+            'adicionado mais dinheiro à banca, favor usar o botão ' +
+            '"Fazer Aporte". Se alterar a banca inicial, o cálculo dos ' +
+            'gráficos será incorreto. Só é recomendado alterar a banca ' +
+            'inicial caso haja um erro no valor.' + sLineBreak +
+            'Deseja alterar o valor mesmo assim?', mtWarning, [mbYes, mbNo], 0) =
+            mrYes then goto Valor
+          else
+            goto Fim;
+
+        Valor:
+
+          if InputQuery('Inserir Valor', 'Insira o valor da tua banca na casa ' +
+          'de apostas que tu operas:', Entrada) then
+            if TryStrToFloat(Entrada, novoValor) then
+              with query do
+              begin
+                writeln('Já existe valor no mês e ano selecionados, atualizando');
+                SQL.Text :=
+                  'UPDATE "Banca" SET "Valor_Inicial" = :novoValor ' +
+                  'WHERE "Mês" = :mesSelecionado AND "Ano" = :anoSelecionado';
+                ParamByName('novoValor').AsFloat := novoValor;
+                ParamByName('mesSelecionado').AsInteger := mes;
+                ParamByName('anoSelecionado').AsInteger := ano;
+                ExecSQL;
+              end
+            else
+            begin
+              MessageDlg('Erro', 'O valor inserido não é numérico!',
+              mtError, [mbOK], 0);
+              goto Valor;
+            end;
+        transactionBancoDados.CommitRetaining;
         valorInicial := novoValor;
-        writeln('Salvando mudanças no banco de dados');
         mesSelecionado := StrToInt(cbMes.Text);
         anoSelecionado := StrToInt(cbAno.Text);
-        transactionBancoDados.CommitRetaining;
-        DefinirStake;
-        qrBanca.Refresh;
-        ShowMessage('Valor da banca para ' + IntToStr(mesSelecionado) +
-          '/' + IntToStr(anoSelecionado) + ' salvo com sucesso!');
+        qrBanca.Close;
+        qrBanca.Open;
+
+        Fim: ;
       except
         on E: Exception do
         begin
@@ -172,9 +179,7 @@ begin
       end;
     end
     else
-    begin
       MessageDlg('Erro', 'Informe um mês e um ano válidos!', mtError, [mbOK], 0);
-    end;
     with query do
     try
       Close;
@@ -189,6 +194,7 @@ begin
     //perfilInvestidor := cbPerfil.Text;
     //txtStake.DataField := qrBanca.FieldByName('R$Stake').AsString;
     MudarCorLucro;
+    CalculaDadosAposta;
     AtualizarGraficoLucro;
   end;
 end;
@@ -220,7 +226,7 @@ begin
     finally
       query.Free;
     end;
-    DefinirStake;
+    //DefinirStake;
     PerfilDoInvestidor;
     writeln('Definido perfil como ', perfilInvestidor);
     ReiniciarTodosOsQueries;
@@ -312,16 +318,20 @@ begin
       query := TSQLQuery.Create(nil);
       query.DataBase := conectBancoDados;
       query.SQL.Text :=
-        'select Valor_Inicial from Banca where Mês = :MesSelecionado and Ano = :AnoSelecionado';
+        'select Valor_Inicial , Aporte ' +
+        'from Banca where Mês = :MesSelecionado and Ano = :AnoSelecionado';
       query.ParamByName('MesSelecionado').AsInteger := mesSelecionado;
       query.ParamByName('AnoSelecionado').AsInteger := anoSelecionado;
       query.Open;
 
       if not query.IsEmpty then
-        valorInicial := query.FieldByName('Valor_Inicial').AsFloat
+      begin
+        valorInicial := query.FieldByName('Valor_Inicial').AsFloat;
+        Aporte := query.FieldByName('Aporte').AsFloat;
+      end
       else
         valorInicial := 0;
-      edtBancaInicial.Text := FloatToStr(valorInicial);
+      //edtBancaInicial.Text := FloatToStr(valorInicial);
     finally
       query.Free;
     end;
@@ -331,8 +341,10 @@ end;
 procedure TEventosPainel.AtualizarGraficoLucro;
 var
   i, j, Contador, anoGreen, anoRed, mesGreen, mesRed, diaGreen, diaRed,
-  anoNeutro, mesNeutro, diaNeutro, MaxInt, MinInt: integer;
-  ContFloat, LAP, LAR, LAPA, LARA: double;
+  anoNeutro, mesNeutro, diaNeutro, MaxInt, MinInt, Mes: integer;
+  ContFloat, LAP, LAR, LAPA, LARA, SomaLucro, ValInicio, Aporte,
+  TotInvest, LucroPcent, BancaFinal, LMP, LMR: double;
+  LucroStr: string;
 begin
   writeln('Atualizando gráficos do painel principal');
   with formPrincipal do
@@ -354,66 +366,51 @@ begin
       case cbGraficos.Text of
 
         'Lucro R$':
-        begin
-          writeln('alterando gráfico do mês para porcentagem');
-          chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
-          {writeln('Limpando gráfico');
-          (chrtLucroMes.Series[0] as TLineSeries).Clear; }
-          writeln('Abrindo qrMes');
-          if not qrMes.Active then qrMes.Open;
-          writeln('Preenchendo gráfico do mês');
-          if qrMes.RecordCount <> 0 then
-            for i := 1 to 31 do
-            begin
-              ContFloat := i;
-              if i < qrMes.FieldByName('Dia').AsInteger then
-                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                  qrMes.FieldByName('SomaLucro').AsFloat, ContFloat)
-              else if i > qrMes.FieldByName('Dia').AsInteger then
-              begin
-                qrMes.Last;
-                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                  qrMes.FieldByName('SomaLucro').AsFloat, ContFloat);
-                qrMes.First;
-              end
-              else
-              begin
-                (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-                  i,
-                  qrMes.FieldByName('SomaLucro').AsFloat,
-                  ContFloat);
-                qrMes.Next;
-              end;
-            end;
-        end;
+          with qrMes do
+          begin
+            writeln('alterando gráfico do mês para porcentagem');
+            chrtLucroMes.AxisList[1].Marks.Format := '%0:.2m';
+            First;
+            if RecordCount <> 0 then
+              with (chrtLucroMes.Series[0] as TLineSeries) do
+                for i := 1 to 31 do
+                begin
+                  ContFloat := i;
+                  if i <= FieldByName('Dia').AsInteger then
+                    LMR := FieldByName('SomaLucro').AsFloat
+                  else
+                  if not EOF then
+                  begin
+                    Next;
+                    LMR := FieldByName('SomaLucro').AsFloat;
+                  end;
+                  AddXY(i, LMR, ContFloat);
+                end;
+          end;
 
         'Lucro %':
         begin
           chrtLucroMes.AxisList[1].Marks.Format := '%0:.2n%%';
-          //(chrtLucroMes.Series[0] as TLineSeries).Clear;
           if qrMes.RecordCount <> 0 then
-            for i := 1 to 31 do
-            begin
-              ContFloat := i;
-              if i < qrMes.FieldByName('Dia').AsInteger then
-                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                  qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat)
-              else if i > qrMes.FieldByName('Dia').AsInteger then
+            with (chrtLucroMes.Series[0] as TLineSeries) do
+              with qrMes do
               begin
-                qrMes.Last;
-                (chrtLucroMes.Series[0] as TLineSeries).AddXY(i,
-                  qrMes.FieldByName('PorCentoLucro').AsFloat, ContFloat);
-                qrMes.First;
-              end
-              else
-              begin
-                (chrtLucroMes.Series[0] as TLineSeries).AddXY(
-                  i,
-                  qrMes.FieldByName('PorCentoLucro').AsFloat,
-                  ContFloat);
-                qrMes.Next;
+                First;
+                LMP := FieldByName('PorCentoLucro').AsFloat;
+                for i := 1 to 31 do
+                begin
+                  ContFloat := i;
+                  if i <= FieldByName('Dia').AsInteger then
+                    LMP := FieldByName('PorCentoLucro').AsFloat
+                  else
+                  if not EOF then
+                  begin
+                    Next;
+                    LMP := LMP + FieldByName('PorCentoLucro').AsFloat;
+                  end;
+                  AddXY(i, LMP, ContFloat);
+                end;
               end;
-            end;
         end;
       end;
     except
@@ -425,64 +422,83 @@ begin
 
     {******************************************************************************}
     {*********************************LUCRO DO ANO*********************************}
-    with qrAno do
+    with TSQLQuery.Create(nil) do
     try
-      if not Active then Open;
-      writeln
-      ('Registros encontrados para o ano: ' + IntToStr(qrAno.RecordCount));
+      DataBase := conectBancoDados;
       begin
         case cbGraficos.Text of
           'Lucro %':
           begin
+            SQL.Text :=
+              'SELECT                                                         ' +
+              'IFNULL(SUM(Apostas.Lucro) / (Valor_Inicial + Aporte), 0) * 100 ' +
+              'AS LucroTotal                                                  ' +
+              'FROM Banca                                                     ' +
+              'LEFT JOIN Apostas                                              ' +
+              'ON strftime(''%Y'', Apostas.Data) = Banca.Ano                  ' +
+              'AND strftime(''%m'', Apostas.Data) = Banca.Mês                 ' +
+              'WHERE Banca.Mês = :contagem                                    ' +
+              'AND Banca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano");      ';
+
             chrtLucroAno.AxisList[0].Marks.Format := '%0:.2n%%';
-            First;
-            LAP := FieldByName('LucroTotalPorCento').AsFloat;
-            if RecordCount <> 0 then
-              for Contador := 1 to 12 do
-                with (chrtLucroAno.Series[0] as TLineSeries) do
-                begin
-                  ContFloat := Contador;
-                  if Contador <= FieldByName('Mês').AsInteger then
-                    AddXY(Contador, 0, ContFloat)
-                  else
-                  begin
-                    Next;
-                    if not EOF then
-                      LAP := LAP + FieldByName('LucroTotalPorCento').AsFloat
-                    else
-                      LAP := LAP;
-                    AddXY(Contador, LAP, ContFloat);
-                  end;
-                end;
+            Mes := 0;
+            LAP := 0;
+            for Contador := 1 to 12 do
+            begin
+              ParamByName('contagem').AsInteger := Contador;
+              Open;
+              ContFloat := Contador;
+              with (chrtLucroAno.Series[0] as TLineSeries) do
+              begin
+                if not IsEmpty then
+                  LAP := LAP + Fields[0].AsFloat
+                else
+                  LAP := LAP + 0;
+                AddXY(Contador, LAP, ContFloat);
+              end;
+              Close;
+            end;
           end;
           'Lucro R$':
           begin
+
+            SQL.Text :=
+              'SELECT                                                         ' +
+              'IFNULL(SUM(Apostas.Lucro), 0)                                  ' +
+              'AS LucroTotal                                                  ' +
+              'FROM Banca                                                     ' +
+              'LEFT JOIN Apostas                                              ' +
+              'ON strftime(''%Y'', Apostas.Data) = Banca.Ano                  ' +
+              'AND strftime(''%m'', Apostas.Data) = Banca.Mês                 ' +
+              'WHERE Banca.Mês = :contagem                                    ' +
+              'AND Banca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano");      ';
+
             chrtLucroAno.AxisList[0].Marks.Format := '%0:.2m';
-            First;
-            LAR := FieldByName('LucroAnualReais').AsFloat;
-            if RecordCount <> 0 then
-              for Contador := 1 to 12 do
-                with (chrtLucroAno.Series[0] as TLineSeries) do
-                begin
-                  ContFloat := Contador;
-                  if Contador <= FieldByName('Mês').AsInteger then
-                    AddXY(Contador, 0, ContFloat)
-                  else
-                  begin
-                    Next;
-                    if not EOF then
-                      LAR := LAR + FieldByName('LucroAnualReais').AsFloat
-                    else
-                      LAR := LAR;
-                    AddXY(Contador, LAR, ContFloat);
-                  end;
+
+            LAR := 0;
+            for Contador := 1 to 12 do
+              with (chrtLucroAno.Series[0] as TLineSeries) do
+              begin
+                ParamByName('contagem').AsInteger := Contador;
+                Open;
+                ContFloat := Contador;
+                if not IsEmpty or not Fields[0].IsNull then
+                try
+                  LAR := LAR + Fields[0].AsFloat;
+                except
+                  LAR := LAR + 0;
                 end;
+                AddXY(Contador, LAR, ContFloat);
+                Close;
+              end;
           end;
         end;
       end;
+      Free;
     except
       on E: Exception do
       begin
+        Free;
         writeln('Falha ao atualizar o gráfico de lucro do ano: ' + E.Message);
       end;
     end;
@@ -495,19 +511,7 @@ begin
     with TSQLQuery.Create(nil) do
     try
       DataBase := conectBancoDados;
-      SQL.Text :=
-        'SELECT Banca.Mês, Banca.Ano,                               ' +
-        'SUM(Banca.Valor_Final - Banca.Valor_Inicial) / COUNT(*)    ' +
-        'AS lcrAnosReais,                                           ' +
-        '(SUM(Banca.Valor_Final - Banca.Valor_Inicial) /            ' +
-        'SUM(CASE WHEN Banca.Valor_Inicial IS NULL THEN 0           ' +
-        'ELSE Banca.Valor_Inicial END)) * 100 AS lcrAnosPcent       ' +
-        'FROM Banca                                                 ' +
-        'LEFT JOIN                                                  ' +
-        'Apostas ON strftime(''%m'', Apostas.Data) = Banca.Mês      ' +
-        'AND strftime(''%Y'', Apostas.Data) = Banca.Ano             ' +
-        'WHERE Banca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano") ' +
-        'GROUP BY Banca.Ano;                                        ';
+      SQL.Text := 'SELECT Ano FROM Banca GROUP BY Ano ORDER BY Ano';
       Open;
       with chrtLucroTodosAnos.AxisList[1].Range do
       begin
@@ -522,69 +526,91 @@ begin
         writeln('Valor Máximo: ', MaxInt);
       end;
       case cbGraficos.Text of
+
         'Lucro %':
+
         begin
+          Close;
+          SQL.Text :=
+            'SELECT                                                         ' +
+            'Banca.Ano,                                                     ' +
+            'IFNULL(Banca.Valor_Inicial, 0) AS ValorInicial,                ' +
+            '(SELECT SUM(IFNULL(Aporte, 0))                                 ' +
+            'FROM Banca WHERE Ano = Banca.Ano) AS Aporte,                   ' +
+            '(SELECT SUM(IFNULL(Apostas.Lucro, 0)) FROM Apostas             ' +
+            'WHERE Banca.Ano =                                              ' +
+            'strftime(''%Y'', Apostas.Data)) AS Lucro                       ' +
+            'FROM Banca                                                     ' +
+            'GROUP BY Banca.Ano;                                            ';
+          Open;
+          First;
+          SomaLucro := FieldByName('Lucro').AsFloat;
+          ValInicio := FieldByName('ValorInicial').AsFloat;
+          Aporte := FieldByName('Aporte').AsFloat;
+          TotInvest := ValInicio + Aporte;
+          BancaFinal := ValInicio + SomaLucro;
+
           chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2n%%';
           First;
-          LAPA := FieldByName('lcrAnosPcent').AsFloat;
+          LAPA := (BancaFinal - TotInvest) / TotInvest * 100;
           if RecordCount <> 0 then
             with chrtLucroTodosAnos.AxisList[1].Range do
               with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
                 for Contador := MinInt to MaxInt do
                 begin
                   ContFloat := Contador;
-                  if Contador < FieldByName('Ano').AsInteger then
-                  begin
-                    AddXY(Contador, 0, ContFloat);
-                  end
-                  else
-                  begin
-                    Next;
-                    if not EOF then
-                    begin
-                      if (LAPA < 0) and (FieldByName('lcrAnosPcent').AsFloat < 0) then
-                        LAPA := LAPA - FieldByName('lcrAnosPcent').AsFloat
-                      else
-                        LAPA := LAPA + FieldByName('lcrAnosPcent').AsFloat;
-                      AddXY(Contador, LAPA, ContFloat);
-                    end
+                  First;
+                  for i := 0 to FieldCount - 1 do
+                    if Contador < FieldByName('Ano').AsInteger then
+                      AddXY(Contador, 0, ContFloat)
                     else
                     begin
+                      Next;
                       AddXY(Contador, LAPA, ContFloat);
+                      if not EOF then
+                      begin
+                        SomaLucro := SomaLucro + FieldByName('Lucro').AsFloat;
+                        Aporte := Aporte + FieldByName('Aporte').AsFloat;
+                        TotInvest := ValInicio + Aporte;
+                        BancaFinal := ValInicio + SomaLucro;
+                        LAPA :=
+                          LAPA + ((BancaFinal - TotInvest) / TotInvest * 100);
+                      end;
                     end;
-                  end;
                 end;
         end;
         'Lucro R$':
 
         begin
           chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2m';
+          Close;
+          SQL.Text :=
+            'SELECT                                                          ' +
+            'Banca.Ano,                                                      ' +
+            '(SELECT SUM(IFNULL(Apostas.Lucro, 0)) FROM Apostas WHERE        ' +
+            'Banca.Ano = strftime(''%Y'', Apostas.Data)) AS Lucro            ' +
+            'FROM Banca                                                      ' +
+            'GROUP BY Banca.Ano;                                             ';
+          Open;
           First;
-          LARA := FieldByName('lcrAnosReais').AsFloat;
+          LARA := FieldByName('Lucro').AsFloat;
           with chrtLucroTodosAnos.AxisList[1].Range do
             with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
               if RecordCount <> 0 then
                 for Contador := MinInt to MaxInt do
                 begin
                   ContFloat := Contador;
-                  if Contador <= FieldByName('Mês').AsInteger then
+                  if Contador < FieldByName('Ano').AsInteger then
                     AddXY(Contador, 0, ContFloat)
                   else
                   begin
+                    AddXY(Contador, LARA, ContFloat);
                     Next;
                     if not EOF then
                     begin
-                      if (LARA < 0) and (FieldByName('lcrAnosReais').AsFloat < 0) then
-                        LARA := LARA - FieldByName('lcrAnosReais').AsFloat
-                      else
-                        LARA := LARA + FieldByName('lcrAnosReais').AsFloat;
-                      AddXY(Contador, LARA,
-                        ContFloat);
-                    end
-                    else
-                    begin
-                      AddXY(Contador, LARA, ContFloat);
+                      LARA := LARA + FieldByName('Lucro').AsFloat;
                     end;
+                    Next;
                   end;
                 end;
         end;
@@ -594,7 +620,7 @@ begin
       on E: Exception do
       begin
         writeln('Falha ao atualizar o gráfico de lucro de todos os anos: ' +
-          E.Message);
+          E.Message + ' SQL: ' + SQL.Text);
         Free;
       end;
     end;
@@ -616,14 +642,14 @@ begin
 
       //Gráfico pizza do mês
       with qrMes do
-      if RecordCount <> 0 then
-        for i := 0 to RecordCount - 1 do
-        begin
-          RecNo := i + 1;
-          diaGreen := diaGreen + FieldByName('Green').AsInteger;
-          diaRed := diaRed + FieldByName('Red').AsInteger;
-          diaNeutro := diaNeutro + FieldByName('Neutro').AsInteger;
-        end;
+        if RecordCount <> 0 then
+          for i := 0 to RecordCount - 1 do
+          begin
+            RecNo := i + 1;
+            diaGreen := diaGreen + FieldByName('Green').AsInteger;
+            diaRed := diaRed + FieldByName('Red').AsInteger;
+            diaNeutro := diaNeutro + FieldByName('Neutro').AsInteger;
+          end;
       with (chrtAcertMes.Series[0] as TPieSeries) do
       begin
         if diaGreen <> 0 then
@@ -641,23 +667,26 @@ begin
       try
         DataBase := conectBancoDados;
         SQL.Text :=
-          'SELECT                                                                  ' +
-          'ROUND(COALESCE(                                                         ' +
-          '(SELECT SUM(Lucro)                                                      ' +
-          'FROM Apostas                                                            ' +
-          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                          ' +
-          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0), 2) AS Lucro,         ' +
-          'ROUND(                                                                  ' +
-          'CASE                                                                    ' +
-          'WHEN Valor_Inicial = 0 THEN 0                                           ' +
-          'ELSE COALESCE(                                                          ' +
-          '(SELECT SUM(Lucro)                                                      ' +
-          'FROM Apostas                                                            ' +
-          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                          ' +
-          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0) / Valor_Inicial * 100 ' +
-          'END, 2) AS "Lucro_%"                                                   ' +
-          'FROM Banca                                                              ' +
-          'WHERE Ano = :ano                                                        ';
+          'SELECT Mês,                                                        ' +
+          'CASE WHEN IFNULL((SELECT SUM(Lucro)                                ' +
+          'FROM Apostas                                                       ' +
+          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                   ' +
+          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano                     ' +
+          'AND Apostas.Lucro IS NOT NULL), 0) > 0 THEN 1 ELSE 0 END AS Green, ' +
+          'CASE WHEN IFNULL((SELECT SUM(Lucro)                                ' +
+          'FROM Apostas                                                       ' +
+          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                   ' +
+          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano                     ' +
+          'AND Apostas.Lucro IS NOT NULL), 0) < 0 THEN 1 ELSE 0 END AS Red,   ' +
+          'CASE WHEN (SELECT SUM(Lucro)                                       ' +
+          'FROM Apostas                                                       ' +
+          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                   ' +
+          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano                     ' +
+          'AND (Apostas.Status <> ''Pré-live'' AND Apostas.Lucro = 0)) = 0    ' +
+          'THEN 1 ELSE 0 END AS Neutro                                        ' +
+          'FROM Banca                                                         ' +
+          'WHERE Ano = :Ano                                                   ' +
+          'ORDER BY Mês                                                       ';
         ParamByName('Ano').AsInteger := anoSelecionado;
         Open;
         with (chrtAcertAno.Series[0] as TPieSeries) do
@@ -670,13 +699,9 @@ begin
           for j := 0 to RecordCount - 1 do
           begin
             RecNo := j + 1;
-
-            if (FieldByName('Lucro').AsFloat) < 0 then
-              mesRed := mesRed + 1
-            else if (FieldByName('Lucro').AsFloat) > 0 then
-              mesGreen := mesGreen + 1
-            else
-              mesNeutro := mesNeutro + 1;
+            mesGreen := mesGreen + FieldByName('Green').AsInteger;
+            mesRed := mesRed + FieldByName('Red').AsInteger;
+            mesNeutro := mesNeutro + FieldByName('Neutro').AsInteger;
           end;
           if mesGreen <> 0 then
             AddPie(mesGreen, IntToStr(mesGreen) + ' Meses Bons,', clGreen);
@@ -705,9 +730,12 @@ begin
         SQL.Text :=
           'WITH SomaValores AS (                                         ' +
           'SELECT                                                        ' +
-          'Ano, SUM(Valor_Final) AS SomaValorFinal, SUM(Valor_Inicial)   ' +
+          'Ano, SUM(Valor_Inicial) + SUM(Apostas.Lucro) AS SomaValorFinal,    ' +
+          'SUM(Valor_Inicial)   ' +
           'AS SomaValorInicial                                           ' +
-          'FROM Banca GROUP BY Ano)                                      ' +
+          'FROM Banca                                                    ' +
+          'LEFT JOIN Apostas ON strftime(''%Y'', Apostas.Data) = Ano     ' +
+          'GROUP BY Ano)                                                 ' +
           'SELECT                                                        ' +
           'COUNT(CASE WHEN SomaValorFinal > SomaValorInicial THEN 1 END) ' +
           'AS AnoGreen,                                                  ' +
@@ -829,33 +857,237 @@ begin
   end;
 end;
 
+procedure TEventosPainel.FazerAporte(Sender: TObject);
+var
+  Banca, Aporte, Convert: double;
+  Entrada: string;
+label
+  InserirValor;
+begin
+  with formPrincipal do
+    with transactionBancoDados do
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        Screen.Cursor := crAppStart;
+        writeln('Fazendo aporte');
+        SQL.Text := 'SELECT Aporte FROM Banca WHERE Mês = :mesSelec ' +
+          'AND Ano = :anoSelec';
+        ParamByName('mesSelec').AsInteger := mesSelecionado;
+        ParamByName('anoSelec').AsInteger := anoSelecionado;
+        Open;
+        Aporte := FieldByName('Aporte').AsFloat;
+        Close;
+        Screen.Cursor := crDefault;
+        Entrada := '';
+        InserirValor:
+          if InputQuery('Inserir Valor', 'Insira o valor do aporte realizado na sua ' +
+          'banca:', Entrada) then
+          begin
+            case FormatSettings.DecimalSeparator of
+            '.': if Pos(',', Entrada) > 0 then
+                Entrada := StringReplace(Entrada, ',', '.', [rfReplaceAll]);
+
+            ',': if Pos('.', Entrada) > 0 then
+                Entrada := StringReplace(Entrada, '.', ',', [rfReplaceAll]);
+          end;
+            if TryStrToFloat(Entrada, Convert) then
+            begin
+              Screen.Cursor := crAppStart;
+              Aporte := Aporte + Convert;
+              SQL.Text := 'UPDATE Banca SET Aporte = :aporte WHERE Mês = :mes ' +
+                'AND Ano = :ano';
+              ParamByName('aporte').AsFloat := Aporte;
+              ParamByName('mes').AsInteger := mesSelecionado;
+              ParamByName('ano').AsInteger := anoSelecionado;
+              ExecSQL;
+              CommitRetaining;
+              qrBanca.Refresh;
+            end
+            else
+            begin
+              Screen.Cursor := crDefault;
+              MessageDlg('Erro', 'Insira um valor numérico!',
+              mtError, [mbOK], 0);
+              goto InserirValor;
+            end;
+          end;
+      finally
+        Screen.Cursor := crDefault;
+        Free;
+      end;
+end;
+
+procedure TEventosPainel.AlterarBancaInicial(Sender: TObject);
+begin
+
+end;
+
+procedure TEventosPainel.RetirarDinheiro(Sender: TObject);
+var
+  Retirada, Aporte: double;
+  Entrada: string;
+label
+  Valor;
+begin
+  with formPrincipal do
+    with transactionBancoDados do
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        SQL.Text := 'SELECT Aporte FROM Banca WHERE Mês = :mes AND Ano = :ano';
+        ParamByName('mes').AsInteger := mesSelecionado;
+        ParamByName('ano').AsInteger := anoSelecionado;
+        Open;
+        Aporte := Fields[0].AsFloat;
+        Close;
+        Valor:
+          if InputQuery('Inserir Valor','Digite o valor que foi retirado da ' +
+          'sua banca:', Entrada) then
+          begin
+            case FormatSettings.DecimalSeparator of
+              '.': if Pos(',', Entrada) > 0 then
+                  Entrada := StringReplace(Entrada, ',', '.', [rfReplaceAll]);
+
+              ',': if Pos('.', Entrada) > 0 then
+                  Entrada := StringReplace(Entrada, '.', ',', [rfReplaceAll]);
+            end;
+            if TryStrToFloat(Entrada, Retirada) then
+            begin
+              Screen.Cursor := crAppStart;
+              SQL.Text := 'UPDATE Banca SET Aporte = :retirada WHERE Mês = :mes AND ' +
+                'Ano = :ano';
+              ParamByName('retirada').AsFloat := Aporte - Retirada;
+              ParamByName('mes').AsInteger := mesSelecionado;
+              ParamByName('ano').AsInteger := anoSelecionado;
+              ExecSQL;
+              CommitRetaining;
+            end
+            else
+            begin
+              MessageDlg('Erro', 'Insira um valor numérico!', mtError, [mbOK], 0);
+              goto Valor;
+            end;
+          end;
+        qrBanca.Refresh;
+        Free;
+      except
+        on E: Exception do
+        begin
+          Cancel;
+          RollbackRetaining;
+          Free;
+          writeln('Erro: ' + E.Message);
+          qrBanca.Refresh;
+        end;
+      end;
+end;
+
+procedure TEventosPainel.AtualizaDadosBanca(DataSet: TDataSet);
+begin
+  AtualizaBanca;
+end;
+
+procedure TEventosPainel.VerificaBancaAntiga;
+var
+  AnteBancaExiste: boolean;
+  AnteBanca, AnteLucro, BancaAtual: double;
+begin
+  AnteBancaExiste := False;
+  with formPrincipal do
+    with transactionBancoDados do
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        SQL.Text := 'SELECT Mês, Ano, Valor_Inicial, ' +
+          '(SELECT SUM(A.Lucro) ' + ' FROM Apostas A ' +
+          ' WHERE strftime(''%m'', A.Data) = B.Mês ' +
+          '   AND strftime(''%Y'', A.Data) = B.Ano) AS Lucro ' +
+          'FROM Banca B ' + 'WHERE Mês = :mes AND ANO = :ano';
+        ParamByName('mes').AsInteger := (mesSelecionado - 1);
+        ParamByName('ano').AsInteger := anoSelecionado;
+        Open;
+        AnteBanca := FieldByName('Valor_Inicial').AsFloat;
+        AnteLucro := FieldByName('Lucro').AsFloat;
+        BancaAtual := qrBanca.FieldByName('Valor_Inicial').AsFloat;
+        if not IsEmpty then
+          if AnteBanca <> BancaAtual then
+          begin
+            writeln('Banca anterior existe!');
+            AnteBancaExiste := True;
+            Close;
+            SQL.Text := 'UPDATE Banca SET Valor_Inicial = :valInicio WHERE ' +
+              'Mês = :mes AND Ano = :ano';
+            ParamByName('mes').AsInteger := mesSelecionado;
+            ParamByName('ano').AsInteger := anoSelecionado;
+            ParamByName('valInicio').AsFloat := AnteBanca + AnteLucro;
+            ExecSQL;
+            CommitRetaining;
+          end;
+      finally
+        Free;
+      end;
+end;
+
+procedure TEventosPainel.AtualizaBanca;
+var
+  BancaInicial, Aporte, BancaFinal, BancaTotal: double;
+begin
+  with formPrincipal do
+    with qrBanca do
+    begin
+      BancaInicial := FieldByName('Valor_Inicial').AsFloat;
+      Aporte := FieldByName('Aporte').AsFloat;
+      BancaTotal := BancaInicial + Aporte;
+      BancaFinal := FieldByName('Valor_Final').AsFloat;
+      writeln('Alterando os dados a serem exibidos da banca');
+      lbValorBanca.Caption :=
+        'R$ ' + StringReplace(FloatToStrF(RoundTo(BancaInicial, -2), ffFixed, 15, 2),
+        '.', ',', [rfReplaceAll]);
+      lbValAporte.Caption :=
+        'R$ ' + StringReplace(FloatToStrF(RoundTo(Aporte, -2), ffFixed, 15, 2),
+        '.', ',', [rfReplaceAll]);
+      lbValBancaTotal.Caption :=
+        'R$ ' + StringReplace(FloatToStrF(RoundTo(BancaTotal, -2), ffFixed, 15, 2),
+        '.', ',', [rfReplaceAll]);
+      lbStake.Caption :=
+        'R$ ' + StringReplace(FloatToStrF(RoundTo(stakeAposta, -2), ffFixed, 15, 2),
+        '.', ',', [rfReplaceAll]);
+      MudarCorLucro;
+    end;
+end;
+
+procedure TEventosPainel.ParametrosBanca(DataSet: TDataSet);
+begin
+  with formPrincipal do
+    with qrBanca do
+    begin
+      ParamByName('mesSelec').AsInteger := mesSelecionado;
+      ParamByName('anoSelec').AsInteger := anoSelecionado;
+    end;
+end;
+
 procedure TEventosPainel.cbMesChange(Sender: TObject);
 begin
-  AtualizaMesEAno;
-  AtualizarGraficoLucro;
   with formPrincipal do
   begin
+    mesSelecionado := StrToInt(cbMes.Text);
     qrBanca.Close;
-    qrBanca.ParamByName('mesSelec').AsInteger := StrToInt(cbMes.Text);
-    qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
     qrBanca.Open;
-    edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
-    MudarCorLucro;
+    AtualizaMesEAno;
+    AtualizarGraficoLucro;
   end;
 end;
 
 procedure TEventosPainel.cbAnoChange(Sender: TObject);
 begin
-  AtualizaMesEAno;
-  AtualizarGraficoLucro;
   with formPrincipal do
   begin
+    anoSelecionado := StrToInt(cbAno.Text);
     qrBanca.Close;
-    qrBanca.ParamByName('mesSelec').AsInteger := StrToInt(cbMes.Text);
-    qrBanca.ParamByName('anoSelec').AsInteger := StrToInt(cbAno.Text);
     qrBanca.Open;
-    edtBancaInicial.Text := FloatToStr(qrBanca.FieldByName('Valor_Inicial').AsFloat);
-    MudarCorLucro;
+    AtualizaMesEAno;
+    AtualizarGraficoLucro;
   end;
 end;
 

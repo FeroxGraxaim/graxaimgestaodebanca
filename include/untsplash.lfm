@@ -13,6 +13,7 @@ object formSplash: TformSplash
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '3.4.0.0'
   object progresso: TProgressBar
     Left = 8
     Height = 26

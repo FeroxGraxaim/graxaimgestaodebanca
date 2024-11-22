@@ -21,11 +21,11 @@ object formPrincipal: TformPrincipal
     Height = 792
     Top = 0
     Width = 1199
-    ActivePage = tsPainel
+    ActivePage = tsApostas
     Anchors = [akTop, akLeft, akRight, akBottom]
     ParentShowHint = False
     ShowHint = True
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
@@ -89,7 +89,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 770
+        Height = 772
         Top = 0
         Width = 908
         ActivePage = tsGraficos
@@ -98,24 +98,24 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 743
+          ClientHeight = 744
           ClientWidth = 904
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 710
+            Height = 713
             Top = 31
             Width = 905
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 710
-            ClientWidth = 905
+            ClientHeight = 709
+            ClientWidth = 901
             TabOrder = 0
             object chrtLucroMes: TChart
               AnchorSideRight.Control = chrtAcertMes
-              Left = 108
+              Left = 101
               Height = 201
               Hint = 'Gráfico que mostra a lucratividade do mês atual.'
               Top = 1
@@ -162,7 +162,7 @@ object formPrincipal: TformPrincipal
             object chrtAcertMes: TChart
               AnchorSideLeft.Side = asrBottom
               AnchorSideRight.Side = asrBottom
-              Left = 544
+              Left = 537
               Height = 192
               Hint = 'Gráfico que mostra a média de dias bons, ruins e neutros do mês atual.'
               Top = 8
@@ -214,7 +214,7 @@ object formPrincipal: TformPrincipal
               AnchorSideTop.Control = chrtLucroMes
               AnchorSideTop.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 114
+              Left = 107
               Height = 206
               Hint = 'Gráfico que mostra a lucratividade total de cada mês do ano atual.'
               Top = 202
@@ -257,7 +257,7 @@ object formPrincipal: TformPrincipal
             object chrtAcertAno: TChart
               AnchorSideLeft.Side = asrBottom
               AnchorSideRight.Side = asrBottom
-              Left = 544
+              Left = 537
               Height = 166
               Hint = 'Gráfico que mostra a média de meses bons, ruins e neutros do ano atual.'
               Top = 224
@@ -326,17 +326,18 @@ object formPrincipal: TformPrincipal
                   Title.LabelBrush.Style = bsClear
                 end              
                 item
-                  Intervals.Count = 240
+                  Intervals.Count = 10
                   Intervals.MaxLength = 120
-                  Intervals.MinLength = 40
+                  Intervals.MinLength = 50
                   Intervals.NiceSteps = '1.0 | 2.0| 3.0'
                   Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
                   Alignment = calBottom
-                  Marks.Format = '%0:.10g'
+                  Marks.Format = '%2:s %0:.9g'
                   Marks.LabelBrush.Style = bsClear
                   Marks.Range.Max = 10
-                  Marks.Range.Min = 5
-                  Marks.Style = smsCustom
+                  Marks.Range.Min = 10
+                  Marks.Range.UseMin = True
+                  Marks.Style = smsLabelValue
                   Minors = <>
                   Range.Max = 50
                   Range.Min = 30
@@ -354,7 +355,7 @@ object formPrincipal: TformPrincipal
             object chrtAcertTodosAnos: TChart
               AnchorSideLeft.Side = asrBottom
               AnchorSideRight.Side = asrBottom
-              Left = 544
+              Left = 537
               Height = 166
               Hint = 'Gráfico que mostra a média de anos bons, ruins e neutros.'
               Top = 416
@@ -423,7 +424,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 743
+          ClientHeight = 744
           ClientWidth = 904
           object pnTabelas: TPanel
             AnchorSideLeft.Control = tsResumoLista
@@ -432,17 +433,17 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsResumoLista
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 712
+            Height = 713
             Top = 31
             Width = 904
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 712
-            ClientWidth = 904
+            ClientHeight = 709
+            ClientWidth = 900
             TabOrder = 0
             object grdMes: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 710
+              Height = 711
               Top = 0
               Width = 356
               Anchors = [akTop, akLeft, akBottom]
@@ -483,7 +484,7 @@ object formPrincipal: TformPrincipal
             object grdAno: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 356
-              Height = 710
+              Height = 711
               Top = 0
               Width = 350
               Anchors = [akTop, akLeft, akBottom]
@@ -673,12 +674,12 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 6
-        Height = 507
+        Height = 509
         Top = 12
         Width = 1189
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 488
+        ClientHeight = 484
         ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
@@ -692,7 +693,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 488
+          Height = 484
           Hint = 'Todas as apostas registradas do mês selecionado.'
           Top = 0
           Width = 1185
@@ -770,11 +771,11 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 166
-        Top = 519
+        Top = 521
         Width = 1189
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Detalhes da Aposta'
-        ClientHeight = 147
+        ClientHeight = 141
         ClientWidth = 1185
         Font.Height = -16
         Font.Name = 'Sans'
@@ -787,7 +788,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 147
+          Height = 141
           Hint = 'Ao selecionar uma aposta, aparecerá uma tabela com detalhes da aposta, contendo o jogo (campeonato - mandante X visitante) e o método e linha usado na aposta, podendo alterá-los, e a odd e a situação de cada linha, que também podem ser alteradas.'
           Top = 0
           Width = 1049
@@ -804,7 +805,7 @@ object formPrincipal: TformPrincipal
           Left = 1061
           Height = 25
           Hint = 'Altera todas as linhas da aposta como bem-sucedidas (Green)'
-          Top = 80
+          Top = 72
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Green'
@@ -822,7 +823,7 @@ object formPrincipal: TformPrincipal
           Left = 1061
           Height = 25
           Hint = 'Altera todas as linhas da aposta como mal-sucedidas (Red)'
-          Top = 112
+          Top = 104
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Tudo Red'
@@ -838,7 +839,7 @@ object formPrincipal: TformPrincipal
           Left = 1061
           Height = 40
           Hint = 'Caso tenha retirado o valor da aposta antes dela ser finalizada, clique aqui e digite o valor em dinheiro que retornou da aposta na caixa de diálogo que aparecerá.'
-          Top = 0
+          Top = -8
           Width = 116
           Anchors = [akRight, akBottom]
           Caption = 'Cashout'
@@ -857,28 +858,14 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = lbSelecioneAposta
           AnchorSideBottom.Side = asrBottom
-          Left = 0
-          Height = 147
+          Left = 656
+          Height = 141
           Hint = 'Tabela com detalhes da aposta. Apenas o método, linha, odd e situação são editáveis.'
           Top = 0
-          Width = 1049
-          Anchors = [akTop, akLeft, akRight, akBottom]
+          Width = 393
+          Anchors = [akTop, akRight, akBottom]
           Color = clWindow
           Columns = <          
-            item
-              Color = 14935011
-              ReadOnly = True
-              Title.Caption = 'Competição'
-              Width = 150
-              FieldName = 'Competição'
-            end          
-            item
-              Color = 14935011
-              ReadOnly = True
-              Title.Caption = 'Jogo'
-              Width = 150
-              FieldName = 'Jogo'
-            end          
             item
               ButtonStyle = cbsButtonColumn
               Title.Caption = 'Método'
@@ -919,17 +906,35 @@ object formPrincipal: TformPrincipal
           Left = 1061
           Height = 25
           Hint = 'Recurso em desenvolvimento!'
-          Top = 48
+          Top = 40
           Width = 116
           Anchors = [akTop, akRight]
           Caption = 'Editar Aposta'
-          Enabled = False
           Font.Height = -13
           Font.Name = 'Sans'
           ParentFont = False
           ParentShowHint = False
           ShowHint = True
           TabOrder = 4
+        end
+        object lsbJogos: TListBox
+          AnchorSideLeft.Control = grbDetalhesAp
+          AnchorSideTop.Control = grbDetalhesAp
+          AnchorSideRight.Control = grdDadosAp
+          AnchorSideBottom.Control = grbDetalhesAp
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 141
+          Top = 0
+          Width = 656
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          Font.Height = -13
+          Font.Name = 'Sans'
+          ItemHeight = 0
+          ParentFont = False
+          TabOrder = 5
+          TopIndex = -1
+          Visible = False
         end
       end
       object deFiltroDataInicial: TDateEdit
@@ -938,7 +943,7 @@ object formPrincipal: TformPrincipal
         Left = 965
         Height = 27
         Hint = 'Insira aqui a partir de qual data quer filtrar a aposta, podendo ser de meses anteriores.'
-        Top = 693
+        Top = 695
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -955,7 +960,7 @@ object formPrincipal: TformPrincipal
         Left = 965
         Height = 27
         Hint = 'Insira aqui a data final na qual quer filtrar as apostas, podendo ser de meses posteriores ao selecionado.'
-        Top = 733
+        Top = 735
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -972,7 +977,7 @@ object formPrincipal: TformPrincipal
         Left = 1069
         Height = 27
         Hint = 'Limpa os filtros de datas e volta a exibir apenas as apostas do mês selecionado.'
-        Top = 733
+        Top = 735
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Limpar Filtros'
@@ -983,7 +988,7 @@ object formPrincipal: TformPrincipal
         Left = 184
         Height = 50
         Hint = 'Remove aposta(s) selecionada(s).'
-        Top = 709
+        Top = 711
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Remover Selecionada'
@@ -997,7 +1002,7 @@ object formPrincipal: TformPrincipal
         Left = 6
         Height = 50
         Hint = 'Abre um janela para criar uma nova aposta'
-        Top = 709
+        Top = 711
         Width = 158
         Anchors = [akLeft, akBottom]
         Caption = 'Nova Aposta'
@@ -1011,7 +1016,7 @@ object formPrincipal: TformPrincipal
         Left = 1069
         Height = 27
         Hint = 'Aplica o filtro de datas inseridos nos campos ao lado.'
-        Top = 693
+        Top = 695
         Width = 118
         Anchors = [akRight, akBottom]
         Caption = 'Filtrar Apostas'
@@ -1022,7 +1027,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 894
         Height = 17
-        Top = 693
+        Top = 695
         Width = 63
         Anchors = [akRight, akBottom]
         Caption = 'Data Inicial'
@@ -1032,7 +1037,7 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Side = asrBottom
         Left = 901
         Height = 17
-        Top = 733
+        Top = 735
         Width = 56
         Anchors = [akRight, akBottom]
         Caption = 'Data Final'
@@ -1059,18 +1064,18 @@ object formPrincipal: TformPrincipal
         TabOrder = 0
         object tsGraficosMesMetodos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 737
+          ClientHeight = 763
           ClientWidth = 1191
           object gbListaLinha: TGroupBox
             AnchorSideBottom.Control = pnGraficosMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 425
+            Height = 451
             Top = 312
             Width = 201
             Anchors = [akTop, akLeft, akBottom]
             Caption = 'Linhas'
-            ClientHeight = 406
+            ClientHeight = 432
             ClientWidth = 197
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1082,7 +1087,7 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 369
+              Height = 395
               Hint = 'Lista de linhas do método selecionado'
               Top = 0
               Width = 197
@@ -1100,7 +1105,7 @@ object formPrincipal: TformPrincipal
               Left = 117
               Height = 24
               Hint = 'Remove linha selecionada'
-              Top = 378
+              Top = 404
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1115,7 +1120,7 @@ object formPrincipal: TformPrincipal
               Left = 8
               Height = 24
               Hint = 'Cria nova linha'
-              Top = 378
+              Top = 404
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Nova Linha'
@@ -1200,7 +1205,7 @@ object formPrincipal: TformPrincipal
             Width = 192
             Anchors = [akTop, akRight]
             Caption = 'Dados da Linha'
-            ClientHeight = 245
+            ClientHeight = 260
             ClientWidth = 188
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1288,7 +1293,7 @@ object formPrincipal: TformPrincipal
             Width = 192
             Anchors = [akTop, akRight]
             Caption = 'Dados do Método'
-            ClientHeight = 253
+            ClientHeight = 268
             ClientWidth = 188
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1373,11 +1378,11 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsGraficosMesMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 201
-            Height = 737
+            Height = 763
             Top = 0
             Width = 798
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 733
+            ClientHeight = 759
             ClientWidth = 794
             TabOrder = 4
             object chrtAcertMetodo: TChart
@@ -1528,7 +1533,7 @@ object formPrincipal: TformPrincipal
         end
         object tsDadosMesMetodos: TTabSheet
           Caption = 'Dados'
-          ClientHeight = 737
+          ClientHeight = 763
           ClientWidth = 1191
           object grbMetodos: TGroupBox
             Left = 0
@@ -2125,7 +2130,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 364
+          Height = 352
           Hint = 'Lista de times registrados'
           Top = 32
           Width = 460
@@ -2234,7 +2239,7 @@ object formPrincipal: TformPrincipal
           Left = 120
           Height = 33
           Hint = 'Remove time selecionado'
-          Top = 404
+          Top = 392
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2248,7 +2253,7 @@ object formPrincipal: TformPrincipal
           Left = 8
           Height = 33
           Hint = 'Registra um novo time'
-          Top = 404
+          Top = 392
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo Time'
@@ -3084,8 +3089,12 @@ object formPrincipal: TformPrincipal
       '    Apostas.Múltipla,'
       '    Apostas.Cashout,'
       '    CASE'
-      '        WHEN Apostas."Múltipla" = 0 THEN Competicoes.Competicao || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante'
-      '        WHEN Apostas."Múltipla" = 1 THEN ''Aposta Múltipla'''
+      '        WHEN Apostas."Múltipla" = ''False'' OR Apostas."Múltipla" = 0'
+      '        THEN Competicoes.Competicao || '': '' || Jogo.Mandante || '' X '' || Jogo.Visitante'
+      '        WHEN ContagemJogos.Quantidade = 2 THEN ''Aposta Dupla'''
+      '        WHEN ContagemJogos.Quantidade = 3 THEN ''Aposta Tripla'''
+      '        WHEN ContagemJogos.Quantidade = 4 THEN ''Aposta Quádrupla'''
+      '        ELSE ''Aposta Múltipla'''
       '    END AS Jogo,'
       '    Apostas.Odd,'
       '    Apostas.Valor_Aposta,'
@@ -3098,11 +3107,18 @@ object formPrincipal: TformPrincipal
       '    Jogo ON Mercados.Cod_Jogo = Jogo.Cod_Jogo'
       'INNER JOIN'
       '    Competicoes ON Jogo.Cod_Comp = Competicoes.Cod_Comp'
+      'LEFT JOIN ('
+      '    SELECT Cod_Aposta, COUNT(DISTINCT Cod_Jogo) AS Quantidade'
+      '    FROM Mercados'
+      '    GROUP BY Cod_Aposta'
+      ') AS ContagemJogos ON Apostas.Cod_Aposta = ContagemJogos.Cod_Aposta'
       'WHERE strftime(''%d'', Apostas.Data) BETWEEN :primDia AND :ultDia'
       'AND strftime(''%m'', Apostas.Data) BETWEEN :primMes AND :ultMes'
       'AND strftime(''%Y'', Apostas.Data) BETWEEN :primAno AND :ultAno'
       'GROUP BY Apostas.Cod_Aposta'
       'ORDER BY Apostas.Data, Apostas.Cod_Aposta;'
+      ''
+      ''
     )
     InsertSQL.Strings = (
       'INSERT INTO Apostas "Data", Competição_AP, Mandante, Visitante, Estratégia_Escolhida, Odd, Unidade, Valor_Aposta, Status) VALUES (:V1, V2, V3, V4, V5, V6, V7, V8, V9);'
@@ -3453,7 +3469,7 @@ object formPrincipal: TformPrincipal
       '    END, 2) AS BancaFinalCalc,'
       ''
       '  Stake,'
-      '  (''R$ '' || Stake) AS StakeCalc'
+      '  (''R$ '' || ROUND(COALESCE(Stake, 0), 2)) AS StakeCalc'
       'FROM'
       '  Banca'
       'WHERE Mês = :mesSelec AND Ano = :anoSelec;'
@@ -3614,12 +3630,10 @@ object formPrincipal: TformPrincipal
       end
       object miImportar: TMenuItem
         Caption = 'Importar Dados'
-        Enabled = False
         OnClick = ImportarDadosBD
       end
       object miExportar: TMenuItem
         Caption = 'Exportar Dados'
-        Enabled = False
         OnClick = SalvarDadosBD
       end
     end
@@ -4290,7 +4304,8 @@ object formPrincipal: TformPrincipal
       'LEFT JOIN'
       '    Métodos ON Linhas.Cod_Metodo = Métodos.Cod_Metodo'
       'WHERE'
-      '    Mercados.Cod_Aposta = :CodAposta;'
+      '    Mercados.Cod_Aposta = :CodAposta'
+      'AND Jogo.Cod_Jogo = :CodJogo;'
       ''
     )
     UpdateSQL.Strings = (
@@ -4308,6 +4323,11 @@ object formPrincipal: TformPrincipal
       item
         DataType = ftUnknown
         Name = 'CodAposta'
+        ParamType = ptInput
+      end    
+      item
+        DataType = ftUnknown
+        Name = 'CodJogo'
         ParamType = ptInput
       end>
     Macros = <>

@@ -17,10 +17,7 @@ CREATE TABLE IF NOT EXISTS "Banca" (
 	"Mês"	INTEGER,
 	"Ano"	INTEGER,
 	"Valor_Inicial"	NUMERIC(9, 2) DEFAULT 0,
-	"Lucro_R$"	NUMERIC(9, 2) DEFAULT 0,
-	"Lucro_%"	NUMERIC(9, 2) DEFAULT 0,
-	"Valor_Final"	NUMERIC(9, 2) DEFAULT 0,
-	"Stake"	NUMERIC(9, 2) DEFAULT 0
+	"Aporte"	NUMERIC(9, 2) DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS "Status_Aposta" (
 	"Cod_Status"	INTEGER,
@@ -525,7 +522,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (18);
+INSERT INTO "ControleVersao" ("Versao") VALUES (19);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),

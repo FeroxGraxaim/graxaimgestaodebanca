@@ -32,15 +32,15 @@ type
     deAposta: TDateEdit;
     deApostaMult: TDateEdit;
     dsNovaAposta: TDataSource;
-    edtOdd: TEdit;
-    edtOddMult: TEdit;
     edtValor: TEdit;
     edtValorMult: TEdit;
     grbNovaLinha: TGroupBox;
     grbNovaLinha1: TGroupBox;
     grdNovaAposta: TDBGrid;
     grdLinhaMult: TDBGrid;
+    lbOddSimples: TLabel;
     lbData: TLabel;
+    lbOddMult: TLabel;
     lbValorApMult: TLabel;
     lbDataMult: TLabel;
     lbUnidade: TLabel;
@@ -54,7 +54,7 @@ type
     lbOdd1: TLabel;
     lbVisitante2: TLabel;
     lbVisitanteMult: TLabel;
-    lsbJogos: TListBox;
+    lsbJogosNA: TListBox;
     pcApostas: TPageControl;
     popupLinhas: TPopupMenu;
     qrJogosCodJogo: TLargeintField;
@@ -108,14 +108,6 @@ type
     procedure deApostaChange(Sender: TObject);
     procedure deApostaMultChange(Sender: TObject);
     procedure edtOddChange(Sender: TObject);
-    procedure edtOddEnter(Sender: TObject);
-    procedure edtOddKeyPress(Sender: TObject; var Key: char);
-    procedure edtOddMouseEnter(Sender: TObject);
-    procedure edtOddMouseLeave(Sender: TObject);
-    procedure edtOddMultChange(Sender: TObject);
-    procedure edtOddMultEnter(Sender: TObject);
-    procedure edtOddMultMouseEnter(Sender: TObject);
-    procedure edtOddMultMouseLeave(Sender: TObject);
     procedure edtValorChange(Sender: TObject);
     procedure edtValorKeyPress(Sender: TObject; var Key: char);
     procedure edtValorMouseEnter(Sender: TObject);
@@ -128,7 +120,7 @@ type
     procedure grdNovaApostaCellClick(Column: TColumn);
     procedure grdNovaApostaEditingDone(Sender: TObject);
     procedure grdNovaApostaKeyPress(Sender: TObject; var Key: char);
-    procedure lsbJogosClick(Sender: TObject);
+    procedure lsbJogosNAClick(Sender: TObject);
     procedure pcApostasChange(Sender: TObject);
     procedure pcApostasChanging(Sender: TObject; var AllowChange: boolean);
     procedure pcApostasEnter(Sender: TObject);
@@ -167,6 +159,7 @@ var
   GlobalExcecao: boolean;
   Nao: boolean;
   GlobalMultipla: boolean;
+  Odd: double;
 
 implementation
 
@@ -193,7 +186,7 @@ begin
           'VALUES (                                      ' +
           '   (SELECT Cod_Comp FROM Competicoes C         ' +
           '    WHERE C.Competicao = :Competicao),          ' +
-          '   :Mandante,   :Visitante)';
+          '   :Mandante, :Visitante)';
         ParamByName('Mandante').AsString := cbMandanteMult.Text;
         ParamByName('Visitante').AsString := cbVisitanteMult.Text;
         ParamByName('Competicao').AsString := cbCompMult.Text;
@@ -220,7 +213,7 @@ begin
     else
       qrJogos.Open;
 
-    lsbJogos.Items.Clear;
+    lsbJogosNA.Items.Clear;
     qrJogos.First;
     while not qrJogos.EOF do
     begin
@@ -228,7 +221,7 @@ begin
       InfoJogo.Text := qrJogos.FieldByName('Jogo').AsString;
       InfoJogo.CodJogo := qrJogos.FieldByName('CodJogo').AsInteger;
       ListaJogo.Add(InfoJogo);
-      lsbJogos.Items.Add(InfoJogo.Text);
+      lsbJogosNA.Items.Add(InfoJogo.Text);
       qrJogos.Next;
     end;
   end;
@@ -239,8 +232,8 @@ begin
   cbVisitanteMult.Text := '';
   btnAddJogo.Enabled := False;
 
-  lsbJogos.ItemIndex := lsbJogos.Items.IndexOf(InfoJogo.Text);
-  lsbJogosClick(nil);
+  lsbJogosNA.ItemIndex := lsbJogosNA.Items.IndexOf(InfoJogo.Text);
+  lsbJogosNAClick(nil);
 end;
 
 
@@ -550,19 +543,19 @@ begin
   DefineOdd;
 end;
 
-procedure TformNovaAposta.lsbJogosClick(Sender: TObject);
+procedure TformNovaAposta.lsbJogosNAClick(Sender: TObject);
 var
   CodJogo, i: integer;
 begin
   with formPrincipal do
   begin
-    if lsbJogos.ItemIndex <> -1 then
+    if lsbJogosNA.ItemIndex <> -1 then
     begin
       CodJogo := -1;
 
       for i := 0 to ListaJogo.Count - 1 do
       begin
-        if TItemInfo(ListaJogo[i]).Text = lsbJogos.Items[lsbJogos.ItemIndex] then
+        if TItemInfo(ListaJogo[i]).Text = lsbJogosNA.Items[lsbJogosNA.ItemIndex] then
         begin
           CodJogo := TItemInfo(ListaJogo[i]).CodJogo;
           writeln('Item Selecionado: ', CodJogo);
@@ -720,29 +713,6 @@ procedure TformNovaAposta.CalcularValorAposta;
 var
   CalcUnidade, ValorAposta: double;
 begin
-  //Coletando valor da stake do banco de dados
-  with TSQLQuery.Create(nil) do
-  try
-    DataBase := formPrincipal.conectBancoDados;
-    SQL.Text :=
-      'SELECT Stake FROM Banca WHERE Mês = :mesSelecionado AND Ano = :anoSelecionado';
-    ParamByName('mesSelecionado').AsInteger := mesSelecionado;
-    ParamByName('anoSelecionado').AsInteger := anoSelecionado;
-    Open;
-    stakeAposta := FieldByName('Stake').AsFloat;
-    Free;
-  except
-    on E: Exception do
-    begin
-      Cancel;
-      Free;
-      writeln('Erro ao calcular valor da aposta: ' + E.Message);
-      MessageDlg('Erro',
-        'Erro ao definir valores de unidades, selecione a opção "Outro Valor"' +
-        'e digite o valor da aposta manualmente.', mtError, [mbOK], 0);
-    end;
-  end;
-
   //Calculando valor da aposta
   case cbUnidade.Text of
     '0,25 Un': CalcUnidade := 0.25;
@@ -782,7 +752,7 @@ begin
     //writeln('Verificando se pode habilitar o botão Ok em aposta simples');
     if (deAposta.Text <> '') and (cbCompeticao.Text <> '') and
       (cbMandante.Text <> '') and (cbVisitante.Text <> '') and
-      (edtValor.Text <> '') and (edtOdd.Text <> '') and (edtOdd.Text <> '0') and
+      (edtValor.Text <> '') and (Odd <> 0) and
       not qrNovaAposta.FieldByName('Método').IsNull and not
       qrNovaAposta.FieldByName('Linha').IsNull and not
       qrNovaAposta.FieldByName('Situacao').IsNull then btnOk.Enabled := True
@@ -793,7 +763,7 @@ begin
   begin
     //writeln('Verificando se pode habilitar o botão Ok em aposta múltipla');
     if (deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
-      (edtOddMult.Text <> '') and (edtOddMult.Text <> '0') and not
+      (Odd <> 0) and not
       qrLinhaMultipla.FieldByName('Método').IsNull and not
       qrLinhaMultipla.FieldByName('Linha').IsNull and not
       qrLinhaMultipla.FieldByName('Situacao').IsNull then btnOk.Enabled := True
@@ -1023,54 +993,6 @@ begin
   HabilitarBotaoOk;
 end;
 
-procedure TformNovaAposta.edtOddEnter(Sender: TObject);
-begin
-  if edtOdd.ReadOnly then
-    edtOdd.TabStop := False;
-end;
-
-procedure TformNovaAposta.edtOddKeyPress(Sender: TObject; var Key: char);
-begin
-  if FormatSettings.DecimalSeparator = ',' then
-    if Key = '.' then
-      Key := ','
-    else if FormatSettings.DecimalSeparator = '.' then
-      if Key = ',' then
-        Key := '.';
-end;
-
-procedure TformNovaAposta.edtOddMouseEnter(Sender: TObject);
-begin
-  Screen.Cursor := crNo;
-end;
-
-procedure TformNovaAposta.edtOddMouseLeave(Sender: TObject);
-begin
-  Screen.Cursor := crDefault;
-end;
-
-procedure TformNovaAposta.edtOddMultChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-end;
-
-procedure TformNovaAposta.edtOddMultEnter(Sender: TObject);
-begin
-  if edtOddMult.ReadOnly then
-    edtOddMult.TabStop := False;
-end;
-
-procedure TformNovaAposta.edtOddMultMouseEnter(Sender: TObject);
-begin
-  if edtOddMult.ReadOnly then
-    Screen.Cursor := crNo;
-end;
-
-procedure TformNovaAposta.edtOddMultMouseLeave(Sender: TObject);
-begin
-  Screen.Cursor := crDefault;
-end;
-
 procedure TformNovaAposta.edtValorChange(Sender: TObject);
 begin
   HabilitarBotaoOk;
@@ -1157,14 +1079,14 @@ begin
             ParamByName('Data').AsDateTime := deAposta.Date;
             ParamByName('Valor_Aposta').AsFloat := StrToFloat(edtValor.Text);
             ParamByName('Múltipla').AsBoolean := False;
-            ParamByName('Odd').AsFloat := StrToFloat(edtOdd.Text);
+            ParamByName('Odd').AsFloat := Odd;
           end
           else
           begin
             ParamByName('Data').AsDateTime := deApostaMult.Date;
             ParamByName('Valor_Aposta').AsFloat := StrToFloat(edtValorMult.Text);
             ParamByName('Múltipla').AsBoolean := True;
-            ParamByName('Odd').AsFloat := StrToFloat(edtOddMult.Text);
+            ParamByName('Odd').AsFloat := Odd;
           end;
           ExecSQL;
 
@@ -1408,7 +1330,6 @@ end;
 
 procedure TformNovaAposta.DefineOdd;
 var
-  Odd: double;
   OddFormat: string;
 begin
   with formPrincipal do
@@ -1434,8 +1355,8 @@ begin
     finally
       Free;
     end;
-  if tsSimples.Showing then edtOdd.Text := FloatToStr(Odd)
-  else if tsMultipla.Showing then edtOddMult.Text := FloatToStr(Odd);
+  if tsSimples.Showing then lbOddSimples.Caption := FormatFloat('0.00', Odd)
+  else if tsMultipla.Showing then lbOddMult.Caption := FormatFloat('0.00', Odd);
 end;
 
 procedure TformNovaAposta.LimparControle(Sender: TObject);

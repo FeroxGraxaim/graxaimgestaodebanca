@@ -3,6 +3,7 @@ object formEditSimples: TformEditSimples
   Height = 450
   Top = 250
   Width = 351
+  BorderStyle = bsDialog
   Caption = 'Editar Aposta'
   ClientHeight = 450
   ClientWidth = 351

@@ -60,8 +60,8 @@ object formNovaAposta: TformNovaAposta
     Height = 376
     Top = 0
     Width = 728
-    ActivePage = tsSimples
-    TabIndex = 0
+    ActivePage = tsMultipla
+    TabIndex = 1
     TabOrder = 0
     OnChange = pcApostasChange
     OnChanging = pcApostasChanging
@@ -524,6 +524,7 @@ object formNovaAposta: TformNovaAposta
         Width = 339
         Anchors = [akTop, akLeft, akBottom]
         ItemHeight = 0
+        ParentFont = False
         TabOrder = 8
         TopIndex = -1
         OnClick = lsbJogosClick

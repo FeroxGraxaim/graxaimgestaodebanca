@@ -37,4 +37,6 @@ AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercado
 
 END;
 
-UPDATE ControleVersao SET Versao = 18;
+ALTER TABLE Banca ADD Aporte DEFAULT 0;
+
+UPDATE ControleVersao SET Versao = 19;
