@@ -1,5 +1,8 @@
 # Graxaim Gestão de Banca
-Sistema de gestão de banca para apostas esportivas.
+
+![Painel principal do programa](https://i.imgur.com/ajjBj5X.png)
+
+Programa de gestão de banca para apostas esportivas.
 
 ## Introdução
 Este programa tem o intuito de substituir o uso de planilhas de gestão de banca por um sistema de gestão intuitivo e simples de usar, tanto para apostadores iniciantes quanto para os profissionais. 
