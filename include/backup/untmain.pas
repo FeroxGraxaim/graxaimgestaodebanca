@@ -32,6 +32,7 @@ type
     btnPesquisarPais: TSpeedButton;
     btnPesquisarComp: TSpeedButton;
     btnRemoverAposta: TButton;
+    btnSalvarAnotacao: TButton;
     btnSalvarBancaInicial: TButton;
     btnTudoGreen: TButton;
     btnTudoRed: TButton;
@@ -39,6 +40,8 @@ type
     btnNovaComp: TButton;
     bufExportar: TBufDataset;
     btnEditAposta: TButton;
+    btnAporte: TButton;
+    btnRetirar: TButton;
     cbAno: TComboBox;
     cbGraficos: TComboBox;
     cbMes: TComboBox;
@@ -66,6 +69,8 @@ type
     chrtLucroMes: TChart;
     chrtLucroMetodo: TChart;
     conectBancoDados: TSQLite3Connection;
+    chbGestaoVariavel: TDBCheckBox;
+    dsConfig: TDataSource;
     dsMP: TDataSource;
     dsMT: TDataSource;
     dsMC: TDataSource;
@@ -122,7 +127,6 @@ type
     dsSelecionarPerfil: TDataSource;
     dsSituacao: TDataSource;
     dsUnidades: TDataSource;
-    edtBancaInicial: TEdit;
     grbApostas: TGroupBox;
     grbDetalhesAp: TGroupBox;
     grdAno: TDBGrid;
@@ -141,9 +145,19 @@ type
     grdCompMenosLucr: TDBGrid;
     grbMetodos: TGroupBox;
     grbLinhas: TGroupBox;
+    grbAnotacoes: TGroupBox;
     JSONPropStorage1: TJSONPropStorage;
+    lbLucroPcent: TLabel;
+    lbLucroDinheiro: TLabel;
+    lbBancaFinal: TLabel;
+    lbValAporte: TLabel;
+    lbValBancaTotal: TLabel;
+    lbBancaTotal: TLabel;
+    lbStake: TLabel;
+    lbValorBanca: TLabel;
     lbAcertosLin: TLabel;
     lbAcertosMet: TLabel;
+    lbAporte: TLabel;
     lbDataFim: TLabel;
     lbDataInicio: TLabel;
     lbErrosLin: TLabel;
@@ -172,6 +186,7 @@ type
     lnGraficoLucroMes: TLineSeries;
     lsbLinhas: TListBox;
     lsbMetodos: TListBox;
+    mmAnotAposta: TMemo;
     miExibirBoasVindas: TMenuItem;
     MenuPrincipal: TMainMenu;
     MenuOpcoes: TMenuItem;
@@ -221,29 +236,29 @@ type
     qrApostasStatus: TStringField;
     qrApostasValor_Aposta: TBCDField;
     qrBanca: TSQLQuery;
-    qrBancaAno: TLargeintField;
     qrBancaAno1: TLongintField;
-    qrBancaBancaFinalCalc: TStringField;
     qrBancaInicialMoedaStake1: TStringField;
-    qrBancaLucro: TFloatField;
-    qrBancaLucroCalc: TStringField;
     qrBancaLucroPrCntCalculado1: TStringField;
-    qrBancaLucroRCalc: TStringField;
     qrBancaLucroRSCalculado1: TStringField;
-    qrBancaLucro_: TFloatField;
     qrBancaLucro_1: TBCDField;
     qrBancaLucro_R1: TBCDField;
-    qrBancaMs: TLargeintField;
     qrBancaMs1: TLongintField;
-    qrBancaStake: TBCDField;
     qrBancaStake1: TBCDField;
-    qrBancaStakeCalc: TStringField;
     qrBancaValorCalculado1: TStringField;
     qrBancaValorFinalCalculado1: TStringField;
-    qrBancaValor_Final: TFloatField;
     qrBancaValor_Final1: TBCDField;
-    qrBancaValor_Inicial: TBCDField;
     qrBancaValor_Inicial1: TBCDField;
+    qrConfigExibirTelaBoasVindas: TBooleanField;
+    qrConfigGestaoVariavel: TBooleanField;
+    qrDadosApostaAnotacoes: TStringField;
+    qrDadosApostaCod_Aposta: TLargeintField;
+    qrDadosApostaCompetio: TStringField;
+    qrDadosApostaJogo: TStringField;
+    qrDadosApostaLinha: TStringField;
+    qrDadosApostaMtodo: TStringField;
+    qrDadosApostaOdd: TBCDField;
+    qrDadosApostaROWID: TLargeintField;
+    qrDadosApostaStatus: TStringField;
     qrLinhasAno: TSQLQuery;
     qrMes: TSQLQuery;
     qrMesDia: TStringField;
@@ -293,6 +308,7 @@ type
     qrMT: TSQLQuery;
     qrMC: TSQLQuery;
     BarraStatus: TStatusBar;
+    qrConfig: TSQLQuery;
     tsContrTimes: TTabSheet;
     tsContrPaises: TTabSheet;
     tsContrComp: TTabSheet;
@@ -305,10 +321,6 @@ type
     tsGraficosMesMetodos: TTabSheet;
     tsPainel: TTabSheet;
     tsResumoLista: TTabSheet;
-    txtBancaAtual: TDBText;
-    txtLucroMoeda: TDBText;
-    txtLucroPorCento: TDBText;
-    txtStake: TDBText;
     procedure dsBancaDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -318,6 +330,7 @@ type
     procedure grdApostasEditingDone(Sender: TObject);
     procedure grdDadosApCellClick(Column: TColumn);
     procedure grdDadosApEditingDone(Sender: TObject);
+    procedure lbLucroDinheiroClick(Sender: TObject);
     procedure MenuItem7Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
     procedure miExibirBoasVindasClick(Sender: TObject);
@@ -330,10 +343,10 @@ type
     procedure SalvarDadosBD(Sender: TObject);
     procedure ImportarDadosBD(Sender: TObject);
     procedure GestaoUnidadePcent(Sender: TObject);
-    procedure DefinirStake;
   private
 
   public
+    GestaoVariavel: boolean;
     GestaoUnidade: boolean;
     procedure PosAtualizacao;
     procedure ExcecaoGlobal(Sender: TObject; E: Exception);
@@ -349,7 +362,7 @@ var
 var
   formPrincipal: TformPrincipal;
   estrategia, perfilInvestidor: string;
-  stakeAposta, valorInicial: double;
+  stakeAposta, valorInicial, Aporte: double;
   contMult: integer;
   mesSelecionado: integer;
   anoSelecionado: integer;
@@ -381,38 +394,6 @@ begin
   finally
     Free;
   end;
-end;
-
-procedure TformPrincipal.DefinirStake;
-var
-  query: TSQLQuery;
-begin
-  with formPrincipal do
-  begin
-    query := TSQLQuery.Create(nil);
-    query.DataBase := formPrincipal.conectBancoDados;
-    try
-      if not query.Active then query.Close;
-      query.SQL.Text :=
-        'UPDATE Banca SET "Stake" = :stake WHERE Mês = :mesSelec AND Ano = :anoSelec';
-      PerfilDoInvestidor;
-      query.ParamByName('stake').AsFloat := stakeAposta;
-      query.ParamByName('mesSelec').AsInteger := mesSelecionado;
-      query.ParamByName('anoSelec').AsInteger := anoSelecionado;
-      query.ExecSQL;
-      transactionBancoDados.CommitRetaining;
-    except
-      on E: Exception do
-      begin
-        writeln('Erro: ' + E.Message + ' Abortado');
-        transactionBancoDados.RollbackRetaining;
-      end;
-    end;
-    query.Free;
-  end;
-  if qrBanca.Active then qrBanca.Refresh
-  else
-    qrBanca.Open;
 end;
 
 {$R *.lfm}
@@ -466,7 +447,8 @@ const
   AspectRatio = 0.5;
 var
   larguraTotal, alturaTotal, larguraObjeto, alturaObjeto, metadeLargura,
-  larguraPizza, larguraLinhas, larguraGrafico, alturaGrafico: integer;
+  larguraPizza, larguraLinhas, larguraGrafico, alturaGrafico,
+  larguraGridDados, larguraAnotacoes: integer;
 begin
 
   {*******************************PAINEL PRINCIPAL*******************************}
@@ -496,11 +478,28 @@ begin
 
   {******************************************************************************}
 
+  {*******************************DADOS DAS APOSTAS******************************}
+
+  larguraTotal := lbSelecioneAposta.ClientWidth;
+  alturaTotal := lbSelecioneAposta.ClientHeight;
+  larguraObjeto := larguraTotal div 3;
+  larguraGridDados := larguraObjeto + (larguraObjeto div 10);
+  larguraAnotacoes := larguraObjeto - (larguraObjeto div 10);
+
+  lsbJogos.SetBounds(0, 0, larguraObjeto, alturaTotal);
+  grdDadosAp.SetBounds(larguraObjeto, 0, larguraGridDados, alturaTotal);
+  grbAnotacoes.SetBounds(larguraObjeto + larguraGridDados, 0, larguraAnotacoes,
+  alturaObjeto);
+
+
+  {******************************************************************************}
+
   {******************************CONTROLE DE MÉTODOS*****************************}
 
   //Largura e altura total da aba
   larguraTotal := tsGraficosMesMetodos.ClientWidth;
   alturaTotal := tsGraficosMesMetodos.ClientHeight;
+  larguraObjeto := larguraTotal div 2;
   alturaObjeto := alturaTotal div 2;
 
 
@@ -601,16 +600,16 @@ var
 begin
   SelectedItem := TMenuItem(Sender);
   if Assigned(ColunaAtual) and Assigned(SelectedItem) then
-  with qrDadosAposta do
-  begin
-    Edit;
-    FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
-    writeln('Item selecionado: ', SelectedItem.Caption);
-    Post;
-    ApplyUpdates;
-    //Refresh;
-    CalculaDadosAposta;
-  end;
+    with qrDadosAposta do
+    begin
+      Edit;
+      FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
+      writeln('Item selecionado: ', SelectedItem.Caption);
+      Post;
+      ApplyUpdates;
+      //Refresh;
+      CalculaDadosAposta;
+    end;
 end;
 
 procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
@@ -618,6 +617,7 @@ begin
   if (qrApostas.State in [dsInsert, dsEdit]) then
   begin
     try
+      qrApostas.Edit;
       writeln('Postando');
       qrApostas.Post;
       writeln('Aplicando');
@@ -636,52 +636,57 @@ procedure TformPrincipal.MudarCorLucro;
 var
   lucro: double;
 begin
-  lucro := qrBanca.FieldByName('Lucro').AsFloat;
+  lucro := qrBanca.FieldByName('LucroR$').AsFloat;
 
   if lucro > 0 then
   begin
-    txtBancaAtual.Font.Color := clGreen;
-    txtLucroMoeda.Font.Color := clGreen;
-    txtLucroPorcento.Font.Color := clGreen;
+    lbBancaFinal.Font.Color := clGreen;
+    lbLucroDinheiro.Font.Color := clGreen;
+    lbLucroPcent.Font.Color := clGreen;
   end
   else if lucro < 0 then
   begin
-    txtBancaAtual.Font.Color := clRed;
-    txtLucroMoeda.Font.Color := clRed;
-    txtLucroPorcento.Font.Color := clRed;
+    lbBancaFinal.Font.Color := clRed;
+    lbLucroDinheiro.Font.Color := clRed;
+    lbLucroPcent.Font.Color := clRed;
   end
   else
   begin
-    txtBancaAtual.Font.Color := clDefault;
-    txtLucroMoeda.Font.Color := clDefault;
-    txtLucroPorcento.Font.Color := clDefault;
+    lbBancaFinal.Font.Color := clDefault;
+    lbLucroDinheiro.Font.Color := clDefault;
+    lbLucroPcent.Font.Color := clDefault;
   end;
 end;
 
 procedure TformPrincipal.PerfilDoInvestidor;
+var
+  Banca: double;
 begin
-  if perfilInvestidor = 'Conservador' then
+  with formPrincipal do
+  with qrBanca do
   begin
-    if GestaoUnidade then
-      stakeAposta := RoundTo(valorInicial / 100, -2)
+    if not Active then Open;
+
+    if not GestaoVariavel then
+      Banca := FieldByName('BancaTotal').AsFloat
     else
-      stakeAposta := RoundTo(1 * valorInicial / 100, -2);
-  end
-  else
-  if perfilInvestidor = 'Moderado' then
-  begin
-    if GestaoUnidade then
-      stakeAposta := RoundTo(valorInicial / 70, -2)
-    else
-      stakeAposta := RoundTo(3 * valorInicial / 100, -2);
-  end
-  else
-  if perfilInvestidor = 'Agressivo' then
-  begin
-    if GestaoUnidade then
-      stakeAposta := RoundTo(valorInicial / 40, -2)
-    else
-      stakeAposta := RoundTo(5 * valorInicial / 100, -2);
+      Banca := FieldByName('Valor_Final').AsFloat;
+
+    case perfilInvestidor of
+      'Conservador':
+        stakeAposta := RoundTo(Banca / 100, -2);
+      'Moderado':
+        if GestaoUnidade then
+          stakeAposta := RoundTo(Banca / 70, -2)
+        else
+          stakeAposta := RoundTo(3 * Banca / 100, -2);
+      'Agressivo':
+        if GestaoUnidade then
+          stakeAposta := RoundTo(Banca / 40, -2)
+        else
+          stakeAposta := RoundTo(5 * Banca / 100, -2);
+    end;
+    Refresh;
   end;
 end;
 
@@ -784,7 +789,7 @@ begin
   finally
     Free;
   end;
-  DefinirStake;
+  PerfilDoInvestidor;
 end;
 
 procedure TformPrincipal.ReiniciarTodosOsQueries;
@@ -824,8 +829,8 @@ begin
         TSQLQuery(qrPraReiniciar[I]).Refresh;
     except
       On E: Exception do
-      writeln('Erro ao reiniciar o query ',TComponent(qrPraReiniciar[I]).Name,
-      ', ' + E.Message);
+        writeln('Erro ao reiniciar o query ', TComponent(qrPraReiniciar[I]).Name,
+          ', ' + E.Message);
     end;
     EventosMetodos.CarregaMetodos;
   finally
@@ -933,6 +938,11 @@ begin
     transactionBancoDados.CommitRetaining;
     CalculaDadosAposta;
   end;
+end;
+
+procedure TformPrincipal.lbLucroDinheiroClick(Sender: TObject);
+begin
+
 end;
 
 procedure TformPrincipal.MenuItem7Click(Sender: TObject);

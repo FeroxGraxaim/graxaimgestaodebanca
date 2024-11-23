@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS "ConfigPrograma" (
-	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1
+	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1,
+	"GestaoVariavel"	BOOLEAN DEFAULT 0
 );
 CREATE TABLE "NovaMercados" (
 	"Cod_Mercado"	INTEGER,
@@ -37,4 +38,8 @@ AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercado
 
 END;
 
-UPDATE ControleVersao SET Versao = 18;
+ALTER TABLE Apostas ADD Anotacoes VARCHAR
+
+ALTER TABLE Banca ADD Aporte NUMERIC(9,2) DEFAULT 0;
+
+UPDATE ControleVersao SET Versao = 20;

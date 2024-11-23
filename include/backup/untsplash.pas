@@ -6,7 +6,8 @@ interface
 
 uses
 Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
-StdCtrls;
+StdCtrls, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
+  DB, BufDataset;
 
 type
 
@@ -78,11 +79,16 @@ begin
     formPrincipal.btnSalvarBancaInicial.OnClick :=
       @EventosPainel.btnSalvarBancaInicialClick;
     formPrincipal.cbPerfil.OnChange   := @EventosPainel.cbPerfilChange;
-    formPrincipal.edtBancaInicial.OnKeyPress := @EventosPainel.edtBancaInicialKeyPress;
     formPrincipal.cbMes.OnChange      := @EventosPainel.cbMesChange;
     formPrincipal.cbAno.OnChange      := @EventosPainel.cbAnoChange;
     formPrincipal.cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
     tsResumoLista.OnShow := @EventosPainel.HabilitaMesEAno;
+    qrBanca.AfterRefresh := @EventosPainel.AtualizaDadosBanca;
+    qrBanca.AfterOpen := @EventosPainel.AtualizaDadosBanca;
+    btnAporte.OnClick := @EventosPainel.FazerAporte;
+    qrBanca.BeforeOpen := @EventosPainel.ParametrosBanca;
+    btnRetirar.OnClick := @EventosPainel.RetirarDinheiro;
+    chbGestaoVariavel.OnClick := @EventosPainel.StakeVariavel;
 
     lbProgresso.Caption := 'Atribuindo eventos de apostas';
     Application.ProcessMessages;
@@ -92,9 +98,9 @@ begin
     //Definindo eventos das Apostas
 
     writeln('Criando eventos do tsApostas...');
-    formPrincipal.tsApostas.OnShow      := @EventosApostas.tsApostasShow;
-    formPrincipal.btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
-    formPrincipal.btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
+    tsApostas.OnShow      := @EventosApostas.tsApostasShow;
+    btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
+    btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
     grdDadosAp.OnDrawColumnCell := @EventosAPostas.grdDadosApDrawColumnCell;
     grdApostas.OnCellClick := @EventosApostas.grdApostascellClick;
     btnCashout.OnClick := @EventosApostas.btnCashoutClick;
@@ -109,6 +115,7 @@ begin
     grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
     btnEditAposta.OnClick := @EventosApostas.AbrirEditarAposta;
     lsbJogos.OnClick := @EventosApostas.ClicarNoJogo;
+    mmAnotAposta.OnKeyPress := @EventosApostas.AnotarNaAposta;
 
     //Definindo eventos do controle de métodos
 
@@ -118,8 +125,6 @@ begin
     btnExcluirMetodo.OnClick := @EventosMetodos.RemoverMetodo;
     tsDadosMesMetodos.OnShow := @EventosMetodos.GridMesMetodos;
     grdMetodosMes.OnClick := @EventosMetodos.GridMesLinhas;
-    //tsDadosAnoMetodos.OnShow := @EventosMetodos.GridAnoMetodos;
-    //grdMetodosAno.OnClick := @EventosMetodos.GridAnoLinhas;
     btnNovaLinha.OnClick := @EventosMetodos.NovaLinha;
     btnExcluirLinha.OnClick := @EventosMetodos.RemoverLinha;
     tsControleMetodos.OnShow := @EventosMetodos.AoExibirMetodos;
@@ -185,7 +190,8 @@ begin
 
     perfilInvestidor := formPrincipal.qrSelecionarPerfil.FieldByName(
       'Perfil Selecionado').AsString;
-    DefinirStake;
+    //DefinirStake;
+    PerfilDoInvestidor;
 
     //Procedimentos do Painel Principal
 
@@ -207,12 +213,24 @@ begin
       @EventosPainel.PerfilDoInvestidor;
       lbProgresso.Caption := 'Executado procedimento de perfil do investidor';
       Application.ProcessMessages;
-      DefinirStake;
       lbProgresso.Caption := 'Definida stake';
       Application.ProcessMessages;
 
       lbProgresso.Caption := 'Iniciando os queries';
       Application.ProcessMessages;
+
+      qrConfig.Open;
+
+      with TSQLQuery.Create(nil) do
+        try
+          DataBase := conectBancoDados;
+          SQL.Text := 'SELECT * FROM "Selecionar Mês e Ano"';
+          Open;
+          mesSelecionado := FieldByName('Mês').AsInteger;
+          anoSelecionado := FieldByName('Ano').AsInteger;
+        finally
+          Free;
+        end;
 
       qrBanca.Open;
       qrPerfis.Open;

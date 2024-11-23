@@ -60,7 +60,7 @@ label
   Fim;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.5.0.25';
+  currentVersion := '0.6.0.27';
   Result := '';
   apiUrl := 'https://api.github.com/repos/FeroxGraxaim/graxaimgestaodebanca/releases/latest';
   response := TStringStream.Create('');

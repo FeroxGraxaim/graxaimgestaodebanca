@@ -17,10 +17,10 @@ CREATE TABLE IF NOT EXISTS "Banca" (
 	"Mês"	INTEGER,
 	"Ano"	INTEGER,
 	"Valor_Inicial"	NUMERIC(9, 2) DEFAULT 0,
-	"Lucro_R$"	NUMERIC(9, 2) DEFAULT 0,
-	"Lucro_%"	NUMERIC(9, 2) DEFAULT 0,
-	"Valor_Final"	NUMERIC(9, 2) DEFAULT 0,
-	"Stake"	NUMERIC(9, 2) DEFAULT 0
+	"Aporte"	NUMERIC(9, 2) DEFAULT 0
+);
+CREATE TABLE "BancaInicial" (
+	"Banca"	NUMERIC(9, 2)
 );
 CREATE TABLE IF NOT EXISTS "Status_Aposta" (
 	"Cod_Status"	INTEGER,
@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS "Apostas" (
 	"Retorno"	NUMERIC(9, 2) DEFAULT 0,
 	"Lucro"	NUMERIC(9, 2) DEFAULT 0,
 	"Banca_Final"	NUMERIC(9, 2) DEFAULT 0,
+	"Anotacoes"	VARCHAR,
 	PRIMARY KEY("Cod_Aposta" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Jogo" (
@@ -117,7 +118,8 @@ CREATE TABLE IF NOT EXISTS "Selecaoionar Mês e Ano" (
 	"Ano"	INTEGER
 );
 CREATE TABLE "ConfigPrograma" (
-	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1
+	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1,
+	"GestaoVariavel"	BOOLEAN DEFAULT 0
 );
 INSERT INTO "Unidades" ("Unidade") VALUES ('0,25 Un'),
  ('0,5 Un'),
@@ -525,7 +527,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (18);
+INSERT INTO "ControleVersao" ("Versao") VALUES (20);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),
