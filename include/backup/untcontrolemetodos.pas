@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl, Math;
+  TACustomSeries, TAMultiSeries, DateUtils, untMain, Math;
 
 type
 
@@ -105,7 +105,6 @@ begin
     (chrtAcertMetodo.Series[0] as TPieSeries).Clear;
     with TSQLQuery.Create(nil) do
     begin
-      DataBase := conectBancoDados;
       SQL.Text :=
         'SELECT                                                         ' +
         'SUM(CASE WHEN Status = ''Green'' THEN 1 ELSE 0 END) AS Green,   ' +
@@ -477,7 +476,7 @@ var
   CodLinha, i: integer;
 begin
   with formPrincipal do
-  begin
+  try
     if lsbLinhas.ItemIndex <> -1 then
     begin
       CodLinha := -1;
@@ -569,6 +568,9 @@ begin
         Free;
       end;
     end;
+  except
+    on E: Exception do
+    writeln('Erro: ' + E.Message);
   end;
 end;
 

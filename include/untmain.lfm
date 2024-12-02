@@ -31,57 +31,70 @@ object formPrincipal: TformPrincipal
       Caption = 'Painel Principal'
       ClientHeight = 765
       ClientWidth = 1195
-      object txtBancaAtual: TDBText
-        Left = 10
-        Height = 67
-        Hint = 'O valor atual da sua banca, seja com lucro ou prejuízo. '
-        Top = 505
-        Width = 314
-        DataField = 'BancaFinalCalc'
-        DataSource = dsBanca
-        Font.Height = -48
-        Font.Name = 'Sans'
-        ParentFont = False
-      end
       object btnSalvarBancaInicial: TButton
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbValBancaTotal
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 25
         Hint = 'Salva o valor da banca digitado ao lado para o mês e ano selecionados.'
-        Top = 240
-        Width = 261
+        Top = 263
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 15
+        BorderSpacing.Right = 5
+        BorderSpacing.Bottom = 5
         Caption = 'Alterar Banca Inicial'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
       end
-      object lbBancaAtual: TLabel
-        Left = 10
+      object lbBancaFinalTitulo: TLabel
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = rbGestPcent
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 23
-        Top = 480
-        Width = 89
+        Top = 509
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 20
+        BorderSpacing.Right = 5
         Caption = 'Banca Final:'
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
       end
       object lbBancaInicial: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = cbMes
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 17
-        Top = 64
+        Top = 67
         Width = 74
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 5
         Caption = 'Banca Inicial:'
       end
       object lbMes: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = tsPainel
+        Left = 5
         Height = 17
-        Top = 16
+        Top = 15
         Width = 27
+        BorderSpacing.Top = 15
         Caption = 'Mês:'
       end
       object lbAno: TLabel
-        Left = 126
+        AnchorSideLeft.Control = cbAno
+        AnchorSideTop.Control = lbMes
+        Left = 115
         Height = 17
-        Top = 16
+        Top = 15
         Width = 25
         Caption = 'Ano:'
       end
@@ -89,7 +102,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 773
+        Height = 775
         Top = 0
         Width = 908
         ActivePage = tsGraficos
@@ -98,19 +111,19 @@ object formPrincipal: TformPrincipal
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 746
+          ClientHeight = 748
           ClientWidth = 904
           object pnGraficos: TPanel
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 716
+            Height = 720
             Top = 31
             Width = 905
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 716
+            ClientHeight = 720
             ClientWidth = 905
             TabOrder = 0
             object chrtLucroMes: TChart
@@ -424,7 +437,7 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 746
+          ClientHeight = 748
           ClientWidth = 904
           object pnTabelas: TPanel
             AnchorSideLeft.Control = tsResumoLista
@@ -433,17 +446,17 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsResumoLista
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 715
+            Height = 717
             Top = 31
             Width = 904
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 715
+            ClientHeight = 717
             ClientWidth = 904
             TabOrder = 0
             object grdMes: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 717
+              Height = 719
               Top = 0
               Width = 356
               Anchors = [akTop, akLeft, akBottom]
@@ -484,7 +497,7 @@ object formPrincipal: TformPrincipal
             object grdAno: TDBGrid
               AnchorSideBottom.Side = asrBottom
               Left = 356
-              Height = 717
+              Height = 719
               Top = 0
               Width = 350
               Anchors = [akTop, akLeft, akBottom]
@@ -524,57 +537,55 @@ object formPrincipal: TformPrincipal
           end
         end
       end
-      object txtLucroMoeda: TDBText
-        Left = 10
-        Height = 67
-        Top = 603
-        Width = 342
-        DataField = 'LucroR$Calc'
-        DataSource = dsBanca
-        Font.Height = -48
-        Font.Name = 'Sans'
-        ParentFont = False
-      end
-      object txtLucroPorCento: TDBText
-        Left = 10
-        Height = 67
-        Top = 665
-        Width = 396
-        DataField = 'Lucro%Calc'
-        DataSource = dsBanca
-        Font.Height = -48
-        Font.Name = 'Sans'
-        ParentFont = False
-      end
       object lbLucro: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbBancaFinal
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 23
-        Top = 579
-        Width = 46
+        Top = 583
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 5
         Caption = 'Lucro:'
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
       end
       object lbPerfil: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = btnRetirar
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 17
-        Top = 352
+        Top = 363
         Width = 32
+        BorderSpacing.Top = 15
         Caption = 'Perfil:'
       end
       object lbUnidade: TLabel
-        Left = 137
+        AnchorSideTop.Control = btnRetirar
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = btnRetirar
+        AnchorSideRight.Side = asrBottom
+        Left = 150
         Height = 17
-        Top = 352
+        Top = 363
         Width = 134
+        Anchors = [akTop, akRight]
+        BorderSpacing.Top = 15
         Caption = 'Valor Padrão de Aposta:'
       end
       object cbAno: TComboBox
-        Left = 126
+        AnchorSideLeft.Control = cbMes
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = lbAno
+        AnchorSideTop.Side = asrBottom
+        Left = 115
         Height = 29
         Hint = 'Seleciona o ano das apostas registradas (padrão ano atual)'
-        Top = 35
+        Top = 32
         Width = 100
         ItemHeight = 0
         ParentShowHint = False
@@ -583,11 +594,17 @@ object formPrincipal: TformPrincipal
         TabOrder = 2
       end
       object cbMes: TComboBox
-        Left = 10
+        AnchorSideLeft.Control = tsPainel
+        AnchorSideTop.Control = lbMes
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = cbAno
+        Left = 5
         Height = 25
         Hint = 'Seleciona o mês das apostas registradas (padrão mês atual)'
-        Top = 35
+        Top = 32
         Width = 100
+        BorderSpacing.Left = 5
+        BorderSpacing.Right = 10
         ItemHeight = 0
         Items.Strings = (
           '1'
@@ -609,10 +626,13 @@ object formPrincipal: TformPrincipal
         TabOrder = 3
       end
       object cbPerfil: TComboBox
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbPerfil
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 29
         Hint = 'Selecione aqui seu perfil de investidor. '#10#10'GESTÃO POR UNIDADE:'#10'Conservador = banca ÷ 100'#10'Moderado = banca ÷ 70'#10'Agressivo = banca ÷ 40'#10#10'GESTÃO POR PORCENTAGEM:'#10'Conservador = 1% da banca'#10'Moderado = 3% da banca'#10'Agressivo = 5% da banca'
-        Top = 371
+        Top = 380
         Width = 100
         ItemHeight = 0
         ParentShowHint = False
@@ -621,11 +641,15 @@ object formPrincipal: TformPrincipal
         TabOrder = 4
       end
       object rbGestUn: TRadioButton
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = chbGestaoVariavel
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 21
         Hint = 'Gestão de banca por unidade, é o mais seguro e menos agressivo de se apostar nos perfis moderado e agressivo, no perfil conservador é a mesma coisa que gestão por porcentagem. (Mais detalhes posicione o mouse sobre a caixa de seleção acima).'
-        Top = 424
+        Top = 447
         Width = 226
+        BorderSpacing.Top = 10
         Caption = 'Gestão por Unidade (Recomendado)'
         Checked = True
         TabOrder = 5
@@ -633,87 +657,213 @@ object formPrincipal: TformPrincipal
         OnClick = GestaoUnidadePcent
       end
       object rbGestPcent: TRadioButton
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = rbGestUn
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 21
         Hint = 'Gestão de banca normalmente usada por iniciantes, um pouco mais agressiva, ideal para bancas muito pequenas (Exemplo: R$ 100,00). Não é recomendado usar esse tipo de gestão para bancas maiores.'
-        Top = 448
+        Top = 468
         Width = 163
         Caption = 'Gestão por Porcentagem'
         TabOrder = 6
         OnClick = GestaoUnidadePcent
       end
       object lbAporte: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbValorBanca
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 17
-        Top = 112
+        Top = 126
         Width = 92
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 5
         Caption = 'Aporte/Retirada:'
       end
       object lbValorBanca: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbBancaInicial
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 32
-        Top = 81
-        Width = 78
+        Top = 84
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Right = 5
         Caption = 'R$ 0,00'
-        Font.Height = -23
+        Font.Height = 23
         Font.Name = 'Sans'
+        OptimalFill = True
         ParentFont = False
       end
       object btnAporte: TButton
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = btnSalvarBancaInicial
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 25
-        Top = 272
-        Width = 261
-        Caption = 'Fazer Aporte'
+        Top = 293
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 5
+        BorderSpacing.Right = 5
+        BorderSpacing.Bottom = 5
+        Caption = 'Inserir Dinheiro'
         TabOrder = 7
       end
       object lbBancaTotal: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbValAporte
+        AnchorSideTop.Side = asrBottom
+        Left = 5
         Height = 22
-        Top = 160
+        Top = 185
         Width = 83
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 5
         Caption = 'Banca Total:'
         Font.Height = -15
         Font.Name = 'Sans'
         ParentFont = False
       end
       object lbValBancaTotal: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbBancaTotal
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 41
-        Top = 184
-        Width = 102
+        Top = 207
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Right = 5
         Caption = 'R$ 0,00'
-        Font.Height = -29
+        Font.Height = 29
         Font.Name = 'Sans'
+        OptimalFill = True
         ParentFont = False
       end
       object lbValAporte: TLabel
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbAporte
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 32
-        Top = 128
-        Width = 78
+        Top = 143
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Right = 5
         Caption = 'R$ 0,00'
-        Font.Height = -23
+        Font.Height = 23
         Font.Name = 'Sans'
+        OptimalFill = True
         ParentFont = False
       end
       object lbStake: TLabel
-        Left = 137
+        AnchorSideLeft.Control = lbUnidade
+        AnchorSideTop.Control = lbUnidade
+        AnchorSideTop.Side = asrBottom
+        Left = 150
         Height = 32
-        Top = 368
+        Top = 380
         Width = 78
+        AutoSize = False
         Caption = 'R$ 0,00'
-        Font.Height = -23
+        Font.Height = 23
         Font.Name = 'Sans'
+        OptimalFill = True
         ParentFont = False
       end
       object btnRetirar: TButton
-        Left = 10
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = btnAporte
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
         Height = 25
-        Top = 304
-        Width = 261
+        Top = 323
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 5
+        BorderSpacing.Right = 5
+        BorderSpacing.Bottom = 5
         Caption = 'Retirar Dinheiro'
         TabOrder = 8
+      end
+      object lbBancaFinal: TLabel
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbBancaFinalTitulo
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
+        Height = 51
+        Top = 532
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Right = 5
+        Caption = 'R$ 1000000,00'
+        Font.Height = 37
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object lbLucroDinheiro: TLabel
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbLucro
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
+        Height = 51
+        Top = 606
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Right = 5
+        Caption = 'R$ 1000000,00'
+        Font.Height = 37
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object lbLucroPcent: TLabel
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = lbLucroDinheiro
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pcResumo
+        Left = 5
+        Height = 51
+        Top = 657
+        Width = 279
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Right = 5
+        Caption = '100,00%'
+        Font.Height = 37
+        Font.Name = 'Sans'
+        ParentFont = False
+      end
+      object chbGestaoVariavel: TDBCheckBox
+        AnchorSideLeft.Control = cbMes
+        AnchorSideTop.Control = cbPerfil
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 23
+        Hint = 'Ao ativar, o valor de apostas irá variar de acordo com o lucro/prejuízo, garantindo mais ganhos em seqüências boas e reduzindo as perdas em seqüências ruins.'
+        Top = 414
+        Width = 175
+        BorderSpacing.Top = 5
+        Caption = 'Gestão de Banca Variável'
+        DataField = 'GestaoVariavel'
+        DataSource = dsConfig
+        TabOrder = 9
+        ValueChecked = '1'
+        ValueUnchecked = '0'
       end
     end
     object tsApostas: TTabSheet
@@ -721,17 +871,19 @@ object formPrincipal: TformPrincipal
       ClientHeight = 765
       ClientWidth = 1195
       object grbApostas: TGroupBox
+        AnchorSideLeft.Control = tsApostas
+        AnchorSideTop.Control = tsApostas
         AnchorSideRight.Control = tsApostas
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = grbDetalhesAp
-        Left = 6
-        Height = 510
-        Top = 12
-        Width = 1189
+        Left = 0
+        Height = 501
+        Top = 0
+        Width = 1195
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 491
-        ClientWidth = 1185
+        ClientHeight = 482
+        ClientWidth = 1191
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -744,10 +896,10 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 491
+          Height = 482
           Hint = 'Todas as apostas registradas do mês selecionado.'
           Top = 0
-          Width = 1185
+          Width = 1191
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -765,7 +917,7 @@ object formPrincipal: TformPrincipal
               Color = 14935011
               ReadOnly = True
               Title.Caption = 'Jogo'
-              Width = 580
+              Width = 400
               FieldName = 'Jogo'
             end          
             item
@@ -809,25 +961,27 @@ object formPrincipal: TformPrincipal
           DataSource = dsApostas
           Font.Height = -13
           Font.Name = 'Sans'
+          Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowEditor, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           ParentFont = False
           Scrollbars = ssAutoBoth
           ShowHint = True
           TabOrder = 0
-          OnEditingDone = grdApostasEditingDone
         end
       end
       object grbDetalhesAp: TGroupBox
+        AnchorSideLeft.Control = tsApostas
+        AnchorSideTop.Control = tsApostas
         AnchorSideRight.Control = tsApostas
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Side = asrBottom
-        Left = 6
-        Height = 166
-        Top = 522
-        Width = 1189
+        AnchorSideBottom.Control = deFiltroDataInicial
+        Left = 0
+        Height = 185
+        Top = 501
+        Width = 1195
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Detalhes da Aposta'
-        ClientHeight = 147
-        ClientWidth = 1185
+        ClientHeight = 166
+        ClientWidth = 1191
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -835,14 +989,13 @@ object formPrincipal: TformPrincipal
         object lbSelecioneAposta: TLabel
           AnchorSideLeft.Control = grbDetalhesAp
           AnchorSideTop.Control = grbDetalhesAp
-          AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 147
+          Height = 166
           Hint = 'Ao selecionar uma aposta, aparecerá uma tabela com detalhes da aposta, contendo o jogo (campeonato - mandante X visitante) e o método e linha usado na aposta, podendo alterá-los, e a odd e a situação de cada linha, que também podem ser alteradas.'
           Top = 0
-          Width = 1049
+          Width = 1060
           Alignment = taCenter
           Anchors = [akTop, akLeft, akRight, akBottom]
           AutoSize = False
@@ -851,14 +1004,19 @@ object formPrincipal: TformPrincipal
           ParentBidiMode = False
         end
         object btnTudoGreen: TButton
+          AnchorSideTop.Control = btnEditAposta
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 1061
+          Left = 1070
           Height = 25
           Hint = 'Altera todas as linhas da aposta como bem-sucedidas (Green)'
-          Top = 72
+          Top = 90
           Width = 116
-          Anchors = [akRight, akBottom]
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 5
+          BorderSpacing.Around = 5
           Caption = 'Tudo Green'
           Enabled = False
           Font.Height = -13
@@ -869,14 +1027,19 @@ object formPrincipal: TformPrincipal
           TabOrder = 0
         end
         object btnTudoRed: TButton
+          AnchorSideTop.Control = btnTudoGreen
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 1061
+          Left = 1070
           Height = 25
           Hint = 'Altera todas as linhas da aposta como mal-sucedidas (Red)'
-          Top = 104
+          Top = 125
           Width = 116
-          Anchors = [akRight, akBottom]
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 5
+          BorderSpacing.Around = 5
           Caption = 'Tudo Red'
           Enabled = False
           Font.Height = -13
@@ -884,36 +1047,17 @@ object formPrincipal: TformPrincipal
           ParentFont = False
           TabOrder = 1
         end
-        object btnCashout: TButton
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Side = asrBottom
-          Left = 1061
-          Height = 40
-          Hint = 'Caso tenha retirado o valor da aposta antes dela ser finalizada, clique aqui e digite o valor em dinheiro que retornou da aposta na caixa de diálogo que aparecerá.'
-          Top = -8
-          Width = 116
-          Anchors = [akRight, akBottom]
-          Caption = 'Cashout'
-          Enabled = False
-          Font.Height = -13
-          Font.Name = 'Sans'
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 2
-        end
         object grdDadosAp: TDBGrid
           AnchorSideLeft.Control = lbSelecioneAposta
           AnchorSideTop.Control = lbSelecioneAposta
-          AnchorSideRight.Control = lbSelecioneAposta
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = lbSelecioneAposta
           AnchorSideBottom.Side = asrBottom
-          Left = 656
-          Height = 147
+          Left = 318
+          Height = 166
           Hint = 'Tabela com detalhes da aposta. Apenas o método, linha, odd e situação são editáveis.'
           Top = 0
-          Width = 393
+          Width = 377
           Anchors = [akTop, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -947,26 +1091,29 @@ object formPrincipal: TformPrincipal
           ParentFont = False
           Scrollbars = ssAutoBoth
           ShowHint = True
-          TabOrder = 3
+          TabOrder = 2
           Visible = False
-          OnCellClick = grdDadosApCellClick
-          OnEditingDone = grdDadosApEditingDone
         end
         object btnEditAposta: TButton
+          AnchorSideTop.Control = btnCashout
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
-          Left = 1061
+          Left = 1070
           Height = 25
           Hint = 'Recurso em desenvolvimento!'
-          Top = 40
+          Top = 55
           Width = 116
           Anchors = [akTop, akRight]
+          BorderSpacing.Top = 5
+          BorderSpacing.Around = 5
           Caption = 'Editar Aposta'
           Font.Height = -13
           Font.Name = 'Sans'
           ParentFont = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 4
+          TabOrder = 3
         end
         object lsbJogos: TListBox
           AnchorSideLeft.Control = grbDetalhesAp
@@ -975,22 +1122,97 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 147
+          Height = 166
           Top = 0
-          Width = 656
+          Width = 318
           Anchors = [akTop, akLeft, akRight, akBottom]
           Font.Height = -13
           Font.Name = 'Sans'
           ItemHeight = 0
           ParentFont = False
-          TabOrder = 5
+          TabOrder = 4
           TopIndex = -1
           Visible = False
         end
+        object grbAnotacoes: TGroupBox
+          AnchorSideTop.Control = grbDetalhesAp
+          AnchorSideBottom.Control = grbDetalhesAp
+          AnchorSideBottom.Side = asrBottom
+          Left = 688
+          Height = 166
+          Top = 0
+          Width = 360
+          Anchors = [akTop, akLeft, akBottom]
+          Caption = 'Anotações'
+          ClientHeight = 147
+          ClientWidth = 356
+          Font.Height = -13
+          Font.Name = 'Sans'
+          ParentFont = False
+          TabOrder = 5
+          object mmAnotAposta: TMemo
+            AnchorSideLeft.Control = grbAnotacoes
+            AnchorSideTop.Control = grbAnotacoes
+            AnchorSideRight.Control = grbAnotacoes
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = btnSalvarAnotacao
+            Left = 0
+            Height = 106
+            Top = 0
+            Width = 356
+            Anchors = [akTop, akLeft, akRight, akBottom]
+            BorderSpacing.Bottom = 5
+            Lines.Strings = (
+              'mmAnotAposta'
+            )
+            TabOrder = 0
+          end
+          object btnSalvarAnotacao: TButton
+            AnchorSideLeft.Control = grbAnotacoes
+            AnchorSideRight.Control = grbAnotacoes
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = grbAnotacoes
+            AnchorSideBottom.Side = asrBottom
+            Left = 5
+            Height = 25
+            Top = 111
+            Width = 346
+            Anchors = [akLeft, akRight]
+            BorderSpacing.Left = 5
+            BorderSpacing.Right = 5
+            BorderSpacing.Bottom = 5
+            Caption = 'Salvar Anotação'
+            Font.Height = -13
+            Font.Name = 'Sans'
+            ParentFont = False
+            TabOrder = 1
+          end
+        end
+        object btnCashout: TBitBtn
+          AnchorSideLeft.Control = grbAnotacoes
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = grbDetalhesAp
+          AnchorSideRight.Control = grbDetalhesAp
+          AnchorSideRight.Side = asrBottom
+          Left = 1070
+          Height = 40
+          Top = 5
+          Width = 116
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 5
+          BorderSpacing.Right = 5
+          Caption = 'Encerrar Aposta'
+          Font.Height = -13
+          Font.Name = 'Sans'
+          ParentFont = False
+          TabOrder = 6
+        end
       end
       object deFiltroDataInicial: TDateEdit
+        AnchorSideTop.Control = grbDetalhesAp
+        AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Side = asrBottom
+        AnchorSideBottom.Control = deFiltroDataFinal
         Left = 965
         Height = 27
         Hint = 'Insira aqui a partir de qual data quer filtrar a aposta, podendo ser de meses anteriores.'
@@ -1000,69 +1222,89 @@ object formPrincipal: TformPrincipal
         DateOrder = doNone
         ButtonWidth = 23
         Anchors = [akRight, akBottom]
+        BorderSpacing.Top = 10
         NumGlyphs = 1
         MaxLength = 0
         TabOrder = 2
         Text = 'Data Inicial'
       end
       object deFiltroDataFinal: TDateEdit
+        AnchorSideTop.Control = deFiltroDataInicial
+        AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = tsApostas
         AnchorSideBottom.Side = asrBottom
         Left = 965
         Height = 27
         Hint = 'Insira aqui a data final na qual quer filtrar as apostas, podendo ser de meses posteriores ao selecionado.'
-        Top = 736
+        Top = 728
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
         ButtonWidth = 23
         Anchors = [akRight, akBottom]
+        BorderSpacing.Top = 5
+        BorderSpacing.Bottom = 10
         NumGlyphs = 1
         MaxLength = 0
         TabOrder = 3
         Text = 'Data Final'
       end
       object btnLimparFiltroAp: TButton
+        AnchorSideTop.Control = btnFiltrarAp
+        AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = deFiltroDataFinal
         AnchorSideBottom.Side = asrBottom
         Left = 1069
         Height = 27
         Hint = 'Limpa os filtros de datas e volta a exibir apenas as apostas do mês selecionado.'
-        Top = 736
+        Top = 728
         Width = 118
         Anchors = [akRight, akBottom]
+        BorderSpacing.Top = 5
         Caption = 'Limpar Filtros'
         TabOrder = 4
       end
       object btnRemoverAposta: TButton
+        AnchorSideLeft.Control = btnNovaAposta
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = lbDataInicio
         AnchorSideBottom.Side = asrBottom
-        Left = 184
+        Left = 178
         Height = 50
         Hint = 'Remove aposta(s) selecionada(s).'
-        Top = 712
+        Top = 701
         Width = 158
-        Anchors = [akLeft, akBottom]
+        BorderSpacing.Left = 10
+        BorderSpacing.Top = 5
         Caption = 'Remover Selecionada'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 5
       end
       object btnNovaAposta: TButton
+        AnchorSideLeft.Control = tsApostas
+        AnchorSideTop.Control = lbDataInicio
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 6
+        Left = 10
         Height = 50
         Hint = 'Abre um janela para criar uma nova aposta'
-        Top = 712
+        Top = 701
         Width = 158
-        Anchors = [akLeft, akBottom]
+        BorderSpacing.Left = 10
+        BorderSpacing.Top = 5
         Caption = 'Nova Aposta'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 6
       end
       object btnFiltrarAp: TButton
+        AnchorSideTop.Control = grbDetalhesAp
+        AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = deFiltroDataInicial
         AnchorSideBottom.Side = asrBottom
         Left = 1069
         Height = 27
@@ -1070,27 +1312,30 @@ object formPrincipal: TformPrincipal
         Top = 696
         Width = 118
         Anchors = [akRight, akBottom]
+        BorderSpacing.Top = 10
         Caption = 'Filtrar Apostas'
         TabOrder = 7
       end
       object lbDataInicio: TLabel
+        AnchorSideTop.Control = deFiltroDataInicial
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 894
         Height = 17
         Top = 696
         Width = 63
-        Anchors = [akRight, akBottom]
+        Anchors = [akTop, akRight]
         Caption = 'Data Inicial'
       end
       object lbDataFim: TLabel
+        AnchorSideTop.Control = deFiltroDataFinal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 901
         Height = 17
-        Top = 736
+        Top = 728
         Width = 56
-        Anchors = [akRight, akBottom]
+        Anchors = [akTop, akRight]
         Caption = 'Data Final'
       end
     end
@@ -1981,7 +2226,7 @@ object formPrincipal: TformPrincipal
         Top = 232
         Width = 376
         Caption = 'Times Menos Assertivos'
-        ClientHeight = 272
+        ClientHeight = 278
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -1995,7 +2240,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbTimesMenosLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 272
+          Height = 278
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2044,7 +2289,7 @@ object formPrincipal: TformPrincipal
         Top = 0
         Width = 376
         Caption = 'Times Mais Assertivos'
-        ClientHeight = 200
+        ClientHeight = 206
         ClientWidth = 372
         Font.Height = -16
         Font.Name = 'Sans'
@@ -2058,7 +2303,7 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbTimesMaisLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 200
+          Height = 206
           Top = 0
           Width = 372
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2169,7 +2414,7 @@ object formPrincipal: TformPrincipal
         Top = 16
         Width = 464
         Caption = 'Times'
-        ClientHeight = 456
+        ClientHeight = 462
         ClientWidth = 460
         Font.Height = -16
         Font.Name = 'Sans'
@@ -3125,7 +3370,6 @@ object formPrincipal: TformPrincipal
         Precision = -1
         Size = 255
       end>
-    AfterOpen = qrApostasAfterOpen
     BeforeRefresh = qrApostasBeforeRefresh
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
@@ -3405,120 +3649,80 @@ object formPrincipal: TformPrincipal
       end    
       item
         Name = 'Valor_Inicial'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
+        DataType = ftFloat
+        Precision = -1
       end    
       item
         Name = 'Aporte'
-        DataType = ftBCD
-        Precision = 9
-        Size = 2
+        DataType = ftLargeint
+        Precision = -1
       end    
       item
-        Name = 'Lucro'
-        DataType = ftString
+        Name = 'BancaTotal'
+        DataType = ftFloat
         Precision = -1
-        Size = 255
       end    
       item
-        Name = 'LucroR$Calc'
-        DataType = ftString
+        Name = 'LucroR$'
+        DataType = ftFloat
         Precision = -1
-        Size = 255
       end    
       item
         Name = 'Lucro_%'
-        DataType = ftString
+        DataType = ftFloat
         Precision = -1
-        Size = 255
-      end    
-      item
-        Name = 'Lucro%Calc'
-        DataType = ftString
-        Precision = -1
-        Size = 255
       end    
       item
         Name = 'Valor_Final'
-        DataType = ftString
+        DataType = ftFloat
         Precision = -1
-        Size = 255
-      end    
-      item
-        Name = 'BancaFinalCalc'
-        DataType = ftString
-        Precision = -1
-        Size = 255
       end>
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
+      'WITH C AS ('
       'SELECT'
-      '  Mês,'
-      '  Ano,'
-      '  Valor_Inicial,'
-      '  Aporte,'
-      '  ROUND(COALESCE('
-      '    (SELECT SUM(Lucro)'
-      '     FROM Apostas'
-      '     WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '       AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0), 2) AS Lucro,'
-      '  ''R$ '' || ROUND(COALESCE('
-      '    (SELECT SUM(Lucro)'
-      '     FROM Apostas'
-      '     WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '       AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0), 2) AS LucroR$Calc,'
-      '  ROUND('
-      '    CASE'
-      '      WHEN Valor_Inicial = 0 THEN 0'
-      '      ELSE COALESCE('
-      '        (SELECT SUM(Lucro)'
-      '         FROM Apostas'
-      '         WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '           AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0) / (Valor_Inicial + Aporte) * 100'
-      '    END, 2) AS "Lucro_%",'
-      '  ROUND('
-      '    CASE'
-      '      WHEN Valor_Inicial = 0 THEN 0'
-      '      ELSE COALESCE('
-      '        (SELECT SUM(Lucro)'
-      '         FROM Apostas'
-      '         WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '           AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0) / (Valor_Inicial + Aporte) * 100'
-      '    END, 2) || ''%'' AS "Lucro%Calc",'
-      '  ROUND('
-      '    CASE'
-      '      WHEN COALESCE('
-      '        (SELECT SUM(Lucro)'
-      '         FROM Apostas'
-      '         WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '           AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0) <> 0 THEN'
-      '          Valor_Inicial + Aporte + COALESCE('
-      '            (SELECT SUM(Lucro)'
-      '             FROM Apostas'
-      '             WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '               AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0)'
-      '      ELSE Valor_Inicial'
-      '    END, 2) AS Valor_Final,'
+      '  B2.Mês, B2.Ano,'
       ''
-      '    ''R$ '' || ROUND('
-      '    CASE'
-      '      WHEN COALESCE('
-      '        (SELECT SUM(Lucro)'
-      '         FROM Apostas'
-      '         WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '           AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0) <> 0 THEN'
-      '          Valor_Inicial + Aporte + COALESCE('
-      '            (SELECT SUM(Lucro)'
-      '             FROM Apostas'
-      '             WHERE strftime(''%m'', Apostas.Data) = Banca.Mês'
-      '               AND strftime(''%Y'', Apostas.Data) = Banca.Ano), 0)'
-      '      ELSE Valor_Inicial'
-      '    END, 2) AS BancaFinalCalc'
-      'FROM'
-      '  Banca'
-      'WHERE Mês = :mesSelec AND Ano = :anoSelec;'
+      '  IFNULL((SELECT SUM (A2.Lucro) FROM Apostas A2 WHERE strftime(''%m'', A2.Data) <= B2.Mês'
+      '  AND strftime(''%Y'', A2.Data = B2.Ano)), 0) AS LucroAnoAtual,'
+      ''
+      '  IFNULL((SELECT SUM(A3.Lucro) FROM Apostas A3 WHERE strftime(''%Y'', A3.Data) < B2.Ano), 0) AS LucroAnoPassado,'
+      ''
+      '  IFNULL((SELECT SUM(A6.Lucro) FROM Apostas A6 WHERE strftime(''%m'', A6.Data) < B2.Mês'
+      #9#9#9#9#9#9#9#9#9#9#9#9' AND strftime(''%Y'', A6.Data) <= B2.Ano), 0) AS LucroMesPassado,'
+      ''
+      '  IFNULL((SELECT SUM(A5.Lucro) FROM Apostas A5 WHERE strftime(''%m'', A5.Data) = B2.Mês'
+      #9#9#9#9#9#9#9#9#9#9#9'   AND strftime(''%Y'', A5.Data) = B2.Ano), 0) AS LucroMesAtual,'
+      ''
+      '  IFNULL((SELECT BI.Banca FROM BancaInicial BI), 0) AS BancaPrimeira,'
+      ''
+      '  IFNULL((SELECT SUM(B3.Aporte) FROM Banca B3 WHERE B3.Mês <= B2.Mês AND B3.Ano <= B2.Ano), 0) AS TotalAportes'
+      ' FROM Banca B2'
+      ' WHERE B2.Mês = :mesSelec AND B2.Ano = :anoSelec)'
+      ''
+      'SELECT'
+      '  B.Mês,'
+      '  B.Ano,'
+      ' IFNULL((SELECT BI.Banca FROM BancaInicial BI), 0) AS Valor_Inicial,'
+      '  C.TotalAportes AS Aporte,'
+      ''
+      '  ROUND(C.BancaPrimeira + C.LucroMesPassado + C.LucroAnoPassado + C.TotalAportes, 2) AS BancaTotal,'
+      ''
+      '  ROUND(IFNULL(C.LucroMesAtual, 0), 2) AS LucroR$,'
+      ''
+      '  ROUND(IFNULL(C.LucroMesAtual / (C.BancaPrimeira + C.LucroMesPassado + C.LucroAnoPassado + C.TotalAportes) * 100, 0), 2) AS "Lucro_%",'
+      ''
+      '  ROUND(C.BancaPrimeira + C.LucroMesPassado + C.LucroAnoPassado + C.TotalAportes + C.LucroMesAtual, 2) AS Valor_Final'
+      ''
+      'FROM Banca B'
+      ''
+      'LEFT JOIN C ON B.Mês = C.Mês AND B.Ano = C.Ano'
+      ''
+      'WHERE B.Mês = :mesSelec'
+      '  AND B.Ano = :anoSelec'
+      ''
+      'GROUP BY B.Mês, B.Ano'
     )
     InsertSQL.Strings = (
       'INSERT INTO "Banca" ("Mês", Ano, Valor_Inicial) VALUES (:mes, :ano :novoValor)'
@@ -3542,116 +3746,9 @@ object formPrincipal: TformPrincipal
     Macros = <>
     Left = 977
     Top = 43
-    object qrBancaMs: TLargeintField
-      FieldKind = fkData
-      FieldName = 'Mês'
-      Index = 0
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-    end
-    object qrBancaAno: TLargeintField
-      FieldKind = fkData
-      FieldName = 'Ano'
-      Index = 1
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-    end
-    object qrBancaValor_Inicial: TBCDField
-      FieldKind = fkData
-      FieldName = 'Valor_Inicial'
-      Index = 2
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = 9
-      Currency = False
-      MaxValue = 0
-      MinValue = 0
-      Size = 2
-    end
-    object qrBancaLucro: TFloatField
-      FieldKind = fkData
-      FieldName = 'Lucro'
-      Index = 3
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = -1
-    end
-    object qrBancaLucroRCalc: TStringField
-      FieldKind = fkData
-      FieldName = 'LucroR$Calc'
-      Index = 4
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Size = 255
-    end
-    object qrBancaLucro_: TFloatField
-      FieldKind = fkData
-      FieldName = 'Lucro_%'
-      Index = 5
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = -1
-    end
-    object qrBancaLucroCalc: TStringField
-      FieldKind = fkData
-      FieldName = 'Lucro%Calc'
-      Index = 6
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Size = 255
-    end
-    object qrBancaValor_Final: TFloatField
-      FieldKind = fkData
-      FieldName = 'Valor_Final'
-      Index = 7
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = -1
-    end
-    object qrBancaBancaFinalCalc: TStringField
-      FieldKind = fkData
-      FieldName = 'BancaFinalCalc'
-      Index = 8
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Size = 255
-    end
-    object qrBancaAporte: TBCDField
-      FieldKind = fkData
-      FieldName = 'Aporte'
-      Index = 9
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = 9
-      Currency = False
-      MaxValue = 0
-      MinValue = 0
-      Size = 2
-    end
   end
   object dsBanca: TDataSource
     DataSet = qrBanca
-    OnDataChange = dsBancaDataChange
     Left = 965
     Top = 98
   end
@@ -3671,6 +3768,10 @@ object formPrincipal: TformPrincipal
       object miExportar: TMenuItem
         Caption = 'Exportar Dados'
         OnClick = SalvarDadosBD
+      end
+      object miConfig: TMenuItem
+        Caption = 'Configurações'
+        OnClick = miConfigClick
       end
     end
     object MenuAjuda: TMenuItem
@@ -3751,7 +3852,7 @@ object formPrincipal: TformPrincipal
   end
   object dsUnidades: TDataSource
     Left = 909
-    Top = 607
+    Top = 608
   end
   object dsPerfis: TDataSource
     DataSet = qrPerfis
@@ -3887,11 +3988,39 @@ object formPrincipal: TformPrincipal
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
+      'WITH C AS ('
+      '  SELECT'
+      '    B."Mês",'
+      '    B.Ano,'
+      '    IFNULL((SELECT Banca FROM BancaInicial), 0) +'
+      '    IFNULL((SELECT SUM(Aporte)'
+      '     FROM Banca B2'
+      '     WHERE B2."Mês" <= B."Mês"'
+      '     AND B2.Ano = B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Aporte)'
+      '     FROM Banca B3'
+      '     WHERE B3.Ano < B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Lucro)'
+      '     FROM Apostas A'
+      '     WHERE strftime(''%m'', A.Data) < B."Mês"'
+      '     AND strftime(''%Y'', A.Data) = B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Lucro)'
+      '     FROM Apostas A2'
+      '     WHERE strftime(''%Y'', A2.Data) < B.Ano), 0) AS BancaInicio'
+      '  FROM'
+      '    Banca B'
+      '  LEFT JOIN "Selecionar Mês e Ano" SMI'
+      '    ON SMI."Mês" = B."Mês"'
+      '    AND SMI.Ano = B.Ano'
+      '  WHERE'
+      '    B."Mês" = SMI."Mês"'
+      '    AND B.Ano = SMI.Ano'
+      ')'
       'SELECT'
       '  strftime(''%d'', Apostas.Data) AS Dia,'
       ''
       '  ROUND('
-      '    COALESCE(('
+      '    IFNULL(('
       '      SELECT SUM(A2.Lucro)'
       '      FROM Apostas AS A2'
       '      WHERE strftime(''%m'', A2.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
@@ -3901,24 +4030,16 @@ object formPrincipal: TformPrincipal
       ''
       '  ROUND('
       '    CASE'
-      '      WHEN COALESCE(('
-      '        SELECT Valor_Inicial + Banca.Aporte'
-      '        FROM Banca AS valBanca'
-      '        WHERE valBanca.Mês = (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '          AND valBanca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano")), 0) = 0'
+      '      WHEN C.BancaInicio = 0'
       '      THEN 0'
-      '      ELSE COALESCE(('
-      '        SELECT SUM(A2.Lucro)'
-      '        FROM Apostas AS A2'
-      '        WHERE strftime(''%m'', A2.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '          AND strftime(''%Y'', A2.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
-      '          AND strftime(''%d'', A2.Data) = strftime(''%d'', Apostas.Data)'
-      '      ), 0) / ('
-      '        SELECT Valor_Inicial + Aporte'
-      '        FROM Banca AS valBanca'
-      '        WHERE valBanca.Mês = (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '          AND valBanca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano")'
-      '      ) * 100'
+      '      ELSE'
+      '        IFNULL(('
+      '          SELECT SUM(A2.Lucro)'
+      '          FROM Apostas AS A2'
+      '          WHERE strftime(''%m'', A2.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
+      '            AND strftime(''%Y'', A2.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      '        '#9'AND strftime(''%d'', A2.Data) <= strftime(''%d'', Apostas.Data)), 0)'
+      '        '#9'/ NULLIF(C.BancaInicio, 0) * 100'
       '    END, 2) AS PorCentoLucro,'
       ''
       '  IFNULL(('
@@ -3931,11 +4052,12 @@ object formPrincipal: TformPrincipal
       '    HAVING SUM(Lucro) > 0'
       '  ), 0) AS Green,'
       ''
-      '  (SELECT COUNT(*) FROM Apostas AS A5'
-      '  WHERE strftime(''%m'', A5.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '      AND strftime(''%Y'', A5.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
-      '      AND strftime(''%d'', A5.Data) = strftime(''%d'', Apostas.Data)'
-      '      AND A5.Lucro > 0) AS NumGreen,'
+      '  (SELECT COUNT(*)'
+      '   FROM Apostas AS A5'
+      '   WHERE strftime(''%m'', A5.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
+      '     AND strftime(''%Y'', A5.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      '     AND strftime(''%d'', A5.Data) = strftime(''%d'', Apostas.Data)'
+      '     AND A5.Lucro > 0) AS NumGreen,'
       ''
       '  IFNULL(('
       '    SELECT 1'
@@ -3947,7 +4069,7 @@ object formPrincipal: TformPrincipal
       '    HAVING SUM(Lucro) < 0'
       '  ), 0) AS Red,'
       ''
-      '   IFNULL(('
+      '  IFNULL(('
       '    SELECT 1'
       '    FROM Apostas AS A4'
       '    WHERE strftime(''%m'', A4.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
@@ -3958,18 +4080,28 @@ object formPrincipal: TformPrincipal
       '    HAVING SUM(Lucro) = 0'
       '  ), 0) AS Neutro,'
       ''
-      '  (SELECT COUNT(*) FROM Apostas AS A5'
-      '  WHERE strftime(''%m'', A5.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
-      '      AND strftime(''%Y'', A5.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
-      '      AND strftime(''%d'', A5.Data) = strftime(''%d'', Apostas.Data)'
-      '      AND A5.Lucro < 0) AS NumRed'
+      '  (SELECT COUNT(*)'
+      '   FROM Apostas AS A5'
+      '   WHERE strftime(''%m'', A5.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
+      '     AND strftime(''%Y'', A5.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
+      '     AND strftime(''%d'', A5.Data) = strftime(''%d'', Apostas.Data)'
+      '     AND A5.Lucro < 0) AS NumRed'
       ''
-      'FROM Apostas'
-      'LEFT JOIN Banca ON Banca.Mês = strftime(''%m'', Apostas.Data)'
-      'WHERE strftime(''%m'', Apostas.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
+      'FROM'
+      '  Apostas'
+      'LEFT JOIN'
+      '  Banca ON Banca."Mês" = strftime(''%m'', Apostas.Data)'
+      '          AND Banca.Ano = strftime(''%Y'', Apostas.Data)'
+      'LEFT JOIN'
+      '  C ON C."Mês" = strftime(''%m'', Apostas.Data)'
+      '      AND C.Ano = strftime(''%Y'', Apostas.Data)'
+      'WHERE'
+      '  strftime(''%m'', Apostas.Data) = (SELECT Mês FROM "Selecionar Mês e Ano")'
       '  AND strftime(''%Y'', Apostas.Data) = (SELECT Ano FROM "Selecionar Mês e Ano")'
-      'GROUP BY Dia'
-      'ORDER BY Dia;'
+      'GROUP BY'
+      '  Dia'
+      'ORDER BY'
+      '  Dia;'
     )
     Params = <>
     Macros = <>
@@ -4094,6 +4226,32 @@ object formPrincipal: TformPrincipal
     Database = conectBancoDados
     Transaction = transactionBancoDAdos
     SQL.Strings = (
+      'WITH C AS ('
+      '  SELECT'
+      '    B."Mês",'
+      '    B.Ano,'
+      '    IFNULL((SELECT Banca FROM BancaInicial), 0) +'
+      '    IFNULL((SELECT SUM(Aporte)'
+      '     FROM Banca B2'
+      '     WHERE B2.Ano = B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Aporte)'
+      '     FROM Banca B3'
+      '     WHERE B3.Ano < B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Lucro)'
+      '     FROM Apostas A'
+      '     WHERE strftime(''%Y'', A.Data) = B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Lucro)'
+      '     FROM Apostas A2'
+      '     WHERE strftime(''%Y'', A2.Data) < B.Ano), 0) AS BancaInicio'
+      '  FROM'
+      '    Banca B'
+      '  LEFT JOIN "Selecionar Mês e Ano" SMI'
+      '    ON SMI."Mês" = B."Mês"'
+      '    AND SMI.Ano = B.Ano'
+      '  WHERE'
+      '    B.Ano = SMI.Ano'
+      ')'
+      ''
       'SELECT'
       'Mês, Ano,'
       '(SELECT SUM(Lucro)'
@@ -4315,6 +4473,12 @@ object formPrincipal: TformPrincipal
         DataType = ftString
         Precision = -1
         Size = 255
+      end    
+      item
+        Name = 'Anotacoes'
+        DataType = ftString
+        Precision = -1
+        Size = 255
       end>
     AutoCalcFields = False
     Database = conectBancoDados
@@ -4328,7 +4492,8 @@ object formPrincipal: TformPrincipal
       '    Métodos.Nome AS Método,'
       '    Linhas.Nome AS Linha,'
       '    Mercados.Odd,'
-      '    Mercados.Status AS Status'
+      '    Mercados.Status AS Status,'
+      '    IFNULL(Apostas.Anotacoes, '''') AS Anotacoes'
       'FROM'
       '    Mercados'
       'LEFT JOIN'
@@ -4349,11 +4514,15 @@ object formPrincipal: TformPrincipal
     UpdateSQL.Strings = (
       'UPDATE Mercados'
       'SET'
-      'Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :Método),'
-      'Cod_Linha = (SELECT Cod_Linha FROM Linhas WHERE Linhas.Nome = :Linha),'
+      'Cod_Metodo = Métodos.Cod_Metodo,'
+      'Cod_Linha = Linhas.Cod_Linha,'
       'Odd = :Odd,'
       'Status = :Status'
-      'WHERE Cod_Aposta = :CodAposta'
+      'FROM Mercados M'
+      'JOIN Métodos ON Métodos.Nome = :Método'
+      'JOIN Linhas ON Linhas.Nome = :Linha'
+      ''
+      'WHERE M.Cod_Aposta = :CodAposta'
       'AND Mercados.ROWID = :ROWID;'
       ''
     )
@@ -4371,6 +4540,98 @@ object formPrincipal: TformPrincipal
     Macros = <>
     Left = 1029
     Top = 289
+    object qrDadosApostaCod_Aposta: TLargeintField
+      FieldKind = fkData
+      FieldName = 'Cod_Aposta'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrDadosApostaROWID: TLargeintField
+      FieldKind = fkData
+      FieldName = 'ROWID'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrDadosApostaCompetio: TStringField
+      FieldKind = fkData
+      FieldName = 'Competição'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrDadosApostaJogo: TStringField
+      FieldKind = fkData
+      FieldName = 'Jogo'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrDadosApostaMtodo: TStringField
+      FieldKind = fkData
+      FieldName = 'Método'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrDadosApostaLinha: TStringField
+      FieldKind = fkData
+      FieldName = 'Linha'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrDadosApostaOdd: TBCDField
+      FieldKind = fkData
+      FieldName = 'Odd'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 9
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qrDadosApostaStatus: TStringField
+      FieldKind = fkData
+      FieldName = 'Status'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+    object qrDadosApostaAnotacoes: TStringField
+      FieldKind = fkData
+      FieldName = 'Anotacoes'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
   end
   object qrMetodosMes: TSQLQuery
     IndexName = 'DEFAULT_ORDER'
@@ -5898,5 +6159,166 @@ object formPrincipal: TformPrincipal
     Macros = <>
     Left = 632
     Top = 233
+  end
+  object qrConfig: TSQLQuery
+    MaxIndexesCount = 4
+    FieldDefs = <    
+      item
+        Name = 'ExibirTelaBoasVindas'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
+        Name = 'GestaoVariavel'
+        DataType = ftBoolean
+        Precision = -1
+      end    
+      item
+        Name = 'PreRelease'
+        DataType = ftBoolean
+        Precision = -1
+      end>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT * FROM ConfigPrograma'
+    )
+    UpdateSQL.Strings = (
+      'UPDATE ConfigPrograma'
+      'SET'
+      'ExibirTelaBoasVindas = :ExibirTelaBoasVindas,'
+      'GestaoVariavel = :GestaoVariavel,'
+      'PreRelease = :PreRelease;'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 47
+    Top = 40
+    object qrConfigExibirTelaBoasVindas: TBooleanField
+      FieldKind = fkData
+      FieldName = 'ExibirTelaBoasVindas'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+    object qrConfigGestaoVariavel: TBooleanField
+      FieldKind = fkData
+      FieldName = 'GestaoVariavel'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+    object qrConfigPreRelease: TBooleanField
+      FieldKind = fkData
+      FieldName = 'PreRelease'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+  end
+  object dsConfig: TDataSource
+    DataSet = qrConfig
+    Left = 191
+    Top = 129
+  end
+  object qrLucroAno: TSQLQuery
+    FieldDefs = <>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'WITH C AS ('
+      '  SELECT'
+      '    B."Mês",'
+      '    B.Ano,'
+      '    IFNULL((SELECT Banca FROM BancaInicial), 0) AS PrimaBanca,'
+      '    IFNULL((SELECT SUM(Aporte)'
+      '     FROM Banca B2'
+      '     WHERE B2."Mês" <= B."Mês"'
+      '     AND B2.Ano = B.Ano), 0) +'
+      '    IFNULL((SELECT SUM(Aporte)'
+      '     FROM Banca B3'
+      '     WHERE B3.Ano < B.Ano), 0) AS TotalAportes,'
+      '    IFNULL((SELECT SUM(Lucro)'
+      '     FROM Apostas A'
+      '     WHERE strftime(''%m'', A.Data) < B."Mês"'
+      '     AND strftime(''%Y'', A.Data) = B.Ano), 0) AS LucroAtual,'
+      '    IFNULL((SELECT SUM(Lucro)'
+      '     FROM Apostas A2'
+      '     WHERE strftime(''%Y'', A2.Data) < B.Ano), 0) AS TotalLucros'
+      '  FROM'
+      '    Banca B'
+      '  LEFT JOIN "Selecionar Mês e Ano" SMI'
+      '    ON SMI.Ano = B.Ano'
+      '  WHERE'
+      '    B."Mês" = :contagem'
+      '    AND B.Ano = SMI.Ano'
+      ')'
+      ''
+      'SELECT'
+      'IFNULL(SUM(Apostas.Lucro), 0) AS LucroTotal,'
+      'IFNULL(ROUND('
+      '    CASE'
+      '      WHEN C.PrimaBanca = 0'
+      '      THEN 0'
+      '      ELSE'
+      '        IFNULL(('
+      '          SELECT SUM(A2.Lucro)'
+      '          FROM Apostas AS A2'
+      '          WHERE strftime(''%m'', A2.Data) = Banca.Mês'
+      '            AND strftime(''%Y'', A2.Data) = Banca.Ano), 0)'
+      '        '#9'/ NULLIF(C.PrimaBanca, 0) * 100'
+      '    END, 2), 0)'
+      '              AS LucroPcent'
+      '              FROM Banca'
+      '              LEFT JOIN Apostas'
+      '              ON strftime(''%Y'', Apostas.Data) = Banca.Ano'
+      '              AND strftime(''%m'', Apostas.Data) = Banca.Mês'
+      '              LEFT JOIN C'
+      '              ON Banca.Ano = C.Ano'
+      '              WHERE Banca.Mês = :contagem'
+      '              AND Banca.Ano = (SELECT Ano FROM "Selecionar Mês e Ano");'
+    )
+    Params = <    
+      item
+        DataType = ftUnknown
+        Name = 'contagem'
+        ParamType = ptInput
+      end>
+    Macros = <>
+    Left = 309
+    Top = 473
+  end
+  object qrTodosAnos: TSQLQuery
+    FieldDefs = <>
+    Database = conectBancoDados
+    Transaction = transactionBancoDAdos
+    SQL.Strings = (
+      'SELECT'
+      '            Banca.Ano,'
+      '            IFNULL((SELECT Banca FROM BancaInicial), 0) AS ValorInicial,'
+      '            (SELECT SUM(IFNULL(Aporte, 0))'
+      '            FROM Banca WHERE Ano = Banca.Ano) AS Aporte,'
+      '            (SELECT SUM(IFNULL(Apostas.Lucro, 0))'
+      '            FROM Apostas'
+      '            WHERE Banca.Ano ='
+      '            strftime(''%Y'', Apostas.Data)) AS Lucro'
+      '            FROM Banca'
+      '            GROUP BY Banca.Ano;'
+      ''
+    )
+    Params = <>
+    Macros = <>
+    Left = 377
+    Top = 458
   end
 end
