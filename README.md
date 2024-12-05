@@ -65,7 +65,7 @@ Instale o git para fazer o clone do repositório, e instale o make para fazer a 
   sudo zypper install make
   ```
 - Distribuições não listadas: instalar as seguintes dependências manualmente (os nomes dos pacotes podem variar um pouco):
-  `fpc, git, gtk2, libX11-6, gdk-pixbuf2, glib2, pango, cairo, atk, glibc, sqlite3, sqlite3-devel`
+  `fpc, git, gtk2, libX11-6, gdk-pixbuf2, glib2, pango, cairo, atk, glibc, sqlite3, sqlite3-devel, git, make`
 
 Após a instalação do git e do make, digite os seguintes comandos no terminal:
 ```
