@@ -37,7 +37,7 @@ var
 procedure TBancoDados.DefinirVariaveis;
 begin
   writeln('Definindo variáveis');
-  versaoBDEsperada := 20;
+  versaoBDEsperada := 24;
 
   {$IFDEF MSWINDOWS}
   if FileExists(GetEnvironmentVariable('PROGRAMFILES') +
@@ -277,6 +277,7 @@ begin
   Arquivo := TStringList.Create;
   writeln('Criando StringBuilder');
   ScriptSQL := TStringBuilder.Create;
+  with formPrincipal do
   try
     writeln('Tentando localizar o arquivo ', VarArquivo);
     Arquivo.LoadFromFile(VarArquivo);

@@ -332,12 +332,23 @@ begin
           TextoSQL := TextoSQL + ') SELECT ';
           for i := 0 to FieldCount - 1 do
           begin
-            if Fields[i].FieldName = 'Data' then
+            case Fields[i].FieldName of
+            'Data':
               TextoSQL := TextoSQL + StringReplace(DateTimeToJulianDate(
-                Fields[i].AsDateTime).ToString, ',', '.', [rfReplaceAll])
+                Fields[i].AsDateTime).ToString, ',', '.', [rfReplaceAll]);
+            'Anotacoes':
+              {$IFDEF MSWINDOWS}
+              TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString,
+              #13#10, '\n', [rfReplaceAll]));
+              {$ENDIF}
+              {$IFDEF LINUX}
+              TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString,
+              #10, '\n', [rfReplaceAll]));
+              {$ENDIF}
             else
               TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString,
               ',', '.', [rfReplaceAll]));
+            end;
             if i < FieldCount - 1 then
               TextoSQL := TextoSQL + ', ';
           end;
@@ -375,8 +386,8 @@ begin
           TextoSQL := TextoSQL + '") SELECT ';
           for i := 0 to FieldCount - 1 do
           begin
-            TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString),
-              ',', '.', [rfReplaceAll]);
+            TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString,
+              ',', '.', [rfReplaceAll]));
             if i < FieldCount - 1 then
               TextoSQL := TextoSQL + ', ';
           end;
@@ -413,8 +424,8 @@ begin
           TextoSQL := TextoSQL + '") SELECT ';
           for i := 0 to FieldCount - 1 do
           begin
-            TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString),
-              ',', '.', [rfReplaceAll]);
+            TextoSQL := TextoSQL + QuotedStr(StringReplace(Fields[i].AsString,
+              ',', '.', [rfReplaceAll]));
             if i < FieldCount - 1 then
             TextoSQL := TextoSQL + ', ';
           end;

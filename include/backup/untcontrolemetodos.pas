@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl, Math;
+  TACustomSeries, TAMultiSeries, DateUtils, untMain, Math;
 
 type
 
@@ -477,7 +477,7 @@ var
   CodLinha, i: integer;
 begin
   with formPrincipal do
-  begin
+  try
     if lsbLinhas.ItemIndex <> -1 then
     begin
       CodLinha := -1;
@@ -569,6 +569,9 @@ begin
         Free;
       end;
     end;
+  except
+    on E: Exception do
+    writeln('Erro: ' + E.Message);
   end;
 end;
 

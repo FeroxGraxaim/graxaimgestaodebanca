@@ -1,61 +1,62 @@
 unit untNA;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, SQLDB, DB, Forms, Controls, Graphics, Dialogs, DBExtCtrls,
-  ActnList, StdCtrls, DBCtrls, EditBtn, DBGrids, Menus, ComCtrls, Math,
-  SQLScript;
+  Classes, SysUtils, SQLDB, DB, Forms, Controls, Graphics, Dialogs, LCLType,
+  ActnList, StdCtrls, DBCtrls, EditBtn, DBGrids, Menus, ComCtrls, Buttons,
+  StrUtils, Grids;
 
 type
 
   { TformNovaAposta }
 
   TformNovaAposta = class(TForm)
+    btnOk:      TBitBtn;
+    btnCancelar: TBitBtn;
     btnNovaLinha: TButton;
     btnNovaLinhaMult: TButton;
-    btnOk: TButton;
-    btnCancelar: TButton;
     btnAddJogo: TButton;
     cbCompeticao: TComboBox;
     cbCompMult: TComboBox;
     cbMandante: TComboBox;
     cbMandanteMult: TComboBox;
-    cbUnidade: TComboBox;
+    cbUnidade:  TComboBox;
     cbUnidadeMult: TComboBox;
     cbVisitante: TComboBox;
     cbVisitanteMult: TComboBox;
     dsLinhaMultipla: TDataSource;
-    dsJogos: TDataSource;
-    deAposta: TDateEdit;
+    dsJogos:    TDataSource;
+    deAposta:   TDateEdit;
     deApostaMult: TDateEdit;
     dsNovaAposta: TDataSource;
-    edtValor: TEdit;
+    edtValor:   TEdit;
     edtValorMult: TEdit;
     grbNovaLinha: TGroupBox;
     grbNovaLinha1: TGroupBox;
     grdNovaAposta: TDBGrid;
     grdLinhaMult: TDBGrid;
     lbOddSimples: TLabel;
-    lbData: TLabel;
-    lbOddMult: TLabel;
+    lbData:     TLabel;
+    lbOddMult:  TLabel;
     lbValorApMult: TLabel;
     lbDataMult: TLabel;
-    lbUnidade: TLabel;
-    lbValorAp: TLabel;
+    lbUnidade:  TLabel;
+    lbValorAp:  TLabel;
     lbUnidadeMult: TLabel;
     lbCompeticao: TLabel;
     lbCompeticao1: TLabel;
     lbMandante2: TLabel;
     lbMandanteMult: TLabel;
-    lbOdd: TLabel;
-    lbOdd1: TLabel;
+    lbOdd:      TLabel;
+    lbOdd1:     TLabel;
     lbVisitante2: TLabel;
     lbVisitanteMult: TLabel;
     lsbJogosNA: TListBox;
-    pcApostas: TPageControl;
+    pcApostas:  TPageControl;
     popupLinhas: TPopupMenu;
     qrJogosCodJogo: TLargeintField;
     qrJogosCompetio: TStringField;
@@ -89,48 +90,44 @@ type
     scriptNovaAposta: TSQLScript;
     scriptNovoJogo: TSQLScript;
     scriptNovoMercado: TSQLScript;
-    qrJogos: TSQLQuery;
+    qrJogos:    TSQLQuery;
     tsMultipla: TTabSheet;
-    tsSimples: TTabSheet;
+    tsSimples:  TTabSheet;
     transactionNovaAposta: TSQLTransaction;
     procedure btnAddJogoClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure btnNovaLinhaMultClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure btnNovaLinhaClick(Sender: TObject);
-    procedure cbCompeticaoChange(Sender: TObject);
-    procedure cbCompMultChange(Sender: TObject);
-    procedure cbMandanteMultChange(Sender: TObject);
-    procedure cbUnidadeChange(Sender: TObject);
-    procedure cbUnidadeMultChange(Sender: TObject);
-    procedure cbVisitanteChange(Sender: TObject);
-    procedure cbVisitanteMultChange(Sender: TObject);
-    procedure deApostaChange(Sender: TObject);
-    procedure deApostaMultChange(Sender: TObject);
-    procedure edtOddChange(Sender: TObject);
-    procedure edtValorChange(Sender: TObject);
     procedure edtValorKeyPress(Sender: TObject; var Key: char);
     procedure edtValorMouseEnter(Sender: TObject);
     procedure edtValorMouseLeave(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
-    procedure grdLinhaMultCellClick(Column: TColumn);
     procedure grdLinhaMultEditingDone(Sender: TObject);
     procedure grdLinhaMultKeyPress(Sender: TObject; var Key: char);
-    procedure grdNovaApostaCellClick(Column: TColumn);
+    procedure ClicarBotaoColunaNovaAposta(Sender: TObject; aCol, aRow: integer);
+    procedure EditarOddAposta(Column: TColumn);
     procedure grdNovaApostaEditingDone(Sender: TObject);
-    procedure grdNovaApostaKeyPress(Sender: TObject; var Key: char);
+    procedure grdNovaApostaMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: integer);
     procedure lsbJogosNAClick(Sender: TObject);
     procedure pcApostasChange(Sender: TObject);
     procedure pcApostasChanging(Sender: TObject; var AllowChange: boolean);
-    procedure pcApostasEnter(Sender: TObject);
-    procedure tsMultiplaEnter(Sender: TObject);
+    procedure popupLinhasPopup(Sender: TObject);
     procedure tsMultiplaShow(Sender: TObject);
-    procedure tsSimplesEnter(Sender: TObject);
     procedure tsSimplesShow(Sender: TObject);
 
     procedure MudarUnidade(Sender: TObject);
     procedure LimparControle(Sender: TObject);
+    procedure SalvaColuna(Sender: TObject);
+    procedure AdicionaMetodosLinhasStatus(Column: TColumn);
+    procedure AutoFillETrocaDecimal(Sender: TObject; var Key: char);
+    procedure HabilitaSemprePickList(Sender: TObject; const Rect: TRect;
+      DataCol: integer; Column: TColumn; State: TGridDrawState);
+    procedure HabilitarBotoes(Sender: TObject);
+    procedure SalvarAoClicar(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: integer);
   private
     MotivoOk: boolean;
     procedure CalcularValorAposta;
@@ -146,7 +143,7 @@ type
   end;
 
   TItemInfo = class
-    Text: string;
+    Text:    string;
     CodJogo: integer;
   end;
 
@@ -217,7 +214,7 @@ begin
     qrJogos.First;
     while not qrJogos.EOF do
     begin
-      InfoJogo := TItemInfo.Create;
+      InfoJogo      := TItemInfo.Create;
       InfoJogo.Text := qrJogos.FieldByName('Jogo').AsString;
       InfoJogo.CodJogo := qrJogos.FieldByName('CodJogo').AsInteger;
       ListaJogo.Add(InfoJogo);
@@ -227,10 +224,10 @@ begin
   end;
   HabilitarBotaoOk;
 
-  cbCompMult.Text := '';
-  cbMandanteMult.Text := '';
+  cbCompMult.Text      := '';
+  cbMandanteMult.Text  := '';
   cbVisitanteMult.Text := '';
-  btnAddJogo.Enabled := False;
+  btnAddJogo.Enabled   := False;
 
   lsbJogosNA.ItemIndex := lsbJogosNA.Items.IndexOf(InfoJogo.Text);
   lsbJogosNAClick(nil);
@@ -242,7 +239,7 @@ procedure TformNovaAposta.FormShow(Sender: TObject);
 var
   qrNACompeticao, qrNATimes: TSQLQuery;
 begin
-  MotivoOk := False;
+  MotivoOk      := False;
   GlobalMultipla := False;
   Screen.Cursor := crAppStart;
   tsSimples.OnHide := @LimparControle;
@@ -254,8 +251,9 @@ begin
   HabilitarBotaoOk;
   writeln('Criando aposta');
   writeln('Atualizando o query');
-  if not qrNovaAposta.Active then qrNovaAposta.Open;
-  qrNovaAposta.Refresh;
+  if not qrNovaAposta.Active then qrNovaAposta.Open
+  else
+    qrNovaAposta.Refresh;
   CalcularValorAposta;
   //btnOk.Enabled := False;
 
@@ -317,100 +315,18 @@ begin
   tsSimples.Show;
 end;
 
-procedure TformNovaAposta.grdLinhaMultCellClick(Column: TColumn);
-var
-  P: TPoint;
-  Query: TSQLQuery;
-  Item: TMenuItem;
-begin
-  qrLinhaMultipla.Edit;
-  Query := TSQLQuery.Create(nil);
-  Query.DataBase := formPrincipal.conectBancoDados;
-  Screen.Cursor := crAppStart;
-  popupLinhas.Items.Clear;
-
-  ColunaAtual := Column;
-
-  case Column.FieldName of
-    'Método':
-    begin
-      if Query.Active then Query.Close;
-      Query.SQL.Text := 'SELECT Nome FROM Métodos';
-      Query.Open;
-    end;
-    'Linha':
-    begin
-      if Query.Active then Query.Close;
-      Query.SQL.Text :=
-        'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
-      Query.ParamByName('SelecMetodo').AsString :=
-        qrLinhaMultipla.FieldByName('Método').AsString;
-      Query.Open;
-    end;
-    'Situacao':
-    begin
-      popupLinhas.Items.Clear;
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Pré-live';
-      Item.OnClick := @AtualizaMetLinMult;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Green';
-      Item.OnClick := @AtualizaMetLinMult;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Red';
-      Item.OnClick := @AtualizaMetLinMult;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Anulada';
-      Item.OnClick := @AtualizaMetLinMult;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Meio Green';
-      Item.OnClick := @AtualizaMetLinMult;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Meio Red';
-      Item.OnClick := @AtualizaMetLinMult;
-      popupLinhas.Items.Add(Item);
-    end;
-  end;
-  while not Query.EOF do
-  begin
-    Item := TMenuItem.Create(popupLinhas);
-    Item.Caption := Query.FieldByName('Nome').AsString;
-    Item.OnClick := @AtualizaMetLinMult;
-    popupLinhas.Items.Add(Item);
-    Query.Next;
-  end;
-
-  P := Mouse.CursorPos;
-  popupLinhas.PopUp(P.X, P.Y);
-  Screen.Cursor := crDefault;
-  Query.Free;
-end;
-
 procedure TformNovaAposta.grdLinhaMultEditingDone(Sender: TObject);
 begin
   Screen.Cursor := crAppStart;
-  try
-    qrLinhaMultipla.Edit;
-    qrLinhaMultipla.Post;
-    writeln('Postando alterações');
-    qrLinhaMultipla.ApplyUpdates;
-    qrLinhaMultipla.Refresh;
-  except
-    on E: Exception do
-    begin
-      writeln('Erro: ' + E.Message);
+  with qrLinhaMultipla do
+    if (State in [dsInsert, dsEdit]) then
+    try
+      Post;
+      ApplyUpdates;
+      Refresh;
+    except
+      Cancel;
     end;
-  end;
   qrLinhaMultipla.Edit;
   DefineOdd;
   HabilitarBotaoOk;
@@ -419,128 +335,140 @@ end;
 
 procedure TformNovaAposta.grdLinhaMultKeyPress(Sender: TObject; var Key: char);
 begin
-  if FormatSettings.DecimalSeparator = ',' then
-    if Key = '.' then
-      Key := ','
-    else if FormatSettings.DecimalSeparator = '.' then
-      if Key = ',' then
-        Key := '.';
-  DefineOdd;
+
 end;
 
-procedure TformNovaAposta.grdNovaApostaCellClick(Column: TColumn);
+procedure TformNovaAposta.ClicarBotaoColunaNovaAposta(Sender: TObject;
+  aCol, aRow: integer);
 var
-  P: TPoint;
-  Query: TSQLQuery;
-  Item: TMenuItem;
+  P:      TPoint;
+  Query:  TDataSet;
+  Grid:   TDBGrid;
+  Item:   TMenuItem;
+  Indice: integer;
 begin
-  qrNovaAposta.Edit;
-  Query := TSQLQuery.Create(nil);
-  Query.DataBase := formPrincipal.conectBancoDados;
   Screen.Cursor := crAppStart;
+  Grid := TDBGrid(Sender);
+  Query := Grid.DataSource.DataSet;
+
   popupLinhas.Items.Clear;
-
-  ColunaAtual := Column;
-
-  case Column.FieldName of
-    'Método':
-    begin
-      if Query.Active then Query.Close;
-      Query.SQL.Text := 'SELECT Nome FROM Métodos';
-      Query.Open;
-    end;
-    'Linha':
-    begin
-      if Query.Active then Query.Close;
-      Query.SQL.Text :=
-        'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
-      Query.ParamByName('SelecMetodo').AsString :=
-        qrNovaAposta.FieldByName('Método').AsString;
-      Query.Open;
-    end;
-    'Situacao':
-    begin
-      popupLinhas.Items.Clear;
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Pré-live';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Green';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Red';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Anulada';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Meio Green';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Meio Red';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-    end;
-  end;
-  while not Query.EOF do
+  with Grid do
   begin
-    Item := TMenuItem.Create(popupLinhas);
-    Item.Caption := Query.FieldByName('Nome').AsString;
-    Item.OnClick := @AtualizaMetodoLinha;
-    popupLinhas.Items.Add(Item);
-    Query.Next;
-  end;
+    ColunaAtual := Columns.ColumnByFieldname(SelectedField.FieldName);
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := formPrincipal.conectBancoDados;
+      case SelectedField.FieldName of
+        'Método':
+        begin
+          if Active then Close;
+          SQL.Text := 'SELECT Nome FROM Métodos';
+          Open;
+        end;
+        'Linha':
+        begin
+          if Query.Active then Close;
+          SQL.Text :=
+            'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
+          ParamByName('SelecMetodo').AsString :=
+            Query.FieldByName('Método').AsString;
+          Open;
+        end;
+        'Situacao':
+        begin
+          popupLinhas.Items.Clear;
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := 'Pré-live';
+          Item.OnClick := @AtualizaMetodoLinha;
+          popupLinhas.Items.Add(Item);
 
-  P := Mouse.CursorPos;
-  popupLinhas.PopUp(P.X, P.Y);
-  Screen.Cursor := crDefault;
-  Query.Free;
-  HabilitarBotaoOk;
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := 'Green';
+          Item.OnClick := @AtualizaMetodoLinha;
+          popupLinhas.Items.Add(Item);
+
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := 'Red';
+          Item.OnClick := @AtualizaMetodoLinha;
+          popupLinhas.Items.Add(Item);
+
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := 'Anulada';
+          Item.OnClick := @AtualizaMetodoLinha;
+          popupLinhas.Items.Add(Item);
+
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := 'Meio Green';
+          Item.OnClick := @AtualizaMetodoLinha;
+          popupLinhas.Items.Add(Item);
+
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := 'Meio Red';
+          Item.OnClick := @AtualizaMetodoLinha;
+          popupLinhas.Items.Add(Item);
+        end;
+      end;
+      while not EOF do
+      begin
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := FieldByName('Nome').AsString;
+        Item.OnClick := @AtualizaMetodoLinha;
+        popupLinhas.Items.Add(Item);
+        Next;
+      end;
+    finally
+      Free;
+    end;
+    P := Mouse.CursorPos;
+    popupLinhas.PopUp(P.X, P.Y);
+    Screen.Cursor := crDefault;
+    HabilitarBotaoOk;
+  end;
+end;
+
+procedure TformNovaAposta.EditarOddAposta(Column: TColumn);
+var
+  Query: TSQLQuery;
+  Grid:  TDBGrid;
+begin
+  //Verificando se a aposta é simples ou múltipla
+  if tsSimples.Showing then begin
+    Query := qrNovaAposta;
+    Grid  := grdNovaAposta;
+  end
+  else begin
+    Query := qrLinhaMultipla;
+    Grid  := grdLinhaMult;
+  end;
+  ColunaAtual := Column;
+  if Column.FieldName = 'Odd' then Grid.EditorMode := True;
 end;
 
 procedure TformNovaAposta.grdNovaApostaEditingDone(Sender: TObject);
 begin
   Screen.Cursor := crAppStart;
-  qrNovaAposta.Edit;
-  try
-    writeln('Postando alterações');
-    qrNovaAposta.Post;
-    qrNovaAposta.ApplyUpdates;
-    qrNovaAposta.Refresh;
-  except
-    on E: Exception do
-    begin
-      MessageDlg('Erro',
-        'Erro ao atualizar mercado, tente novamente. Se o problema persistir ' +
-        'informe no Github com a seguinte mensagem: ' + sLineBreak + E.Message,
-        mtError, [mbOK], 0);
+  with qrNovaAposta do
+    if (State in [dsInsert, dsEdit]) then
+    try
+      writeln('Postando alterações após editar');
+      Post;
+      ApplyUpdates;
+    except
+      Cancel;
     end;
-  end;
-  qrNovaAposta.Edit;
+  //qrNovaAposta.Edit;
   DefineOdd;
   HabilitarBotaoOk;
   Screen.Cursor := crDefault;
 end;
 
-procedure TformNovaAposta.grdNovaApostaKeyPress(Sender: TObject; var Key: char);
+procedure TformNovaAposta.grdNovaApostaMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
-  if FormatSettings.DecimalSeparator = ',' then
-    if Key = '.' then
-      Key := ','
-    else if FormatSettings.DecimalSeparator = '.' then
-      if Key = ',' then
-        Key := '.';
-  DefineOdd;
+  with qrNovaAPosta do
+    if (State in [dsEdit, dsInsert]) then Post
+    else
+      Edit;
 end;
 
 procedure TformNovaAposta.lsbJogosNAClick(Sender: TObject);
@@ -580,7 +508,7 @@ begin
     end;
     if not grdLinhaMult.Enabled and not btnNovaLinhaMult.Enabled then
     begin
-      grdLinhaMult.Enabled := True;
+      grdLinhaMult.Enabled     := True;
       btnNovaLinhaMult.Enabled := True;
     end;
   end;
@@ -594,11 +522,10 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TformNovaAposta.pcApostasEnter(Sender: TObject);
+procedure TformNovaAposta.popupLinhasPopup(Sender: TObject);
 begin
-
+  EditarOddAposta(ColunaAtual);
 end;
-
 
 procedure TformNovaAposta.pcApostasChange(Sender: TObject);
 begin
@@ -610,11 +537,6 @@ begin
     GlobalMultipla := True
   else if tsMultipla.Showing then
     GlobalMultipla := False;
-end;
-
-procedure TformNovaAposta.tsMultiplaEnter(Sender: TObject);
-begin
-  //deApostaMult.SetFocus;
 end;
 
 procedure TformNovaAposta.tsMultiplaShow(Sender: TObject);
@@ -650,11 +572,6 @@ begin
     end;
     Free;
   end;
-end;
-
-procedure TformNovaAposta.tsSimplesEnter(Sender: TObject);
-begin
-  //deAposta.SetFocus;
 end;
 
 procedure TformNovaAposta.tsSimplesShow(Sender: TObject);
@@ -716,28 +633,28 @@ begin
   //Calculando valor da aposta
   case cbUnidade.Text of
     '0,25 Un': CalcUnidade := 0.25;
-    '0,5 Un': CalcUnidade := 0.5;
+    '0,5 Un': CalcUnidade  := 0.5;
     '0,75 Un': CalcUnidade := 0.75;
-    '1 Un': CalcUnidade := 1.0;
+    '1 Un': CalcUnidade    := 1.0;
     '1,25 Un': CalcUnidade := 1.25;
-    '1,5 Un': CalcUnidade := 1.5;
+    '1,5 Un': CalcUnidade  := 1.5;
     '1,75 Un': CalcUnidade := 1.75;
-    '2 Un': CalcUnidade := 2.0;
+    '2 Un': CalcUnidade    := 2.0;
     else
       CalcUnidade := 1.0;
   end;
-  ValorAposta := (stakeAposta * CalcUnidade);
+  ValorAposta   := (stakeAposta * CalcUnidade);
   edtValor.Text := FormatFloat('0.00', ValorAposta);
 
   case cbUnidadeMult.Text of
     '0,25 Un': CalcUnidade := 0.25;
-    '0,5 Un': CalcUnidade := 0.5;
+    '0,5 Un': CalcUnidade  := 0.5;
     '0,75 Un': CalcUnidade := 0.75;
-    '1 Un': CalcUnidade := 1.0;
+    '1 Un': CalcUnidade    := 1.0;
     '1,25 Un': CalcUnidade := 1.25;
-    '1,5 Un': CalcUnidade := 1.5;
+    '1,5 Un': CalcUnidade  := 1.5;
     '1,75 Un': CalcUnidade := 1.75;
-    '2 Un': CalcUnidade := 2.0;
+    '2 Un': CalcUnidade    := 2.0;
     else
       CalcUnidade := 1.0;
   end;
@@ -752,10 +669,11 @@ begin
     //writeln('Verificando se pode habilitar o botão Ok em aposta simples');
     if (deAposta.Text <> '') and (cbCompeticao.Text <> '') and
       (cbMandante.Text <> '') and (cbVisitante.Text <> '') and
-      (edtValor.Text <> '') and (Odd <> 0) and
-      not qrNovaAposta.FieldByName('Método').IsNull and not
+      (edtValor.Text <> '') and (Odd <> 0) and not
+      qrNovaAposta.FieldByName('Método').IsNull and not
       qrNovaAposta.FieldByName('Linha').IsNull and not
-      qrNovaAposta.FieldByName('Situacao').IsNull then btnOk.Enabled := True
+      qrNovaAposta.FieldByName('Situacao').IsNull then
+      btnOk.Enabled := True
     else
       btnOk.Enabled := False;
   end
@@ -763,9 +681,8 @@ begin
   begin
     //writeln('Verificando se pode habilitar o botão Ok em aposta múltipla');
     if (deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
-      (Odd <> 0) and not
-      qrLinhaMultipla.FieldByName('Método').IsNull and not
-      qrLinhaMultipla.FieldByName('Linha').IsNull and not
+      (Odd <> 0) and not qrLinhaMultipla.FieldByName('Método').IsNull and
+      not qrLinhaMultipla.FieldByName('Linha').IsNull and not
       qrLinhaMultipla.FieldByName('Situacao').IsNull then btnOk.Enabled := True
     else
       btnOk.Enabled := False;
@@ -777,13 +694,15 @@ var
   SelectedItem: TMenuItem;
 begin
   SelectedItem := TMenuItem(Sender);
-  if Assigned(ColunaAtual) and Assigned(SelectedItem) then
+  with qrNovaAposta do
   begin
-    qrNovaAposta.Edit;
-    qrNovaAposta.FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
-    writeln('Item selecionado: ', SelectedItem.Caption);
-    qrNovaAposta.Post;
-    DefineOdd;
+    if Assigned(ColunaAtual) and Assigned(SelectedItem) then
+    begin
+      if not (State in [dsEdit, dsInsert]) then Edit;
+      FieldByName(ColunaAtual.FieldName).AsString := SelectedItem.Caption;
+      writeln('Item selecionado: ', SelectedItem.Caption);
+      Post;
+    end;
   end;
 end;
 
@@ -794,22 +713,18 @@ begin
   SelectedItem := TMenuItem(Sender);
   if Assigned(ColunaAtual) and Assigned(SelectedItem) then
   begin
-    try
-      qrLinhaMultipla.Edit;
-      qrLinhaMultipla.FieldByName(ColunaAtual.FieldName).AsString :=
-        SelectedItem.Caption;
-      writeln('Item selecionado: ', SelectedItem.Caption);
-
-      if (qrLinhaMultipla.State = dsInsert) or (qrLinhaMultipla.State = dsEdit) then
-        qrLinhaMultipla.Post;
-    except
-      on E: Exception do
-      begin
-        writeln('Erro: ' + E.Message);
-        qrLinhaMultipla.Cancel;
+    with qrLinhaMultipla do
+    begin
+      Edit;
+      case ColunaAtual.FieldName of
+        'Método': FieldByName('Método').AsString := SelectedItem.Caption;
+        'Linha': FieldByName('Linha').AsString     := SelectedItem.Caption;
+        'Situacao': FieldByName('Situacao').AsString := SelectedItem.Caption;
       end;
+      writeln('Item selecionado: ', SelectedItem.Caption);
+      Post;
+      DefineOdd;
     end;
-    DefineOdd;
   end;
 end;
 
@@ -834,6 +749,8 @@ var
 begin
   with formPrincipal do
   begin
+    with qrLinhaMultipla do
+      if State = dsEdit then Post;
     if not qrLinhaMultipla.Active then qrLinhaMultipla.Open;
     qrLinhaMultipla.Insert;
     qrLinhaMultipla.Edit;
@@ -858,10 +775,10 @@ var
   Competicao, Jogo, Mandante, Visitante: string;
 begin
   try
-    Data := qrNovaAposta.FieldByName('Data').AsDateTime;
+    Data      := qrNovaAposta.FieldByName('Data').AsDateTime;
     Competicao := qrNovaAposta.FieldByName('Competicao').AsString;
-    Jogo := qrNovaAposta.FieldByName('Jogo').AsString;
-    Mandante := qrNovaAposta.FieldByName('Mandante').AsString;
+    Jogo      := qrNovaAposta.FieldByName('Jogo').AsString;
+    Mandante  := qrNovaAposta.FieldByName('Mandante').AsString;
     Visitante := qrNovaAposta.FieldByName('Visitante').AsString;
     writeln('Inserido nova linha');
     qrNovaAposta.Insert;
@@ -887,29 +804,28 @@ begin
   end;
 end;
 
-
-procedure TformNovaAposta.cbCompeticaoChange(Sender: TObject);
+procedure TformNovaAposta.HabilitarBotoes(Sender: TObject);
 begin
   HabilitarBotaoOk;
   HabilitarBtnNovaLinha;
 end;
 
-procedure TformNovaAposta.cbCompMultChange(Sender: TObject);
+procedure TformNovaAposta.SalvarAoClicar(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+var
+  Query: TDataSet;
+  Grid:  TDBGrid;
 begin
-  HabilitarBotaoOk;
-  HabilitaBotaoAddJogo;
-end;
+  Grid  := TDBGrid(Sender);
+  Query := Grid.DataSource.DataSet;
 
-procedure TformNovaAposta.cbUnidadeChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-  HabilitarBtnNovaLinha;
-end;
-
-procedure TformNovaAposta.cbMandanteMultChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-  HabilitaBotaoAddJogo;
+  with Query do
+    if (State in [dsEdit, dsInsert]) then begin
+      Post;
+      DefineOdd;
+    end
+    else
+      Edit;
 end;
 
 procedure TformNovaAposta.MudarUnidade(Sender: TObject);
@@ -920,81 +836,29 @@ begin
     if cbUnidade.Text = 'Outro Valor' then
     begin
       edtValor.ReadOnly := False;
-      edtValor.Color := clWindow;
-      edtValor.Cursor := crIBeam;
+      edtValor.Color    := clWindow;
+      edtValor.Cursor   := crIBeam;
     end
     else
     begin
       edtValor.ReadOnly := True;
-      edtValor.Color := clInactiveBorder;
-      edtValor.Cursor := crNo;
+      edtValor.Color    := clInactiveBorder;
+      edtValor.Cursor   := crNo;
     end
   else if Sender = cbUnidadeMult then
     if cbUnidadeMult.Text = 'Outro Valor' then
     begin
       edtValorMult.ReadOnly := False;
-      edtValorMult.Color := clWindow;
-      edtValorMult.Cursor := crIBeam;
+      edtValorMult.Color    := clWindow;
+      edtValorMult.Cursor   := crIBeam;
     end
     else
     begin
       edtValorMult.ReadOnly := True;
-      edtValorMult.Color := clInactiveBorder;
-      edtValorMult.Cursor := crNo;
+      edtValorMult.Color    := clInactiveBorder;
+      edtValorMult.Cursor   := crNo;
     end;
   CalcularValorAposta;
-  HabilitarBotaoOk;
-end;
-
-procedure TformNovaAposta.cbUnidadeMultChange(Sender: TObject);
-begin
-  if cbUnidadeMult.Text = 'Outro Valor' then
-  begin
-    edtValorMult.ReadOnly := False;
-    edtValorMult.Color := clWindow;
-    edtValorMult.Cursor := crIBeam;
-  end
-  else
-  begin
-    edtValorMult.ReadOnly := True;
-    edtValorMult.Color := clInactiveBorder;
-    edtValorMult.Cursor := crNo;
-  end;
-  CalcularValorAposta;
-  HabilitarBotaoOk;
-end;
-
-
-
-procedure TformNovaAposta.cbVisitanteChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-  HabilitarBtnNovaLinha;
-end;
-
-procedure TformNovaAposta.cbVisitanteMultChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-  HabilitaBotaoAddJogo;
-end;
-
-procedure TformNovaAposta.deApostaChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-end;
-
-procedure TformNovaAposta.deApostaMultChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-end;
-
-procedure TformNovaAposta.edtOddChange(Sender: TObject);
-begin
-  HabilitarBotaoOk;
-end;
-
-procedure TformNovaAposta.edtValorChange(Sender: TObject);
-begin
   HabilitarBotaoOk;
 end;
 
@@ -1333,6 +1197,7 @@ var
   OddFormat: string;
 begin
   with formPrincipal do
+  begin
     with TSQLQuery.Create(nil) do
     try
       DataBase := conectBancoDados;
@@ -1355,8 +1220,165 @@ begin
     finally
       Free;
     end;
+  end;
   if tsSimples.Showing then lbOddSimples.Caption := FormatFloat('0.00', Odd)
   else if tsMultipla.Showing then lbOddMult.Caption := FormatFloat('0.00', Odd);
+end;
+
+procedure TformNovaAposta.AdicionaMetodosLinhasStatus(Column: TColumn);
+var
+  Query:  TSQLQuery;
+  Grid:   TDBGrid;
+  Metodo: string;
+begin
+  if tsSimples.Showing then
+  begin
+    Query := qrNovaAposta;
+    Grid  := grdNovaAposta;
+  end
+  else
+  begin
+    Query := qrLinhaMultipla;
+    Grid  := grdLinhaMult;
+  end;
+  Query.Edit;
+  with Grid do
+  begin
+    SelectedIndex := Column.Index;
+    SetFocus;
+  end;
+
+  Column.PickList.Clear;
+
+  with TSQLQuery.Create(nil) do
+  try
+    DataBase := formPrincipal.conectBancoDados;
+    case Column.FieldName of
+      'Método':
+      begin
+        if Grid.EditorMode then Grid.EditingDone;
+        SQL.Text := 'SELECT Nome FROM Métodos';
+        Open;
+        while not EOF do
+        begin
+          Column.PickList.Add(FieldByName('Nome').AsString);
+          Next;
+        end;
+        Close;
+      end;
+
+      'Linha':
+      begin
+        if Grid.EditorMode then Grid.EditingDone;
+        Metodo   := Query.FieldByName('Método').AsString;
+        SQL.Text := 'SELECT L.Nome AS Linha FROM Linhas L LEFT JOIN ' +
+          'Métodos M ON M.Cod_Metodo = L.Cod_Metodo WHERE M.Nome = :met';
+        writeln('Método: ', Metodo);
+        ParamByName('met').AsString := Metodo;
+        Open;
+        while not EOF do
+        begin
+          Column.PickList.Add(FieldByName('Linha').AsString);
+          Next;
+        end;
+        Close;
+      end;
+
+      'Odd': Query.Edit;
+
+      'Situacao':
+      begin
+        if Grid.EditorMode then Grid.EditingDone;
+        Column.PickList.Add('Pré-live');
+        Column.PickList.Add('Green');
+        Column.PickList.Add('Red');
+        Column.PickList.Add('Anulada');
+        Column.PickList.Add('Meio Green');
+        Column.PickList.Add('Meio Red');
+      end;
+    end;
+  finally
+    Free;
+  end;
+end;
+
+procedure TformNovaAposta.AutoFillETrocaDecimal(Sender: TObject; var Key: char);
+var
+  i:     integer;
+  Texto: string;
+  Grid:  TDBGrid;
+begin
+  if tsSimples.Showing then
+    Grid := grdNovaAposta
+  else
+    Grid := grdLinhaMult;
+  with Grid do
+    {if (SelectedField.FieldName = 'Método') or
+      (SelectedField.FieldName = 'Linha') or
+      (SelectedField.FieldName = 'Situacao') then begin
+      Texto := SelectedField.Text + Key;
+      with Columns[SelectedIndex] do
+        for i := 0 to PickList.Count - 1 do
+          if Pos(LowerCase(Texto), LowerCase(PickList[i])) = 1 then begin
+            SelectedField.Text := PickList[i];
+            //SelectedField.SelStart := Length(Texto);
+            Key := #0;
+            Break;
+          end;
+    end
+    else}
+    case FormatSettings.DecimalSeparator of
+      ',':
+        if Key = '.' then
+          Key := ',';
+      '.':
+        if Key = ',' then
+          Key := '.';
+    end;
+end;
+
+procedure TformNovaAposta.HabilitaSemprePickList(Sender: TObject;
+  const Rect: TRect; DataCol: integer; Column: TColumn; State: TGridDrawState);
+var
+  Grid: TDBGrid;
+begin
+  if tsSimples.Showing then Grid := grdNovaAposta
+  else
+    Grid := grdLinhaMult;
+
+  with Grid do
+    if Column.PickList.Count > 0 then
+    begin
+      Canvas.FillRect(Rect);
+      Canvas.MoveTo(Rect.Right - 15, Rect.Top + 5);
+      Canvas.LineTo(Rect.Right - 10, Rect.Top + 5);
+      Canvas.LineTo(Rect.Right - 12, Rect.Top + 7);
+      Canvas.LineTo(Rect.Right - 8, Rect.Top + 7);
+      Canvas.LineTo(Rect.Right - 10, Rect.Top + 9);
+      Canvas.LineTo(Rect.Right - 15, Rect.Top + 9);
+      Canvas.LineTo(Rect.Right - 12, Rect.Top + 7);
+    end;
+end;
+
+
+procedure TformNovaAposta.SalvaColuna(Sender: TObject);
+var
+  Query: TSQLQuery;
+begin
+  if tsSimples.Showing then
+    Query := qrNovaAposta
+  else
+    Query := qrLinhaMultipla;
+  with Query do
+    if (State in [dsInsert, dsEdit]) then
+    try
+      writeln('Postando alterações no procedimento "Salva coluna"');
+      Post;
+      ApplyUpdates;
+      Refresh;
+    except
+      Cancel;
+    end;
 end;
 
 procedure TformNovaAposta.LimparControle(Sender: TObject);

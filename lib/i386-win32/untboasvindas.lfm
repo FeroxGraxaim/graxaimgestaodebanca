@@ -2965,7 +2965,7 @@ object formBoasVindas: TformBoasVindas
     Caption = 'Doação'
     GlyphShowMode = gsmAlways
     Kind = bkAll
-    OnClick = btnDoacaoClick
+    OnClick = CliqueBotao
     TabOrder = 3
   end
   object btnGitHub: TBitBtn
@@ -3103,7 +3103,7 @@ object formBoasVindas: TformBoasVindas
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000
     }
-    OnClick = btnGitHubClick
+    OnClick = CliqueBotao
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4

@@ -1,18 +1,18 @@
 unit untApostas;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
 uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
-  DBExtCtrls, Menus, ActnList, CheckLst, Buttons, ExtCtrls, JSONPropStorage,
-  EditBtn, TASources, TAGraph, TARadialSeries, Types, TASeries, TACustomSource,
-  TADbSource, TACustomSeries, TAChartLiveView, TAChartCombos, TAMultiSeries,
-  DateUtils, Math, Grids, ValEdit, TAChartAxisUtils, untMain;
+  Menus, ActnList, Buttons, ExtCtrls,
+  EditBtn, TAGraph, TARadialSeries, Types, TASeries,
+  TADbSource, TACustomSeries, TAMultiSeries,
+  DateUtils, Math, Grids, untMain;
 
-procedure AtualizaQRApostas;
 procedure CalculaDadosAposta;
 //procedure DefineOdd;
 
@@ -24,55 +24,73 @@ type
 
   TEventosApostas = class(TformPrincipal)
   public
+
+    //Procedimento inicial
     procedure tsApostasShow(Sender: TObject);
-    procedure grdApostasExit(Sender: TObject);
-    procedure grdApostasCellClick(Column: TColumn);
+
+    //Botões
     procedure btnRemoverApostaClick(Sender: TObject);
     procedure btnNovaApostaClick(Sender: TObject);
-    procedure CorrigeBancaFinalApostas;
-    procedure SalvarEdicaoGrid;
-    procedure btnAtualizaApostasClick(Sender: TObject);
-    procedure SelecionarUltimaLinha;
-    procedure AtualizaApostas;
-    procedure PreencheDadosAposta(CodAposta: integer);
-    procedure grdDadosApDrawColumnCell(Sender: TObject; const Rect: TRect;
-      DataCol: integer; Column: TColumn; State: TGridDrawState);
     procedure btnCashoutClick(Sender: TObject);
-    procedure qrApostasCalcFields(DataSet: TDataSet);
-    procedure CalcularBancaFinal;
     procedure FiltrarAposta(Sender: TObject);
     procedure LimparFiltros(Sender: TObject);
     procedure TudoGreenRed(Sender: TObject);
-    procedure AoSairGrdApostas(Sender: TObject);
-    procedure TrocarSeparadorDecimal(Sender: TObject; var Key: char);
     procedure AbrirEditarAposta(Sender: TObject);
-    procedure CarregaJogos;
-    procedure ClicarNoJogo(Sender: TObject);
     procedure AnotarNaAposta(Sender: TObject);
 
+    //Tabelas e queries
+    procedure AoSairGrdApostas(Sender: TObject);
+    procedure ClicarNoJogo(Sender: TObject);
+    procedure AtualizaQRApostas(DataSet: TDataSet);
+    procedure AposEditarAposta(Sender: TObject);
+    procedure AposEditarDadosAposta(Sender: TObject);
+    procedure AoClicarDadosAposta(Sender: TObject);
+    procedure AposAbrirApostas(DataSet: TDataSet);
     procedure grdApostasDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: integer; Column: TColumn; State: TGridDrawState);
+    procedure grdDadosApDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: integer; Column: TColumn; State: TGridDrawState);
+    procedure qrApostasCalcFields(DataSet: TDataSet);
+    procedure grdApostasExit(Sender: TObject);
+    procedure grdApostasCellClick(Column: TColumn);
+    procedure DadosApostaSalvar(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: integer);
+    procedure ParametrosApostas(DataSet: TDataSet);
+
+
+
+    //Procedimentos diversos
+    procedure CorrigeBancaFinalApostas;
+    procedure SalvarEdicaoGrid;
+    procedure SelecionarUltimaLinha;
+    procedure AtualizaApostas;
+    procedure PreencheDadosAposta(CodAposta: integer);
+    procedure CalcularBancaFinal;
+    procedure TrocarSeparadorDecimal(Sender: TObject; var Key: char);
+    procedure CarregaJogos;
+    procedure HabilitarRemoverAposta;
+
   end;
 
   TItemInfo = class
-    Text: string;
+    Text:    string;
     CodJogo: integer;
   end;
 
 type
   TDadosAposta = record
-    Jogo: string;
+    Jogo:   string;
     Metodo: string;
-    Linha: string;
-    Odd: string;
+    Linha:  string;
+    Odd:    string;
     Status: string;
   end;
 
 var
-  GridData: array of TDadosAposta;
-  ValorEstorno: double;
-  ListaJogo: TList;
-  InfoJogo: TItemInfo;
+  GridData:      array of TDadosAposta;
+  ValorEstorno:  double;
+  ListaJogo:     TList;
+  InfoJogo:      TItemInfo;
   GlobalCodJogo: integer;
 
 implementation
@@ -80,8 +98,10 @@ implementation
 uses untNA, untEditSimples, untEditMult;
 
 procedure TEventosApostas.tsApostasShow(Sender: TObject);
+var
+  ApostaSelecionada: boolean;
 begin
-  InfoJogo := TItemInfo.Create;
+  InfoJogo  := TItemInfo.Create;
   ListaJogo := TList.Create;
   with formPrincipal do
   begin
@@ -92,22 +112,22 @@ begin
     begin
       if Active then Close;
       ParamByName('primDia').AsString := Format('%.2d', [1]);
-      ParamByName('ultDia').AsString := Format('%.2d', [31]);
+      ParamByName('ultDia').AsString  := Format('%.2d', [31]);
       ParamByName('primMes').AsString := Format('%.2d', [mesSelecionado]);
-      ParamByName('ultMes').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('ultMes').AsString  := Format('%.2d', [mesSelecionado]);
       ParamByName('primAno').AsString := Format('%.2d', [anoSelecionado]);
-      ParamByName('ultAno').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('ultAno').AsString  := Format('%.4d', [anoSelecionado]);
       Open;
 
-      grdApostas.Enabled := not IsEmpty;
-
-      btnCashout.Enabled := False;
-      btnTudoGreen.Enabled := False;
-      btnTudoRed.Enabled := False;
-      grdDadosAp.Visible := False;
-      lsbJogos.Visible := False;
-      mmAnotAposta.Visible := False;
-      mmAnotAposta.Enabled := False;
+      grdApostas.Enabled    := not IsEmpty;
+      grdDadosAp.Visible    := False;
+      btnCashout.Enabled    := grdDadosAp.Visible;
+      btnTudoGreen.Enabled  := grdDadosAp.Visible;
+      btnTudoRed.Enabled    := grdDadosAp.Visible;
+      btnEditAposta.Enabled := grdDadosAp.Visible;
+      lsbJogos.Visible      := grdDadosAp.Visible;
+      grbAnotacoes.Visible  := grdDadosAp.Visible;
+      HabilitarRemoverAposta;
 
       if grdApostas.Enabled then
       begin
@@ -124,28 +144,43 @@ begin
   begin
     GlobalCodAposta := qrApostas.FieldByName('Cod_Aposta').AsInteger;
     try
-      if Column.Field is TBooleanField then
-      begin
-        writeln('Detectada coluna booleana!');
-        BarraStatus.Panels[0].Text := 'Aposta marcada para remoção!';
-        qrApostas.Edit;
-        SalvarEdicaoGrid;
-        qrApostas.Edit;
-      end
-      else
-        BarraStatus.Panels[0].Text := 'Aposta selecionada!';
-      lsbJogos.Visible := True;
-      grdDadosAp.Visible := True;
-      mmAnotAposta.Visible := True;
-      btnTudoGreen.Enabled := True;
-      btnTudoRed.Enabled := True;
-      btnCashout.Enabled := True;
-      btnEditAposta.Enabled := True;
+      with grdApostas do
+        with qrApostas do
+        begin
+          if (State in [dsInsert, dsEdit]) then
+          try
+            Post;
+            ApplyUpdates;
+          except
+            Cancel;
+          end;
+          case SelectedField.FieldName of
+            'Selecao': begin
+              writeln('Detectada coluna booleana!');
+              BarraStatus.Panels[0].Text := 'Aposta marcada para remoção!';
+              qrApostas.Edit;
+              SalvarEdicaoGrid;
+              qrApostas.Edit;
+              HabilitarRemoverAposta;
+            end;
+            'Odd', 'Valor_Aposta': Edit;
+            else
+              BarraStatus.Panels[0].Text := 'Aposta selecionada!';
+          end;
+        end;
+      grdDadosAp.Visible    := true;
+      btnCashout.Enabled    := grdDadosAp.Visible;
+      btnTudoGreen.Enabled  := grdDadosAp.Visible;
+      btnTudoRed.Enabled    := grdDadosAp.Visible;
+      btnEditAposta.Enabled := grdDadosAp.Visible;
+      lsbJogos.Visible      := grdDadosAp.Visible;
+      grbAnotacoes.Visible  := grdDadosAp.Visible;
       CarregaJogos;
       if qrApostas.FieldByName('Cashout').AsBoolean = False then
-        btnCashout.Caption := 'Cashout'
+        btnCashout.Caption := 'Encerrar Aposta'
       else
-        btnCashout.Caption := 'Desfazer Cashout';
+        btnCashout.Caption := 'Desf. Encerram.';
+
       grdDadosAp.Invalidate;
     except
       on E: Exception do
@@ -160,16 +195,16 @@ end;
 procedure TEventosApostas.grdApostasExit(Sender: TObject);
 begin
   writeln('Saindo do grid');
-  grdDadosAp.Visible := False;
-  btnTudoGreen.Enabled := False;
-  btnTudoRed.Enabled := False;
-  btnCashout.Enabled := False;
+  grdDadosAp.Visible    := False;
+  btnTudoGreen.Enabled  := False;
+  btnTudoRed.Enabled    := False;
+  btnCashout.Enabled    := False;
   btnEditAposta.Enabled := False;
 end;
 
 procedure TEventosApostas.btnRemoverApostaClick(Sender: TObject);
 var
-  i: integer;
+  i:    integer;
   erro: boolean;
   ComandoErro: string;
   MensagemE: string;
@@ -183,16 +218,13 @@ begin
       qrApostas.Open;
     end;
 
-    if qrApostas.IsEmpty then
-    begin
-      ShowMessage('Não há apostas para remover.');
-      Exit;
-    end
-    else
+    if (qrApostas.FieldByName('Selecao').AsBoolean = False) or qrApostas.IsEmpty then
+      exit;
+
     try
-      if MessageDlg('Confirmação',
-        'Deseja realmente remover a(s) aposta(s) selecionada(s)?',
-        mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      if MessageDlg('Aviso', 'Deseja realmente remover a(s) aposta(s) ' +
+        'selecionada(s)? Essa ação NÃO poderá ser desfeita!',
+        mtWarning, [mbYes, mbNo], 0) = mrYes then
       try
         Screen.Cursor := crAppStart;
         BarraStatus.Panels[0].Text := 'Removendo aposta...';
@@ -210,42 +242,46 @@ begin
         on E: Exception do
         begin
           Screen.Cursor := crDefault;
-          ComandoErro := scriptRemoverAposta.Script[i];
+          ComandoErro   := scriptRemoverAposta.Script[i];
           transactionBancoDados.RollbackRetaining;
           writeln('Erro: ' + E.Message + 'Comando SQL: ', ComandoErro);
           MensagemE := E.Message;
-          erro := True;
+          erro      := True;
         end;
       end;
-      qrApostas.Open;
-      grdApostas.Invalidate;
-      if qrApostas.IsEmpty then
-        grdApostas.Enabled := False
-      else
-        grdApostas.Enabled := True;
-      if not grdApostas.Enabled then grdDadosAp.Visible := False;
+      with qrApostas do
+      begin
+        if Active then Refresh
+        else
+          Open;
+        grdApostas.Enabled := not IsEmpty;
+        btnRemoverAposta.Enabled := not IsEmpty;
+      end;
+
+      grdDadosAp.Visible := not grdApostas.Enabled;
 
       if erro then
-        raise Exception.Create('"Erro de banco de dados: ' + MensagemE +
-          sLineBreak + sLineBreak + 'Comando: ' + sLineBreak + ComandoErro)
+        raise Exception.Create('"Erro de banco de dados: ' +
+          MensagemE + sLineBreak + sLineBreak + 'Comando: ' + sLineBreak + ComandoErro)
       else
         Screen.Cursor := crDefault;
-      ShowMessage('Aposta(s) Removida(s)!');
     except
       on E: Exception do
       begin
-        Screen.Cursor := crDefault;
+        Screen.Cursor    := crDefault;
         BarraStatus.Panels[0].Text := 'Erro!';
         progStatus.Color := clRed;
         MessageDlg('Erro',
-          'Ocorreu um erro, tente novamente. Se o problema persistir favor informar no Github com a seguinte mensagem: '
-          + sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
+          'Ocorreu um erro, tente novamente. Se o problema persistir favor ' +
+          'informar no Github com a seguinte mensagem: ' + sLineBreak +
+          sLineBreak + E.Message, mtError, [mbOK], 0);
         writeln('Ocorreu um erro: ' + E.Message + ' Desfazendo alterações...');
         transactionBancoDados.RollbackRetaining;
       end;
     end;
     progStatus.Position := 0;
-    progStatus.Color := clDefault;
+    progStatus.Color    := clDefault;
+    HabilitarRemoverAposta;
   end;
 end;
 
@@ -275,7 +311,7 @@ begin
     BarraStatus.Panels[0].Text := 'Criando nova aposta...';
     try
       try
-        Screen.Cursor := crAppStart;
+        Screen.Cursor  := crAppStart;
         NovaApostaForm := TformNovaAposta.Create(nil);
         progStatus.Position := 33;
         conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
@@ -298,7 +334,7 @@ begin
       end;
     end;
     progStatus.Position := 0;
-    progStatus.Color := clDefault;
+    progStatus.Color    := clDefault;
 
     if not qrApostas.Active then qrApostas.Open
     else
@@ -364,8 +400,9 @@ begin
         BarraStatus.Panels[0].Text := 'Erro!';
         progStatus.Color := clRed;
         MessageDlg('Erro',
-          'Erro de banco de dados. Se o problema persistir, favor informar no Github com a seguinte mensagem: '
-          + E.Message, mtError, [mbOK], 0);
+          'Erro de banco de dados. Se o problema persistir, favor informar ' +
+          'no Github com a seguinte mensagem: ' + E.Message,
+          mtError, [mbOK], 0);
         qrApostas.Cancel;
         writeln('Ocorreu um erro: ' + E.Message + '. Revertendo alterações...');
         transactionBancoDados.RollbackRetaining;
@@ -375,8 +412,9 @@ begin
         BarraStatus.Panels[0].Text := 'Erro!';
         progStatus.Color := clRed;
         MessageDlg('Erro',
-          'Erro ao salvar dados, tente novamente. Se o problema persistir, favor informar no Github com a seguinte mensagem: '
-          + E.Message, mtError, [mbOK], 0);
+          'Erro ao salvar dados, tente novamente. Se o problema persistir, ' +
+          'favor informar no Github com a seguinte mensagem: ' +
+          E.Message, mtError, [mbOK], 0);
         writeln('Ocorreu um erro: ' + E.Message + '. Revertendo alterações...');
         transactionBancoDados.RollbackRetaining;
       end;
@@ -424,12 +462,6 @@ begin
   end;
 end;
 
-procedure TEventosApostas.btnAtualizaApostasClick(Sender: TObject);
-begin
-  CorrigeBancaFinalApostas;
-  formPrincipal.ReiniciarTodosOsQueries;
-end;
-
 procedure TEventosApostas.SelecionarUltimaLinha;
 begin
   with formPrincipal do
@@ -466,7 +498,7 @@ begin
     Estrategias := TStringList.Create;
     Situacao := TStringList.Create;
     Competicao := TStringList.Create;
-    Time := TStringList.Create;
+    Time    := TStringList.Create;
     Unidade := TStringList.Create;
     //Criando lista de situações da coluna "Situação"
     while not qrSituacao.EOF do
@@ -508,14 +540,25 @@ end;
 
 procedure TEventosApostas.grdDadosApDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: integer; Column: TColumn; State: TGridDrawState);
+var
+  TextoBtn: string;
+  RectBtn:  TRect;
 begin
   with formPrincipal do
-  begin
-    {qrDadosAposta.ParamByName('CodAposta').AsInteger :=
-      qrApostas.FieldByName('Cod_Aposta').AsInteger;
-    qrDadosAposta.Open;
-    grdDadosAp.Invalidate; }
-  end;
+    with grdDadosAp.Canvas do
+    begin
+      case Column.FieldName of
+        'Green': Brush.Color    := clGreen;
+        'Red': Brush.Color      := clRed;
+        'Anulada': Brush.Color  := clBlue;
+        'Meio Green': Brush.Color := clYellow;
+        'Meio Red': Brush.Color := $0000AFFF;
+      end;
+      with Column do
+        if (FieldName = 'Green') or (FieldName = 'Red') then Font.Color := clWhite
+        else
+          Font.Color := clDefault;
+    end;
 end;
 
 procedure TEventosApostas.btnCashoutClick(Sender: TObject);
@@ -546,13 +589,15 @@ begin
           if TryStrToFloat(ValorEntrada, ValorEstorno) then
           begin
             Screen.Cursor := crAppStart;
-            SQL.Text :=
-              'UPDATE Apostas SET Cashout = 1, Status = ''Cashout'', Retorno = :Retorno WHERE Cod_Aposta = :CodAposta';
+            SQL.Text      :=
+              'UPDATE Apostas SET Cashout = 1, Status = ''Cashout'', Retorno ' +
+              '= :Retorno WHERE Cod_Aposta = :CodAposta';
             ParamByName('CodAposta').AsInteger :=
               qrApostas.FieldByName('Cod_Aposta').AsInteger;
             ParamByName('Retorno').AsFloat := ValorEstorno;
             ExecSQL;
             transactionBancoDados.CommitRetaining;
+            btnCashout.Caption := 'Desf. Encerram.';
           end
           else
           begin
@@ -563,22 +608,23 @@ begin
       end
       else
       begin
-        if MessageDlg('Confirmação', 'Deseja realmente desfazer o cashout da aposta?',
-          mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        if MessageDlg('Confirmação', 'Deseja realmente desfazer o encerramento ' +
+          'da aposta?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
           if Active then Close;
           SQL.Text :=
-            'UPDATE Apostas SET Cashout = 0, Retorno = Retorno WHERE Cod_Aposta = :CodAposta';
+            'UPDATE Apostas SET Cashout = 0, Retorno = Retorno WHERE ' +
+            'Cod_Aposta = :CodAposta';
           ParamByName('CodAposta').AsInteger :=
             qrApostas.FieldByName('Cod_Aposta').AsInteger;
           ExecSQL;
           SQL.Text := 'UPDATE Mercados SET Status = Status';
           ExecSQL;
           transactionBancoDados.CommitRetaining;
-          btnCashout.Caption := 'Cashout';
+          btnCashout.Caption := 'Encerrar Aposta';
         end;
       end;
-      AtualizaQRApostas;
+      qrApostas.Refresh;
       Screen.Cursor := crDefault;
       Free;
       qrApostas.EnableControls;
@@ -621,7 +667,7 @@ end;
 
 procedure TEventosApostas.CalcularBancaFinal;
 var
-  Status: string;
+  Status:     string;
   ValorAnterior: double;
   Retorno, Lucro, BancaFinal, ValorAposta: double;
   Calculando: boolean;
@@ -671,11 +717,11 @@ begin
       DecodeDate(primData, primAno, primMes, primDia);
       DecodeDate(ultData, ultAno, ultMes, ultDia);
       ParamByName('primDia').AsString := Format('%.2d', [primDia]);
-      ParamByName('ultDia').AsString := Format('%.2d', [ultDia]);
+      ParamByName('ultDia').AsString  := Format('%.2d', [ultDia]);
       ParamByName('primMes').AsString := Format('%.2d', [primMes]);
-      ParamByName('ultMes').AsString := Format('%.2d', [ultMes]);
+      ParamByName('ultMes').AsString  := Format('%.2d', [ultMes]);
       ParamByName('primAno').AsString := Format('%.2d', [primAno]);
-      ParamByName('ultAno').AsString := Format('%.4d', [ultAno]);
+      ParamByName('ultAno').AsString  := Format('%.4d', [ultAno]);
       Open;
 
       grdApostas.Enabled := not IsEmpty;
@@ -692,11 +738,11 @@ begin
     begin
       if Active then Close;
       ParamByName('primDia').AsString := Format('%.2d', [1]);
-      ParamByName('ultDia').AsString := Format('%.2d', [31]);
+      ParamByName('ultDia').AsString  := Format('%.2d', [31]);
       ParamByName('primMes').AsString := Format('%.2d', [mesSelecionado]);
-      ParamByName('ultMes').AsString := Format('%.2d', [mesSelecionado]);
+      ParamByName('ultMes').AsString  := Format('%.2d', [mesSelecionado]);
       ParamByName('primAno').AsString := Format('%.2d', [anoSelecionado]);
-      ParamByName('ultAno').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('ultAno').AsString  := Format('%.4d', [anoSelecionado]);
       Open;
 
       grdApostas.Enabled := not IsEmpty;
@@ -756,7 +802,7 @@ procedure TEventosApostas.AbrirEditarAposta(Sender: TObject);
 var
   EditarSimples, EditarMultipla: TForm;
 begin
-  EditarSimples := formEditSimples;
+  EditarSimples  := formEditSimples;
   EditarMultipla := formEditMult;
 
   with formPrincipal do
@@ -768,7 +814,7 @@ begin
         formEditSimples.ShowModal
       else
         formEditMult.ShowModal;
-      AtualizaQRApostas;
+      qrApostas.Refresh;
       CarregaJogos;
       qrDadosAposta.Refresh;
     except
@@ -808,11 +854,11 @@ begin
         First;
         while not EOF do
         begin
-          comp := FieldByName('Competicao').AsString;
-          mand := FieldByName('Mandante').AsString;
+          comp  := FieldByName('Competicao').AsString;
+          mand  := FieldByName('Mandante').AsString;
           visit := FieldByName('Visitante').AsString;
 
-          InfoJogo := TItemInfo.Create;
+          InfoJogo      := TItemInfo.Create;
           InfoJogo.Text := (comp + ': ' + mand + ' X ' + visit);
           InfoJogo.CodJogo := FieldByName('Cod_Jogo').AsInteger;
           ListaJogo.Add(InfoJogo);
@@ -834,6 +880,21 @@ begin
         writeln('Erro: ' + E.Message);
     end;
   end;
+end;
+
+procedure TEventosApostas.HabilitarRemoverAposta;
+begin
+  with formPrincipal do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT 1 FROM Apostas WHERE Selecao = TRUE';
+      Open;
+      btnRemoverAposta.Enabled := not IsEmpty;
+    finally
+      Free;
+    end;
 end;
 
 procedure TEventosApostas.ClicarNoJogo(Sender: TObject);
@@ -867,11 +928,11 @@ begin
       with qrDadosAposta do
       begin
         if Active then Close;
-        mmAnotAposta.Enabled := false;
+        mmAnotAposta.Enabled := False;
         ParamByName('CodAposta').AsInteger := GlobalCodAposta;
         ParamByName('CodJogo').AsInteger := GlobalCodJogo;
         Open;
-        mmAnotAposta.Enabled := true;
+        mmAnotAposta.Enabled := True;
         writeln('Aberto query com o código de jogo ', GlobalCodJogo);
       end;
     end;
@@ -887,19 +948,19 @@ begin
         try
           DataBase := conectBancoDados;
           SQL.Text := 'UPDATE Apostas SET Anotacoes = :nota ' +
-          'WHERE Cod_Aposta = :cod';
+            'WHERE Cod_Aposta = :cod';
           ParamByName('nota').AsString := mmAnotAposta.Text;
           ParamByName('cod').AsInteger := GlobalCodAposta;
           ExecSQL;
           CommitRetaining;
-          MessageDlg('Informação','Anotação salva com sucesso!', mtInformation,
-          [mbOk], 0);
+          MessageDlg('Informação', 'Anotação salva com sucesso!', mtInformation,
+            [mbOK], 0);
         except
           On E: Exception do
           begin
-            MessageDlg('Erro','Não foi possível salvar anotação, tente ' +
-            'novamente.' + sLineBreak + 'Mensagem do erro: ' + E.Message,
-            mtError, [mbOk], 0);
+            MessageDlg('Erro', 'Não foi possível salvar anotação, tente ' +
+              'novamente.' + sLineBreak + 'Mensagem do erro: ' + E.Message,
+              mtError, [mbOK], 0);
             Cancel;
             RollbackRetaining;
           end;
@@ -913,7 +974,9 @@ var
   Odd, NovaOdd, Retorno, Lucro, BancaFinal: double;
   OddFormat, BancaFormat, RetornoFormat, LucroFormat: string;
   CodAposta: integer;
+  MeioRed:   boolean;
 begin
+  Meiored := False;
   writeln('Calculando dados das apostas');
   with formPrincipal do
   begin
@@ -927,15 +990,14 @@ begin
           'SELECT Odd, Status FROM Mercados WHERE Mercados.Cod_Aposta = :CodAposta';
         ParamByName('CodAposta').AsInteger :=
           qrApostas.FieldByName('Cod_Aposta').AsInteger;
-        ;
         Open;
         First;
         writeln('Calculando a odd da aposta selecionada');
         Odd := FieldByName('Odd').AsFloat;
         case FieldByName('Status').AsString of
           'Meio Green': Odd := (Odd - 1) / 2 + 1;
-          'Meio Red': Odd := (Odd - 1) / 2;
-          'Anulada': Odd := 1;
+          'Meio Red': Odd   := 0.5;
+          'Anulada': Odd    := 1;
         end;
         Next;
         while not EOF do
@@ -943,8 +1005,8 @@ begin
           NovaOdd := FieldByName('Odd').AsFloat;
           case FieldByName('Status').AsString of
             'Meio Green': NovaOdd := (NovaOdd - 1) / 2 + 1;
-            'Meio Red': NovaOdd := (NovaOdd - 1) / 2;
-            'Anulada': NovaOdd := 1;
+            'Meio Red': NovaOdd   := 0.5;
+            'Anulada': NovaOdd    := 1;
           end;
           Odd := Odd * NovaOdd;
           OddFormat := FormatFloat('0.00', Odd);
@@ -984,7 +1046,6 @@ begin
         if not Active then Open;
         BancaFinal := FieldByName('BancaTotal').AsFloat;
       end;
-
       writeln('Atualizando dados de todas as apostas do mês atual');
       with qrApostas do
       try
@@ -993,46 +1054,46 @@ begin
         begin
           //BancaFormat := FormatFloat('0.00', BancaFinal);
           case FieldByName('Status').AsString of
-            'Green': begin
+            'Green', 'Meio Red': begin
               Retorno :=
                 (FieldByName('Valor_Aposta').AsFloat) *
                 (FieldByName('Odd').AsFloat);
-              Lucro := Retorno - (FieldByName('Valor_aposta').AsFloat);
+              Lucro   := Retorno - (FieldByName('Valor_aposta').AsFloat);
               RetornoFormat := FormatFloat('0.00', Retorno);
               LucroFormat := FormatFloat('0.00', Lucro);
             end;
             'Red': begin
               Retorno := 0;
-              Lucro := 0 - (FieldByName('Valor_Aposta').AsFloat);
+              Lucro   := 0 - (FieldByName('Valor_Aposta').AsFloat);
               RetornoFormat := FormatFloat('0.00', Retorno);
               LucroFormat := FormatFloat('0.00', Lucro);
             end;
             'Anulada': begin
               Retorno := FieldByName('Valor_Aposta').AsFloat;
-              Lucro := 0;
+              Lucro   := 0;
               RetornoFormat := FormatFloat('0.00', Retorno);
               LucroFormat := FormatFloat('0.00', Lucro);
             end;
             'Cashout': begin
               Retorno := FieldByName('Retorno').AsFloat;
-              Lucro := Retorno - (FieldByName('Valor_aposta').AsFloat);
+              Lucro   := Retorno - (FieldByName('Valor_aposta').AsFloat);
               RetornoFormat := FormatFloat('0.00', Retorno);
               LucroFormat := FormatFloat('0.00', Lucro);
             end;
             'Pré-live': begin
               Retorno := 0;
-              Lucro := 0;
+              Lucro   := 0;
               RetornoFormat := FormatFloat('0.00', Retorno);
               LucroFormat := FormatFloat('0.00', Lucro);
             end;
           end;
           //BancaFinal := BancaFinal + FieldByName('Lucro').AsFloat;
-          BancaFinal := BancaFinal + Lucro;
+          BancaFinal  := BancaFinal + Lucro;
           BancaFormat := FormatFloat('0.00', BancaFinal);
 
           Edit;
           FieldByName('Retorno').AsFloat := StrToFloat(RetornoFormat);
-          FieldByName('Lucro').AsFloat := StrToFloat(LucroFormat);
+          FieldByName('Lucro').AsFloat   := StrToFloat(LucroFormat);
           FieldByName('Banca_Final').AsFloat := StrToFloat(BancaFormat);
           Post;
           Next;
@@ -1043,40 +1104,169 @@ begin
       except
         On E: Exception do
         begin
-          Cancel;
+          qrApostas.Cancel;
           transactionBancoDados.RollbackRetaining;
           writeln('Erro: ' + E.Message);
         end;
       end;
-      AtualizaQRApostas;
-    end;
+      qrApostas.Refresh;
+    end
+    else Exit;
   end;
 end;
 
-procedure AtualizaQRApostas;
-var
-  CodAposta: integer;
+procedure TEventosApostas.AtualizaQRApostas(DataSet: TDataSet);
+begin
+  formPrincipal.qrApostas.Locate('Cod_Aposta', GlobalCodAposta, []);
+end;
+
+procedure TEventosApostas.AposEditarAposta(Sender: TObject);
 begin
   with formPrincipal do
   begin
-    Application.ProcessMessages;
-    writeln('Lozalizando o código da aposta no qrDadosAposta');
-    if qrDadosAposta.Active then
-      CodAposta := qrDadosAposta.FieldByName('Cod_Aposta').AsInteger;
-    with qrApostas do
-    begin
-      writeln('Atualizando qrApostas');
-      Refresh;
-      writeln('Re-selecionando última aposta selecionada');
-      Locate('Cod_Aposta', CodAposta, []);
-    end;
+    if (qrApostas.State in [dsInsert, dsEdit]) then
+      with qrApostas do
+      try
+        Post;
+        ApplyUpdates;
+        transactionBancoDados.CommitRetaining;
+        CalculaDadosAposta;
+      except
+        on E: Exception do
+          writeln('Erro: ' + E.Message);
+      end;
   end;
+end;
+
+procedure TEventosApostas.AposEditarDadosAposta(Sender: TObject);
+begin
+  writeln('Salvando edição do qrDadosAp');
+  with formPrincipal do
+    with transactionBancoDados do
+      with qrDadosAposta do
+        if qrDadosAposta.State in [dsEdit, dsInsert] then
+        begin
+          Post;
+          ApplyUpdates;
+          CommitRetaining;
+          CalculaDadosAposta;
+        end;
+end;
+
+procedure TEventosApostas.AoClicarDadosAposta(Sender: TObject);
+var
+  P:    TPoint;
+  Item: TMenuItem;
+begin
+  writeln('Botão dos dados de aposta clicado!');
+  with formPrincipal do
+  begin
+    with qrDadosAposta do
+      if (State in [dsInsert, dsEdit]) then
+      try
+        Post;
+        ApplyUpdates;
+      except
+        Cancel;
+      end;
+    with transactionBancoDados do
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase      := conectBancoDados;
+        Screen.Cursor := crAppStart;
+        popupLinhas.Items.Clear;
+        with grdDadosAp do
+        begin
+          ColunaAtual := Columns.ColumnByFieldName(SelectedField.FieldName);
+          case SelectedField.FieldName of
+            'Método':
+            begin
+              if Active then Close;
+              SQL.Text := 'SELECT Nome FROM Métodos';
+              Open;
+              while not EOF do
+              begin
+                Item := TMenuItem.Create(popupLinhas);
+                Item.Caption := FieldByName('Nome').AsString;
+                Item.OnClick := @AtualizaMetodoLinha;
+                popupLinhas.Items.Add(Item);
+                Next;
+              end;
+            end;
+            'Linha':
+            begin
+              if Active then Close;
+              SQL.Text :=
+                'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo ' +
+                'FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
+              ParamByName('SelecMetodo').AsString :=
+                qrDadosAposta.FieldByName('Método').AsString;
+              Open;
+              while not EOF do
+              begin
+                Item := TMenuItem.Create(popupLinhas);
+                Item.Caption := FieldByName('Nome').AsString;
+                Item.OnClick := @AtualizaMetodoLinha;
+                popupLinhas.Items.Add(Item);
+                Next;
+              end;
+            end;
+            'Odd': qrDadosAposta.Edit;
+            'Status':
+            begin
+              popupLinhas.Items.Clear;
+              Item := TMenuItem.Create(popupLinhas);
+              Item.Caption := 'Pré-live';
+              Item.OnClick := @AtualizaMetodoLinha;
+              popupLinhas.Items.Add(Item);
+
+              Item := TMenuItem.Create(popupLinhas);
+              Item.Caption := 'Green';
+              Item.OnClick := @AtualizaMetodoLinha;
+              popupLinhas.Items.Add(Item);
+
+              Item := TMenuItem.Create(popupLinhas);
+              Item.Caption := 'Red';
+              Item.OnClick := @AtualizaMetodoLinha;
+              popupLinhas.Items.Add(Item);
+
+              Item := TMenuItem.Create(popupLinhas);
+              Item.Caption := 'Anulada';
+              Item.OnClick := @AtualizaMetodoLinha;
+              popupLinhas.Items.Add(Item);
+
+              Item := TMenuItem.Create(popupLinhas);
+              Item.Caption := 'Meio Green';
+              Item.OnClick := @AtualizaMetodoLinha;
+              popupLinhas.Items.Add(Item);
+
+              Item := TMenuItem.Create(popupLinhas);
+              Item.Caption := 'Meio Red';
+              Item.OnClick := @AtualizaMetodoLinha;
+              popupLinhas.Items.Add(Item);
+            end;
+          end;
+        end;
+
+        P := Mouse.CursorPos;
+        popupLinhas.PopUp(P.X, P.Y);
+        Screen.Cursor := crDefault;
+        qrDadosAposta.Edit;
+      finally
+        Free;
+      end;
+  end;
+end;
+
+procedure TEventosApostas.AposAbrirApostas(DataSet: TDataSet);
+begin
+  formPrincipal.qrApostas.Last;
 end;
 
 procedure AtualizaOdd;
 var
   Odd, NovaOdd: double;
-  OddFormat: string;
+  OddFormat:    string;
 begin
   with formPrincipal do
     with TSQLQuery.Create(nil) do
@@ -1088,9 +1278,9 @@ begin
       Open;
       First;
       case FieldByName('Status').AsString of
-        'Anulada': Odd := 1;
+        'Anulada': Odd    := 1;
         'Meio Green': Odd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2 + 1, 2);
-        'Meio Red': Odd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2, 2);
+        'Meio Red': Odd   := RoundTo((FieldByName('Odd').AsFloat - 1) / 2, 2);
         else
           Odd := FieldByName('Odd').AsFloat;
       end;
@@ -1099,9 +1289,9 @@ begin
       while not EOF do
       begin
         case FieldByName('Status').AsString of
-          'Anulada': NovaOdd := 1;
+          'Anulada': NovaOdd    := 1;
           'Meio Green': NovaOdd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2 + 1, 2);
-          'Meio Red': NovaOdd := RoundTo((FieldByName('Odd').AsFloat - 1) / 2, 2);
+          'Meio Red': NovaOdd   := RoundTo((FieldByName('Odd').AsFloat - 1) / 2, 2);
           else
             NovaOdd := FieldByName('Odd').AsFloat;
         end;
@@ -1132,9 +1322,9 @@ begin
     if Column.FieldName = 'Status' then
       with grdApostas.Canvas.Font do
         case qrApostas.FieldByName('Status').AsString of
-          'Green': Color := clGreen;
-          'Red': Color := clRed;
-          'Cashout': Color := clBlue;
+          'Green': Color    := clGreen;
+          'Red': Color      := clRed;
+          'Cashout': Color  := clBlue;
           'Meio Green': Color := $0000B6A0;
           'Meio Red': Color := $00007EC3;
           'Pré-live': Color := clDefault;
@@ -1143,11 +1333,43 @@ begin
       with qrApostas do
         with grdApostas.Canvas.Font do
           case Sign(FieldByName('Lucro').AsFloat) of
-            1: Color := clGreen;
+            1: Color  := clGreen;
             -1: Color := clRed;
-            0: Color := clDefault;
+            0: Color  := clDefault;
           end;
     grdApostas.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+  end;
+end;
+
+procedure TEventosApostas.DadosApostaSalvar(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  with formPrincipal do
+    with transactionBancoDados do
+      with qrDadosAposta do
+        if (State in [dsEdit, dsInsert]) then
+        try
+          Post;
+          ApplyUpdates;
+          CommitRetaining;
+        except
+          Cancel;
+          RollbackRetaining;
+        end
+        else
+          Edit;
+end;
+
+procedure TEventosApostas.ParametrosApostas(DataSet: TDataSet);
+begin
+  with formPrincipal.qrApostas do
+  begin
+    ParamByName('primDia').AsString := Format('%.2d', [1]);
+    ParamByName('ultDia').AsString  := Format('%.2d', [31]);
+    ParamByName('primMes').AsString := Format('%.2d', [mesSelecionado]);
+    ParamByName('ultMes').AsString  := Format('%.2d', [mesSelecionado]);
+    ParamByName('primAno').AsString := Format('%.2d', [anoSelecionado]);
+    ParamByName('ultAno').AsString  := Format('%.4d', [anoSelecionado]);
   end;
 end;
 

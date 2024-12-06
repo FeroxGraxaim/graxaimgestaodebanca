@@ -151,6 +151,7 @@ object formEditSimples: TformEditSimples
       DataSource = dsEditarAposta
       Font.Height = -13
       Font.Name = 'Sans'
+      Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowEditor, dgAlwaysShowSelection, dgConfirmDelete]
       ParentFont = False
       Scrollbars = ssAutoVertical
       TabOrder = 0

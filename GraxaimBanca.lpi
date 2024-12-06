@@ -17,9 +17,10 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
-      <BuildNr Value="27"/>
+      <RevisionNr Value="2"/>
+      <BuildNr Value="29"/>
       <Language Value="0416"/>
-      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.5"/>
+      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.6"/>
     </VersionInfo>
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="gtk2"/>
@@ -214,12 +215,20 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="untBoasVindas"/>
       </Unit>
+      <Unit>
+        <Filename Value="include/untconfig.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formConfig"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untConfig"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="GraxaimBanca"/>
+      <Filename Value="graxaimbanca"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

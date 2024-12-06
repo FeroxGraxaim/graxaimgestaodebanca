@@ -33,85 +33,86 @@ implementation
 procedure AtualizaGraficosTimes;
 begin
   with formPrincipal do
-  with TSQLQuery.Create(nil) do
-  try
-    DataBase := conectBancoDados;
-    SQL.Text :=
-    'SELECT                                                                  ' +
-    'Times.Time,                                                             ' +
-    'COUNT(CASE WHEN Mercados.Status = ''Green''                             ' +
-    'OR Mercados.Status = ''Meio Green'' THEN 1 END) AS Acertos,             ' +
-    'COUNT(CASE WHEN Mercados.Status = ''Red''                               ' +
-    'OR Mercados.Status = ''Meio Red'' THEN 1 END) AS Erros,                 ' +
-    'COUNT(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 END) AS Anuladas,  ' +
-    'SUM(CASE WHEN Apostas.Status = ''Green'' THEN 1 ELSE 0 END) AS Lucros,  ' +
-    'SUM(CASE WHEN Apostas.Status = ''Red'' THEN 1 ELSE 0 END) AS Prejuízos  ' +
-    'FROM                                                                    ' +
-    'Times                                                                   ' +
-    'LEFT JOIN                                                               ' +
-    'Jogo ON Times.Time = Jogo.Mandante OR Jogo.Visitante                    ' +
-    'LEFT JOIN                                                               ' +
-    'Mercados ON Jogo.Cod_Jogo = Mercados.Cod_Jogo                           ' +
-    'LEFT JOIN                                                               ' +
-    'Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta                     ' +
-    'WHERE Times.Time = :Time                                                ' +
-    'GROUP BY                                                                ' +
-    'Times.Time                                                              ';
-    ParamByName('Time').AsString :=
-    qrTimes.FieldByName('Time').AsString;
-    Open;
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text :=
+        'SELECT                                                                  ' +
+        'Times.Time,                                                             ' +
+        'COUNT(CASE WHEN Mercados.Status = ''Green''                             ' +
+        'OR Mercados.Status = ''Meio Green'' THEN 1 END) AS Acertos,             ' +
+        'COUNT(CASE WHEN Mercados.Status = ''Red''                               ' +
+        'OR Mercados.Status = ''Meio Red'' THEN 1 END) AS Erros,                 ' +
+        'COUNT(CASE WHEN Mercados.Status = ''Anulada'' THEN 1 END) AS Anuladas,  ' +
+        'SUM(CASE WHEN Apostas.Status = ''Green'' THEN 1 ELSE 0 END) AS Lucros,  ' +
+        'SUM(CASE WHEN Apostas.Status = ''Red'' THEN 1 ELSE 0 END) AS Prejuízos  ' +
+        'FROM                                                                    ' +
+        'Times                                                                   ' +
+        'LEFT JOIN                                                               ' +
+        'Jogo ON Times.Time = Jogo.Mandante OR Jogo.Visitante                    ' +
+        'LEFT JOIN                                                               ' +
+        'Mercados ON Jogo.Cod_Jogo = Mercados.Cod_Jogo                           ' +
+        'LEFT JOIN                                                               ' +
+        'Apostas ON Mercados.Cod_Aposta = Apostas.Cod_Aposta                     ' +
+        'WHERE Times.Time = :Time                                                ' +
+        'GROUP BY                                                                ' +
+        'Times.Time                                                              ';
+      ParamByName('Time').AsString :=
+        qrTimes.FieldByName('Time').AsString;
+      Open;
 
-    (chrtAcertTime.Series[0] as TPieSeries).Clear;
-    (chrtLucratTime.Series[0] as TPieSeries).Clear;
+      (chrtAcertTime.Series[0] as TPieSeries).Clear;
+      (chrtLucratTime.Series[0] as TPieSeries).Clear;
 
-    if FieldByName('Acertos').AsInteger <> 0 then
-    (chrtAcertTime.Series[0] as TPieSeries).AddPie(
-    FieldByName('Acertos').AsInteger,
-        'Acertos ', clGreen);
+      if FieldByName('Acertos').AsInteger <> 0 then
+        (chrtAcertTime.Series[0] as TPieSeries).AddPie(
+          FieldByName('Acertos').AsInteger,
+          'Acertos ', clGreen);
 
-    if FieldByName('Erros').AsInteger <> 0 then
-    (chrtAcertTime.Series[0] as TPieSeries).AddPie(
-    FieldByName('Erros').AsInteger,
-        'Erros ', clRed);
+      if FieldByName('Erros').AsInteger <> 0 then
+        (chrtAcertTime.Series[0] as TPieSeries).AddPie(
+          FieldByName('Erros').AsInteger,
+          'Erros ', clRed);
 
-    if FieldByName('Lucros').AsInteger <> 0 then
-    (chrtLucratTime.Series[0] as TPieSeries).AddPie(
-    FieldByName('Lucros').AsInteger,
-        'Lucros', clGreen);
+      if FieldByName('Lucros').AsInteger <> 0 then
+        (chrtLucratTime.Series[0] as TPieSeries).AddPie(
+          FieldByName('Lucros').AsInteger,
+          'Lucros', clGreen);
 
-    if FieldByName('Prejuízos').AsInteger <> 0 then
-    (chrtLucratTime.Series[0] as TPieSeries).AddPie(
-    FieldByName('Prejuízos').AsInteger,
-        'Prejuízos', clRed);
-  finally
-    Free;
-  end;
+      if FieldByName('Prejuízos').AsInteger <> 0 then
+        (chrtLucratTime.Series[0] as TPieSeries).AddPie(
+          FieldByName('Prejuízos').AsInteger,
+          'Prejuízos', clRed);
+    finally
+      Free;
+    end;
 end;
 
 procedure TEventosTimes.PesquisarTime(Sender: TObject);
-var pesquisa: string;
+var
+  pesquisa: string;
 begin
   with formPrincipal do
-  with TSQLQuery.Create(nil) do
-  try
-    DataBase := conectBancoDados;
-    SQL.Text := 'SELECT Time FROM Times WHERE Time LIKE :time';
-    ParamByName('time').AsString := edtPesquisarTime.Text + '%';
-    Open;
-    pesquisa := FieldByName('Time').AsString;
-    qrTimes.Locate('Time', pesquisa, []);
-  finally
-    Free;
-  end;
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'SELECT Time FROM Times WHERE Time LIKE :time';
+      ParamByName('time').AsString := edtPesquisarTime.Text + '%';
+      Open;
+      pesquisa := FieldByName('Time').AsString;
+      qrTimes.('Time', pesquisa, []);
+    finally
+      Free;
+    end;
 end;
 
 procedure TEventosTimes.AoExibir(Sender: TObject);
 begin
   with formPrincipal do
   begin
-  if not qrTimes.Active then qrTimes.Open;
-  if not qrTimesMaisAcert.Active then qrTimesMaisAcert.Open;
-  if not qrTimesMenosAcert.Active then qrTimesMenosAcert.Open;
+    if not qrTimes.Active then qrTimes.Open;
+    if not qrTimesMaisAcert.Active then qrTimesMaisAcert.Open;
+    if not qrTimesMenosAcert.Active then qrTimesMenosAcert.Open;
   end;
   AtualizaGraficosTimes;
 end;
@@ -124,103 +125,106 @@ end;
 procedure TEventosTimes.DetectarEnterPesquisa(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
-  PesquisarTime(nil);
+    PesquisarTime(nil);
 end;
 
 procedure TEventosTimes.NovoTime(Sender: TObject);
-var Time, Pais: String;
-label NovoPais, DeterminarPais, Salvar;
+var
+  Time, Pais: string;
+label
+  NovoPais, DeterminarPais, Salvar;
 begin
   with formPrincipal do
-  if InputQuery('Novo Time','Digite CORRETAMENTE o nome do time:',Time) then
-  with TSQLQuery.Create(nil) do
-  try
-    DataBase := conectBancoDados;
-    SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
-    ParamByName('time').AsString := Time;
-    ExecSQL;
-    if InputQuery('Determinar País','Digite CORRETAMENTE o nome do país no qual' +
-    'o time pertence:',Pais) then
-    begin
-      SQL.Text := 'SELECT FROM Países WHERE País = :pais';
-      ParamByName('pais').AsString := 'pais';
-      Open;
-      if IsEmpty then
-      if MessageDlg('País Não Encontrado','Não foi possível encontrar o país ' +
-      'inserido, caso tenha digitado o nome corretamente, deseja inserí-lo ' +
-      'no banco de dados agora?',mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      goto NovoPais;
+    if InputQuery('Novo Time', 'Digite CORRETAMENTE o nome do time:', Time) then
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
+        ParamByName('time').AsString := Time;
+        ExecSQL;
+        if InputQuery('Determinar País', 'Digite CORRETAMENTE o nome do país no qual' +
+          'o time pertence:', Pais) then
+        begin
+          SQL.Text := 'SELECT FROM Países WHERE País = :pais';
+          ParamByName('pais').AsString := 'pais';
+          Open;
+          if IsEmpty then
+            if MessageDlg('País Não Encontrado', 'Não foi possível encontrar o país ' +
+              'inserido, caso tenha digitado o nome corretamente, deseja inserí-lo ' +
+              'no banco de dados agora?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+              goto NovoPais;
 
-      DeterminarPais:
+          DeterminarPais:
 
-      if Active then Close;
-      SQL.Text := 'UPDATE Times SET País = :pais WHERE ROWID = ' +
-      '(SELECT MAX(ROWID) FROM Times)';
-      ParamByName('pais').AsString := Pais;
-      ExecSQL;
-      goto Salvar;
+            if Active then Close;
+          SQL.Text := 'UPDATE Times SET País = :pais WHERE ROWID = ' +
+            '(SELECT MAX(ROWID) FROM Times)';
+          ParamByName('pais').AsString := Pais;
+          ExecSQL;
+          goto Salvar;
 
-      NovoPais:
+          NovoPais:
 
-      Close;
-      SQL.Text := 'INSERT INTO Países(País) VALUES {:pais)';
-      ParamByName('pais').AsString := Pais;
-      ExecSQL;
-      goto DeterminarPais;
+            Close;
+          SQL.Text := 'INSERT INTO Países(País) VALUES {:pais)';
+          ParamByName('pais').AsString := Pais;
+          ExecSQL;
+          goto DeterminarPais;
 
-      Salvar:
-      transactionBancoDados.CommitRetaining;
-      qrTimes.Refresh;
-      qrTimes.Locate('Time',Time,[]);
-    end;
-    Free;
-  except
-    on E: Exception do
-      begin
-        Cancel;
-        transactionBancoDados.RollbackRetaining;
+          Salvar:
+            transactionBancoDados.CommitRetaining;
+          qrTimes.Refresh;
+          qrTimes.Locate('Time', Time, []);
+        end;
         Free;
-        MessageDlg('Erro','Ocorreu um erro, tente novamente. Se o problema persistir ' +
-        'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak + sLineBreak
-        + E.Message, mtError, [mbOk], 0);
+      except
+        on E: Exception do
+        begin
+          Cancel;
+          transactionBancoDados.RollbackRetaining;
+          Free;
+          MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir ' +
+            'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
+            sLineBreak + E.Message, mtError, [mbOK], 0);
+        end;
       end;
-  end;
 end;
 
 procedure TEventosTimes.RemoverTime(Sender: TObject);
 begin
   with formPrincipal do
-  if MessageDlg('Remover Time','Tem certeza que deseja remover o ' +
-  'time selecionado?' ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-  with TSQLQuery.Create(nil) do
-  try
-    DataBase := conectBancoDados;
-    SQL.Text := 'SELECT * FROM Times WHERE Time = :time AND Time = (SELECT ' +
-    'Mandante, Visitante FROM Jogo WHERE Mandante = :time OR Visitante = :time)';
-    ParamByname('time').AsString := qrTimes.FieldByName('Time').AsString;
-    Open;
-    if not IsEmpty then
-    raise Exception.Create('O time está sendo usado em uma ou mais apostas, ' +
-    'remova a(s) aposta(s) referente(s) e tente novamente.');
-    Close;
-    SQL.Text := 'DELETE FROM Times WHERE Time = :time';
-    ParamByname('time').AsString := qrTimes.FieldByName('Time').AsString;
-    ExecSQL;
-    transactionBancoDados.CommitRetaining;
-    qrTimes.Refresh;
-    Free;
-  except
-    on E: Exception do
-      begin
-        Cancel;
-        transactionBancoDados.RollbackRetaining;
-        writeln('Erro no SQL: ' + SQL.Text);
+    if MessageDlg('Remover Time', 'Tem certeza que deseja remover o ' +
+      'time selecionado?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      with TSQLQuery.Create(nil) do
+      try
+        DataBase := conectBancoDados;
+        SQL.Text := 'SELECT T.Time FROM Times T LEFT JOIN Jogo J ON J.Mandante = T.Time '
+          + 'LEFT JOIN Jogo J2 ON J2.Visitante = T.Time WHERE T.Time = :time '
+          + 'AND (T.Time = J.Mandante OR T.Time = J2.Visitante)';
+        ParamByname('time').AsString := qrTimes.FieldByName('Time').AsString;
+        Open;
+        if not IsEmpty then
+          raise Exception.Create('O time está sendo usado em uma ou mais apostas, ' +
+            'remova a(s) aposta(s) referente(s) e tente novamente.');
+        Close;
+        SQL.Text := 'DELETE FROM Times WHERE Time = :time';
+        ParamByname('time').AsString := qrTimes.FieldByName('Time').AsString;
+        ExecSQL;
+        transactionBancoDados.CommitRetaining;
+        qrTimes.Refresh;
         Free;
-        MessageDlg('Erro','Ocorreu um erro, tente novamente. Se o problema persistir ' +
-        'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
-        sLineBreak + E.Message, mtError, [mbOk], 0);
+      except
+        on E: Exception do
+        begin
+          Cancel;
+          transactionBancoDados.RollbackRetaining;
+          writeln('Erro no SQL: ' + SQL.Text);
+          Free;
+          MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir ' +
+            'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
+            sLineBreak + E.Message, mtError, [mbOK], 0);
+        end;
       end;
-  end;
 end;
 
 end.

@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS "Banca" (
 	"Valor_Inicial"	NUMERIC(9, 2) DEFAULT 0,
 	"Aporte"	NUMERIC(9, 2) DEFAULT 0
 );
-CREATE TABLE "BancaInicial" (
+CREATE TABLE IF NOT EXISTS "BancaInicial" (
 	"Banca"	NUMERIC(9, 2)
 );
 CREATE TABLE IF NOT EXISTS "Status_Aposta" (
@@ -62,30 +62,18 @@ CREATE TABLE IF NOT EXISTS "Competicoes" (
 	"Total"	NUMERIC DEFAULT 0,
 	PRIMARY KEY("Cod_Comp" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "Linhas" (
-	"Cod_Linha"	INTEGER NOT NULL,
-	"Nome"	VARCHAR,
-	"Cod_Metodo"	INTEGER,
-	FOREIGN KEY("Cod_Metodo") REFERENCES "Métodos"("Cod_Metodo"),
-	PRIMARY KEY("Cod_Linha" AUTOINCREMENT)
-);
 CREATE TABLE IF NOT EXISTS "Métodos" (
 	"Cod_Metodo"	INTEGER,
 	"Selecao"	BOOLEAN DEFAULT 0,
 	"Nome"	VARCHAR,
 	PRIMARY KEY("Cod_Metodo" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "Mercados" (
-	"Cod_Mercado" INTEGER PRIMARY KEY AUTOINCREMENT,
-	"Cod_Jogo"	INTEGER,
+CREATE TABLE IF NOT EXISTS "Linhas" (
+	"Cod_Linha"	INTEGER NOT NULL,
+	"Nome"	VARCHAR,
 	"Cod_Metodo"	INTEGER,
-	"Cod_Linha"	INTEGER,
-	"Odd"	NUMERIC(9, 2),
-	"Status"	VARCHAR,
-	"Cod_Aposta"	INTEGER,
-	CONSTRAINT "FK_Mercados_Jogo_2" FOREIGN KEY("Cod_Linha") REFERENCES "Linhas"("Cod_Linha"),
-	CONSTRAINT "FK_Mercados_Linhas_3" FOREIGN KEY("Cod_Metodo") REFERENCES "Métodos"("Cod_Metodo"),
-	CONSTRAINT "FK_Mercados_Apostas" FOREIGN KEY("Cod_Aposta") REFERENCES "Apostas"("Cod_Aposta")
+	FOREIGN KEY("Cod_Metodo") REFERENCES "Métodos"("Cod_Metodo"),
+	PRIMARY KEY("Cod_Linha" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Apostas" (
 	"Cod_Aposta"	INTEGER,
@@ -94,7 +82,7 @@ CREATE TABLE IF NOT EXISTS "Apostas" (
 	"Múltipla"	BOOLEAN DEFAULT 0,
 	"Odd"	NUMERIC(9, 2),
 	"Valor_Aposta"	NUMERIC(9, 2),
-	"Status"	VARCHAR,
+	"Status"	VARCHAR DEFAULT 'Pré-live',
 	"Tipo"	BOOLEAN DEFAULT 0,
 	"Cashout"	BOOLEAN DEFAULT 0,
 	"Retorno"	NUMERIC(9, 2) DEFAULT 0,
@@ -102,6 +90,18 @@ CREATE TABLE IF NOT EXISTS "Apostas" (
 	"Banca_Final"	NUMERIC(9, 2) DEFAULT 0,
 	"Anotacoes"	VARCHAR,
 	PRIMARY KEY("Cod_Aposta" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Mercados" (
+	"Cod_Mercado" INTEGER PRIMARY KEY AUTOINCREMENT,
+	"Cod_Jogo"	INTEGER,
+	"Cod_Metodo"	INTEGER,
+	"Cod_Linha"	INTEGER,
+	"Odd"	NUMERIC(9, 2),
+	"Status"	VARCHAR DEFAULT 'Pré-live',
+	"Cod_Aposta"	INTEGER,
+	CONSTRAINT "FK_Mercados_Jogo_2" FOREIGN KEY("Cod_Linha") REFERENCES "Linhas"("Cod_Linha"),
+	CONSTRAINT "FK_Mercados_Linhas_3" FOREIGN KEY("Cod_Metodo") REFERENCES "Métodos"("Cod_Metodo"),
+	CONSTRAINT "FK_Mercados_Apostas" FOREIGN KEY("Cod_Aposta") REFERENCES "Apostas"("Cod_Aposta")
 );
 CREATE TABLE IF NOT EXISTS "Jogo" (
 	"Cod_Jogo"	INTEGER NOT NULL,
@@ -117,9 +117,11 @@ CREATE TABLE IF NOT EXISTS "Selecaoionar Mês e Ano" (
 	"Mês"	INTEGER,
 	"Ano"	INTEGER
 );
-CREATE TABLE "ConfigPrograma" (
+CREATE TABLE IF NOT EXISTS "ConfigPrograma" (
 	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1,
-	"GestaoVariavel"	BOOLEAN DEFAULT 0
+	"GestaoVariavel"	BOOLEAN DEFAULT 0,
+	"PreRelease"	BOOLEAN DEFAULT 0,
+	"GestaoPcent" BOOLEAN DEFAULT 0
 );
 INSERT INTO "Unidades" ("Unidade") VALUES ('0,25 Un'),
  ('0,5 Un'),
@@ -527,7 +529,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (20);
+INSERT INTO "ControleVersao" ("Versao") VALUES (24);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),
@@ -715,33 +717,49 @@ INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (30,'Europeu -3',4
  (178,'- 2,5 Gols Casa',16),
  (179,'- 2,5 Gols Fora',16);
  INSERT INTO ConfigPrograma DEFAULT VALUES;
-CREATE TRIGGER "Atualiza Banca Final (Delete)" AFTER DELETE ON Apostas FOR EACH ROW BEGIN UPDATE Banca SET Valor_Final = ROUND(COALESCE( (SELECT Banca_Final FROM Apostas WHERE Cod_Aposta = ( SELECT MAX(Cod_Aposta) FROM Apostas WHERE strftime('%m', Apostas.Data) = strftime('%m', OLD.Data) AND strftime('%Y', Apostas.Data) = strftime('%Y', OLD.Data))),0), 2) WHERE Banca.Mês = strftime('%m', OLD.Data) AND Banca.Ano = strftime('%Y', OLD.Data); END;
-CREATE TRIGGER "Atualiza Banca Final (Insert)" AFTER INSERT ON Apostas FOR EACH ROW BEGIN UPDATE Banca SET Valor_Final = ROUND(COALESCE( (SELECT Banca_Final FROM Apostas WHERE Cod_Aposta = ( SELECT MAX(Cod_Aposta) FROM Apostas WHERE strftime('%m', Apostas.Data) = strftime('%m', NEW.Data) AND strftime('%Y', Apostas.Data) = strftime('%Y', NEW.Data))),0), 2) WHERE Banca.Mês = strftime('%m', NEW.Data) AND Banca.Ano = strftime('%Y', NEW.Data); END;
-CREATE TRIGGER "Atualiza Banca Final (Update)" AFTER UPDATE ON Apostas FOR EACH ROW BEGIN UPDATE Banca SET Valor_Final = ROUND(COALESCE( (SELECT Banca_Final FROM Apostas WHERE Cod_Aposta = ( SELECT MAX(Cod_Aposta) FROM Apostas WHERE strftime('%m', Apostas.Data) = strftime('%m', NEW.Data) AND strftime('%Y', Apostas.Data) = strftime('%Y', NEW.Data))),0), 2) WHERE Banca.Mês = strftime('%m', NEW.Data) AND Banca.Ano = strftime('%Y', NEW.Data); END;
-CREATE TRIGGER "Cashout"
-AFTER UPDATE ON Apostas 
-FOR EACH ROW 
-BEGIN
-UPDATE Apostas 
-SET Lucro = Retorno - Valor_Aposta
-WHERE Cod_Aposta = NEW.Cod_Aposta 
-AND Cashout = 1;
-END;
+ 
 CREATE TRIGGER "Atualiza Apostas" 
 AFTER UPDATE ON Mercados 
 FOR EACH ROW 
 BEGIN 
-UPDATE Apostas SET Status = 'Red' 
-WHERE Cod_Aposta = NEW.Cod_Aposta 
-AND Cashout = 0 
-AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red'); 
-
-UPDATE Apostas SET Status = 'Green' WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
-AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red') 
-AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
-
-UPDATE Apostas SET Status = 'Pré-live' WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
-AND NOT EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Red') 
-AND EXISTS (SELECT 1 FROM Mercados WHERE Cod_Aposta = NEW.Cod_Aposta AND Mercados.Status = 'Pré-live'); 
-
+  UPDATE Apostas SET Status = 'Red' 
+    WHERE Cod_Aposta = NEW.Cod_Aposta 
+    AND Cashout = 0 
+    AND EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Red');
+  UPDATE Apostas SET Status = 'Meio Red'
+    WHERE Cod_Aposta = NEW.Cod_Aposta 
+	AND Cashout = 0  
+	AND EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Meio Red'); 
+  UPDATE Apostas SET Status = 'Green' 
+    WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Red') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Meio Red') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Pré-live'); 
+  UPDATE Apostas SET Status = 'Pré-live' 
+	WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Red') 
+	AND EXISTS (SELECT 1 FROM Mercados 
+				WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Pré-live'); 
+END;
+CREATE TRIGGER "Cashout" 
+AFTER UPDATE ON Apostas 
+FOR EACH ROW 
+BEGIN 
+  UPDATE Apostas 
+  SET Lucro = Retorno - Valor_Aposta 
+  WHERE Cod_Aposta = NEW.Cod_Aposta 
+  AND Cashout = 1;
 END;

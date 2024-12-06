@@ -1,6 +1,7 @@
 unit untMain;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}
+{$H+}
 
 interface
 
@@ -8,15 +9,16 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, BufDataset, fpcsvexport, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, DBGrids, DBCtrls, Menus, ActnList, Buttons,
-  ExtCtrls, JSONPropStorage, EditBtn, TASources, TAGraph, TARadialSeries, Types,
-  TASeries, TADbSource, TACustomSeries, TAMultiSeries, DateUtils, Math, Grids,
-  ValEdit, TAChartAxisUtils, FileUtil, HTTPDefs, untSalvarDados;
+  ExtCtrls, JSONPropStorage, EditBtn, TAGraph, TARadialSeries,
+  TASeries, TADbSource, TACustomSeries, TAMultiSeries, DateUtils, Math,
+  FileUtil, HTTPDefs, untSalvarDados;
 
 type
 
   { TformPrincipal }
 
   TformPrincipal = class(TForm)
+    btnCashout: TBitBtn;
     btnExcluirPais: TButton;
     btnExcluirTime: TButton;
     btnExcluirLinha: TButton;
@@ -36,16 +38,15 @@ type
     btnSalvarBancaInicial: TButton;
     btnTudoGreen: TButton;
     btnTudoRed: TButton;
-    btnCashout: TButton;
     btnNovaComp: TButton;
     bufExportar: TBufDataset;
     btnEditAposta: TButton;
     btnAporte: TButton;
     btnRetirar: TButton;
-    cbAno: TComboBox;
+    cbAno:     TComboBox;
     cbGraficos: TComboBox;
-    cbMes: TComboBox;
-    cbPerfil: TComboBox;
+    cbMes:     TComboBox;
+    cbPerfil:  TComboBox;
     chrtAcertAno: TChart;
     chrtAcertLinha: TChart;
     chrtAcertMes: TChart;
@@ -70,29 +71,29 @@ type
     chrtLucroMetodo: TChart;
     conectBancoDados: TSQLite3Connection;
     chbGestaoVariavel: TDBCheckBox;
-    dsConfig: TDataSource;
-    dsMP: TDataSource;
-    dsMT: TDataSource;
-    dsMC: TDataSource;
-    grbLinha: TGroupBox;
+    dsConfig:  TDataSource;
+    dsMP:      TDataSource;
+    dsMT:      TDataSource;
+    dsMC:      TDataSource;
+    grbLinha:  TGroupBox;
     grbMetComp: TGroupBox;
     grbMetodo: TGroupBox;
     grbMetPais: TGroupBox;
     grbMetTime: TGroupBox;
     grdLinhasMes: TDBGrid;
-    grdMC: TDBGrid;
+    grdMC:     TDBGrid;
     grdMetodosMes: TDBGrid;
     ExportarDados: TCSVExporter;
-    dsComp: TDataSource;
+    dsComp:    TDataSource;
     dsCompMenosAcert: TDataSource;
     dsCompMaisAcert: TDataSource;
     dsPaisesMenosAcert: TDataSource;
     dsPaisesMaisAcert: TDataSource;
-    dsPais: TDataSource;
+    dsPais:    TDataSource;
     dsTimesMenosAcert: TDataSource;
     dsTimesMaisAcert: TDataSource;
-    dsTimes: TDataSource;
-    dsAno: TDataSource;
+    dsTimes:   TDataSource;
+    dsAno:     TDataSource;
     dsLinhasMes: TDataSource;
     dsLinhasAno: TDataSource;
     dsMetodosAno: TDataSource;
@@ -102,9 +103,9 @@ type
     edtPesquisarComp: TEdit;
     gbListaLinha: TGroupBox;
     gbListaMetodo: TGroupBox;
-    grbTimes: TGroupBox;
+    grbTimes:  TGroupBox;
     grbPaises: TGroupBox;
-    grbComp: TGroupBox;
+    grbComp:   TGroupBox;
     grbPaisesMaisAcert: TGroupBox;
     grbCompMaisLucr: TGroupBox;
     grbTimesMenosLucr: TGroupBox;
@@ -118,25 +119,25 @@ type
     deFiltroDataFinal: TDateEdit;
     deFiltroDataInicial: TDateEdit;
     dsApostas: TDataSource;
-    dsBanca: TDataSource;
+    dsBanca:   TDataSource;
     dsCompeticoes: TDataSource;
     dsGraficoAno: TDataSource;
     dsGraficoMes: TDataSource;
-    dsMes: TDataSource;
-    dsPerfis: TDataSource;
+    dsMes:     TDataSource;
+    dsPerfis:  TDataSource;
     dsSelecionarPerfil: TDataSource;
     dsSituacao: TDataSource;
     dsUnidades: TDataSource;
     grbApostas: TGroupBox;
     grbDetalhesAp: TGroupBox;
-    grdAno: TDBGrid;
+    grdAno:    TDBGrid;
     grdApostas: TDBGrid;
-    grdMes: TDBGrid;
-    grdMP: TDBGrid;
-    grdMT: TDBGrid;
-    grdTimes: TDBGrid;
+    grdMes:    TDBGrid;
+    grdMP:     TDBGrid;
+    grdMT:     TDBGrid;
+    grdTimes:  TDBGrid;
     grdPaises: TDBGrid;
-    grdComp: TDBGrid;
+    grdComp:   TDBGrid;
     grdPaisesMaisAcert: TDBGrid;
     grdCompMaisLucr: TDBGrid;
     grdTimesMenosAcert: TDBGrid;
@@ -153,11 +154,11 @@ type
     lbValAporte: TLabel;
     lbValBancaTotal: TLabel;
     lbBancaTotal: TLabel;
-    lbStake: TLabel;
+    lbStake:   TLabel;
     lbValorBanca: TLabel;
     lbAcertosLin: TLabel;
     lbAcertosMet: TLabel;
-    lbAporte: TLabel;
+    lbAporte:  TLabel;
     lbDataFim: TLabel;
     lbDataInicio: TLabel;
     lbErrosLin: TLabel;
@@ -173,19 +174,20 @@ type
     lbNuloLin: TLabel;
     lbNuloMet: TLabel;
     lbSelecioneAposta: TLabel;
-    lbAno: TLabel;
-    lbBancaAtual: TLabel;
+    lbAno:     TLabel;
+    lbBancaFinalTitulo: TLabel;
     lbBancaInicial: TLabel;
-    lbLucro: TLabel;
-    lbMes: TLabel;
-    lbPerfil: TLabel;
+    lbLucro:   TLabel;
+    lbMes:     TLabel;
+    lbPerfil:  TLabel;
     lbUnidade: TLabel;
-    lsbJogos: TListBox;
+    lsbJogos:  TListBox;
     lnGraficoLucroAno: TLineSeries;
     lnGraficoLucroAno1: TLineSeries;
     lnGraficoLucroMes: TLineSeries;
     lsbLinhas: TListBox;
     lsbMetodos: TListBox;
+    miConfig:  TMenuItem;
     mmAnotAposta: TMemo;
     miExibirBoasVindas: TMenuItem;
     MenuPrincipal: TMainMenu;
@@ -193,12 +195,12 @@ type
     MenuAjuda: TMenuItem;
     miImportar: TMenuItem;
     miExportar: TMenuItem;
-    MenuComoUsar: TMenuItem;
-    MenuSobre: TMenuItem;
-    MenuApoie: TMenuItem;
+    miComoUsar: TMenuItem;
+    miSobre:   TMenuItem;
+    miApoie:   TMenuItem;
     pcMesMetodos: TPageControl;
     pcPrincipal: TPageControl;
-    pcResumo: TPageControl;
+    pcResumo:  TPageControl;
     pizzaLinha: TPieSeries;
     pizzaMetodo: TPieSeries;
     pizzaMetodo1: TPieSeries;
@@ -211,13 +213,13 @@ type
     psGraficoGreensReds: TPieSeries;
     psGraficoGreensReds1: TPieSeries;
     psGraficoGreensReds2: TPieSeries;
-    qrAno: TSQLQuery;
-    qrAnoAno: TLargeintField;
+    qrAno:     TSQLQuery;
+    qrAnoAno:  TLargeintField;
     qrAnoLucroAnualReais: TFloatField;
     qrAnoLucroTotalPorCento: TFloatField;
     qrAnoMesGreen: TLargeintField;
     qrAnoMesRed: TLargeintField;
-    qrAnoMs: TLargeintField;
+    qrAnoMs:   TLargeintField;
     qrAnoTotalBancas: TFloatField;
     qrApostas: TSQLQuery;
     qrApostasBanca_Final: TBCDField;
@@ -235,7 +237,7 @@ type
     qrApostasSelecao: TBooleanField;
     qrApostasStatus: TStringField;
     qrApostasValor_Aposta: TBCDField;
-    qrBanca: TSQLQuery;
+    qrBanca:   TSQLQuery;
     qrBancaAno1: TLongintField;
     qrBancaInicialMoedaStake1: TStringField;
     qrBancaLucroPrCntCalculado1: TStringField;
@@ -249,7 +251,9 @@ type
     qrBancaValor_Final1: TBCDField;
     qrBancaValor_Inicial1: TBCDField;
     qrConfigExibirTelaBoasVindas: TBooleanField;
+    qrConfigGestaoPcent: TBooleanField;
     qrConfigGestaoVariavel: TBooleanField;
+    qrConfigPreRelease: TBooleanField;
     qrDadosApostaAnotacoes: TStringField;
     qrDadosApostaCod_Aposta: TLargeintField;
     qrDadosApostaCompetio: TStringField;
@@ -260,15 +264,15 @@ type
     qrDadosApostaROWID: TLargeintField;
     qrDadosApostaStatus: TStringField;
     qrLinhasAno: TSQLQuery;
-    qrMes: TSQLQuery;
-    qrMesDia: TStringField;
+    qrMes:     TSQLQuery;
+    qrMesDia:  TStringField;
     qrMesesGreenRed: TSQLQuery;
     qrMesGreen: TLargeintField;
     qrMesNeutro: TLargeintField;
     qrMesNumGreen: TLargeintField;
     qrMesNumRed: TLargeintField;
     qrMesPorCentoLucro: TFloatField;
-    qrMesRed: TLargeintField;
+    qrMesRed:  TLargeintField;
     qrMesSomaLucro: TFloatField;
     qrMetodosAno: TSQLQuery;
     qrMetodosMesCod_Metodo1: TLargeintField;
@@ -277,7 +281,7 @@ type
     qrMetodosMesPcentAcertos1: TFloatField;
     qrMetodosMesReds1: TLargeintField;
     qrMetodosMesTotalApostas1: TLargeintField;
-    qrPerfis: TSQLQuery;
+    qrPerfis:  TSQLQuery;
     qrPerfisPerfil: TStringField;
     qrPerfisPerfil1: TStringField;
     qrSelecionarPerfil: TSQLQuery;
@@ -288,27 +292,29 @@ type
     qrUnidadesUnidade: TStringField;
     qrUnidadesUnidade1: TStringField;
     rbGestPcent: TRadioButton;
-    rbGestUn: TRadioButton;
+    rbGestUn:  TRadioButton;
     scriptRemoverAposta: TSQLScript;
     qrDadosAposta: TSQLQuery;
     qrMetodosMes: TSQLQuery;
     qrLinhasMes: TSQLQuery;
     scriptSalvarDados: TSQLScript;
     btnPesquisarTime: TSpeedButton;
-    qrTimes: TSQLQuery;
+    qrTimes:   TSQLQuery;
     qrTimesMaisAcert: TSQLQuery;
     qrTimesMenosAcert: TSQLQuery;
-    qrPais: TSQLQuery;
+    qrPais:    TSQLQuery;
     qrPaisesMaisAcert: TSQLQuery;
     qrPaisesMenosAcert: TSQLQuery;
-    qrComp: TSQLQuery;
+    qrComp:    TSQLQuery;
     qrCompMaisAcert: TSQLQuery;
     qrCompMenosAcert: TSQLQuery;
-    qrMP: TSQLQuery;
-    qrMT: TSQLQuery;
-    qrMC: TSQLQuery;
+    qrMP:      TSQLQuery;
+    qrMT:      TSQLQuery;
+    qrMC:      TSQLQuery;
     BarraStatus: TStatusBar;
-    qrConfig: TSQLQuery;
+    qrConfig:  TSQLQuery;
+    qrLucroAno: TSQLQuery;
+    qrTodosAnos: TSQLQuery;
     tsContrTimes: TTabSheet;
     tsContrPaises: TTabSheet;
     tsContrComp: TTabSheet;
@@ -319,35 +325,27 @@ type
     tsDadosMesMetodos: TTabSheet;
     tsGraficos: TTabSheet;
     tsGraficosMesMetodos: TTabSheet;
-    tsPainel: TTabSheet;
+    tsPainel:  TTabSheet;
     tsResumoLista: TTabSheet;
-    procedure dsBancaDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
 
     procedure AtualizaMetodoLinha(Sender: TObject);
-    procedure grdApostasEditingDone(Sender: TObject);
-    procedure grdDadosApCellClick(Column: TColumn);
-    procedure grdDadosApEditingDone(Sender: TObject);
-    procedure lbLucroDinheiroClick(Sender: TObject);
-    procedure MenuItem7Click(Sender: TObject);
-    procedure MenuItem8Click(Sender: TObject);
-    procedure miExibirBoasVindasClick(Sender: TObject);
-    procedure qrApostasAfterOpen(DataSet: TDataSet);
-    procedure qrApostasAfterRefresh(DataSet: TDataSet);
     procedure qrApostasBeforeRefresh(DataSet: TDataSet);
     procedure ReiniciarTodosOsQueries;
     procedure MudarCorLucro;
     procedure PerfilDoInvestidor;
     procedure SalvarDadosBD(Sender: TObject);
-    procedure ImportarDadosBD(Sender: TObject);
+    procedure ImportarDadosBD;
     procedure GestaoUnidadePcent(Sender: TObject);
+    procedure ItemMenu(Sender: TObject);
   private
 
   public
     GestaoVariavel: boolean;
-    GestaoUnidade: boolean;
+    GestaoUnidade:  boolean;
     procedure PosAtualizacao;
     procedure ExcecaoGlobal(Sender: TObject; E: Exception);
     procedure CarregaConfig;
@@ -357,42 +355,39 @@ var
   ColunaAtual: TColumn;
   Arquivo: TFileStream;
   Linha: string;
-  ExibirBoasVindas: boolean;
+  ExibirBoasVindas, PreRelease: boolean;
 
 var
   formPrincipal: TformPrincipal;
   estrategia, perfilInvestidor: string;
   stakeAposta, valorInicial, Aporte: double;
-  contMult: integer;
+  contMult:      integer;
   mesSelecionado: integer;
   anoSelecionado: integer;
-  GestaoPcent: boolean;
+  GestaoPcent:   boolean;
 
 implementation
 
 uses
-  untUpdate, untApostas, untPainel, untSplash, untDatabase, untMultipla, untSobre,
-  untControleMetodos, untControleTimes, untPaises, untContrComp,
-  fpjson, fphttpclient, jsonparser, LCLIntf, untBoasVindas;
-
-var
-  BoasVindas: TformBoasVindas;
+  untUpdate, untApostas, untSplash, untDatabase, untSobre, untControleMetodos,
+  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig;
 
 procedure TformPrincipal.CarregaConfig;
 begin
   writeln('Carregando configurações');
-  with TSQLQuery.Create(nil) do
+  GestaoVariavel   := False;
+  GestaoUnidade    := True;
+  ExibirBoasVindas := True;
+  with qrConfig do
   try
-    DataBase := conectBancoDados;
-    SQL.Text := 'SELECT * FROM ConfigPrograma';
-    Open;
-    writeln('Query aberto');
-    if FieldByName('ExibirTelaBoasVindas').AsBoolean = True then
-      ExibirBoasVindas := True
-    else
-      ExibirBoasVindas := False;
-  finally
-    Free;
+    if not Active then Open;
+    if not IsEmpty then begin
+      GestaoVariavel   := FieldByName('GestaoVariavel').AsBoolean;
+      GestaoUnidade    := not Fields[3].AsBoolean;
+      ExibirBoasVindas := FieldByName('ExibirTelaBoasVindas').AsBoolean;
+    end;
+  except
+    Exit;
   end;
 end;
 
@@ -402,7 +397,6 @@ end;
 
 procedure TformPrincipal.FormCreate(Sender: TObject);
 var
-  TelaSplash: TformSplash;
   LocalPrograma: string;
 begin
   {$IFDEF MSWINDOWS}
@@ -418,28 +412,25 @@ begin
   Application.OnException := @ExcecaoGlobal;
 
   writeln('Exibindo tela splash');
-  TelaSplash := TformSplash.Create(nil);
-  TelaSplash.ShowModal;
-  TelaSplash.Free;
-  CarregaConfig;
-end;
-
-procedure TformPrincipal.dsBancaDataChange(Sender: TObject; Field: TField);
-begin
-
+  try
+    formSplash := TformSplash.Create(nil);
+    formSplash.ShowModal;
+  finally
+    formSplash.Free;
+  end;
 end;
 
 procedure TformPrincipal.FormActivate(Sender: TObject);
-var
-  BoasVindas: TformBoasVindas;
 begin
   tsPainel.Show;
   if ExibirBoasVindas then
-  begin
-    BoasVindas := TformBoasVindas.Create(nil);
-    BoasVindas.ShowModal;
-    BoasVindas.Free;
-  end;
+    formBoasVindas.ShowModal;
+end;
+
+procedure TformPrincipal.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  with transactionBancoDados do
+    if Active then Commit;
 end;
 
 procedure TformPrincipal.FormResize(Sender: TObject);
@@ -451,14 +442,14 @@ var
   larguraGridDados, larguraAnotacoes: integer;
 begin
 
-  {*******************************PAINEL PRINCIPAL*******************************}
+{*******************************PAINEL PRINCIPAL*******************************}
 
   //Gráficos
-  larguraTotal := pnGraficos.ClientWidth;
-  alturaTotal := pnGraficos.ClientHeight;
+  larguraTotal  := pnGraficos.ClientWidth;
+  alturaTotal   := pnGraficos.ClientHeight;
   metadeLargura := larguraTotal div 2;
-  alturaObjeto := alturaTotal div 3;
-  larguraPizza := alturaObjeto;
+  alturaObjeto  := alturaTotal div 3;
+  larguraPizza  := alturaObjeto;
   larguraLinhas := larguraTotal - larguraPizza;
   chrtLucroMes.SetBounds(0, 0, larguraLinhas, alturaObjeto);
   chrtAcertMes.SetBounds(larguraLinhas, 0, larguraPizza, alturaObjeto);
@@ -470,37 +461,37 @@ begin
     alturaObjeto);
 
   //Tabelas
-  larguraTotal := pnTabelas.ClientWidth;
-  alturaTotal := pnTabelas.ClientHeight;
+  larguraTotal  := pnTabelas.ClientWidth;
+  alturaTotal   := pnTabelas.ClientHeight;
   larguraObjeto := larguraTotal div 2;
   grdMes.SetBounds(0, 0, larguraObjeto, alturaTotal);
   grdAno.SetBounds(larguraObjeto, 0, larguraObjeto, alturaTotal);
 
-  {******************************************************************************}
+{******************************************************************************}
 
-  {*******************************DADOS DAS APOSTAS******************************}
+{*******************************DADOS DAS APOSTAS******************************}
 
-  larguraTotal := lbSelecioneAposta.ClientWidth;
-  alturaTotal := lbSelecioneAposta.ClientHeight;
-  larguraObjeto := larguraTotal div 3;
+  larguraTotal     := lbSelecioneAposta.ClientWidth;
+  alturaTotal      := lbSelecioneAposta.ClientHeight;
+  larguraObjeto    := larguraTotal div 3;
   larguraGridDados := larguraObjeto + (larguraObjeto div 8);
   larguraAnotacoes := larguraObjeto - (larguraObjeto div 8);
 
   lsbJogos.SetBounds(0, 0, larguraObjeto, alturaTotal);
   grdDadosAp.SetBounds(larguraObjeto, 0, larguraGridDados, alturaTotal);
   grbAnotacoes.SetBounds(larguraObjeto + larguraGridDados, 0, larguraAnotacoes,
-  alturaObjeto);
+    alturaObjeto);
 
 
-  {******************************************************************************}
+{******************************************************************************}
 
-  {******************************CONTROLE DE MÉTODOS*****************************}
+{******************************CONTROLE DE MÉTODOS*****************************}
 
   //Largura e altura total da aba
-  larguraTotal := tsGraficosMesMetodos.ClientWidth;
-  alturaTotal := tsGraficosMesMetodos.ClientHeight;
+  larguraTotal  := tsGraficosMesMetodos.ClientWidth;
+  alturaTotal   := tsGraficosMesMetodos.ClientHeight;
   larguraObjeto := larguraTotal div 2;
-  alturaObjeto := alturaTotal div 2;
+  alturaObjeto  := alturaTotal div 2;
 
 
   //Proporções das listas de método e linha da aba de gráficos
@@ -509,9 +500,9 @@ begin
   gbListaLinha.SetBounds(0, alturaObjeto, larguraObjeto, alturaObjeto);
 
   //proporção dos gráficos
-  larguraObjeto := larguraTotal div 3;
+  larguraObjeto  := larguraTotal div 3;
   larguraGrafico := pnGraficosMetodos.ClientWidth div 2;
-  alturaGrafico := pnGraficosMetodos.ClientHeight div 2;
+  alturaGrafico  := pnGraficosMetodos.ClientHeight div 2;
   chrtLucroMetodo.SetBounds(0, 0, larguraGrafico, alturaGrafico);
   chrtAcertMetodo.SetBounds(larguraGrafico, 0, larguraGrafico, alturaGrafico);
   chrtLucroLinha.SetBounds(0, alturaGrafico, larguraGrafico, alturaGrafico);
@@ -520,10 +511,10 @@ begin
 
   //Proporção dos grids de método por PTC
   larguraTotal := tsDadosMesMetodos.ClientWidth;
-  alturaTotal := tsDadosMesMetodos.ClientHeight;
+  alturaTotal  := tsDadosMesMetodos.ClientHeight;
 
   larguraObjeto := larguraTotal div 2;
-  alturaObjeto := alturaTotal div 3;
+  alturaObjeto  := alturaTotal div 3;
 
   grbMetPais.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
   grbMetTime.SetBounds(larguraObjeto, alturaObjeto, larguraObjeto, alturaObjeto);
@@ -532,21 +523,21 @@ begin
   //Grids dos métodos/linhas
 
   larguraTotal := tsDadosMesMetodos.ClientWidth;
-  alturaTotal := tsDadosMesMetodos.ClientHeight;
+  alturaTotal  := tsDadosMesMetodos.ClientHeight;
 
   alturaObjeto := alturaTotal div 2;
 
   grbMetodos.SetBounds(0, 0, larguraObjeto, alturaObjeto);
   grbLinhas.SetBounds(0, alturaObjeto, larguraObjeto, alturaObjeto);
 
-  {******************************************************************************}
+{******************************************************************************}
 
-  {*******************************CONTROLE DE TIMES******************************}
+{*******************************CONTROLE DE TIMES******************************}
   larguraTotal := tsContrTimes.ClientWidth;
-  alturaTotal := tsContrTimes.ClientHeight;
+  alturaTotal  := tsContrTimes.ClientHeight;
 
   larguraObjeto := larguraTotal div 3;
-  alturaObjeto := trunc(alturaTotal * AspectRatio);
+  alturaObjeto  := trunc(alturaTotal * AspectRatio);
 
   grbTimes.SetBounds(0, 0, larguraObjeto, alturaTotal);
   chrtAcertTime.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
@@ -557,14 +548,14 @@ begin
   grbTimesMenosLucr.SetBounds((larguraObjeto * 2), alturaObjeto, larguraObjeto,
     alturaObjeto);
 
-  {******************************************************************************}
+{******************************************************************************}
 
-  {*******************************CONTROLE DE PAÍSES*****************************}
+{*******************************CONTROLE DE PAÍSES*****************************}
   larguraTotal := tsContrPaises.ClientWidth;
-  alturaTotal := tsContrPaises.ClientHeight;
+  alturaTotal  := tsContrPaises.ClientHeight;
 
   larguraObjeto := larguraTotal div 3;
-  alturaObjeto := trunc(alturaTotal * AspectRatio);
+  alturaObjeto  := trunc(alturaTotal * AspectRatio);
 
   grbPaises.SetBounds(0, 0, larguraObjeto, alturaTotal);
   chrtAcertPais.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
@@ -575,12 +566,12 @@ begin
   grbPaisesMenosAcert.SetBounds(larguraObjeto * 2, alturaObjeto, larguraObjeto,
     alturaObjeto);
 
-  {****************************CONTROLE DE COMPETIçÕES***************************}
+{****************************CONTROLE DE COMPETIçÕES***************************}
   larguraTotal := tsContrComp.ClientWidth;
-  alturaTotal := tsContrComp.ClientHeight;
+  alturaTotal  := tsContrComp.ClientHeight;
 
   larguraObjeto := larguraTotal div 3;
-  alturaObjeto := trunc(alturaTotal * AspectRatio);
+  alturaObjeto  := trunc(alturaTotal * AspectRatio);
 
   grbComp.SetBounds(0, 0, larguraObjeto, alturaTotal);
   chrtAcertComp.SetBounds(larguraObjeto, 0, larguraObjeto, alturaObjeto);
@@ -590,7 +581,7 @@ begin
   grbCompMenosLucr.SetBounds((larguraObjeto * 2), alturaObjeto, larguraObjeto,
     alturaObjeto);
 
-  {******************************************************************************}
+{******************************************************************************}
 
 end;
 
@@ -607,70 +598,68 @@ begin
       writeln('Item selecionado: ', SelectedItem.Caption);
       Post;
       ApplyUpdates;
-      //Refresh;
       CalculaDadosAposta;
     end;
-end;
-
-procedure TformPrincipal.grdApostasEditingDone(Sender: TObject);
-begin
-  if (qrApostas.State in [dsInsert, dsEdit]) then
-  begin
-    try
-      qrApostas.Edit;
-      writeln('Postando');
-      qrApostas.Post;
-      writeln('Aplicando');
-      qrApostas.ApplyUpdates;
-      writeln('Salvando');
-      transactionBancoDados.CommitRetaining;
-      CalculaDadosAposta;
-    except
-      on E: Exception do
-        writeln('Erro: ' + E.Message);
-    end;
-  end;
 end;
 
 procedure TformPrincipal.MudarCorLucro;
 var
   lucro: double;
 begin
-  lucro := qrBanca.FieldByName('LucroR$').AsFloat;
+  with qrBanca do
+  begin
+    if not Active then Open;
+    if not IsEmpty then
+    lucro := qrBanca.FieldByName('LucroR$').AsFloat
+    else lucro := 0;
+  end;
 
   if lucro > 0 then
   begin
-    lbBancaFinal.Font.Color := clGreen;
+    lbBancaFinal.Font.Color    := clGreen;
     lbLucroDinheiro.Font.Color := clGreen;
-    lbLucroPcent.Font.Color := clGreen;
+    lbLucroPcent.Font.Color    := clGreen;
   end
   else if lucro < 0 then
   begin
-    lbBancaFinal.Font.Color := clRed;
+    lbBancaFinal.Font.Color    := clRed;
     lbLucroDinheiro.Font.Color := clRed;
-    lbLucroPcent.Font.Color := clRed;
+    lbLucroPcent.Font.Color    := clRed;
   end
   else
   begin
-    lbBancaFinal.Font.Color := clDefault;
+    lbBancaFinal.Font.Color    := clDefault;
     lbLucroDinheiro.Font.Color := clDefault;
-    lbLucroPcent.Font.Color := clDefault;
+    lbLucroPcent.Font.Color    := clDefault;
   end;
 end;
 
 procedure TformPrincipal.PerfilDoInvestidor;
 var
   Banca: double;
+  Campo: TField;
 begin
+  writeln('Definindo perfil do investidor');
   with formPrincipal do
-  with qrBanca do
   begin
-    if not Active then Open;
-
-    if not GestaoVariavel then
-      Banca := FieldByName('BancaTotal').AsFloat
-    else
-      Banca := FieldByName('Valor_Final').AsFloat;
+    with qrBanca do
+    try
+      Banca := 0;
+      if not Active then Open;
+      if not IsEmpty then
+        if not GestaoVariavel then
+          Campo := FieldByName('BancaTotal')
+        else
+        begin
+          Campo := FieldByName('Valor_Final');
+          if not Campo.IsNull and (Trim(Campo.AsString) <> '') then
+            Banca := Campo.AsFloat
+          else
+            Banca := 0;
+        end;
+    except
+      Banca := 0;
+    end;
 
     case perfilInvestidor of
       'Conservador':
@@ -686,7 +675,7 @@ begin
         else
           stakeAposta := RoundTo(5 * Banca / 100, -2);
     end;
-    Refresh;
+    qrBanca.Refresh;
   end;
 end;
 
@@ -697,7 +686,6 @@ begin
   Application.ProcessMessages;
 end;
 
-
 procedure TformPrincipal.SalvarDadosBD(Sender: TObject);
 var
   formSalvarDados: TformSalvarDados;
@@ -707,17 +695,16 @@ begin
   formSalvarDados.Free;
 end;
 
-
-procedure TformPrincipal.ImportarDadosBD(Sender: TObject);
+procedure TformPrincipal.ImportarDadosBD;
 var
   Script: TStringList;
-  i: integer;
+  i:      integer;
 begin
   Script := TStringList.Create;
   try
     with TOpenDialog.Create(nil) do
     try
-      Filter :=
+      Filter     :=
         'Todos os Arquivos Suportados (*.sql, *.csv) | *.sql; *.csv | ' +
         'Arquivo SQL (*.sql)|*.sql| Arquivo CSV (*.csv)|*.csv| ' +
         'Todos os Arquivos (*.*)|*.*';
@@ -727,7 +714,7 @@ begin
         Script.LoadFromFile(FileName);
 
         with TSQLQuery.Create(nil) do
-        try
+        begin
           try
             DataBase := conectBancoDados;
 
@@ -749,7 +736,6 @@ begin
                 sLineBreak + 'Linha SQL: ' + sLineBreak + SQL.Text);
             end;
           end;
-        finally
           Free;
         end;
       end;
@@ -768,28 +754,44 @@ end;
 
 procedure TformPrincipal.GestaoUnidadePcent(Sender: TObject);
 begin
-  with TSQLQuery.Create(nil) do
-  try
-    DataBase := conectBancoDados;
-    if (Sender = rbGestPcent) then
-    begin
-      SQL.Text := 'UPDATE "Selecionar Perfil" SET GestaoPcent = 1';
-      GestaoUnidade := False;
-      ExecSQL;
-      writeln('Gestão como porcentagem!');
+  writeln('Alternando gestão entre unidade e porcentagem');
+  with transactionBancoDados do
+    with qrConfig do
+    try
+      if not Active then Open;
+      if not IsEmpty then
+      begin
+        Edit;
+        Fields[3].AsBoolean := rbGestPcent.Checked;
+        Post;
+        ApplyUpdates;
+        CommitRetaining;
+        CarregaConfig;
+      end;
+    except
+      on E: Exception do
+      begin
+        Cancel;
+        RollbackRetaining;
+        writeln('Erro ao definir gestão entre unidade e porcentagem: ' + E.Message);
+      end;
     end;
-    if (Sender = rbGestUn) then
-    begin
-      SQL.Text := 'UPDATE "Selecionar Perfil" SET GestaoPcent = 0';
-      GestaoUnidade := True;
-      ExecSQL;
-      writeln('Gestão como unidade!');
-    end;
-    transactionBancoDados.CommitRetaining;
-  finally
-    Free;
-  end;
   PerfilDoInvestidor;
+end;
+
+procedure TformPrincipal.ItemMenu(Sender: TObject);
+var
+  Item: TMenuItem;
+begin
+  Item := TMenuItem(Sender);
+  case Item.Name of
+    'miExibirBoasVindas': formBoasVindas.ShowModal;
+    'miImportar': ImportarDadosBD;
+    'miExportar': formSalvarDados.ShowModal;
+    'miConfig': FormConfig.ShowModal;
+    'miApoie': openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
+    'miSobre': formSobre.ShowModal;
+  end;
 end;
 
 procedure TformPrincipal.ReiniciarTodosOsQueries;
@@ -836,140 +838,6 @@ begin
   finally
     qrPraReiniciar.Free;
   end;
-end;
-
-procedure TformPrincipal.grdDadosApCellClick(Column: TColumn);
-var
-  P: TPoint;
-  Query: TSQLQuery;
-  Item: TMenuItem;
-begin
-  Query := TSQLQuery.Create(nil);
-  Query.DataBase := conectBancoDados;
-  Screen.Cursor := crAppStart;
-  popupLinhas.Items.Clear;
-
-  ColunaAtual := Column;
-
-  case Column.FieldName of
-    'Método':
-    begin
-      if Query.Active then Query.Close;
-      Query.SQL.Text := 'SELECT Nome FROM Métodos';
-      Query.Open;
-      while not Query.EOF do
-      begin
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := Query.FieldByName('Nome').AsString;
-        Item.OnClick := @AtualizaMetodoLinha;
-        popupLinhas.Items.Add(Item);
-        Query.Next;
-      end;
-    end;
-    'Linha':
-    begin
-      if Query.Active then Query.Close;
-      Query.SQL.Text :=
-        'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
-      Query.ParamByName('SelecMetodo').AsString :=
-        qrDadosAposta.FieldByName('Método').AsString;
-      Query.Open;
-      while not Query.EOF do
-      begin
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := Query.FieldByName('Nome').AsString;
-        Item.OnClick := @AtualizaMetodoLinha;
-        popupLinhas.Items.Add(Item);
-        Query.Next;
-      end;
-    end;
-    'Status':
-    begin
-      popupLinhas.Items.Clear;
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Pré-live';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Green';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Red';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Anulada';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Meio Green';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-
-      Item := TMenuItem.Create(popupLinhas);
-      Item.Caption := 'Meio Red';
-      Item.OnClick := @AtualizaMetodoLinha;
-      popupLinhas.Items.Add(Item);
-    end;
-  end;
-
-  P := Mouse.CursorPos;
-  popupLinhas.PopUp(P.X, P.Y);
-  Screen.Cursor := crDefault;
-  Query.Free;
-  qrDadosAposta.Edit;
-end;
-
-procedure TformPrincipal.grdDadosApEditingDone(Sender: TObject);
-var
-  Bookmark: TBookmark;
-begin
-  writeln('Salvando edição do qrDadosAp');
-  with qrDadosAposta do
-  begin
-    Edit;
-    Post;
-    ApplyUpdates;
-    transactionBancoDados.CommitRetaining;
-    CalculaDadosAposta;
-  end;
-end;
-
-procedure TformPrincipal.lbLucroDinheiroClick(Sender: TObject);
-begin
-
-end;
-
-procedure TformPrincipal.MenuItem7Click(Sender: TObject);
-begin
-  formSobre.ShowModal;
-end;
-
-procedure TformPrincipal.MenuItem8Click(Sender: TObject);
-begin
-  openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
-end;
-
-procedure TformPrincipal.miExibirBoasVindasClick(Sender: TObject);
-begin
-  BoasVindas := TformBoasVindas.Create(nil);
-  BoasVindas.ShowModal;
-  BoasVindas.Free;
-end;
-
-procedure TformPrincipal.qrApostasAfterOpen(DataSet: TDataSet);
-begin
-  qrApostas.Last;
-end;
-
-procedure TformPrincipal.qrApostasAfterRefresh(DataSet: TDataSet);
-begin
-  qrApostas.Last;
 end;
 
 procedure TformPrincipal.qrApostasBeforeRefresh(DataSet: TDataSet);

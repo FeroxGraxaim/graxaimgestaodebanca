@@ -1,6 +1,7 @@
 unit untControleMetodos;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
@@ -8,7 +9,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-  TACustomSeries, TAMultiSeries, DateUtils, untMain, contnrs, fgl, Math;
+  TACustomSeries, TAMultiSeries, DateUtils, untMain, Math;
 
 type
 
@@ -35,20 +36,20 @@ type
   end;
 
   TMetodo = class
-    Texto: string;
+    Texto:     string;
     CodMetodo: integer;
   end;
 
   TLinha = class
-    Texto: string;
+    Texto:    string;
     CodLinha: integer;
   end;
 
 var
-  InfoMetodo: TMetodo;
-  InfoLinha: TLinha;
+  InfoMetodo:  TMetodo;
+  InfoLinha:   TLinha;
   ListaMetodo: TList;
-  ListaLinha: TList;
+  ListaLinha:  TList;
   GlobalCodMetodo, GlobalCodLinha: integer;
 
 implementation
@@ -60,30 +61,25 @@ begin
   with formPrincipal do
   begin
     ListaMetodo := TList.Create;
-    ListaLinha := TList.Create;
-    writeln('Criando query');
+    ListaLinha  := TList.Create;
+    writeln('Carregando métodos');
     with TSQLQuery.Create(nil) do
-    begin
+    try
       DataBase := conectBancoDados;
       SQL.Text := 'SELECT * FROM Métodos';
       writeln('SQL: ', SQL.Text);
       Open;
-      writeln('Criando loop');
       lsbMetodos.Items.Clear;
       while not EOF do
       begin
-        writeln('Crianddo TMetodo');
         InfoMetodo := TMetodo.Create;
         InfoMetodo.Texto := FieldByName('Nome').AsString;
-        writeln('Adicionado ', InfoMetodo.Texto);
         InfoMetodo.CodMetodo := FieldByName('Cod_Metodo').AsInteger;
-        writeln('Com o código ', InfoMetodo.CodMetodo);
         ListaMetodo.Add(InfoMetodo);
-        writeln('Adicionado na lista');
         lsbMetodos.Items.Add(InfoMetodo.Texto);
-        writeln('Adicionado no TListBox');
         Next;
       end;
+    finally
       Free;
     end;
     lsbMetodos.ItemIndex := 0;
@@ -97,8 +93,8 @@ var
 begin
   with formPrincipal do
   begin
-    Green := 0;
-    Red := 0;
+    Green   := 0;
+    Red     := 0;
     Anulada := 0;
     MeioGreen := 0;
     MeioRed := 0;
@@ -157,8 +153,8 @@ begin
 
     //Gráfico de Lucratividade
 
-    Green := 0;
-    Red := 0;
+    Green   := 0;
+    Red     := 0;
     Anulada := 0;
     MeioGreen := 0;
     MeioRed := 0;
@@ -225,8 +221,8 @@ begin
   begin
 
     //Gráfico de acertos
-    Green := 0;
-    Red := 0;
+    Green   := 0;
+    Red     := 0;
     Anulada := 0;
     MeioGreen := 0;
     MeioRed := 0;
@@ -285,8 +281,8 @@ begin
 
     //Gráfico de Lucratividade
 
-    Green := 0;
-    Red := 0;
+    Green   := 0;
+    Red     := 0;
     Anulada := 0;
     MeioGreen := 0;
     MeioRed := 0;
@@ -371,7 +367,7 @@ begin
       begin
         DataBase := conectBancoDados;
         SQL.Text := 'SELECT * FROM Linhas WHERE Cod_Metodo = :CodMetodo';
-        writeln('SQL: ', SQL.Text);
+        //writeln('SQL: ', SQL.Text);
         ParamByName('CodMetodo').AsInteger := GlobalCodMetodo;
         Open;
         ListaLinha.Clear;
@@ -389,8 +385,8 @@ begin
       end;
     end;
     btnExcluirMetodo.Enabled := True;
-    btnNovaLinha.Enabled := True;
-    lsbLinhas.ItemIndex := 0;
+    btnNovaLinha.Enabled     := True;
+    lsbLinhas.ItemIndex      := 0;
 
     //Dados Escritos
 
@@ -425,36 +421,36 @@ begin
 
       if IsEmpty then
       begin
-        lbMercadosMet.Caption :=
+        lbMercadosMet.Caption  :=
           ('Mercados: 0');
-        lbAcertosMet.Caption :=
+        lbAcertosMet.Caption   :=
           ('Acertos: 0');
-        lbErrosMet.Caption :=
+        lbErrosMet.Caption     :=
           ('Erros: 0');
-        lbNuloMet.Caption :=
+        lbNuloMet.Caption      :=
           ('Anulados: 0');
         lbMeioAcertMet.Caption :=
           ('Meios Acertos: 0');
-        lbMeioErroMet.Caption :=
+        lbMeioErroMet.Caption  :=
           ('Meios Erros: 0');
-        lbLucroMet.Caption :=
+        lbLucroMet.Caption     :=
           ('Lucro Total: 0%');
       end
       else
       begin
-        lbMercadosMet.Caption :=
+        lbMercadosMet.Caption  :=
           ('Mercados: ' + IntToStr(FieldByName('TotalApostas').AsInteger));
-        lbAcertosMet.Caption :=
+        lbAcertosMet.Caption   :=
           ('Acertos: ' + IntToStr(FieldByName('Greens').AsInteger));
-        lbErrosMet.Caption :=
+        lbErrosMet.Caption     :=
           ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
-        lbNuloMet.Caption :=
+        lbNuloMet.Caption      :=
           ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
         lbMeioAcertMet.Caption :=
           ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
-        lbMeioErroMet.Caption :=
+        lbMeioErroMet.Caption  :=
           ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
-        lbLucroMet.Caption :=
+        lbLucroMet.Caption     :=
           ('Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat,
           -1)) + '%');
       end;
@@ -462,7 +458,7 @@ begin
     except
       on E: Exception do
       begin
-        writeln('Erro: ' + E.Message);
+        writeln('Erro ao selecionar método: ' + E.Message);
         Cancel;
         Free;
       end;
@@ -527,36 +523,36 @@ begin
       Open;
       if IsEmpty then
       begin
-        lbMercadosLin.Caption :=
+        lbMercadosLin.Caption  :=
           ('Mercados: 0');
-        lbAcertosLin.Caption :=
+        lbAcertosLin.Caption   :=
           ('Acertos: 0');
-        lbErrosLin.Caption :=
+        lbErrosLin.Caption     :=
           ('Erros: 0');
-        lbNuloLin.Caption :=
+        lbNuloLin.Caption      :=
           ('Anulados: 0');
         lbMeioAcertLin.Caption :=
           ('Meios Acertos: 0');
-        lbMeioErroLin.Caption :=
+        lbMeioErroLin.Caption  :=
           ('Meios Erros: 0');
-        lbLucroLin.Caption :=
+        lbLucroLin.Caption     :=
           ('Lucro Total: 0%');
       end
       else
       begin
-        lbMercadosLin.Caption :=
+        lbMercadosLin.Caption  :=
           ('Mercados: ' + IntToStr(FieldByName('TotalApostas').AsInteger));
-        lbAcertosLin.Caption :=
+        lbAcertosLin.Caption   :=
           ('Acertos: ' + IntToStr(FieldByName('Greens').AsInteger));
-        lbErrosLin.Caption :=
+        lbErrosLin.Caption     :=
           ('Erros: ' + IntToStr(FieldByName('Reds').AsInteger));
-        lbNuloLin.Caption :=
+        lbNuloLin.Caption      :=
           ('Anulados: ' + IntToStr(FieldByName('Nulo').AsInteger));
         lbMeioAcertLin.Caption :=
           ('Meios Acertos: ' + IntToStr(FieldByName('MeioGreen').AsInteger));
-        lbMeioErroLin.Caption :=
+        lbMeioErroLin.Caption  :=
           ('Meios Erros: ' + IntToStr(FieldByName('MeioRed').AsInteger));
-        lbLucroLin.Caption :=
+        lbLucroLin.Caption     :=
           'Lucro Total: ' + FloatToStr(RoundTo(FieldByName('PcentLucro').AsFloat,
           -1)) + '%';
       end;
@@ -571,7 +567,7 @@ begin
     end;
   except
     on E: Exception do
-    writeln('Erro: ' + E.Message);
+      writeln('Erro: ' + E.Message);
   end;
 end;
 
@@ -767,12 +763,12 @@ begin
       if IsEmpty then
       begin
         grdMetodosMes.Enabled := False;
-        grdLinhasMes.Enabled := False;
+        grdLinhasMes.Enabled  := False;
       end
       else
       begin
         grdMetodosMes.Enabled := True;
-        grdLinhasMes.Enabled := True;
+        grdLinhasMes.Enabled  := True;
       end;
     end;
     with qrLinhasMes do
@@ -827,12 +823,12 @@ begin
       if IsEmpty then
       begin
         grdMetodosMes.Enabled := False;
-        grdLinhasMes.Enabled := False;
+        grdLinhasMes.Enabled  := False;
       end
       else
       begin
         grdMetodosMes.Enabled := True;
-        grdLinhasMes.Enabled := True;
+        grdLinhasMes.Enabled  := True;
       end;
     end;
     with qrLinhasAno do
@@ -840,7 +836,7 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
-      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('anoSelec').AsString   := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;
@@ -855,7 +851,7 @@ begin
       if Active then Close;
       ParamByName('CodMetodo').AsInteger :=
         qrMetodosMes.FieldByName('Cod_Metodo').AsInteger;
-      ParamByName('anoSelec').AsString := Format('%.4d', [anoSelecionado]);
+      ParamByName('anoSelec').AsString   := Format('%.4d', [anoSelecionado]);
       Open;
     end;
   end;

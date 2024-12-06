@@ -1,6 +1,7 @@
 unit untBoasVindas;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
@@ -15,21 +16,20 @@ type
   { TformBoasVindas }
 
   TformBoasVindas = class(TForm)
-    btnGitHub: TBitBtn;
-    btnDoacao: TBitBtn;
+    btnGitHub:  TBitBtn;
+    btnDoacao:  TBitBtn;
     chbExibirNovamente: TDBCheckBox;
     dsExibirJanela: TDataSource;
-    Image1: TImage;
-    lbAtencao: TLabel;
+    Image1:     TImage;
+    lbAtencao:  TLabel;
     lbBemVindo: TLabel;
-    mmIntro: TMemo;
-    mmAtencao: TMemo;
+    mmIntro:    TMemo;
+    mmAtencao:  TMemo;
     qrExibirJanela: TSQLQuery;
     qrExibirJanelaExibirTelaBoasVindas: TBooleanField;
-    procedure btnDoacaoClick(Sender: TObject);
-    procedure btnGitHubClick(Sender: TObject);
     procedure chbExibirNovamenteClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure CliqueBotao(Sender: TObject);
   private
 
   public
@@ -54,13 +54,21 @@ procedure TformBoasVindas.FormShow(Sender: TObject);
 begin
   writeln('Exibindo tela de boas-vindas');
   with qrExibirJanela do
-  with chbExibirNovamente do
-  with FieldByName('ExibirTelaBoasVindas') do
-  begin
-    if not Active then Open;
-    if AsBoolean = true then
-      Checked := true
-      else Checked := false;
+    with chbExibirNovamente do
+      with FieldByName('ExibirTelaBoasVindas') do
+      begin
+        if not Active then Open;
+        Checked := AsBoolean;
+      end;
+end;
+
+procedure TformBoasVindas.CliqueBotao(Sender: TObject);
+var
+  Botao: TButton;
+begin
+  case Botao.Name of
+    'btnDoacao': OpenURL('https://link.mercadopago.com.br/graxaimgestaodebanca');
+    'btnGitHub': OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca');
   end;
 end;
 
@@ -68,37 +76,19 @@ procedure TformBoasVindas.chbExibirNovamenteClick(Sender: TObject);
 begin
   with formPrincipal do
     with qrExibirJanela do
-      with transactionBancoDados do
-        with chbExibirNovamente do
-        try
-          Open;
-          Edit;
-          if FieldByName('ExibirTelaBoasVindas').AsBoolean = True then
-            Checked := True
-          else
-            Checked := False;
-          Post;
-          ApplyUpdates;
-          CommitRetaining;
-        except
-          on E: Exception do
-          begin
+      with FieldByName('ExibirTelaBoasVindas') do
+        with transactionBancoDados do
+          with chbExibirNovamente do
+          try
+            if not Active then Open;
+            Edit;
+            AsBoolean := Checked;
+            Post;
+            CommitRetaining;
+          except
             Cancel;
             RollbackRetaining;
-            raise Exception.Create('Não foi possível salvar configurações da tela ' +
-              'de boas-vindas, ' + E.Message);
           end;
-        end;
-end;
-
-procedure TformBoasVindas.btnGitHubClick(Sender: TObject);
-begin
-  OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca');
-end;
-
-procedure TformBoasVindas.btnDoacaoClick(Sender: TObject);
-begin
-  openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
 end;
 
 end.
