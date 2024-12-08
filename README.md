@@ -1,6 +1,6 @@
 # Graxaim Gestão de Banca
 
-![Painel principal do programa](https://i.imgur.com/ajjBj5X.png)
+![Captura de tela de 2024-12-07 11-32-26](https://github.com/user-attachments/assets/2dc4c1a9-4532-4284-868e-bef00bcd0d98)
 
 Programa de gestão de banca para apostas esportivas.
 
