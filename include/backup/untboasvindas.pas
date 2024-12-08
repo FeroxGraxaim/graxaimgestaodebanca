@@ -9,7 +9,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, DBGrids, DBCtrls,
   Menus, ActnList, Buttons, ExtCtrls, TAGraph, TARadialSeries, TASeries, TADbSource,
-  TACustomSeries, TAMultiSeries, DateUtils, contnrs, fgl, untMain;
+  TACustomSeries, TAMultiSeries, DateUtils, untMain;
 
 type
 
@@ -66,6 +66,7 @@ procedure TformBoasVindas.CliqueBotao(Sender: TObject);
 var
   Botao: TButton;
 begin
+  Botao := TButton(Sender);
   case Botao.Name of
     'btnDoacao': OpenURL('https://link.mercadopago.com.br/graxaimgestaodebanca');
     'btnGitHub': OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca');
@@ -82,7 +83,7 @@ begin
           try
             if not Active then Open;
             Edit;
-            AsBoolean := Checked;
+            Checked := AsBoolean;
             Post;
             CommitRetaining;
           except

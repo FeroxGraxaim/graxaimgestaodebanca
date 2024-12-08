@@ -529,7 +529,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (24);
+INSERT INTO "ControleVersao" ("Versao") VALUES (25);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),
@@ -718,7 +718,8 @@ INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (30,'Europeu -3',4
  (179,'- 2,5 Gols Fora',16);
  INSERT INTO ConfigPrograma DEFAULT VALUES;
  
-CREATE TRIGGER "Atualiza Apostas" 
+DROP TRIGGER IF EXISTS "Atualiza Apostas";
+CREATE TRIGGER IF NOT EXISTS "Atualiza Apostas" 
 AFTER UPDATE ON Mercados 
 FOR EACH ROW 
 BEGIN 
@@ -733,7 +734,8 @@ BEGIN
 	AND Cashout = 0  
 	AND EXISTS (SELECT 1 FROM Mercados 
 			    WHERE Cod_Aposta = NEW.Cod_Aposta 
-				AND Mercados.Status = 'Meio Red'); 
+				AND Mercados.Status = 'Meio Red');
+				
   UPDATE Apostas SET Status = 'Green' 
     WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
 	AND NOT EXISTS (SELECT 1 FROM Mercados 
@@ -745,14 +747,62 @@ BEGIN
 	AND NOT EXISTS (SELECT 1 FROM Mercados 
 					WHERE Cod_Aposta = NEW.Cod_Aposta 
 					AND Mercados.Status = 'Pré-live'); 
-  UPDATE Apostas SET Status = 'Pré-live' 
-	WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+					
+  UPDATE Apostas SET Status = 'Meio Green'
+    WHERE Cod_Aposta = NEW.Cod_Aposta 
+	AND Cashout = 0  
+	AND EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Meio Green') 
 	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Meio Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Pré-live'); 
+				
+  UPDATE Apostas SET Status = 'Green' 
+    WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Red') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Meio Red') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Pré-live');
+  UPDATE Apostas SET Status = 'Pré-live' 
+    WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+    AND NOT EXISTS (SELECT 1 FROM Mercados 
 					WHERE Cod_Aposta = NEW.Cod_Aposta 
 					AND Mercados.Status = 'Red') 
 	AND EXISTS (SELECT 1 FROM Mercados 
 				WHERE Cod_Aposta = NEW.Cod_Aposta 
 				AND Mercados.Status = 'Pré-live'); 
+  UPDATE Apostas SET Status = 'Anulada'
+    WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Green')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Meio Green')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Meio Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Pré-live')
+	AND EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Anulada');
 END;
 CREATE TRIGGER "Cashout" 
 AFTER UPDATE ON Apostas 

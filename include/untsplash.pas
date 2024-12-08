@@ -76,13 +76,12 @@ begin
 
     //Definindo eventos do painel
     writeln('Atribuindo eventos');
-    formPrincipal.tsPainel.OnShow := @EventosPainel.tsPainelShow;
-    formPrincipal.btnSalvarBancaInicial.OnClick :=
-      @EventosPainel.btnSalvarBancaInicialClick;
-    formPrincipal.cbPerfil.OnChange := @EventosPainel.cbPerfilChange;
-    formPrincipal.cbMes.OnChange := @EventosPainel.cbMesChange;
-    formPrincipal.cbAno.OnChange := @EventosPainel.cbAnoChange;
-    formPrincipal.cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
+    tsPainel.OnShow := @EventosPainel.tsPainelShow;
+    btnSalvarBancaInicial.OnClick := @EventosPainel.btnSalvarBancaInicialClick;
+    cbPerfil.OnChange := @EventosPainel.cbPerfilChange;
+    cbMes.OnChange := @EventosPainel.AoMudarMesEAno;
+    cbAno.OnChange := @EventosPainel.AoMudarMesEAno;
+    cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
     tsResumoLista.OnShow := @EventosPainel.HabilitaMesEAno;
     qrBanca.AfterRefresh := @EventosPainel.AtualizaDadosBanca;
     qrBanca.AfterOpen    := @EventosPainel.AtualizaDadosBanca;
@@ -273,6 +272,10 @@ begin
     begin
       @EventosMultiplas.CarregaContadorNovaMultipla;
     end;
+
+    if not InserirNaBanca then
+      MessageDlg('Erro','Erro ao atualizar informações sobre a banca.', mtError,
+      [mbOk], 0);
 
     writeln('Iniciados todos os queries');
     progresso.Position  := 100;

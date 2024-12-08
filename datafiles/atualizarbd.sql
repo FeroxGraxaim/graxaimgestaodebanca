@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS "Atualiza Apostas";
+
 CREATE TABLE IF NOT EXISTS "ConfigPrograma" (
 	"ExibirTelaBoasVindas"	BOOLEAN DEFAULT 1,
 	"GestaoVariavel"	BOOLEAN DEFAULT 0,
@@ -72,7 +74,6 @@ INSERT INTO NovaMercados SELECT * FROM Mercados;
 DROP TABLE Mercados;
 ALTER TABLE NovaMercados RENAME TO Mercados;
 
-DROP TRIGGER IF EXISTS "Atualiza Apostas";
 CREATE TRIGGER IF NOT EXISTS "Atualiza Apostas" 
 AFTER UPDATE ON Mercados 
 FOR EACH ROW 
@@ -88,7 +89,8 @@ BEGIN
 	AND Cashout = 0  
 	AND EXISTS (SELECT 1 FROM Mercados 
 			    WHERE Cod_Aposta = NEW.Cod_Aposta 
-				AND Mercados.Status = 'Meio Red'); 
+				AND Mercados.Status = 'Meio Red');
+				
   UPDATE Apostas SET Status = 'Green' 
     WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
 	AND NOT EXISTS (SELECT 1 FROM Mercados 
@@ -100,6 +102,34 @@ BEGIN
 	AND NOT EXISTS (SELECT 1 FROM Mercados 
 					WHERE Cod_Aposta = NEW.Cod_Aposta 
 					AND Mercados.Status = 'Pré-live'); 
+					
+  UPDATE Apostas SET Status = 'Meio Green'
+    WHERE Cod_Aposta = NEW.Cod_Aposta 
+	AND Cashout = 0  
+	AND EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Meio Green') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Meio Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Pré-live'); 
+				
+  UPDATE Apostas SET Status = 'Green' 
+    WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Red') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Meio Red') 
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+					WHERE Cod_Aposta = NEW.Cod_Aposta 
+					AND Mercados.Status = 'Pré-live');
   UPDATE Apostas SET Status = 'Pré-live' 
     WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
     AND NOT EXISTS (SELECT 1 FROM Mercados 
@@ -108,6 +138,26 @@ BEGIN
 	AND EXISTS (SELECT 1 FROM Mercados 
 				WHERE Cod_Aposta = NEW.Cod_Aposta 
 				AND Mercados.Status = 'Pré-live'); 
+  UPDATE Apostas SET Status = 'Anulada'
+    WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Green')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Meio Green')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Meio Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Pré-live')
+	AND EXISTS (SELECT 1 FROM Mercados
+					WHERE Cod_Aposta = NEW.Cod_Aposta
+					AND Mercados.Status = 'Anulada');
 END;
 
 CREATE TRIGGER IF NOT EXISTS "Cashout" 
@@ -120,4 +170,4 @@ BEGIN
   AND Cashout = 1;
 END;
 
-UPDATE ControleVersao SET Versao = 24;
+UPDATE ControleVersao SET Versao = 25;

@@ -17,10 +17,11 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
-      <RevisionNr Value="2"/>
-      <BuildNr Value="29"/>
+      <RevisionNr Value="3"/>
+      <BuildNr Value="30"/>
       <Language Value="0416"/>
-      <StringTable CompanyName="Ferox Graxaim" ProductVersion="0.6"/>
+      <Attributes pvaPatched="True"/>
+      <StringTable Comments="Sistema de gestão de banca para apostas esportivas" CompanyName="Ferox Graxaim" OriginalFilename="GraxaimBanca" ProductName="Graxaim Gestão de Banca" ProductVersion="0.6"/>
     </VersionInfo>
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="gtk2"/>

@@ -40,7 +40,7 @@ object formNovaAposta: TformNovaAposta
         Top = 8
         Width = 352
         Caption = 'Métodos/Linhas da Aposta'
-        ClientHeight = 271
+        ClientHeight = 277
         ClientWidth = 348
         Font.Height = -16
         Font.Name = 'Sans'
@@ -54,7 +54,7 @@ object formNovaAposta: TformNovaAposta
           AnchorSideBottom.Control = grbNovaLinha
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 271
+          Height = 277
           Top = 0
           Width = 348
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -337,6 +337,7 @@ object formNovaAposta: TformNovaAposta
         NumGlyphs = 1
         FocusOnButtonClick = True
         MaxLength = 0
+        OnChange = HabilitarBotoes
         OnExit = LimparControle
         TabOrder = 0
       end
@@ -355,6 +356,7 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 1
+        OnChange = HabilitarBotoes
       end
       object cbMandanteMult: TComboBox
         AnchorSideLeft.Control = lbMandanteMult
@@ -370,6 +372,7 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 2
+        OnChange = HabilitarBotoes
       end
       object cbVisitanteMult: TComboBox
         AnchorSideLeft.Control = lbVisitanteMult
@@ -385,6 +388,7 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 3
+        OnChange = HabilitarBotoes
       end
       object btnAddJogo: TButton
         AnchorSideTop.Control = cbVisitanteMult
@@ -474,7 +478,7 @@ object formNovaAposta: TformNovaAposta
           OnCellClick = AdicionaMetodosLinhasStatus
           OnEditButtonClick = ClicarBotaoColunaNovaAposta
           OnEditingDone = grdLinhaMultEditingDone
-          OnKeyPress = grdLinhaMultKeyPress
+          OnKeyPress = AutoFillETrocaDecimal
           OnMouseDown = SalvarAoClicar
         end
       end

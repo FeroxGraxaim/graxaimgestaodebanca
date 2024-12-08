@@ -95,7 +95,7 @@ var
 
 implementation
 
-uses untNA, untEditSimples, untEditMult;
+uses untNA, untEditSimples, untEditMult, untPainel;
 
 procedure TEventosApostas.tsApostasShow(Sender: TObject);
 var
@@ -168,7 +168,7 @@ begin
               BarraStatus.Panels[0].Text := 'Aposta selecionada!';
           end;
         end;
-      grdDadosAp.Visible    := true;
+      grdDadosAp.Visible    := True;
       btnCashout.Enabled    := grdDadosAp.Visible;
       btnTudoGreen.Enabled  := grdDadosAp.Visible;
       btnTudoRed.Enabled    := grdDadosAp.Visible;
@@ -294,44 +294,42 @@ begin
   with formPrincipal do
   begin
     with TSQLQuery.Create(nil) do
-    try
-      DataBase := conectBancoDados;
-      SQL.Text := 'SELECT Banca FROM BancaInicial';
-      Open;
-      with FieldByName('Banca') do
-        if IsEmpty or (AsFloat = 0) then
-        begin
-          MessageDlg('Erro', 'A banca inicial não foi preenchida, preencha ' +
-            'a banca inicial e tente novamente.', mtError, [mbOK], 0);
-          Exit;
-        end;
-    finally
-      Free;
-    end;
-    BarraStatus.Panels[0].Text := 'Criando nova aposta...';
-    try
+    begin
+      NovaApostaForm := TformNovaAposta.Create(nil);
       try
-        Screen.Cursor  := crAppStart;
-        NovaApostaForm := TformNovaAposta.Create(nil);
+        DataBase := conectBancoDados;
+        SQL.Text := 'SELECT Banca FROM BancaInicial';
+        Open;
+        with FieldByName('Banca') do
+          if IsEmpty or (AsFloat = 0) then
+          begin
+            MessageDlg('Erro', 'A banca inicial não foi preenchida, preencha ' +
+              'a banca inicial e tente novamente.', mtError, [mbOK], 0);
+            Exit;
+          end;
+        Close;
+        BarraStatus.Panels[0].Text := 'Criando nova aposta...';
+        Screen.Cursor := crAppStart;
         progStatus.Position := 33;
-        conectBancoDados.ExecuteDirect('INSERT INTO Apostas DEFAULT VALUES');
+        SQL.Text      := 'INSERT INTO Apostas DEFAULT VALUES';
+        ExecSQL;
         progStatus.Position := 66;
         transactionBancoDados.CommitRetaining;
         progStatus.Position := 100;
         Screen.Cursor := crDefault;
         NovaApostaForm.ShowModal;
-      finally
-        NovaApostaForm.Free;
+      except
+        on E: Exception do
+        begin
+          BarraStatus.Panels[0].Text := 'Erro!';
+          progStatus.Color := clRed;
+          MessageDlg('Erro ao exibir o formulário de nova aposta: ' + E.Message,
+            mtError, [mbOK], 0);
+          Exit;
+        end;
       end;
-    except
-      on E: Exception do
-      begin
-        BarraStatus.Panels[0].Text := 'Erro!';
-        progStatus.Color := clRed;
-        MessageDlg('Erro ao criar o formulário de nova aposta: ' + E.Message,
-          mtError, [mbOK], 0);
-        Exit;
-      end;
+      Free;
+      NovaApostaForm.Free;
     end;
     progStatus.Position := 0;
     progStatus.Color    := clDefault;
@@ -1044,7 +1042,10 @@ begin
       with qrBanca do
       begin
         if not Active then Open;
-        BancaFinal := FieldByName('BancaTotal').AsFloat;
+        if not IsEmpty then
+          BancaFinal := FieldByName('BancaTotal').AsFloat
+        else
+          BancaFinal := 0;
       end;
       writeln('Atualizando dados de todas as apostas do mês atual');
       with qrApostas do
@@ -1111,7 +1112,8 @@ begin
       end;
       qrApostas.Refresh;
     end
-    else Exit;
+    else
+      Exit;
   end;
 end;
 
@@ -1325,6 +1327,7 @@ begin
           'Green': Color    := clGreen;
           'Red': Color      := clRed;
           'Cashout': Color  := clBlue;
+          'Anulada': Color  := clGray;
           'Meio Green': Color := $0000B6A0;
           'Meio Red': Color := $00007EC3;
           'Pré-live': Color := clDefault;

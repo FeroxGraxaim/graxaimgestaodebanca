@@ -18,8 +18,8 @@ object formNovaAposta: TformNovaAposta
     Height = 376
     Top = 0
     Width = 728
-    ActivePage = tsMultipla
-    TabIndex = 1
+    ActivePage = tsSimples
+    TabIndex = 0
     TabOrder = 0
     OnChange = pcApostasChange
     OnChanging = pcApostasChanging
@@ -337,6 +337,7 @@ object formNovaAposta: TformNovaAposta
         NumGlyphs = 1
         FocusOnButtonClick = True
         MaxLength = 0
+        OnChange = HabilitarBotoes
         OnExit = LimparControle
         TabOrder = 0
       end
@@ -355,6 +356,7 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 1
+        OnChange = HabilitarBotoes
       end
       object cbMandanteMult: TComboBox
         AnchorSideLeft.Control = lbMandanteMult
@@ -370,6 +372,7 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 2
+        OnChange = HabilitarBotoes
       end
       object cbVisitanteMult: TComboBox
         AnchorSideLeft.Control = lbVisitanteMult
@@ -385,6 +388,7 @@ object formNovaAposta: TformNovaAposta
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 0
         TabOrder = 3
+        OnChange = HabilitarBotoes
       end
       object btnAddJogo: TButton
         AnchorSideTop.Control = cbVisitanteMult

@@ -10,6 +10,7 @@ object formBoasVindas: TformBoasVindas
   ClientWidth = 612
   OnActivate = FormShow
   ShowInTaskBar = stNever
+  LCLVersion = '3.4.0.0'
   object lbBemVindo: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner

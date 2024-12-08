@@ -76,13 +76,12 @@ begin
 
     //Definindo eventos do painel
     writeln('Atribuindo eventos');
-    formPrincipal.tsPainel.OnShow := @EventosPainel.tsPainelShow;
-    formPrincipal.btnSalvarBancaInicial.OnClick :=
-      @EventosPainel.btnSalvarBancaInicialClick;
-    formPrincipal.cbPerfil.OnChange := @EventosPainel.cbPerfilChange;
-    formPrincipal.cbMes.OnChange := @EventosPainel.cbMesChange;
-    formPrincipal.cbAno.OnChange := @EventosPainel.cbAnoChange;
-    formPrincipal.cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
+    tsPainel.OnShow := @EventosPainel.tsPainelShow;
+    btnSalvarBancaInicial.OnClick := @EventosPainel.btnSalvarBancaInicialClick;
+    cbPerfil.OnChange := @EventosPainel.cbPerfilChange;
+    cbMes.OnChange := @EventosPainel.AoMudarMesEAno;
+    cbAno.OnChange := @EventosPainel.AoMudarMesEAno;
+    cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
     tsResumoLista.OnShow := @EventosPainel.HabilitaMesEAno;
     qrBanca.AfterRefresh := @EventosPainel.AtualizaDadosBanca;
     qrBanca.AfterOpen    := @EventosPainel.AtualizaDadosBanca;
@@ -231,15 +230,11 @@ begin
     @EventosPainel.PerfilDoInvestidor;
     lbProgresso.Caption := 'Executado procedimento de perfil do investidor';
     Application.ProcessMessages;
-    lbProgresso.Caption := 'Definida stake';
-    Application.ProcessMessages;
 
     lbProgresso.Caption := 'Iniciando os queries';
     Application.ProcessMessages;
 
-    qrConfig.Open;
-
-    with TSQLQuery.Create(nil) do
+    {with TSQLQuery.Create(nil) do
     try
       DataBase := conectBancoDados;
       SQL.Text := 'SELECT * FROM "Selecionar Mês e Ano"';
@@ -248,12 +243,16 @@ begin
       anoSelecionado := FieldByName('Ano').AsInteger;
     finally
       Free;
-    end;
+    end;}
 
+    try
     qrBanca.Open;
     qrPerfis.Open;
     qrSelecionarPerfil.Open;
-
+    except
+      On E: Exception do
+      writeln('Erro ao abrir queries: ' + E.Message);
+    end;
     //Procedimentos das apostas
 
     progresso.Position  := 80;

@@ -6,13 +6,18 @@ unit untMain;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  ShellApi, Windows,
+  {$ENDIF}
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, BufDataset, fpcsvexport, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, DBGrids, DBCtrls, Menus, ActnList, Buttons,
   ExtCtrls, JSONPropStorage, EditBtn, TAGraph, TARadialSeries,
   TASeries, TADbSource, TACustomSeries, TAMultiSeries, DateUtils, Math,
   FileUtil, HTTPDefs, untSalvarDados;
-
+{$IFDEF MSWINDOWS}
+procedure AbrirArquivoLog;
+{$ENDIF}
 type
 
   { TformPrincipal }
@@ -370,7 +375,18 @@ implementation
 
 uses
   untUpdate, untApostas, untSplash, untDatabase, untSobre, untControleMetodos,
-  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig;
+  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig, untPainel;
+
+{$IFDEF MSWINDOWS}
+procedure AbrirArquivoLog;
+var
+  LocalArquivo: string;
+  Arquivo:      TextFile;
+begin
+  LocalArquivo := ExtractFilePath(Application.ExeName) + 'debug.txt';
+  ShellExecute(0, 'open', PChar(LocalArquivo), nil, nil, SW_SHOWNORMAL);
+end;
+{$ENDIF}
 
 procedure TformPrincipal.CarregaConfig;
 begin
@@ -610,8 +626,9 @@ begin
   begin
     if not Active then Open;
     if not IsEmpty then
-    lucro := qrBanca.FieldByName('LucroR$').AsFloat
-    else lucro := 0;
+      lucro := qrBanca.FieldByName('LucroR$').AsFloat
+    else
+      lucro := 0;
   end;
 
   if lucro > 0 then
@@ -642,24 +659,33 @@ begin
   writeln('Definindo perfil do investidor');
   with formPrincipal do
   begin
-    with qrBanca do
-    try
-      Banca := 0;
-      if not Active then Open;
-      if not IsEmpty then
-        if not GestaoVariavel then
-          Campo := FieldByName('BancaTotal')
-        else
-        begin
-          Campo := FieldByName('Valor_Final');
-          if not Campo.IsNull and (Trim(Campo.AsString) <> '') then
-            Banca := Campo.AsFloat
-          else
+    Banca := 0;
+    if not qrBanca.Active then qrBanca.Open;
+    if not qrBanca.IsEmpty then
+    begin
+      if not GestaoVariavel then
+        Campo := qrBanca.FieldByName('BancaTotal')
+      else
+        Campo := qrBanca.FieldByName('Valor_Final');
+      if not Campo.IsNull and (Trim(Campo.AsString) <> '') then
+        Banca := Campo.AsFloat
+      else
+        with TSQLQuery.Create(nil) do begin
+          try
+            DataBase := conectBancoDados;
+            SQL.Text := 'SELECT IFNULL(Banca, 0) FROM BancaInicial';
+            Open;
+            if not IsEmpty then
+              Banca := Fields[0].AsFloat
+            else
+              Banca := 0;
+          except
             Banca := 0;
+          end;
+          Free;
         end;
-    except
-      Banca := 0;
     end;
+    writeln('Banca: ' + FloatToStr(Banca));
 
     case perfilInvestidor of
       'Conservador':
@@ -681,7 +707,7 @@ end;
 
 procedure TformPrincipal.ExcecaoGlobal(Sender: TObject; E: Exception);
 begin
-  writeln('Erro: ' + E.Message);
+  writeln('Erro não tratado: ' + E.Message);
   Application.ProcessMessages;
   Application.ProcessMessages;
 end;

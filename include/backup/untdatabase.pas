@@ -277,6 +277,7 @@ begin
   Arquivo := TStringList.Create;
   writeln('Criando StringBuilder');
   ScriptSQL := TStringBuilder.Create;
+  with formPrincipal do
   try
     writeln('Tentando localizar o arquivo ', VarArquivo);
     Arquivo.LoadFromFile(VarArquivo);

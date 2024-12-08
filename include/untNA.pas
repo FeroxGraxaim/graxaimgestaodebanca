@@ -348,7 +348,7 @@ var
   Indice: integer;
 begin
   Screen.Cursor := crAppStart;
-  Grid := TDBGrid(Sender);
+  Grid  := TDBGrid(Sender);
   Query := Grid.DataSource.DataSet;
 
   popupLinhas.Items.Clear;
@@ -692,9 +692,12 @@ end;
 procedure TformNovaAposta.AtualizaMetodoLinha(Sender: TObject);
 var
   SelectedItem: TMenuItem;
+  Query: TSQLQuery;
 begin
   SelectedItem := TMenuItem(Sender);
-  with qrNovaAposta do
+  if tsSimples.Showing then Query := qrNovaAposta
+  else Query := qrLinhaMultipla;
+  with Query do
   begin
     if Assigned(ColunaAtual) and Assigned(SelectedItem) then
     begin
@@ -808,6 +811,8 @@ procedure TformNovaAposta.HabilitarBotoes(Sender: TObject);
 begin
   HabilitarBotaoOk;
   HabilitarBtnNovaLinha;
+  if tsMultipla.Showing then
+    HabilitaBotaoAddJogo;
 end;
 
 procedure TformNovaAposta.SalvarAoClicar(Sender: TObject; Button: TMouseButton;

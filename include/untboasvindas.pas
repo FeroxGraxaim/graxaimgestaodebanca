@@ -66,6 +66,7 @@ procedure TformBoasVindas.CliqueBotao(Sender: TObject);
 var
   Botao: TButton;
 begin
+  Botao := TButton(Sender);
   case Botao.Name of
     'btnDoacao': OpenURL('https://link.mercadopago.com.br/graxaimgestaodebanca');
     'btnGitHub': OpenURL('https://github.com/FeroxGraxaim/graxaimgestaodebanca');
@@ -82,8 +83,9 @@ begin
           try
             if not Active then Open;
             Edit;
-            AsBoolean := Checked;
+            Checked := AsBoolean;
             Post;
+            ApplyUpdates;
             CommitRetaining;
           except
             Cancel;
