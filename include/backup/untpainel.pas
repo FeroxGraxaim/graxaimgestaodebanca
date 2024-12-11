@@ -190,7 +190,7 @@ begin
           else
             Exit;
 
-            transactionBancoDados.CommitRetaining;
+          transactionBancoDados.CommitRetaining;
           valorInicial   := novoValor;
           mesSelecionado := StrToInt(cbMes.Text);
           anoSelecionado := StrToInt(cbAno.Text);
@@ -212,6 +212,7 @@ begin
     //perfilInvestidor := cbPerfil.Text;
     //txtStake.DataField := qrBanca.FieldByName('R$Stake').AsString;
     MudarCorLucro;
+    PerfilDoInvestidor;
     CalculaDadosAposta;
     AtualizarGraficoLucro;
   end;
@@ -617,47 +618,46 @@ begin
     end;
 
       //Gráfico pizza do ano
+    (chrtAcertAno.Series[0] as TPieSeries).Clear;
     with TSQLQuery.Create(nil) do
     begin
       try
+         mesGreen  := 0;
+         mesRed    := 0;
+         mesNeutro := 0;
         DataBase := conectBancoDados;
         SQL.Text :=
-          'SELECT Mês,                                                        ' +
-          'CASE WHEN IFNULL((SELECT SUM(Lucro)                                ' +
-          'FROM Apostas                                                       ' +
-          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                   ' +
-          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano                     ' +
-          'AND Apostas.Lucro IS NOT NULL), 0) > 0 THEN 1 ELSE 0 END AS Green, ' +
-          'CASE WHEN IFNULL((SELECT SUM(Lucro)                                ' +
-          'FROM Apostas                                                       ' +
-          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                   ' +
-          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano                     ' +
-          'AND Apostas.Lucro IS NOT NULL), 0) < 0 THEN 1 ELSE 0 END AS Red,   ' +
-          'CASE WHEN (SELECT SUM(Lucro)                                       ' +
-          'FROM Apostas                                                       ' +
-          'WHERE strftime(''%m'', Apostas.Data) = Banca.Mês                   ' +
-          'AND strftime(''%Y'', Apostas.Data) = Banca.Ano                     ' +
-          'AND (Apostas.Status <> ''Pré-live'' AND Apostas.Lucro = 0)) = 0    ' +
-          'THEN 1 ELSE 0 END AS Neutro                                        ' +
-          'FROM Banca                                                         ' +
-          'WHERE Ano = :Ano                                                   ' +
-          'ORDER BY Mês                                                       ';
-        ParamByName('Ano').AsInteger := anoSelecionado;
+          'WITH SomaValores AS (                                           ' +
+          'SELECT                                                          ' +
+          ' B.Mês, B.Ano,                                                  ' +
+          '  (SELECT Banca FROM BancaInicial) AS BancaInicio,              ' +
+          '  IFNULL(SUM(CASE WHEN strftime(''%m'', A.Data) <= B.Mês THEN   ' +
+          'A.Lucro ELSE 0 END), 0) AS LucroAtual,                          ' +
+          '  IFNULL(SUM(CASE WHEN strftime(''%m'', A.Data) < B.Mês THEN    ' +
+          'A.Lucro ELSE 0 END), 0) AS LucroAntigo                          ' +
+          'FROM Banca B                                                    ' +
+          'LEFT JOIN Apostas A ON strftime(''%m'', A.Data) <= B.Mês        ' +
+          'WHERE B.Ano = :ano                                              ' +
+          'GROUP BY B.Mês                                                  ' +
+          'HAVING COUNT(A.Data) > 0)                                       ' +
+          'SELECT                                                          ' +
+          'SUM(CASE WHEN LucroAtual > LucroAntigo THEN 1 ELSE 0 END)       ' +
+          'AS Green,                                                       ' +
+          'SUM(CASE WHEN LucroAtual < LucroAntigo THEN 1 ELSE 0 END)       ' +
+          'AS Red,                                                         ' +
+          'SUM(CASE WHEN LucroAtual = LucroAntigo THEN 1 ELSE 0 END)       ' +
+          'AS Neutro                                                       ' +
+          'FROM SomaValores                                                ';
+        ParamByName('ano').AsInteger := anoSelecionado;
         Open;
+        if not IsEmpty then
+          begin
+            mesGreen  := FieldByName('Green').AsInteger;
+            mesRed    := FieldByName('Red').AsInteger;
+            mesNeutro := FieldByName('Neutro').AsInteger;
+          end;
         with (chrtAcertAno.Series[0] as TPieSeries) do
         begin
-          Clear;
-          mesGreen  := 0;
-          mesRed    := 0;
-          mesNeutro := 0;
-          First;
-          while not EOF do
-          begin
-            mesGreen  := mesGreen + FieldByName('Green').AsInteger;
-            mesRed    := mesRed + FieldByName('Red').AsInteger;
-            mesNeutro := mesNeutro + FieldByName('Neutro').AsInteger;
-            Next;
-          end;
           if mesGreen <> 0 then
             AddPie(mesGreen, IntToStr(mesGreen) + ' Meses Bons,', clGreen);
 
@@ -682,32 +682,46 @@ begin
         DataBase := conectBancoDados;
         writeln('Definindo o SQL do Query');
         SQL.Text :=
-          'WITH SomaValores AS (                                         ' +
-          'SELECT                                                        ' +
-          'Ano, SUM(Valor_Inicial) + SUM(Apostas.Lucro) AS SomaValorFinal,    ' +
-          'SUM(Valor_Inicial)   ' +
-          'AS SomaValorInicial                                           ' +
-          'FROM Banca                                                    ' +
-          'LEFT JOIN Apostas ON strftime(''%Y'', Apostas.Data) = Ano     ' +
-          'GROUP BY Ano)                                                 ' +
-          'SELECT                                                        ' +
-          'COUNT(CASE WHEN SomaValorFinal > SomaValorInicial THEN 1 END) ' +
-          'AS AnoGreen,                                                  ' +
-          'COUNT(CASE WHEN SomaValorFinal < SomaValorInicial THEN 1 END) ' +
-          'AS AnoRed,                                                    ' +
-          'COUNT(CASE WHEN SomaValorFinal = SomaValorInicial THEN 1 END) ' +
-          'AS AnoNeutro                                                  ' +
-          'FROM SomaValores                                              ';
+          'WITH SomaValores AS (                                           ' +
+          'SELECT                                                          ' +
+          ' B.Mês,                                                         ' +
+          '  (SELECT Banca FROM BancaInicial) AS BancaInicio,              ' +
+          '  IFNULL(SUM(CASE WHEN strftime(''%m'', A.Data) <= B.Mês THEN   ' +
+          'A.Lucro ELSE 0 END), 0) AS LucroAtual,                          ' +
+          '  IFNULL(SUM(CASE WHEN strftime(''%m'', A.Data) < B.Mês THEN    ' +
+          'A.Lucro ELSE 0 END), 0) AS LucroAntigo                          ' +
+          'FROM Banca B                                                    ' +
+          'LEFT JOIN Apostas A ON strftime(''%m'', A.Data) <= B.Mês        ' +
+          'GROUP BY B.Mês                                                  ' +
+          'HAVING COUNT(A.Data) > 0)                                       ' +
+          'SELECT                                                          ' +
+          'SUM(CASE WHEN LucroAtual > LucroAntigo THEN 1 ELSE 0 END)       ' +
+          'AS Green,                                                       ' +
+          'SUM(CASE WHEN LucroAtual < LucroAntigo THEN 1 ELSE 0 END)       ' +
+          'AS Red,                                                         ' +
+          'SUM(CASE WHEN LucroAtual = LucroAntigo THEN 1 ELSE 0 END)       ' +
+          'AS Neutro                                                       ' +
+          'FROM SomaValores                                                ';
+        writeln('Abrindo query');
         Open;
         First;
-
-        writeln('Verificando situação de cada ano');
-
-        anoGreen  := FieldByName('AnoGreen').AsInteger;
-        anoRed    := FieldByName('AnoRed').AsInteger;
-        anoNeutro := FieldByName('AnoNeutro').AsInteger;
-
-        writeln('Adicionando dados no gráfico');
+        anoGreen  := 0;
+        anoRed    := 0;
+        anoNeutro := 0;
+        if not IsEmpty then
+          while not EOF do
+          begin
+            mesGreen  := FieldByName('Green').AsInteger;
+            mesRed    := FieldByName('Red').AsInteger;
+            mesNeutro := FieldByName('Neutro').AsInteger;
+            if mesGreen > mesRed then
+              anoGreen := anoGreen + 1
+            else if mesGreen < mesRed then
+              anoRed    := anoRed + 1
+            else
+              anoNeutro := anoNeutro + 1;
+            Next;
+          end;
         with (chrtAcertTodosAnos.Series[0] as TPieSeries) do
         begin
           Clear;
@@ -786,6 +800,7 @@ begin
   begin
     qrMes.Open;
     qrAno.Open;
+    qrTodosAnos.Open;
   end;
 end;
 

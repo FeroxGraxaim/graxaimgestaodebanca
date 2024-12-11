@@ -23,6 +23,9 @@ type
   { TEventosApostas }
 
   TEventosApostas = class(TformPrincipal)
+    function AnotacaoNaoSalva: string;
+    function AnotacaoFoiSalva: boolean;
+    function AnotacaoDaAposta: string;
   public
 
     //Procedimento inicial
@@ -37,6 +40,7 @@ type
     procedure TudoGreenRed(Sender: TObject);
     procedure AbrirEditarAposta(Sender: TObject);
     procedure AnotarNaAposta(Sender: TObject);
+    procedure HabilitarSalvarAnotacao(Sender: TObject);
 
     //Tabelas e queries
     procedure AoSairGrdApostas(Sender: TObject);
@@ -56,6 +60,8 @@ type
     procedure DadosApostaSalvar(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
     procedure ParametrosApostas(DataSet: TDataSet);
+    procedure SalvarAnotacao(Sender: TObject);
+    procedure AposMudarRegistro(DataSet: TDataSet);
 
 
 
@@ -87,6 +93,7 @@ type
   end;
 
 var
+  EventosApostas: TEventosApostas;
   GridData:      array of TDadosAposta;
   ValorEstorno:  double;
   ListaJogo:     TList;
@@ -96,6 +103,52 @@ var
 implementation
 
 uses untNA, untEditSimples, untEditMult, untPainel;
+
+function TEventosApostas.AnotacaoNaoSalva: string;
+begin
+  Result := '';
+  Result := formPrincipal.mmAnotAposta.Text;
+  Result := Trim(Result);
+end;
+
+function TEventosApostas.AnotacaoFoiSalva: boolean;
+var
+  Dado: string;
+begin
+  Result := False;
+  Dado   := '';
+  with formPrincipal do
+  begin
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'SELECT Anotacoes FROM Apostas WHERE Cod_Aposta = :cod';
+      ParamByName('cod').AsInteger := GlobalCodAposta;
+      Open;
+      if not IsEmpty then
+        Dado := FieldByName('Anotacoes').AsString;
+    finally
+      Free;
+    end;
+    Result := (Trim(Dado) = AnotacaoNaoSalva);
+  end;
+end;
+
+function TEventosApostas.AnotacaoDaAposta: string;
+begin
+  Result := '';
+  with formPrincipal do
+    with TSQLQuery.Create(nil) do
+    try
+      DataBase := conectBancoDados;
+      SQL.Text := 'SELECT Anotacoes FROM Apostas WHERE Cod_Aposta = :cod';
+      ParamByName('cod').AsInteger := GlobalCodAposta;
+      if not IsEmpty then
+        Result := FieldByName('Anotacoes').AsString;
+    finally
+      Free;
+    end;
+end;
 
 procedure TEventosApostas.tsApostasShow(Sender: TObject);
 var
@@ -142,6 +195,7 @@ procedure TEventosApostas.grdApostasCellClick(Column: TColumn);
 begin
   with formPrincipal do
   begin
+    SalvarAnotacao(nil);
     GlobalCodAposta := qrApostas.FieldByName('Cod_Aposta').AsInteger;
     try
       with grdApostas do
@@ -185,10 +239,12 @@ begin
     except
       on E: Exception do
       begin
-        writeln('Erro: ' + E.Message);
+        writeln('Erro ao selecionar aposta: ' + E.Message);
         qrApostas.Cancel;
       end;
     end;
+    HabilitarSalvarAnotacao(nil);
+    //mmAnotAposta.Text := AnotacaoDaAposta;
   end;
 end;
 
@@ -317,6 +373,7 @@ begin
         transactionBancoDados.CommitRetaining;
         progStatus.Position := 100;
         Screen.Cursor := crDefault;
+        SalvarAnotacao(nil);
         NovaApostaForm.ShowModal;
       except
         on E: Exception do
@@ -947,12 +1004,11 @@ begin
           DataBase := conectBancoDados;
           SQL.Text := 'UPDATE Apostas SET Anotacoes = :nota ' +
             'WHERE Cod_Aposta = :cod';
-          ParamByName('nota').AsString := mmAnotAposta.Text;
+          ParamByName('nota').AsString := AnotacaoNaoSalva;
           ParamByName('cod').AsInteger := GlobalCodAposta;
           ExecSQL;
           CommitRetaining;
-          MessageDlg('Informação', 'Anotação salva com sucesso!', mtInformation,
-            [mbOK], 0);
+          qrDadosAposta.Refresh;
         except
           On E: Exception do
           begin
@@ -965,6 +1021,16 @@ begin
         end;
         Free;
       end;
+  HabilitarSalvarAnotacao(nil);
+end;
+
+procedure TEventosApostas.HabilitarSalvarAnotacao(Sender: TObject);
+begin
+  with formPrincipal.btnSalvarAnotacao do
+  begin
+    Enabled := (AnotacaoNaoSalva <> '');
+    Enabled := not AnotacaoFoiSalva;
+  end;
 end;
 
 procedure CalculaDadosAposta;
@@ -1374,6 +1440,23 @@ begin
     ParamByName('primAno').AsString := Format('%.2d', [anoSelecionado]);
     ParamByName('ultAno').AsString  := Format('%.4d', [anoSelecionado]);
   end;
+end;
+
+procedure TEventosApostas.SalvarAnotacao(Sender: TObject);
+begin
+  with formPrincipal do
+    if tsApostas.Showing and not AnotacaoFoiSalva then
+      if MessageDlg('Salvar anotação', 'Há uma anotação que não foi salva. ' +
+        'Deseja salvar a anotação da aposta?', mtConfirmation, [mbYes, mbNo], 0) =
+        mrYes then
+        AnotarNaAposta(nil)
+      else
+        mmAnotAposta.Text := AnotacaoDaAposta;
+end;
+
+procedure TEventosApostas.AposMudarRegistro(DataSet: TDataSet);
+begin
+
 end;
 
 end.

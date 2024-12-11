@@ -819,10 +819,8 @@ procedure TformNovaAposta.SalvarAoClicar(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 var
   Query: TDataSet;
-  Grid:  TDBGrid;
 begin
-  Grid  := TDBGrid(Sender);
-  Query := Grid.DataSource.DataSet;
+  Query := TDBGrid(Sender).DataSource.DataSet;
 
   with Query do
     if (State in [dsEdit, dsInsert]) then begin

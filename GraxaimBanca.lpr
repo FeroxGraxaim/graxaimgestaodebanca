@@ -10,10 +10,10 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, tachartlazaruspkg, lazdbexport, untMain, untApostas, untDatabase,
-  untNA, untPainel, untSobre, untSplash, untUpdate, untControleMetodos,
-  untControleTimes, untPaises, untContrComp, untEditSimples, untEditMult,
-  untSalvarDados, untBoasVindas, untConfig;
+  Forms, tachartlazaruspkg, lazdbexport, anchordockpkg, untMain, untApostas,
+  untDatabase, untNA, untPainel, untSobre, untSplash, untUpdate,
+  untControleMetodos, untControleTimes, untPaises, untContrComp, untEditSimples,
+  untEditMult, untSalvarDados, untBoasVindas, untConfig, untTutorial;
 
 {$R *.res}
 

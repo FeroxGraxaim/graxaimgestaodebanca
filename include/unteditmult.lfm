@@ -10,7 +10,6 @@ object formEditMult: TformEditMult
   OnClose = FormClose
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '3.4.0.0'
   object btnNovaLinha: TButton
     AnchorSideLeft.Control = grbLinhas
     AnchorSideTop.Control = grbLinhas
@@ -31,7 +30,7 @@ object formEditMult: TformEditMult
     Top = 0
     Width = 352
     Caption = 'Métodos/Linhas'
-    ClientHeight = 333
+    ClientHeight = 328
     ClientWidth = 348
     Font.Height = -15
     Font.Name = 'Sans'
@@ -80,8 +79,9 @@ object formEditMult: TformEditMult
       ParentFont = False
       Scrollbars = ssAutoVertical
       TabOrder = 0
-      OnCellClick = EditaGridMetiodosLinhas
+      OnEditButtonClick = ClicarBotaoColuna
       OnEditingDone = grdLinhasEditingDone
+      OnMouseDown = SalvarAoClicar
     end
   end
   object grbJogos: TGroupBox
@@ -90,7 +90,7 @@ object formEditMult: TformEditMult
     Top = 0
     Width = 352
     Caption = 'Jogos'
-    ClientHeight = 333
+    ClientHeight = 328
     ClientWidth = 348
     Font.Height = -15
     Font.Name = 'Sans'

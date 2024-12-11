@@ -18,8 +18,8 @@ object formNovaAposta: TformNovaAposta
     Height = 376
     Top = 0
     Width = 728
-    ActivePage = tsMultipla
-    TabIndex = 1
+    ActivePage = tsSimples
+    TabIndex = 0
     TabOrder = 0
     OnChange = pcApostasChange
     OnChanging = pcApostasChanging
@@ -40,7 +40,7 @@ object formNovaAposta: TformNovaAposta
         Top = 8
         Width = 352
         Caption = 'Métodos/Linhas da Aposta'
-        ClientHeight = 277
+        ClientHeight = 271
         ClientWidth = 348
         Font.Height = -16
         Font.Name = 'Sans'
@@ -54,7 +54,7 @@ object formNovaAposta: TformNovaAposta
           AnchorSideBottom.Control = grbNovaLinha
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 277
+          Height = 271
           Top = 0
           Width = 348
           Anchors = [akTop, akLeft, akRight, akBottom]

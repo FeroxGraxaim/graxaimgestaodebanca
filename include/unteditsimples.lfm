@@ -104,7 +104,7 @@ object formEditSimples: TformEditSimples
     Top = 88
     Width = 351
     Anchors = [akTop, akLeft, akRight]
-    Caption = 'Clique duas vezes sobre uma célula para editar'
+    Caption = 'Métodos/Linhas'
     ClientHeight = 272
     ClientWidth = 347
     Font.Height = -15
@@ -155,8 +155,9 @@ object formEditSimples: TformEditSimples
       ParentFont = False
       Scrollbars = ssAutoVertical
       TabOrder = 0
-      OnCellClick = grdEditarApostaCellClick
+      OnEditButtonClick = ClicarBotaoColuna
       OnEditingDone = grdEditarApostaEditingDone
+      OnMouseDown = SalvarAoClicar
     end
   end
   object btnNovaLinha: TButton

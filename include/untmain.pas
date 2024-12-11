@@ -14,7 +14,7 @@ uses
   ComCtrls, DBGrids, DBCtrls, Menus, ActnList, Buttons,
   ExtCtrls, JSONPropStorage, EditBtn, TAGraph, TARadialSeries,
   TASeries, TADbSource, TACustomSeries, TAMultiSeries, DateUtils, Math,
-  FileUtil, HTTPDefs, untSalvarDados;
+  FileUtil, AnchorDockPanel, HTTPDefs, untSalvarDados;
 {$IFDEF MSWINDOWS}
 procedure AbrirArquivoLog;
 {$ENDIF}
@@ -23,6 +23,10 @@ type
   { TformPrincipal }
 
   TformPrincipal = class(TForm)
+    btnTutorInicio: TBitBtn;
+    btnTutorVolta: TBitBtn;
+    btnTutorAvanca: TBitBtn;
+    btnTutorFechar: TBitBtn;
     btnCashout: TBitBtn;
     btnExcluirPais: TButton;
     btnExcluirTime: TButton;
@@ -76,6 +80,7 @@ type
     chrtLucroMetodo: TChart;
     conectBancoDados: TSQLite3Connection;
     chbGestaoVariavel: TDBCheckBox;
+    dsTodosAnos: TDataSource;
     dsConfig:  TDataSource;
     dsMP:      TDataSource;
     dsMT:      TDataSource;
@@ -85,8 +90,14 @@ type
     grbMetodo: TGroupBox;
     grbMetPais: TGroupBox;
     grbMetTime: TGroupBox;
+    grbTabelaAno: TGroupBox;
+    grbTabelaTodosAnos: TGroupBox;
+    grbTabelaMes: TGroupBox;
+    grdAno: TDBGrid;
+    grdTodosAnos: TDBGrid;
     grdLinhasMes: TDBGrid;
     grdMC:     TDBGrid;
+    grdMes: TDBGrid;
     grdMetodosMes: TDBGrid;
     ExportarDados: TCSVExporter;
     dsComp:    TDataSource;
@@ -135,9 +146,7 @@ type
     dsUnidades: TDataSource;
     grbApostas: TGroupBox;
     grbDetalhesAp: TGroupBox;
-    grdAno:    TDBGrid;
     grdApostas: TDBGrid;
-    grdMes:    TDBGrid;
     grdMP:     TDBGrid;
     grdMT:     TDBGrid;
     grdTimes:  TDBGrid;
@@ -152,6 +161,7 @@ type
     grbMetodos: TGroupBox;
     grbLinhas: TGroupBox;
     grbAnotacoes: TGroupBox;
+    ListaImagens: TImageList;
     JSONPropStorage1: TJSONPropStorage;
     lbLucroPcent: TLabel;
     lbLucroDinheiro: TLabel;
@@ -192,6 +202,7 @@ type
     lnGraficoLucroMes: TLineSeries;
     lsbLinhas: TListBox;
     lsbMetodos: TListBox;
+    mmTutorial: TMemo;
     miConfig:  TMenuItem;
     mmAnotAposta: TMemo;
     miExibirBoasVindas: TMenuItem;
@@ -203,6 +214,7 @@ type
     miComoUsar: TMenuItem;
     miSobre:   TMenuItem;
     miApoie:   TMenuItem;
+    pnTutorial: TPanel;
     pcMesMetodos: TPageControl;
     pcPrincipal: TPageControl;
     pcResumo:  TPageControl;
@@ -212,7 +224,6 @@ type
     pizzaMetodo2: TPieSeries;
     pnGraficos: TPanel;
     pnGraficosMetodos: TPanel;
-    pnTabelas: TPanel;
     popupLinhas: TPopupMenu;
     progStatus: TProgressBar;
     psGraficoGreensReds: TPieSeries;
@@ -293,6 +304,14 @@ type
     qrSelecionarPerfilPerfilSelecionado: TStringField;
     qrSelecionarPerfilPerfilSelecionado1: TStringField;
     qrSituacao: TSQLQuery;
+    qrTodosAnosAno: TLargeintField;
+    qrTodosAnosAporte: TFloatField;
+    qrTodosAnosGreen: TLargeintField;
+    qrTodosAnosLucro: TFloatField;
+    qrTodosAnosLuroPcent: TFloatField;
+    qrTodosAnosNeutro: TLargeintField;
+    qrTodosAnosRed: TLargeintField;
+    qrTodosAnosValorInicial: TBCDField;
     qrUnidades: TSQLQuery;
     qrUnidadesUnidade: TStringField;
     qrUnidadesUnidade1: TStringField;
@@ -375,7 +394,7 @@ implementation
 
 uses
   untUpdate, untApostas, untSplash, untDatabase, untSobre, untControleMetodos,
-  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig, untPainel;
+  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig, untPainel, untTutorial;
 
 {$IFDEF MSWINDOWS}
 procedure AbrirArquivoLog;
@@ -438,9 +457,10 @@ end;
 
 procedure TformPrincipal.FormActivate(Sender: TObject);
 begin
-  tsPainel.Show;
+  //tsPainel.Show;
   if ExibirBoasVindas then
     formBoasVindas.ShowModal;
+  //IniciarTutorial;
 end;
 
 procedure TformPrincipal.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -458,7 +478,7 @@ var
   larguraGridDados, larguraAnotacoes: integer;
 begin
 
-{*******************************PAINEL PRINCIPAL*******************************}
+{*******************************pnTutorial PRINCIPAL*******************************}
 
   //Gráficos
   larguraTotal  := pnGraficos.ClientWidth;
@@ -477,11 +497,12 @@ begin
     alturaObjeto);
 
   //Tabelas
-  larguraTotal  := pnTabelas.ClientWidth;
-  alturaTotal   := pnTabelas.ClientHeight;
+  larguraTotal  := tsResumoLista.ClientWidth;
+  alturaTotal   := tsResumoLista.ClientHeight;
   larguraObjeto := larguraTotal div 2;
-  grdMes.SetBounds(0, 0, larguraObjeto, alturaTotal);
-  grdAno.SetBounds(larguraObjeto, 0, larguraObjeto, alturaTotal);
+  grbTabelaMes.SetBounds(0, 0, larguraObjeto, alturaTotal div 2);
+  grbtabelaAno.SetBounds(0, alturaTotal div 2, larguraObjeto, alturaTotal div 2);
+  grbtabelaTodosAnos.SetBounds(larguraObjeto, 0, larguraObjeto, alturaTotal);
 
 {******************************************************************************}
 

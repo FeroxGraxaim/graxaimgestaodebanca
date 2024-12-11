@@ -1,6 +1,7 @@
 unit untEditMult;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
@@ -16,29 +17,29 @@ type
   TformEditMult = class(TForm)
     btnAlterar: TButton;
     btnNovoJogo: TButton;
-    btnOk: TBitBtn;
-    btnCancel: TBitBtn;
+    btnOk:      TBitBtn;
+    btnCancel:  TBitBtn;
     btnNovaLinha: TButton;
     btnRemoverJogo: TButton;
     btnRemoverLinha: TButton;
     cbCompeticao: TComboBox;
     cbMandante: TComboBox;
     cbVisitante: TComboBox;
-    dsJogo: TDataSource;
-    dsMetodo: TDataSource;
-    grbLinhas: TGroupBox;
-    grbJogos: TGroupBox;
-    grdLinhas: TDBGrid;
+    dsJogo:     TDataSource;
+    dsMetodo:   TDataSource;
+    grbLinhas:  TGroupBox;
+    grbJogos:   TGroupBox;
+    grdLinhas:  TDBGrid;
     lbCompeticao: TLabel;
     lbMandante2: TLabel;
     lbVisitante2: TLabel;
-    lsbJogos: TListBox;
-    qrJogo: TSQLQuery;
+    lsbJogos:   TListBox;
+    qrJogo:     TSQLQuery;
     qrJogoCod_Jogo: TLargeintField;
     qrJogoCompeticao: TStringField;
     qrJogoMandante: TStringField;
     qrJogoVisitante: TStringField;
-    qrMetodo: TSQLQuery;
+    qrMetodo:   TSQLQuery;
     qrMetodoCod_Mercado: TLargeintField;
     qrMetodoLinha: TStringField;
     qrMetodoMtodo: TStringField;
@@ -53,12 +54,13 @@ type
     procedure btnRemoverLinhaClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
-    procedure grdJogosCellClick(Column: TColumn);
-    procedure EditaGridMetiodosLinhas(Column: TColumn);
     procedure AtualizaMetLin(Sender: TObject);
     procedure grdJogosEditingDone(Sender: TObject);
     procedure grdLinhasEditingDone(Sender: TObject);
     procedure lsbJogosClick(Sender: TObject);
+    procedure SalvarAoClicar(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: integer);
+    procedure ClicarBotaoColuna(Sender: TObject);
   private
     Ok, GlobalExcecao, Nao: boolean;
     procedure VerificaRegistros;
@@ -68,14 +70,14 @@ type
   end;
 
   TItemInfo = class
-    Text: string;
+    Text:    string;
     CodJogo: integer;
   end;
 
 var
-  formEditMult: TformEditMult;
-  InfoJogo: TItemInfo;
-  ListaJogo: TList;
+  formEditMult:  TformEditMult;
+  InfoJogo:      TItemInfo;
+  ListaJogo:     TList;
   GlobalCodJogo: integer;
 
 implementation
@@ -114,7 +116,7 @@ begin
       First;
       while not EOF do
       begin
-        Mand := FieldByName('Time').AsString;
+        Mand  := FieldByName('Time').AsString;
         Visit := FieldByName('Time').AsString;
         cbMandante.Items.AddObject(Mand, TObject(Mand));
         cbVisitante.Items.AddObject(Visit, TObject(Visit));
@@ -168,8 +170,8 @@ begin
       begin
         Locate('Cod_Jogo', CodJogo, []);
         cbCompeticao.Text := FieldByName('Competicao').AsString;
-        cbMandante.Text := FieldByName('Mandante').AsString;
-        cbVisitante.Text := FieldByName('Visitante').AsString;
+        cbMandante.Text   := FieldByName('Mandante').AsString;
+        cbVisitante.Text  := FieldByName('Visitante').AsString;
       end;
       with qrMetodo do
       begin
@@ -182,6 +184,108 @@ begin
   end;
 end;
 
+procedure TformEditMult.SalvarAoClicar(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+begin
+  with qrMetodo do
+    if (State in [dsEdit, dsInsert]) then
+      Post
+    else
+      Edit;
+end;
+
+procedure TformEditMult.ClicarBotaoColuna(Sender: TObject);
+var
+  P:     TPoint;
+  Query: TSQLQuery;
+  Item:  TMenuItem;
+begin
+  with formPrincipal do
+  begin
+    Query := TSQLQuery.Create(nil);
+    Query.DataBase := conectBancoDados;
+    Screen.Cursor := crAppStart;
+    popupLinhas.Items.Clear;
+
+    with grdLinhas do
+    ColunaAtual := Columns.ColumnByFieldName(SelectedField.FieldName);
+
+    case ColunaAtual.FieldName of
+      'Método':
+      begin
+        if Query.Active then Query.Close;
+        Query.SQL.Text := 'SELECT Nome FROM Métodos';
+        Query.Open;
+        while not Query.EOF do
+        begin
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := Query.FieldByName('Nome').AsString;
+          Item.OnClick := @AtualizaMetLin;
+          popupLinhas.Items.Add(Item);
+          Query.Next;
+        end;
+      end;
+      'Linha':
+      begin
+        if Query.Active then Query.Close;
+        Query.SQL.Text :=
+          'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM ' +
+          'Métodos WHERE Métodos.Nome = :SelecMetodo)';
+        Query.ParamByName('SelecMetodo').AsString :=
+          qrMetodo.FieldByName('Método').AsString;
+        Query.Open;
+        while not Query.EOF do
+        begin
+          Item := TMenuItem.Create(popupLinhas);
+          Item.Caption := Query.FieldByName('Nome').AsString;
+          Item.OnClick := @AtualizaMetLin;
+          popupLinhas.Items.Add(Item);
+          Query.Next;
+        end;
+      end;
+      'Status':
+      begin
+        popupLinhas.Items.Clear;
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := 'Pré-live';
+        Item.OnClick := @AtualizaMetLin;
+        popupLinhas.Items.Add(Item);
+
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := 'Green';
+        Item.OnClick := @AtualizaMetLin;
+        popupLinhas.Items.Add(Item);
+
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := 'Red';
+        Item.OnClick := @AtualizaMetLin;
+        popupLinhas.Items.Add(Item);
+
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := 'Anulada';
+        Item.OnClick := @AtualizaMetLin;
+        popupLinhas.Items.Add(Item);
+
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := 'Meio Green';
+        Item.OnClick := @AtualizaMetLin;
+        popupLinhas.Items.Add(Item);
+
+        Item := TMenuItem.Create(popupLinhas);
+        Item.Caption := 'Meio Red';
+        Item.OnClick := @AtualizaMetLin;
+        popupLinhas.Items.Add(Item);
+      end;
+    end;
+
+    P := Mouse.CursorPos;
+    popupLinhas.PopUp(P.X, P.Y);
+    Screen.Cursor := crDefault;
+    Query.Free;
+    qrMetodo.Edit;
+  end;
+end;
+
 procedure TformEditMult.CarregaJogos;
 var
   comp, Mand, Visit: string;
@@ -190,8 +294,8 @@ begin
   ListaJogo.Clear;
   InfoJogo.Free;
   writeln('Carregando jogos');
-    with TSQLQuery.Create(nil) do
-    begin
+  with TSQLQuery.Create(nil) do
+  begin
     try
       DataBase := formPrincipal.conectBancoDados;
       writeln('Abrindo lista de jogos');
@@ -205,11 +309,11 @@ begin
       First;
       while not EOF do
       begin
-        comp := FieldByName('Competicao').AsString;
-        mand := FieldByName('Mandante').AsString;
+        comp  := FieldByName('Competicao').AsString;
+        mand  := FieldByName('Mandante').AsString;
         visit := FieldByName('Visitante').AsString;
 
-        InfoJogo := TItemInfo.Create;
+        InfoJogo      := TItemInfo.Create;
         InfoJogo.Text := (comp + ': ' + mand + ' X ' + visit);
         InfoJogo.CodJogo := FieldByName('Cod_Jogo').AsInteger;
         ListaJogo.Add(InfoJogo);
@@ -218,10 +322,10 @@ begin
       end;
     except
       On E: Exception do
-      writeln(E.Message);
+        writeln(E.Message);
     end;
     Free;
-    end;
+  end;
   lsbJogos.ItemIndex := 0;
   lsbJogosClick(nil);
 end;
@@ -406,20 +510,6 @@ begin
   Ok := False;
 end;
 
-procedure TformEditMult.grdJogosCellClick(Column: TColumn);
-var
-  CodJogo: integer;
-begin
-  CodJogo := qrJogo.FieldByName('Cod_Jogo').AsInteger;
-  with qrMetodo do
-  begin
-    if Active then Close;
-    ParamByName('CodJogo').AsInteger := CodJogo;
-    Open;
-  end;
-
-end;
-
 procedure TformEditMult.AtualizaMetLin(Sender: TObject);
 var
   SelectedItem: TMenuItem;
@@ -577,96 +667,6 @@ begin
       end;
       Free;
     end;
-  end;
-end;
-
-procedure TformEditMult.EditaGridMetiodosLinhas(Column: TColumn);
-var
-  P: TPoint;
-  Query: TSQLQuery;
-  Item: TMenuItem;
-begin
-  with formPrincipal do
-  begin
-    Query := TSQLQuery.Create(nil);
-    Query.DataBase := conectBancoDados;
-    Screen.Cursor := crAppStart;
-    popupLinhas.Items.Clear;
-
-    ColunaAtual := Column;
-
-    case Column.FieldName of
-      'Método':
-      begin
-        if Query.Active then Query.Close;
-        Query.SQL.Text := 'SELECT Nome FROM Métodos';
-        Query.Open;
-        while not Query.EOF do
-        begin
-          Item := TMenuItem.Create(popupLinhas);
-          Item.Caption := Query.FieldByName('Nome').AsString;
-          Item.OnClick := @AtualizaMetLin;
-          popupLinhas.Items.Add(Item);
-          Query.Next;
-        end;
-      end;
-      'Linha':
-      begin
-        if Query.Active then Query.Close;
-        Query.SQL.Text :=
-          'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
-        Query.ParamByName('SelecMetodo').AsString :=
-          qrMetodo.FieldByName('Método').AsString;
-        Query.Open;
-        while not Query.EOF do
-        begin
-          Item := TMenuItem.Create(popupLinhas);
-          Item.Caption := Query.FieldByName('Nome').AsString;
-          Item.OnClick := @AtualizaMetLin;
-          popupLinhas.Items.Add(Item);
-          Query.Next;
-        end;
-      end;
-      'Status':
-      begin
-        popupLinhas.Items.Clear;
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := 'Pré-live';
-        Item.OnClick := @AtualizaMetLin;
-        popupLinhas.Items.Add(Item);
-
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := 'Green';
-        Item.OnClick := @AtualizaMetLin;
-        popupLinhas.Items.Add(Item);
-
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := 'Red';
-        Item.OnClick := @AtualizaMetLin;
-        popupLinhas.Items.Add(Item);
-
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := 'Anulada';
-        Item.OnClick := @AtualizaMetLin;
-        popupLinhas.Items.Add(Item);
-
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := 'Meio Green';
-        Item.OnClick := @AtualizaMetLin;
-        popupLinhas.Items.Add(Item);
-
-        Item := TMenuItem.Create(popupLinhas);
-        Item.Caption := 'Meio Red';
-        Item.OnClick := @AtualizaMetLin;
-        popupLinhas.Items.Add(Item);
-      end;
-    end;
-
-    P := Mouse.CursorPos;
-    popupLinhas.PopUp(P.X, P.Y);
-    Screen.Cursor := crDefault;
-    Query.Free;
-    qrMetodo.Edit;
   end;
 end;
 

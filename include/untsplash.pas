@@ -52,7 +52,7 @@ procedure TformSplash.FormActivate(Sender: TObject);
 var
   EventosPainel:  TEventosPainel;
   BancoDados:     TBancoDados;
-  EventosApostas: TEventosApostas;
+  //EventosApostas: TEventosApostas;
   EventosMultiplas: TEventosMultiplas;
   EventosMetodos: TEventosMetodos;
   EventosTimes:   TEventosTimes;
@@ -76,18 +76,18 @@ begin
 
     //Definindo eventos do painel
     writeln('Atribuindo eventos');
-    tsPainel.OnShow := @EventosPainel.tsPainelShow;
+    tsPainel.OnShow     := @EventosPainel.tsPainelShow;
     btnSalvarBancaInicial.OnClick := @EventosPainel.btnSalvarBancaInicialClick;
-    cbPerfil.OnChange := @EventosPainel.cbPerfilChange;
-    cbMes.OnChange := @EventosPainel.AoMudarMesEAno;
-    cbAno.OnChange := @EventosPainel.AoMudarMesEAno;
+    cbPerfil.OnChange   := @EventosPainel.cbPerfilChange;
+    cbMes.OnChange      := @EventosPainel.AoMudarMesEAno;
+    cbAno.OnChange      := @EventosPainel.AoMudarMesEAno;
     cbGraficos.OnChange := @EventosPainel.cbGraficosChange;
     tsResumoLista.OnShow := @EventosPainel.HabilitaMesEAno;
     qrBanca.AfterRefresh := @EventosPainel.AtualizaDadosBanca;
-    qrBanca.AfterOpen    := @EventosPainel.AtualizaDadosBanca;
-    btnAporte.OnClick    := @EventosPainel.FazerAporte;
-    qrBanca.BeforeOpen   := @EventosPainel.ParametrosBanca;
-    btnRetirar.OnClick   := @EventosPainel.RetirarDinheiro;
+    qrBanca.AfterOpen   := @EventosPainel.AtualizaDadosBanca;
+    btnAporte.OnClick   := @EventosPainel.FazerAporte;
+    qrBanca.BeforeOpen  := @EventosPainel.ParametrosBanca;
+    btnRetirar.OnClick  := @EventosPainel.RetirarDinheiro;
     chbGestaoVariavel.OnClick := @EventosPainel.StakeVariavel;
 
     lbProgresso.Caption := 'Atribuindo eventos de apostas';
@@ -97,36 +97,34 @@ begin
 
     //Definindo eventos das Apostas
 
-    //with EventosApostas do
-    begin
-      tsApostas.OnShow      := @EventosApostas.tsApostasShow;
-      btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
-      btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
-      grdDadosAp.OnDrawColumnCell := @EventosAPostas.grdDadosApDrawColumnCell;
-      grdApostas.OnCellClick := @EventosApostas.grdApostasCellClick;
-      btnCashout.OnClick    := @EventosApostas.btnCashoutClick;
-      qrApostas.OnCalcFields := @EventosApostas.qrApostasCalcFields;
-      btnFiltrarAp.OnClick  := @EventosApostas.FiltrarAposta;
-      btnLimparFiltroAp.OnClick := @EventosApostas.LimparFiltros;
-      btnTudoGreen.OnClick  := @EventosApostas.TudoGreenRed;
-      btnTudoRed.OnClick    := @EventosApostas.TudoGreenRed;
-      grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
-      grdApostas.OnExit     := @EventosApostas.AoSairGrdApostas;
-      grdApostas.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
-      grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
-      btnEditAposta.OnClick := @EventosApostas.AbrirEditarAposta;
-      lsbJogos.OnClick      := @EventosApostas.ClicarNoJogo;
-      btnSalvarAnotacao.OnClick := @EventosApostas.AnotarNaAposta;
-      qrApostas.AfterOpen   := @EventosApostas.AposAbrirApostas;
-      qrApostas.AfterRefresh := @EventosApostas.AtualizaQRApostas;
-      grdApostas.OnEditingDone := @EventosApostas.AposEditarAposta;
-      grdDadosAp.OnEditingDone := @EventosApostas.AposEditarDadosAposta;
-      grdDadosAp.OnEditButtonClick := @EventosApostas.AoClicarDadosAposta;
-      grdDadosAp.OnMouseDown := @EventosApostas.DadosApostaSalvar;
-      qrApostas.BeforeOpen  := @EventosAPostas.ParametrosApostas;
-      qrApostas.BeforeRefresh := @EventosApostas.ParametrosApostas;
-
-    end;
+    tsApostas.OnShow      := @EventosApostas.tsApostasShow;
+    btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
+    btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
+    grdDadosAp.OnDrawColumnCell := @EventosAPostas.grdDadosApDrawColumnCell;
+    grdApostas.OnCellClick := @EventosApostas.grdApostasCellClick;
+    btnCashout.OnClick    := @EventosApostas.btnCashoutClick;
+    qrApostas.OnCalcFields := @EventosApostas.qrApostasCalcFields;
+    btnFiltrarAp.OnClick  := @EventosApostas.FiltrarAposta;
+    btnLimparFiltroAp.OnClick := @EventosApostas.LimparFiltros;
+    btnTudoGreen.OnClick  := @EventosApostas.TudoGreenRed;
+    btnTudoRed.OnClick    := @EventosApostas.TudoGreenRed;
+    grdApostas.OnDrawColumnCell := @EventosApostas.grdApostasDrawColumnCell;
+    grdApostas.OnExit     := @EventosApostas.AoSairGrdApostas;
+    grdApostas.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
+    grdDadosAp.OnKeyPress := @EventosApostas.TrocarSeparadorDecimal;
+    btnEditAposta.OnClick := @EventosApostas.AbrirEditarAposta;
+    lsbJogos.OnClick      := @EventosApostas.ClicarNoJogo;
+    btnSalvarAnotacao.OnClick := @EventosApostas.AnotarNaAposta;
+    qrApostas.AfterOpen   := @EventosApostas.AposAbrirApostas;
+    qrApostas.AfterRefresh := @EventosApostas.AtualizaQRApostas;
+    grdApostas.OnEditingDone := @EventosApostas.AposEditarAposta;
+    grdDadosAp.OnEditingDone := @EventosApostas.AposEditarDadosAposta;
+    grdDadosAp.OnEditButtonClick := @EventosApostas.AoClicarDadosAposta;
+    grdDadosAp.OnMouseDown := @EventosApostas.DadosApostaSalvar;
+    qrApostas.BeforeOpen  := @EventosAPostas.ParametrosApostas;
+    qrApostas.BeforeRefresh := @EventosApostas.ParametrosApostas;
+    mmAnotAposta.OnChange := @EventosApostas.HabilitarSalvarAnotacao;
+    tsApostas.OnExit      := @EventosApostas.SalvarAnotacao;
 
     //Definindo eventos do controle de métodos
 
@@ -246,12 +244,12 @@ begin
     end;}
 
     try
-    qrBanca.Open;
-    qrPerfis.Open;
-    qrSelecionarPerfil.Open;
+      qrBanca.Open;
+      qrPerfis.Open;
+      qrSelecionarPerfil.Open;
     except
       On E: Exception do
-      writeln('Erro ao abrir queries: ' + E.Message);
+        writeln('Erro ao abrir queries: ' + E.Message);
     end;
     //Procedimentos das apostas
 
@@ -274,8 +272,8 @@ begin
     end;
 
     if not InserirNaBanca then
-      MessageDlg('Erro','Erro ao atualizar informações sobre a banca.', mtError,
-      [mbOk], 0);
+      MessageDlg('Erro', 'Erro ao atualizar informações sobre a banca.', mtError,
+        [mbOK], 0);
 
     writeln('Iniciados todos os queries');
     progresso.Position  := 100;

@@ -67,7 +67,7 @@ label
   Procurar, Fim;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.6.2.29';
+  currentVersion := '0.6.4.31';
   Result := '';
   if AceitaPreRelease then apiUrl := UltimaPreRelease
   else

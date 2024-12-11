@@ -1,6 +1,7 @@
 unit untEditSimples;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
@@ -14,8 +15,8 @@ type
   { TformEditSimples }
 
   TformEditSimples = class(TForm)
-    btnOk: TBitBtn;
-    btnCancel: TBitBtn;
+    btnOk:      TBitBtn;
+    btnCancel:  TBitBtn;
     btnNovaLinha: TButton;
     btnRemoverSelecionada: TButton;
     cbCompeticao: TComboBox;
@@ -39,11 +40,13 @@ type
     procedure btnRemoverSelecionadaClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
-    procedure grdEditarApostaCellClick(Column: TColumn);
+    procedure ClicarBotaoColuna(Sender: TObject);
     procedure grdEditarApostaEditingDone(Sender: TObject);
     procedure MudarJogo;
     procedure VerificaRegistros;
     procedure AtualizaMetodoELinha(Sender: TObject);
+    procedure SalvarAoClicar(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: integer);
   private
     GlobalExcecao, Nao: boolean;
   public
@@ -95,7 +98,7 @@ begin
       First;
       while not EOF do
       begin
-        Mand := FieldByName('Time').AsString;
+        Mand  := FieldByName('Time').AsString;
         Visit := FieldByName('Time').AsString;
         cbMandante.Items.AddObject(Mand, TObject(Mand));
         cbVisitante.Items.AddObject(Visit, TObject(Visit));
@@ -110,8 +113,8 @@ begin
         'WHERE A.Cod_Aposta = :codAposta ';
       ParamByName('codAposta').AsInteger := GlobalCodAposta;
       Open;
-      comp := FieldByName('Competicao').AsString;
-      Mand := FieldByName('Mandante').AsString;
+      comp  := FieldByName('Competicao').AsString;
+      Mand  := FieldByName('Mandante').AsString;
       Visit := FieldByName('Visitante').AsString;
       cbCompeticao.ItemIndex := cbCompeticao.Items.IndexOf(comp);
       cbMandante.ItemIndex := cbMandante.Items.IndexOf(Mand);
@@ -139,11 +142,21 @@ begin
   end;
 end;
 
-procedure TformEditSimples.grdEditarApostaCellClick(Column: TColumn);
+procedure TformEditSimples.SalvarAoClicar(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+begin
+  with qrEditarAposta do
+    if (State in [dsEdit, dsInsert]) then
+      Post
+    else
+      Edit;
+end;
+
+procedure TformEditSimples.ClicarBotaoColuna(Sender: TObject);
 var
-  P: TPoint;
+  P:     TPoint;
   Query: TSQLQuery;
-  Item: TMenuItem;
+  Item:  TMenuItem;
 begin
   with formPrincipal do
   begin
@@ -152,9 +165,10 @@ begin
     Screen.Cursor := crAppStart;
     popupLinhas.Items.Clear;
 
-    ColunaAtual := Column;
+    with grdEditarAposta do
+      ColunaAtual := Columns.ColumnByFieldName(SelectedField.FieldName);
 
-    case Column.FieldName of
+    case ColunaAtual.FieldName of
       'Método':
       begin
         if Query.Active then Query.Close;

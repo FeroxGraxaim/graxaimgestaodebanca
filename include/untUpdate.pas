@@ -67,7 +67,7 @@ label
   Procurar, Fim;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.6.3.30';
+  currentVersion := '0.6.4.31';
   Result := '';
   if AceitaPreRelease then apiUrl := UltimaPreRelease
   else
@@ -79,74 +79,68 @@ begin
 
   writeln('Tentando se conectar com o repositório...');
   try
-    try
 
-      Procurar:
+    Procurar:
 
-        httpClient.AddHeader('User-Agent', 'GraxaimBanca/beta');
-      httpClient.Get(apiUrl, response);
+      httpClient.AddHeader('User-Agent', 'GraxaimBanca/beta');
+    httpClient.Get(apiUrl, response);
     //writeln('Resposta recebida: ' + response.DataString);
 
-      if response.DataString = '' then
-      begin
-        writeln('Resposta nula recebida da API.');
-        goto Fim;
-      end;
-      if Pos('API rate limit exceeded', response.DataString) > 0 then
-        writeln('Limite de requisições da API excedido. Tente novamente mais tarde.'
-          + 'Resposta: ' + response.DataString)
-      else
-      begin
-        json := TJSONObject(GetJSON(response.DataString));
-        latestVersion := json.Get('tag_name', '');
-        if AtualTestes then begin
-          if latestVersion <> '' then
-          begin
-            if CompareText(currentVersion, latestVersion) < 0 then begin
-              userResponse :=
-                MessageDlg('Nova versão de testes disponível: ' +
-                latestVersion + sLineBreak + 'Deseja atualizar agora?',
-                mtConfirmation, [mbYes, mbNo], 0);
-              if userResponse = mrYes then
-              begin
-                OpenURL(apiUrl);
-                writeln('Fechando aplicação...');
-                halt;
-              end;
-            end
-            else begin
-              apiURL      := LinkNormal;
-              AtualTestes := False;
-              goto Procurar;
+    if response.DataString = '' then
+    begin
+      writeln('Resposta nula recebida da API.');
+      goto Fim;
+    end;
+    if Pos('API rate limit exceeded', response.DataString) > 0 then
+      writeln('Limite de requisições da API excedido. Tente novamente mais tarde.'
+        + 'Resposta: ' + response.DataString)
+    else
+    begin
+      json := TJSONObject(GetJSON(response.DataString));
+      latestVersion := json.Get('tag_name', '');
+      if AtualTestes then begin
+        if latestVersion <> '' then
+        begin
+          if CompareText(currentVersion, latestVersion) < 0 then begin
+            userResponse :=
+              MessageDlg('Nova versão de testes disponível: ' +
+              latestVersion + sLineBreak + 'Deseja atualizar agora?',
+              mtConfirmation, [mbYes, mbNo], 0);
+            if userResponse = mrYes then
+            begin
+              OpenURL(apiUrl);
+              writeln('Fechando aplicação...');
+              halt;
+            end;
+          end
+          else begin
+            apiURL      := LinkNormal;
+            AtualTestes := False;
+            goto Procurar;
+          end;
+        end;
+      end
+      else begin
+        if latestVersion <> '' then
+        begin
+          if CompareText(currentVersion, latestVersion) < 0 then begin
+            userResponse :=
+              MessageDlg('Nova versão estável disponível: ' +
+              latestVersion + sLineBreak + 'Deseja atualizar agora?',
+              mtConfirmation, [mbYes, mbNo], 0);
+            if userResponse = mrYes then
+            begin
+              OpenURL(apiUrl);
+              writeln('Fechando aplicação...');
+              halt;
             end;
           end;
         end
-        else begin
-          if latestVersion <> '' then
-          begin
-            if CompareText(currentVersion, latestVersion) < 0 then begin
-              userResponse :=
-                MessageDlg('Nova versão estável disponível: ' +
-                latestVersion + sLineBreak + 'Deseja atualizar agora?',
-                mtConfirmation, [mbYes, mbNo], 0);
-              if userResponse = mrYes then
-              begin
-                OpenURL(apiUrl);
-                writeln('Fechando aplicação...');
-                halt;
-              end;
-            end;
-          end
-          else
-            writeln('Versão não encontrada no JSON.');
-        end;
+        else
+          writeln('Versão não encontrada no JSON.');
       end;
-      Fim:
-    finally
-      json.Free;
-      response.Free;
-      httpClient.Free;
     end;
+    Fim:
   except
     on E: Exception do
     begin
@@ -158,6 +152,9 @@ begin
         'conexão e tente novamente.', mtError, [mbOK], 0);
     end;
   end;
+  json.Free;
+  response.Free;
+  httpClient.Free;
 end;
 
 function UltimaPreRelease: string;
@@ -165,7 +162,7 @@ var
   HttpClient: TFPHTTPClient;
   JsonResponse: TJSONData;
   Releases: TJSONArray;
-  i: integer;
+  i:   integer;
   PreRelease: TJSONObject;
   URL: string;
   VersaoEstavel, VersaoTestes: string;
@@ -179,16 +176,17 @@ begin
     if JsonResponse.JSONType = jtArray then
     begin
       Releases := TJSONArray(JsonResponse);
-      for i :=  Releases.Count - 1 downto 0 do
+      for i := Releases.Count - 1 downto 0 do
       begin
         PreRelease := TJSONObject(Releases.Items[i]);
         if PreRelease.Booleans['prerelease'] then
-          VersaoTestes := PreRelease.Strings['tag_name']
-        else VersaoEstavel := PreRelease.Strings['tag_name'];
-          if CompareText(VersaoTestes, VersaoEstavel) > 0 then
-            URL  := PreRelease.Strings['url'];
+          VersaoTestes  := PreRelease.Strings['tag_name']
+        else
+          VersaoEstavel := PreRelease.Strings['tag_name'];
+        if CompareText(VersaoTestes, VersaoEstavel) > 0 then
+          URL := PreRelease.Strings['url'];
       end;
-      writeln('Link: ',URL);
+      writeln('Link: ', URL);
       Result := URL;
     end;
   except

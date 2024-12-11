@@ -52,7 +52,7 @@ procedure TformSplash.FormActivate(Sender: TObject);
 var
   EventosPainel:  TEventosPainel;
   BancoDados:     TBancoDados;
-  EventosApostas: TEventosApostas;
+  //EventosApostas: TEventosApostas;
   EventosMultiplas: TEventosMultiplas;
   EventosMetodos: TEventosMetodos;
   EventosTimes:   TEventosTimes;
@@ -97,8 +97,6 @@ begin
 
     //Definindo eventos das Apostas
 
-    //with EventosApostas do
-    begin
       tsApostas.OnShow      := @EventosApostas.tsApostasShow;
       btnRemoverAposta.OnClick := @EventosApostas.btnRemoverApostaClick;
       btnNovaAposta.OnClick := @EventosApostas.btnNovaApostaClick;
@@ -125,8 +123,9 @@ begin
       grdDadosAp.OnMouseDown := @EventosApostas.DadosApostaSalvar;
       qrApostas.BeforeOpen  := @EventosAPostas.ParametrosApostas;
       qrApostas.BeforeRefresh := @EventosApostas.ParametrosApostas;
-
-    end;
+      mmAnotAposta.OnChange := @EventosApostas.HabilitarSalvarAnotacao;
+      //qrApostas.BeforeScroll := @EventosApostas.qrApostasAntesMudarRegistro;
+      //qrApostas.AfterScroll := @EventosApostas.AposMudarRegistro;
 
     //Definindo eventos do controle de métodos
 
@@ -272,6 +271,10 @@ begin
     begin
       @EventosMultiplas.CarregaContadorNovaMultipla;
     end;
+
+    if not InserirNaBanca then
+      MessageDlg('Erro','Erro ao atualizar informações sobre a banca.', mtError,
+      [mbOk], 0);
 
     writeln('Iniciados todos os queries');
     progresso.Position  := 100;
