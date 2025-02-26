@@ -1,0 +1,58 @@
+object formMetodoLinha: TformMetodoLinha
+  Left = 542
+  Height = 188
+  Top = 250
+  Width = 381
+  BorderStyle = bsDialog
+  Caption = 'Criar Método/Linha'
+  ClientHeight = 188
+  ClientWidth = 381
+  OnShow = FormShow
+  object edtLinha: TLabeledEdit
+    Left = 16
+    Height = 27
+    Top = 32
+    Width = 352
+    EditLabel.Height = 17
+    EditLabel.Width = 352
+    EditLabel.Caption = 'Digite CORRETAMENTE a linha que será adicionada:'
+    TabOrder = 0
+  end
+  object cbMet: TComboBox
+    Left = 16
+    Height = 27
+    Top = 104
+    Width = 352
+    ItemHeight = 0
+    TabOrder = 1
+  end
+  object lbLin: TLabel
+    Left = 16
+    Height = 34
+    Top = 72
+    Width = 258
+    Caption = 'Selecione o método da linha correspondente , '#10'ou digite o nome do novo método:'
+  end
+  object BitBtn1: TBitBtn
+    Left = 96
+    Height = 30
+    Top = 144
+    Width = 81
+    Default = True
+    DefaultCaption = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object BitBtn2: TBitBtn
+    Left = 200
+    Height = 30
+    Top = 144
+    Width = 81
+    Cancel = True
+    Caption = 'Cancelar'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 3
+  end
+end

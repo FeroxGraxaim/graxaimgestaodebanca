@@ -67,7 +67,7 @@ begin
     try
       DataBase := conectBancoDados;
       SQL.Text := 'SELECT * FROM Métodos';
-      writeln('SQL: ', SQL.Text);
+      //writeln('SQL: ', SQL.Text);
       Open;
       lsbMetodos.Items.Clear;
       while not EOF do
@@ -163,7 +163,7 @@ begin
     begin
       DataBase := conectBancoDados;
       SQL.Text :=
-        'SELECT ' + 'SUM(CASE WHEN Apostas.Status = ''Green'' THEN 1 ELSE 0 END) AS Green,   '
+        'SELECT SUM(CASE WHEN Apostas.Status = ''Green'' THEN 1 ELSE 0 END) AS Green,   '
         + 'SUM(CASE WHEN Apostas.Status = ''Red'' THEN 1 ELSE 0 END) AS Red,       ' +
         'SUM(CASE WHEN Apostas.Status = ''Anulada'' THEN 1 ELSE 0 END) AS Anulada,' +
         'SUM(CASE WHEN Apostas.Status = ''Meio Green'' THEN 1 ELSE 0 END) AS MeioGreen, '
@@ -366,7 +366,9 @@ begin
       with TSQLQuery.Create(nil) do
       begin
         DataBase := conectBancoDados;
-        SQL.Text := 'SELECT * FROM Linhas WHERE Cod_Metodo = :CodMetodo';
+        SQL.Text := 'SELECT * FROM Linhas WHERE Cod_Metodo = :CodMetodo ' +
+                    'ORDER BY CAST(REPLACE(REPLACE(TRIM(REPLACE(Nome, '' '', ' +
+                    ''''')), '','', ''.''), '' '', '''') AS NUMERIC)';
         //writeln('SQL: ', SQL.Text);
         ParamByName('CodMetodo').AsInteger := GlobalCodMetodo;
         Open;

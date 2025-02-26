@@ -1,6 +1,7 @@
 unit untControleTimes;
 
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}
+{$H+}
 
 interface
 
@@ -137,56 +138,26 @@ begin
   with formPrincipal do
     if InputQuery('Novo Time', 'Digite CORRETAMENTE o nome do time:', Time) then
       with TSQLQuery.Create(nil) do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
-        ParamByName('time').AsString := Time;
-        ExecSQL;
-        if InputQuery('Determinar País', 'Digite CORRETAMENTE o nome do país no qual' +
-          'o time pertence:', Pais) then
-        begin
-          SQL.Text := 'SELECT FROM Países WHERE País = :pais';
-          ParamByName('pais').AsString := 'pais';
-          Open;
-          if IsEmpty then
-            if MessageDlg('País Não Encontrado', 'Não foi possível encontrar o país ' +
-              'inserido, caso tenha digitado o nome corretamente, deseja inserí-lo ' +
-              'no banco de dados agora?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-              goto NovoPais;
-
-          DeterminarPais:
-
-            if Active then Close;
-          SQL.Text := 'UPDATE Times SET País = :pais WHERE ROWID = ' +
-            '(SELECT MAX(ROWID) FROM Times)';
-          ParamByName('pais').AsString := Pais;
+      begin
+        try
+          DataBase := conectBancoDados;
+          SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
+          ParamByName('time').AsString := Time;
           ExecSQL;
-          goto Salvar;
-
-          NovoPais:
-
-            Close;
-          SQL.Text := 'INSERT INTO Países(País) VALUES {:pais)';
-          ParamByName('pais').AsString := Pais;
-          ExecSQL;
-          goto DeterminarPais;
-
-          Salvar:
-            transactionBancoDados.CommitRetaining;
+          transactionBancoDados.CommitRetaining;
           qrTimes.Refresh;
           qrTimes.Locate('Time', Time, []);
+        except
+          on E: Exception do
+          begin
+            Cancel;
+            transactionBancoDados.RollbackRetaining;
+            MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir '
+              + 'favor informar no GitHub com a seguinte mensagem: ' +
+              sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
+          end;
         end;
         Free;
-      except
-        on E: Exception do
-        begin
-          Cancel;
-          transactionBancoDados.RollbackRetaining;
-          Free;
-          MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir ' +
-            'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
-            sLineBreak + E.Message, mtError, [mbOK], 0);
-        end;
       end;
 end;
 
@@ -199,8 +170,8 @@ begin
       try
         DataBase := conectBancoDados;
         SQL.Text := 'SELECT T.Time FROM Times T LEFT JOIN Jogo J ON J.Mandante = T.Time '
-          + 'LEFT JOIN Jogo J2 ON J2.Visitante = T.Time WHERE T.Time = :time '
-          + 'AND (T.Time = J.Mandante OR T.Time = J2.Visitante)';
+          + 'LEFT JOIN Jogo J2 ON J2.Visitante = T.Time WHERE T.Time = :time ' +
+          'AND (T.Time = J.Mandante OR T.Time = J2.Visitante)';
         ParamByname('time').AsString := qrTimes.FieldByName('Time').AsString;
         Open;
         if not IsEmpty then
@@ -220,9 +191,9 @@ begin
           transactionBancoDados.RollbackRetaining;
           writeln('Erro no SQL: ' + SQL.Text);
           Free;
-          MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir ' +
-            'favor informar no GitHub com a seguinte mensagem: ' + sLineBreak +
-            sLineBreak + E.Message, mtError, [mbOK], 0);
+          MessageDlg('Erro', 'Ocorreu um erro, tente novamente. Se o problema persistir '
+            + 'favor informar no GitHub com a seguinte mensagem: ' +
+            sLineBreak + sLineBreak + E.Message, mtError, [mbOK], 0);
         end;
       end;
 end;

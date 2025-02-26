@@ -444,7 +444,7 @@ begin
             begin
               if not IsEmpty then
               begin
-                writeln('Registro ', i, ': ', Fields[1].AsFloat);
+                //writeln('Registro ', i, ': ', Fields[1].AsFloat);
                 LAP := LAP + Fields[1].AsFloat;
               end
               else
@@ -487,101 +487,85 @@ begin
 {****************************LUCRO DE TODOS OS ANOS****************************}
 
     with qrTodosAnos do
-    try
+    begin
       Open;
-      with chrtLucroTodosAnos.AxisList[1].Range do
-      begin
-        First;
-        Min := FieldByName('Ano').AsInteger;
-        Max := FieldByName('Ano').AsInteger + 10;
-        Last;
-        if Max < RecordCount then Max := RecordCount;
-        MinInt := Round(Min);
-        MaxInt := Round(Max);
-        writeln('Valor mínimo: ', MinInt);
-        writeln('Valor Máximo: ', MaxInt);
-      end;
-      case cbGraficos.Text of
+      if not IsEmpty then
+      try
+        with chrtLucroTodosAnos.AxisList[1].Range do
+        begin
+          First;
+          Min := FieldByName('Ano').AsInteger;
+          Max := FieldByName('Ano').AsInteger + 10;
+          Last;
+          if Max < RecordCount then Max := RecordCount;
+          MinInt := Round(Min);
+          MaxInt := Round(Max);
+          writeln('Valor mínimo: ', MinInt);
+          writeln('Valor Máximo: ', MaxInt);
+        end;
+        case cbGraficos.Text of
 
-        'Lucro %': begin
-          chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2n%%';
-          if not IsEmpty then begin
-            First;
-            SomaLucro  := FieldByName('Lucro').AsFloat;
-            ValInicio  := FieldByName('ValorInicial').AsFloat;
-            Aporte     := FieldByName('Aporte').AsFloat;
-            TotInvest  := ValInicio + Aporte;
-            BancaFinal := TotInvest + SomaLucro;
-
-            LAPA := SomaLucro / BancaFinal * 100;
+          'Lucro %': begin
+            chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2n%%';
+            if not IsEmpty then begin
+              First;
+              LAPA := FieldByName('LucroPcent').AsFloat;
+            end
+            else
+              LAPA := 0;
             if RecordCount <> 0 then
+            begin
               with chrtLucroTodosAnos.AxisList[1].Range do
                 with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
                   for i := MinInt to MaxInt do
                   begin
                     ContFloat := i;
-                    First;
-                    while not EOF do
+                    if i < FieldByName('Ano').AsInteger then
+                      AddXY(i, 0, ContFloat)
+                    else begin
+                      Next;
+                      AddXY(i, LAPA, ContFloat);
+                      if not EOF then
+                        LAPA := LAPA + FieldByName('LucroPcent').AsFloat;
+                    end;
+                  end;
+            end;
+          end;
+          'Lucro R$':
+          begin
+            chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2m';
+            if not IsEmpty then begin
+              First;
+              LARA := FieldByName('Lucro').AsFloat;
+              with chrtLucroTodosAnos.AxisList[1].Range do
+                with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
+                  if RecordCount <> 0 then
+                    for i := MinInt to MaxInt do
+                    begin
+                      ContFloat := i;
                       if i < FieldByName('Ano').AsInteger then
                         AddXY(i, 0, ContFloat)
                       else
                       begin
+                        AddXY(i, LARA, ContFloat);
                         Next;
-                        AddXY(i, LAPA, ContFloat);
                         if not EOF then
                         begin
-                          SomaLucro := SomaLucro + FieldByName('Lucro').AsFloat;
-                          Aporte := Aporte + FieldByName('Aporte').AsFloat;
-                          TotInvest := ValInicio + Aporte;
-                          BancaFinal := TotInvest + SomaLucro;
-                          LAPA :=
-                            LAPA + (SomaLucro / TotInvest * 100);
+                          LARA := LARA + FieldByName('Lucro').AsFloat;
                         end;
+                        Next;
                       end;
-                  end;
-          end;
-          {else begin
-            SomaLucro  := 0;
-            ValInicio  := 0;
-            Aporte     := 0;
-            TotInvest  := 0;
-            BancaFinal := 0;
-          end; }
-        end;
-        'Lucro R$':
-        begin
-          chrtLucroTodosAnos.AxisList[0].Marks.Format := '%0:.2m';
-          if not IsEmpty then begin
-            First;
-            LARA := FieldByName('Lucro').AsFloat;
-            with chrtLucroTodosAnos.AxisList[1].Range do
-              with (chrtLucroTodosAnos.Series[0] as TLineSeries) do
-                if RecordCount <> 0 then
-                  for i := MinInt to MaxInt do
-                  begin
-                    ContFloat := i;
-                    if i < FieldByName('Ano').AsInteger then
-                      AddXY(i, 0, ContFloat)
-                    else
-                    begin
-                      AddXY(i, LARA, ContFloat);
-                      Next;
-                      if not EOF then
-                      begin
-                        LARA := LARA + FieldByName('Lucro').AsFloat;
-                      end;
-                      Next;
                     end;
-                  end;
+            end;
           end;
         end;
+      except
+        on E: Exception do
+          writeln('Falha ao atualizar o gráfico de lucro de todos os anos: ' +
+            E.Message);
       end;
-    except
-      on E: Exception do
-        writeln('Falha ao atualizar o gráfico de lucro de todos os anos: ' +
-          E.Message);
+      Close;
     end;
-    qrTodosAnos.Close;
     chrtLucroTodosAnos.Invalidate;
 
 {******************************************************************************}
@@ -596,6 +580,7 @@ begin
       diaNeutro := 0;
 
       //Gráfico pizza do mês
+      writeln('Atualizando gráfico pizza do mês');
       First;
       if RecordCount <> 0 then
         while not EOF do
@@ -623,11 +608,11 @@ begin
     with TSQLQuery.Create(nil) do
     begin
       try
-         mesGreen  := 0;
-         mesRed    := 0;
-         mesNeutro := 0;
-        DataBase := conectBancoDados;
-        SQL.Text :=
+        mesGreen  := 0;
+        mesRed    := 0;
+        mesNeutro := 0;
+        DataBase  := conectBancoDados;
+        SQL.Text  :=
           'WITH SomaValores AS (                                           ' +
           'SELECT                                                          ' +
           ' B.Mês, B.Ano,                                                  ' +
@@ -652,11 +637,11 @@ begin
         ParamByName('ano').AsInteger := anoSelecionado;
         Open;
         if not IsEmpty then
-          begin
-            mesGreen  := FieldByName('Green').AsInteger;
-            mesRed    := FieldByName('Red').AsInteger;
-            mesNeutro := FieldByName('Neutro').AsInteger;
-          end;
+        begin
+          mesGreen  := FieldByName('Green').AsInteger;
+          mesRed    := FieldByName('Red').AsInteger;
+          mesNeutro := FieldByName('Neutro').AsInteger;
+        end;
         with (chrtAcertAno.Series[0] as TPieSeries) do
         begin
           if mesGreen <> 0 then

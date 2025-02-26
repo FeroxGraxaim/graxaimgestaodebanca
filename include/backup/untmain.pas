@@ -12,7 +12,7 @@ uses
   Classes, SysUtils, SQLDB, IBConnection, PQConnection, MSSQLConn, SQLite3Conn,
   DB, BufDataset, fpcsvexport, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, DBGrids, DBCtrls, Menus, ActnList, Buttons,
-  ExtCtrls, JSONPropStorage, EditBtn, TAGraph, TARadialSeries,
+  ExtCtrls, JSONPropStorage, EditBtn, PopupNotifier, TAGraph, TARadialSeries,
   TASeries, TADbSource, TACustomSeries, TAMultiSeries, DateUtils, Math,
   FileUtil, AnchorDockPanel, HTTPDefs, untSalvarDados;
 {$IFDEF MSWINDOWS}
@@ -23,10 +23,6 @@ type
   { TformPrincipal }
 
   TformPrincipal = class(TForm)
-    btnTutorInicio: TBitBtn;
-    btnTutorVolta: TBitBtn;
-    btnTutorAvanca: TBitBtn;
-    btnTutorFechar: TBitBtn;
     btnCashout: TBitBtn;
     btnExcluirPais: TButton;
     btnExcluirTime: TButton;
@@ -48,6 +44,10 @@ type
     btnTudoGreen: TButton;
     btnTudoRed: TButton;
     btnNovaComp: TButton;
+    btnTutorAvanca: TBitBtn;
+    btnTutorFechar: TBitBtn;
+    btnTutorInicio: TBitBtn;
+    btnTutorVolta: TBitBtn;
     bufExportar: TBufDataset;
     btnEditAposta: TButton;
     btnAporte: TButton;
@@ -202,7 +202,6 @@ type
     lnGraficoLucroMes: TLineSeries;
     lsbLinhas: TListBox;
     lsbMetodos: TListBox;
-    mmTutorial: TMemo;
     miConfig:  TMenuItem;
     mmAnotAposta: TMemo;
     miExibirBoasVindas: TMenuItem;
@@ -214,7 +213,9 @@ type
     miComoUsar: TMenuItem;
     miSobre:   TMenuItem;
     miApoie:   TMenuItem;
-    pnTutorial: TPanel;
+    mmTutorial: TMemo;
+    PaintBox1: TPaintBox;
+    pbTutorial: TPaintBox;
     pcMesMetodos: TPageControl;
     pcPrincipal: TPageControl;
     pcResumo:  TPageControl;
@@ -224,6 +225,7 @@ type
     pizzaMetodo2: TPieSeries;
     pnGraficos: TPanel;
     pnGraficosMetodos: TPanel;
+    pnTutorial: TPanel;
     popupLinhas: TPopupMenu;
     progStatus: TProgressBar;
     psGraficoGreensReds: TPieSeries;
@@ -304,14 +306,6 @@ type
     qrSelecionarPerfilPerfilSelecionado: TStringField;
     qrSelecionarPerfilPerfilSelecionado1: TStringField;
     qrSituacao: TSQLQuery;
-    qrTodosAnosAno: TLargeintField;
-    qrTodosAnosAporte: TFloatField;
-    qrTodosAnosGreen: TLargeintField;
-    qrTodosAnosLucro: TFloatField;
-    qrTodosAnosLuroPcent: TFloatField;
-    qrTodosAnosNeutro: TLargeintField;
-    qrTodosAnosRed: TLargeintField;
-    qrTodosAnosValorInicial: TBCDField;
     qrUnidades: TSQLQuery;
     qrUnidadesUnidade: TStringField;
     qrUnidadesUnidade1: TStringField;
@@ -373,6 +367,7 @@ type
     procedure PosAtualizacao;
     procedure ExcecaoGlobal(Sender: TObject; E: Exception);
     procedure CarregaConfig;
+    function CriarMetodoLinha(out Linha, Metodo: string): boolean;
   end;
 
 var
@@ -394,7 +389,8 @@ implementation
 
 uses
   untUpdate, untApostas, untSplash, untDatabase, untSobre, untControleMetodos,
-  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig, untPainel, untTutorial;
+  fpjson, jsonparser, LCLIntf, untBoasVindas, untConfig, untPainel, untTutorial,
+  untMetodoLinha;
 
 {$IFDEF MSWINDOWS}
 procedure AbrirArquivoLog;
@@ -423,6 +419,23 @@ begin
     end;
   except
     Exit;
+  end;
+end;
+
+function TformPrincipal.CriarMetodoLinha(out Linha, Metodo: string): boolean;
+var Janela: TformMetodoLinha;
+begin
+  Janela := TformMetodoLinha.Create(nil);
+  with Janela do
+  try
+    Result := ShowModal = mrOk;
+    if Result then
+    begin
+      {Linha := edtLinha.Text;
+      Metodo := cbMet.Text;}
+    end;
+  finally
+    Free;
   end;
 end;
 
@@ -458,9 +471,14 @@ end;
 procedure TformPrincipal.FormActivate(Sender: TObject);
 begin
   //tsPainel.Show;
+  Application.ProcessMessages;
   if ExibirBoasVindas then
-    formBoasVindas.ShowModal;
-  IniciarTutorial;
+  with TformBoasVindas.Create(nil) do try
+    ShowModal;
+  finally
+    Free;
+  end;
+  //IniciarTutorial;
 end;
 
 procedure TformPrincipal.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -832,12 +850,28 @@ var
 begin
   Item := TMenuItem(Sender);
   case Item.Name of
-    'miExibirBoasVindas': formBoasVindas.ShowModal;
+    'miExibirBoasVindas': with TformBoasVindas.Create(nil) do try
+      ShowModal;
+    finally
+      Free;
+    end;
     'miImportar': ImportarDadosBD;
-    'miExportar': formSalvarDados.ShowModal;
-    'miConfig': FormConfig.ShowModal;
+    'miExportar': with TformSalvarDados.Create(nil) do try
+      ShowModal;
+    finally
+      Free;
+    end;
+    'miConfig': with TFormConfig.Create(nil) do try
+      ShowModal;
+    finally
+      Free;
+    end;
     'miApoie': openurl('https://link.mercadopago.com.br/graxaimgestaodebanca');
-    'miSobre': formSobre.ShowModal;
+    'miSobre': with TformSobre.Create(nil) do try
+      ShowModal;
+    finally
+      Free;
+    end;
   end;
 end;
 

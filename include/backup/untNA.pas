@@ -20,6 +20,8 @@ type
     btnNovaLinha: TButton;
     btnNovaLinhaMult: TButton;
     btnAddJogo: TButton;
+    btnEditJogo: TButton;
+    btnCriarMetodo: TButton;
     cbCompeticao: TComboBox;
     cbCompMult: TComboBox;
     cbMandante: TComboBox;
@@ -96,6 +98,7 @@ type
     transactionNovaAposta: TSQLTransaction;
     procedure btnAddJogoClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
+    procedure btnCriarMetodoClick(Sender: TObject);
     procedure btnNovaLinhaMultClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure btnNovaLinhaClick(Sender: TObject);
@@ -119,7 +122,8 @@ type
     procedure tsSimplesShow(Sender: TObject);
 
     procedure MudarUnidade(Sender: TObject);
-    procedure LimparControle(Sender: TObject);
+    procedure LimparControle(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: integer);
     procedure SalvaColuna(Sender: TObject);
     procedure AdicionaMetodosLinhasStatus(Column: TColumn);
     procedure AutoFillETrocaDecimal(Sender: TObject; var Key: char);
@@ -128,6 +132,7 @@ type
     procedure HabilitarBotoes(Sender: TObject);
     procedure SalvarAoClicar(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
+    procedure EditarJogoSelecionado(Sender: TObject);
   private
     MotivoOk: boolean;
     procedure CalcularValorAposta;
@@ -135,9 +140,11 @@ type
     procedure AtualizaMetodoLinha(Sender: TObject);
     procedure AtualizaMetLinMult(Sender: TObject);
     procedure HabilitarBtnNovaLinha;
-    procedure VerificaRegistros;
+    function VerificaRegistros: boolean;
     procedure HabilitaBotaoAddJogo;
     procedure DefineOdd;
+    function MultiplosJogos: boolean;
+    procedure PreencheJogos;
   public
 
   end;
@@ -157,6 +164,7 @@ var
   Nao: boolean;
   GlobalMultipla: boolean;
   Odd: double;
+  EditarJogo: boolean;
 
 implementation
 
@@ -171,8 +179,7 @@ procedure TformNovaAposta.btnAddJogoClick(Sender: TObject);
 begin
   with formPrincipal do
   begin
-    VerificaRegistros;
-    if GlobalExcecao or Nao then Exit;
+    if not VerificaRegistros then Exit;
 
     with TSQLQuery.Create(nil) do
     begin
@@ -205,30 +212,13 @@ begin
       end;
       Free;
     end;
-
-    if qrJogos.Active then qrJogos.Refresh
-    else
-      qrJogos.Open;
-
-    lsbJogosNA.Items.Clear;
-    qrJogos.First;
-    while not qrJogos.EOF do
-    begin
-      InfoJogo      := TItemInfo.Create;
-      InfoJogo.Text := qrJogos.FieldByName('Jogo').AsString;
-      InfoJogo.CodJogo := qrJogos.FieldByName('CodJogo').AsInteger;
-      ListaJogo.Add(InfoJogo);
-      lsbJogosNA.Items.Add(InfoJogo.Text);
-      qrJogos.Next;
-    end;
   end;
-  HabilitarBotaoOk;
+  PreencheJogos;
 
   cbCompMult.Text      := '';
   cbMandanteMult.Text  := '';
   cbVisitanteMult.Text := '';
-  btnAddJogo.Enabled   := False;
-
+  HabilitarBotoes(nil);
   lsbJogosNA.ItemIndex := lsbJogosNA.Items.IndexOf(InfoJogo.Text);
   lsbJogosNAClick(nil);
 end;
@@ -239,14 +229,10 @@ procedure TformNovaAposta.FormShow(Sender: TObject);
 var
   qrNACompeticao, qrNATimes: TSQLQuery;
 begin
+  EditarJogo    := False;
   MotivoOk      := False;
   GlobalMultipla := False;
   Screen.Cursor := crAppStart;
-  tsSimples.OnHide := @LimparControle;
-  tsSimples.OnClick := @LimparControle;
-  tsMultipla.OnClick := @LimparControle;
-  tsMultipla.OnHide := @LimparControle;
-  pcApostas.OnClick := @LimparControle;
 
   HabilitarBotaoOk;
   writeln('Criando aposta');
@@ -369,7 +355,11 @@ begin
         begin
           if Query.Active then Close;
           SQL.Text :=
-            'SELECT Nome FROM Linhas WHERE Cod_Metodo = (SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = :SelecMetodo)';
+            'SELECT Nome FROM Linhas WHERE Cod_Metodo = ' +
+            '(SELECT Cod_Metodo FROM Métodos WHERE Métodos.Nome = ' +
+            ':SelecMetodo) ' +
+            'ORDER BY CAST(REPLACE(REPLACE(TRIM(REPLACE(Nome, '' '', ' +
+            ''''')), '','', ''.''), '' '', '''') AS NUMERIC)';
           ParamByName('SelecMetodo').AsString :=
             Query.FieldByName('Método').AsString;
           Open;
@@ -516,10 +506,7 @@ end;
 
 procedure TformNovaAposta.pcApostasChanging(Sender: TObject; var AllowChange: boolean);
 begin
-  Application.ProcessMessages;
-  if Assigned(ActiveControl) then
-    ActiveControl := nil;
-  Application.ProcessMessages;
+  pcApostas.SetFocus;
 end;
 
 procedure TformNovaAposta.popupLinhasPopup(Sender: TObject);
@@ -542,6 +529,7 @@ end;
 procedure TformNovaAposta.tsMultiplaShow(Sender: TObject);
 begin
   GlobalMultipla := True;
+  deApostaMult.SetFocus;
   //LimparControle(nil);
   with TSQLQuery.Create(nil) do
   begin
@@ -562,7 +550,6 @@ begin
         'FROM Apostas)';
       writeln('SQL: ', SQL.Text);
       ExecSQL;
-      LimparControle(nil);
     except
       on E: Exception do
       begin
@@ -577,8 +564,8 @@ end;
 procedure TformNovaAposta.tsSimplesShow(Sender: TObject);
 begin
   GlobalMultipla := False;
+  deAposta.SetFocus;
   writeln('Exibida aba de aposta simples');
-  LimparControle(nil);
   HabilitarBotaoOk;
   if qrNovaAposta.Active then qrNovaAposta.Close;
   try
@@ -664,29 +651,18 @@ end;
 
 procedure TformNovaAposta.HabilitarBotaoOk;
 begin
-  if tsSimples.Showing then
-  begin
-    //writeln('Verificando se pode habilitar o botão Ok em aposta simples');
-    if (deAposta.Text <> '') and (cbCompeticao.Text <> '') and
+  if not GlobalMultipla then
+    btnOk.Enabled := ((deAposta.Text <> '') and (cbCompeticao.Text <> '') and
       (cbMandante.Text <> '') and (cbVisitante.Text <> '') and
       (edtValor.Text <> '') and (Odd <> 0) and not
       qrNovaAposta.FieldByName('Método').IsNull and not
       qrNovaAposta.FieldByName('Linha').IsNull and not
-      qrNovaAposta.FieldByName('Situacao').IsNull then
-      btnOk.Enabled := True
-    else
-      btnOk.Enabled := False;
-  end
-  else if tsMultipla.Showing then
-  begin
-    //writeln('Verificando se pode habilitar o botão Ok em aposta múltipla');
-    if (deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
+      qrNovaAposta.FieldByName('Situacao').IsNull)
+  else
+    btnOk.Enabled := ((deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
       (Odd <> 0) and not qrLinhaMultipla.FieldByName('Método').IsNull and
       not qrLinhaMultipla.FieldByName('Linha').IsNull and not
-      qrLinhaMultipla.FieldByName('Situacao').IsNull then btnOk.Enabled := True
-    else
-      btnOk.Enabled := False;
-  end;
+      qrLinhaMultipla.FieldByName('Situacao').IsNull);
 end;
 
 procedure TformNovaAposta.AtualizaMetodoLinha(Sender: TObject);
@@ -696,7 +672,8 @@ var
 begin
   SelectedItem := TMenuItem(Sender);
   if tsSimples.Showing then Query := qrNovaAposta
-  else Query := qrLinhaMultipla;
+  else
+    Query := qrLinhaMultipla;
   with Query do
   begin
     if Assigned(ColunaAtual) and Assigned(SelectedItem) then
@@ -733,17 +710,71 @@ end;
 
 procedure TformNovaAposta.HabilitarBtnNovaLinha;
 begin
-  if (cbCompeticao.Text <> '') and (cbMandante.Text <> '') and
-    (cbVisitante.Text <> '') then
-    btnNovaLinha.Enabled := True
-  else
-    btnNovaLinha.Enabled := False;
+  if tsSimples.Showing then
+    btnNovaLinha.Enabled := ((cbCompeticao.Text <> '') and
+      (cbMandante.Text <> '') and (cbVisitante.Text <> ''));
 end;
 
 procedure TformNovaAposta.btnCancelarClick(Sender: TObject);
 begin
   MotivoOk := False;
   Close;
+end;
+
+procedure TformNovaAposta.btnCriarMetodoClick(Sender: TObject);
+var
+  CodMetodo: integer;
+  Metodo, Linha: string;
+label
+  Voltar;
+begin
+  with formPrincipal do
+    with transactionBancoDados do
+      with TSQLQuery.Create(nil) do
+      begin
+        try
+          DataBase := conectBancoDados;
+          Voltar:
+          begin
+            if CriarMetodoLinha(Linha, Metodo) then
+              SQL.Text := 'SELECT Nome FROM Métodos WHERE Nome = :nome';
+            ParamByName('nome').AsString := Metodo;
+            Open;
+          end;
+          if IsEmpty then
+          if MessageDlg('Método não existe', 'O método digitado não existe, ' +
+          'deseja criá-lo agora?', mtConfirmation, [mbYes, mbNo], 0) = mrYes
+          then begin
+            Close;
+            SQL.Text := 'INSERT INTO Métodos (Nome) VALUES (:nome)';
+            ParamByName('nome').AsString := Metodo;
+            ExecSQL;
+          end
+          else goto Voltar;
+          SQL.Text := 'SELECT Cod_Metodo FROM Métodos WHERE Nome = :nome';
+          ParamByName('nome').AsString := Metodo;
+          Open;
+          CodMetodo := Fields[0].AsFloat;
+          Close;
+          SQL.Text := 'INSERT INTO Linhas (Cod_Metodo, Nome) VALUES (:cod, ' +
+          ':nome)';
+          ParamByName('cod').AsInteger := CodMetodo;
+          ParamByName('nome').AsString := Metodo;
+          ExecSQL;
+          CommitRetaining;
+        except
+          On E: Exception do
+          begin
+            Cancel;
+            RollbackRetaining;
+            MessageDlg('Erro', 'Não foi possível criar método/ĺinha, tente ' +
+            'novamente. Se o problema persistir favor informar no GitHub ' +
+            'com a seguinte mensagem: ' + sLineBreak + sLineBreak + E.Message,
+            mtError, [mbOk], 0);
+          end;
+        end;
+        Free;
+      end;
 end;
 
 procedure TformNovaAposta.btnNovaLinhaMultClick(Sender: TObject);
@@ -811,18 +842,16 @@ procedure TformNovaAposta.HabilitarBotoes(Sender: TObject);
 begin
   HabilitarBotaoOk;
   HabilitarBtnNovaLinha;
-  if tsMultipla.Showing then
-    HabilitaBotaoAddJogo;
+  HabilitaBotaoAddJogo;
+  btnEditJogo.Enabled := not qrJogos.IsEmpty;
 end;
 
 procedure TformNovaAposta.SalvarAoClicar(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 var
   Query: TDataSet;
-  Grid:  TDBGrid;
 begin
-  Grid  := TDBGrid(Sender);
-  Query := Grid.DataSource.DataSet;
+  Query := TDBGrid(Sender).DataSource.DataSet;
 
   with Query do
     if (State in [dsEdit, dsInsert]) then begin
@@ -831,6 +860,60 @@ begin
     end
     else
       Edit;
+end;
+
+procedure TformNovaAposta.EditarJogoSelecionado(Sender: TObject);
+begin
+  if not EditarJogo then
+    with qrJogos do
+    begin
+      btnAddJogo.Enabled := False;
+      cbCompMult.Text := FieldByName('Competição').AsString;
+      cbMandanteMult.Text := FieldByName('Mandante').AsString;
+      cbVisitanteMult.Text := FieldByName('Visitante').AsString;
+      btnEditJogo.Caption := 'Salvar';
+      EditarJogo := True;
+    end
+  else begin
+    if not VerificaRegistros then Exit;
+    with formPrincipal do
+      with transactionBancoDados do
+        with TSQLQuery.Create(nil) do
+        begin
+          DataBase := conectBancoDados;
+          try
+            SQL.Text := 'UPDATE Jogo SET Cod_Comp = (SELECT C.Cod_Comp ' +
+              'FROM Competicoes C WHERE C.Competicao = :comp), Mandante = ' +
+              ':mand, Visitante = :visit WHERE Cod_Jogo = :cod';
+            ParamByName('comp').AsString := cbCompMult.Text;
+            ParamByName('mand').AsString := cbMandanteMult.Text;
+            ParamByName('visit').AsString := cbVisitanteMult.Text;
+            ParamByName('cod').AsInteger := GlobalCodJogo;
+            ExecSQL;
+            CommitRetaining;
+          except
+            On E: Exception do
+            begin
+              Cancel;
+              RollbackRetaining;
+              MessageDlg('Erro', 'Não foi possível alterar jogo, tente ' +
+                'novamente. Se o problema persistir favor informar no GitHub ' +
+                'com a seguinte mensagem: ' + sLineBreak + sLineBreak +
+                E.Message, mtError, [mbOK], 0);
+            end;
+          end;
+          Free;
+        end;
+    PreencheJogos;
+    EditarJogo      := False;
+    btnEditJogo.Caption := 'Editar Jogo Selecionado';
+    cbCompMult.Text := '';
+    cbMandanteMult.Text := '';
+    cbVisitanteMult.Text := '';
+    HabilitarBotoes(nil);
+    lsbJogosNA.ItemIndex := lsbJogosNA.Items.IndexOf(InfoJogo.Text);
+    lsbJogosNAClick(nil);
+  end;
 end;
 
 procedure TformNovaAposta.MudarUnidade(Sender: TObject);
@@ -893,34 +976,32 @@ var
   i: integer;
   excecao, Multipla: boolean;
 label
-  Salvar, Cancelar, Fim;
+  Salvar, Cancelar, Abortar, Fim;
 begin
   if not MotivoOk then
     if MessageDlg('Deseja realmente cancelar o registro da aposta?',
       mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-    begin
-      CloseAction := caNone;
-      Exit;
-    end
+      goto Abortar
     else
       goto Cancelar;
-
-  GlobalExcecao := False;
-
-  VerificaRegistros;
-
-  if GlobalExcecao or Nao then
-  begin
-    CloseAction := caNone;
-    Exit;
-  end
+  if not VerificaRegistros then
+    goto Abortar
   else
   begin
     excecao := False;
 
-    if tsSimples.Showing then Multipla := False
-    else if tsMultipla.Showing then Multipla := True;
+    Multipla := not tsSimples.Showing;
 
+    if Multipla and not MultiplosJogos then
+    begin
+      MessageDlg('Erro', 'Não é possível fazer aposta múltipla com apenas ' +
+        'um jogo!', mtError, [mbOK], 0);
+      Abortar:
+      begin
+        CloseAction := caNone;
+        Exit;
+      end;
+    end;
     with formPrincipal do
     begin
       with TSQLQuery.Create(nil) do
@@ -1059,121 +1140,117 @@ begin
   end;
 end;
 
-procedure TformNovaAposta.VerificaRegistros;
+function TformNovaAposta.VerificaRegistros: boolean;
 var
   NomePais, ComparaMandante, ComparaVisitante, ComparaCampeonato: string;
   MandanteExiste, VisitanteExiste, PaisExiste, CampeonatoExiste, Multipla: boolean;
+  Competicao, Mandante, Visitante: TComboBox;
+label
+  DigitarPais;
 begin
+  writeln('Verificando Registros');
+  Result := False;
   with formPrincipal do
   begin
-    Nao := False;
-    if tsSimples.Showing then Multipla := False
-    else if tsMultipla.Showing then Multipla := True;
+    Multipla := not tsSimples.Showing;
+    if not Multipla then begin
+      Competicao := cbCompeticao;
+      Mandante   := cbMandante;
+      Visitante  := cbVisitante;
+    end
+    else begin
+      Competicao := cbCompMult;
+      Mandante   := cbMandanteMult;
+      Visitante  := cbVisitanteMult;
+    end;
     with TSQLQuery.Create(nil) do
     begin
       try
         DataBase := conectBancoDados;
         SQL.Text := 'SELECT Competicao FROM Competicoes WHERE Competicao = :comp';
-        if not Multipla then
-          ComparaCampeonato := cbCompeticao.Text
-        else
-          ComparaCampeonato := cbCompMult.Text;
+        ComparaCampeonato := Competicao.Text;
         ParamByName('comp').AsString := ComparaCampeonato;
         Open;
-        if FieldByName('Competicao').AsString = ComparaCampeonato then
-          CampeonatoExiste := True
-        else
-          CampeonatoExiste := False;
+        CampeonatoExiste := (FieldByName('Competicao').AsString =
+          ComparaCampeonato);
         Close;
         SQL.Text := 'SELECT Time FROM Times WHERE Time = :mandante';
-        if not Multipla then
-          ComparaMandante := cbMandante.Text
-        else
-          ComparaMandante := cbMandanteMult.Text;
+        ComparaMandante := Mandante.Text;
         ParamByName('mandante').AsString := ComparaMandante;
         Open;
-        if FieldByName('Time').AsString = ComparaMandante then
-          MandanteExiste := True
-        else
-          MandanteExiste := False;
+        MandanteExiste := (FieldByName('Time').AsString = ComparaMandante);
         Close;
         SQL.Text := 'SELECT Time FROM Times WHERE Time = :visitante';
-        if not Multipla then ParamByName('visitante').AsString :=
-            cbVisitante.Text
-        else
-          ParamByName('visitante').AsString :=
-            cbVisitanteMult.Text;
+        ParamByName('visitante').AsString := Visitante.Text;
         Open;
-        if not Multipla then
-          ComparaVisitante := cbVisitante.Text
-        else
-          ComparaVisitante := cbVisitanteMult.Text;
+        ComparaVisitante := Visitante.Text;
 
-        if ComparaVisitante = FieldByName('Time').AsString then
-          VisitanteExiste := True
-        else
-          VisitanteExiste := False;
+        VisitanteExiste := (ComparaVisitante = FieldByName('Time').AsString);
 
         if not CampeonatoExiste or not MandanteExiste or not VisitanteExiste then
-        begin
           if MessageDlg(
             'Há time(s)/Competição inserido(s) que não está(ão) no banco de dados, ' +
             'ou houve um erro de digitação. Caso tenha digitado corretamente, deseja ' +
             'registrá-lo(s) no banco de dados agora?', mtConfirmation, [mbYes, mbNo], 0) =
             mrYes then
           begin
-            if InputQuery('Inserir Dados',
-              'Digite CORRETAMENTE o país do time/campeonato:', NomePais) then
-            begin
-              Close;
-              SQL.Text := 'SELECT País FROM Países WHERE País = :país';
-              ParamByName('país').AsString := NomePais;
-              Open;
-              if NomePais <> FieldByName('País').AsString then
-              begin
-                if MessageDlg(
-                  'País não encontrado no banco de dados. Deseja registrá-lo agora?',
-                  mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+            DigitarPais:
+              if not CampeonatoExiste then
+                if InputQuery('Inserir Dados', 'Digite CORRETAMENTE o país do ' +
+                'campeonato:', NomePais) then
                 begin
                   Close;
-                  SQL.Text := 'INSERT INTO Países (País) VALUES (:país)';
+                  SQL.Text := 'SELECT País FROM Países WHERE País = :país';
                   ParamByName('país').AsString := NomePais;
-                  ExecSQL;
+                  Open;
+                  if NomePais <> FieldByName('País').AsString then
+                    if MessageDlg(
+                    'País não encontrado no banco de dados. Deseja registrá-lo agora?',
+                    mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+                    begin
+                      Close;
+                      SQL.Text := 'INSERT INTO Países (País) VALUES (:país)';
+                      ParamByName('país').AsString := NomePais;
+                      ExecSQL;
+                    end
+                    else
+                      goto DigitarPais;
+                  if not CampeonatoExiste then
+                  begin
+                    Close;
+                    SQL.Text :=
+                      'INSERT INTO Competicoes (País, Competicao) VALUES (:pais, :comp)';
+                    ParamByName('pais').AsString := NomePais;
+                    ParamByName('comp').AsString := ComparaCampeonato;
+                    ExecSQL;
+                  end;
+                  if not MandanteExiste then
+                  begin
+                    Close;
+                    SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
+                    ParamByName('time').AsString := ComparaMandante;
+                    ExecSQL;
+                  end;
+                  if not VisitanteExiste then
+                  begin
+                    Close;
+                    SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
+                    ParamByName('time').AsString := ComparaVisitante;
+                    ExecSQL;
+                  end;
+                end
+                else begin
+                  Result := False;
+                  transactionBancoDados.RollbackRetaining;
+                  Exit;
                 end;
-              end;
-              if not CampeonatoExiste then
-              begin
-                Close;
-                SQL.Text :=
-                  'INSERT INTO Competicoes (País, Competicao) VALUES (:pais, :comp)';
-                ParamByName('pais').AsString := NomePais;
-                ParamByName('comp').AsString := ComparaCampeonato;
-                ExecSQL;
-              end;
-              if not MandanteExiste then
-              begin
-                Close;
-                SQL.Text := 'INSERT INTO Times (País, Time) VALUES (:pais, :time)';
-                ParamByName('pais').AsString := NomePais;
-                ParamByName('time').AsString := ComparaMandante;
-                ExecSQL;
-              end;
-              if not VisitanteExiste then
-              begin
-                Close;
-                SQL.Text := 'INSERT INTO Times (País, Time) VALUES (:pais, :time)';
-                ParamByName('pais').AsString := NomePais;
-                ParamByName('time').AsString := ComparaVisitante;
-                ExecSQL;
-              end;
-            end
-            else
-              Nao := True;
             transactionBancoDados.CommitRetaining;
+            Result := True;
           end
           else
-            Nao := True;
-        end;
+            Result := False
+        else
+          Result   := True;
       except
         on E: Exception do
         begin
@@ -1181,7 +1258,7 @@ begin
             E.Message, mtError, [mbOK], 0);
           Cancel;
           transactionBancoDados.RollbackRetaining;
-          GlobalExcecao := True;
+          Result := False;
         end;
       end;
       Free;
@@ -1191,10 +1268,9 @@ end;
 
 procedure TformNovaAposta.HabilitaBotaoAddJogo;
 begin
-  if (cbCompMult.Text <> '') and (cbMandanteMult.Text <> '') and
-    (cbVisitanteMult.Text <> '') then btnAddJogo.Enabled := True
-  else
-    btnAddJogo.Enabled := False;
+  if tsMultipla.Showing then
+    btnAddJogo.Enabled := (not EditarJogo and (cbCompMult.Text <> '') and
+      (cbMandanteMult.Text <> '') and (cbVisitanteMult.Text <> ''));
 end;
 
 procedure TformNovaAposta.DefineOdd;
@@ -1228,6 +1304,32 @@ begin
   end;
   if tsSimples.Showing then lbOddSimples.Caption := FormatFloat('0.00', Odd)
   else if tsMultipla.Showing then lbOddMult.Caption := FormatFloat('0.00', Odd);
+end;
+
+function TformNovaAposta.MultiplosJogos: boolean;
+begin
+  Result := (qrJogos.FieldCount > 1);
+end;
+
+procedure TformNovaAposta.PreencheJogos;
+begin
+  with qrJogos do
+  begin
+    if not Active then Open
+    else
+      Refresh;
+    lsbJogosNA.Items.Clear;
+    First;
+    while not EOF do
+    begin
+      InfoJogo      := TItemInfo.Create;
+      InfoJogo.Text := FieldByName('Jogo').AsString;
+      InfoJogo.CodJogo := FieldByName('CodJogo').AsInteger;
+      ListaJogo.Add(InfoJogo);
+      lsbJogosNA.Items.Add(InfoJogo.Text);
+      Next;
+    end;
+  end;
 end;
 
 procedure TformNovaAposta.AdicionaMetodosLinhasStatus(Column: TColumn);
@@ -1386,7 +1488,8 @@ begin
     end;
 end;
 
-procedure TformNovaAposta.LimparControle(Sender: TObject);
+procedure TformNovaAposta.LimparControle(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
 begin
   Application.ProcessMessages;
   writeln('Limpando controle');

@@ -1,10 +1,10 @@
 object formPrincipal: TformPrincipal
   Left = 198
-  Height = 813
+  Height = 752
   Top = 565
   Width = 1199
   Caption = 'Graxaim Gestão de Banca [BETA]'
-  ClientHeight = 813
+  ClientHeight = 752
   ClientWidth = 1199
   Menu = MenuPrincipal
   OnActivate = FormActivate
@@ -12,7 +12,6 @@ object formPrincipal: TformPrincipal
   OnResize = FormResize
   Position = poDesktopCenter
   ShowHint = True
-  LCLVersion = '3.4.0.0'
   object pcPrincipal: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -20,7 +19,7 @@ object formPrincipal: TformPrincipal
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BarraStatus
     Left = 0
-    Height = 792
+    Height = 734
     Top = 0
     Width = 1199
     ActivePage = tsPainel
@@ -31,8 +30,8 @@ object formPrincipal: TformPrincipal
     TabOrder = 0
     object tsPainel: TTabSheet
       Caption = 'Painel Principal'
-      ClientHeight = 764
-      ClientWidth = 1195
+      ClientHeight = 704
+      ClientWidth = 1189
       object btnSalvarBancaInicial: TButton
         AnchorSideLeft.Control = cbMes
         AnchorSideTop.Control = lbValBancaTotal
@@ -41,7 +40,7 @@ object formPrincipal: TformPrincipal
         Left = 5
         Height = 25
         Hint = 'Salva o valor da banca digitado ao lado para o mês e ano selecionados.'
-        Top = 263
+        Top = 259
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 15
@@ -59,7 +58,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 23
-        Top = 505
+        Top = 503
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 20
@@ -74,9 +73,9 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = cbMes
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 17
-        Top = 67
-        Width = 74
+        Height = 16
+        Top = 65
+        Width = 76
         BorderSpacing.Top = 10
         BorderSpacing.Right = 5
         Caption = 'Banca Inicial:'
@@ -85,9 +84,9 @@ object formPrincipal: TformPrincipal
         AnchorSideLeft.Control = cbMes
         AnchorSideTop.Control = tsPainel
         Left = 5
-        Height = 17
+        Height = 16
         Top = 15
-        Width = 27
+        Width = 28
         BorderSpacing.Top = 15
         Caption = 'Mês:'
       end
@@ -95,9 +94,9 @@ object formPrincipal: TformPrincipal
         AnchorSideLeft.Control = cbAno
         AnchorSideTop.Control = lbMes
         Left = 115
-        Height = 17
+        Height = 16
         Top = 15
-        Width = 25
+        Width = 28
         Caption = 'Ano:'
       end
       object pcResumo: TPageControl
@@ -107,17 +106,17 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Control = tsPainel
         AnchorSideBottom.Side = asrBottom
         Left = 289
-        Height = 765
+        Height = 704
         Top = 0
-        Width = 906
+        Width = 900
         ActivePage = tsGraficos
         Anchors = [akTop, akLeft, akRight, akBottom]
         TabIndex = 0
         TabOrder = 1
         object tsGraficos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 737
-          ClientWidth = 902
+          ClientHeight = 674
+          ClientWidth = 890
           object pnGraficos: TPanel
             AnchorSideLeft.Control = tsGraficos
             AnchorSideTop.Control = tsGraficos
@@ -126,14 +125,14 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsGraficos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 738
+            Height = 674
             Top = 0
-            Width = 902
+            Width = 890
             Anchors = [akTop, akLeft, akRight, akBottom]
             AutoSize = True
             Caption = 'pnGraficos'
-            ClientHeight = 738
-            ClientWidth = 902
+            ClientHeight = 674
+            ClientWidth = 890
             TabOrder = 0
             object chrtLucroMes: TChart
               AnchorSideRight.Control = chrtAcertMes
@@ -426,146 +425,10 @@ object formPrincipal: TformPrincipal
                 Marks.Style = smsLabelPercent
               end
             end
-            object pnTutorial: TPanel
-              Left = 472
-              Height = 162
-              Top = 576
-              Width = 432
-              ClientHeight = 162
-              ClientWidth = 432
-              TabOrder = 6
-              Visible = False
-              object mmTutorial: TMemo
-                AnchorSideLeft.Control = pnTutorial
-                AnchorSideTop.Control = pnTutorial
-                AnchorSideRight.Control = pnTutorial
-                AnchorSideRight.Side = asrBottom
-                Left = 1
-                Height = 111
-                Top = 1
-                Width = 430
-                Anchors = [akTop, akLeft, akRight]
-                Color = clBackground
-                Lines.Strings = (
-                  'mmTutorial'
-                )
-                ReadOnly = True
-                TabOrder = 0
-              end
-              object btnTutorFechar: TBitBtn
-                Left = 344
-                Height = 30
-                Top = 120
-                Width = 75
-                Caption = 'Fechar'
-                GlyphShowMode = gsmSystem
-                Kind = bkClose
-                TabOrder = 1
-              end
-              object btnTutorAvanca: TBitBtn
-                Left = 232
-                Height = 30
-                Top = 120
-                Width = 75
-                Caption = 'Avançar'
-                Glyph.Data = {
-                  36040000424D3604000000000000360000002800000010000000100000000100
-                  2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFF42924AFF3C8A4306FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF004292
-                  4AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF4292
-                  4AFF42924AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF004292
-                  4AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
-                  9AFF93E89AFF93E89AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF004292
-                  4AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
-                  9AFF93E89AFF93E89AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF004292
-                  4AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF4292
-                  4AFF42924AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFF42924AFF20622306FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
-                }
-                TabOrder = 2
-              end
-              object btnTutorVolta: TBitBtn
-                Left = 112
-                Height = 30
-                Top = 120
-                Width = 75
-                Caption = 'Voltar'
-                Glyph.Data = {
-                  36040000424D3604000000000000360000002800000010000000100000000100
-                  2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF002062230642924AFF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF0042924AFF6ABD72FF93E89AFF42924AFF42924AFF42924AFF42924AFF4292
-                  4AFF42924AFF42924AFF42924AFF42924AFF42924AFFFFFFFF00FFFFFF004292
-                  4AFF6ABD72FF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
-                  9AFF93E89AFF93E89AFF93E89AFF93E89AFF42924AFFFFFFFF00FFFFFF004292
-                  4AFF6ABD72FF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
-                  9AFF93E89AFF93E89AFF93E89AFF93E89AFF42924AFFFFFFFF00FFFFFF00FFFF
-                  FF0042924AFF6ABD72FF93E89AFF42924AFF42924AFF42924AFF42924AFF4292
-                  4AFF42924AFF42924AFF42924AFF42924AFF42924AFFFFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF003C8A430642924AFF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-                  FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
-                }
-                GlyphShowMode = gsmSystem
-                TabOrder = 3
-              end
-              object btnTutorInicio: TBitBtn
-                Left = 8
-                Height = 30
-                Top = 120
-                Width = 75
-                Caption = 'Início'
-                GlyphShowMode = gsmSystem
-                Kind = bkRetry
-                TabOrder = 4
-              end
-            end
           end
           object cbGraficos: TComboBox
             Left = 12
-            Height = 25
+            Height = 24
             Hint = 'Alterna a exibição dos gráficos entre porcentagem de lucro e o valor em dinheiro.'
             Top = 6
             Width = 86
@@ -582,16 +445,16 @@ object formPrincipal: TformPrincipal
         end
         object tsResumoLista: TTabSheet
           Caption = 'Tabelas'
-          ClientHeight = 737
-          ClientWidth = 902
+          ClientHeight = 674
+          ClientWidth = 890
           object grbTabelaMes: TGroupBox
             Left = 8
             Height = 312
             Top = 0
             Width = 360
             Caption = 'Lucros do Mês'
-            ClientHeight = 293
-            ClientWidth = 356
+            ClientHeight = 295
+            ClientWidth = 358
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -604,9 +467,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbTabelaMes
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 287
+              Height = 295
               Top = 0
-              Width = 356
+              Width = 358
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -652,8 +515,8 @@ object formPrincipal: TformPrincipal
             Top = 320
             Width = 440
             Caption = 'Lucros do Ano'
-            ClientHeight = 309
-            ClientWidth = 436
+            ClientHeight = 311
+            ClientWidth = 438
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -665,9 +528,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbTabelaAno
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 303
+              Height = 311
               Top = 0
-              Width = 436
+              Width = 438
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -712,8 +575,8 @@ object formPrincipal: TformPrincipal
             Top = 8
             Width = 472
             Caption = 'Lucros de Todos os Anos'
-            ClientHeight = 309
-            ClientWidth = 468
+            ClientHeight = 311
+            ClientWidth = 470
             Enabled = False
             Font.Height = -16
             Font.Name = 'Sans'
@@ -726,9 +589,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbTabelaTodosAnos
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 303
+              Height = 311
               Top = 0
-              Width = 468
+              Width = 470
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -776,7 +639,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 23
-        Top = 579
+        Top = 577
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 5
@@ -790,9 +653,9 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = btnRetirar
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 17
-        Top = 363
-        Width = 32
+        Height = 16
+        Top = 359
+        Width = 35
         BorderSpacing.Top = 15
         Caption = 'Perfil:'
       end
@@ -801,10 +664,10 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = btnRetirar
         AnchorSideRight.Side = asrBottom
-        Left = 150
-        Height = 17
-        Top = 363
-        Width = 134
+        Left = 140
+        Height = 16
+        Top = 359
+        Width = 144
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 15
         Caption = 'Valor Padrão de Aposta:'
@@ -815,9 +678,9 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = lbAno
         AnchorSideTop.Side = asrBottom
         Left = 115
-        Height = 29
+        Height = 28
         Hint = 'Seleciona o ano das apostas registradas (padrão ano atual)'
-        Top = 32
+        Top = 31
         Width = 100
         ItemHeight = 0
         ParentShowHint = False
@@ -831,9 +694,9 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = cbAno
         Left = 5
-        Height = 25
+        Height = 24
         Hint = 'Seleciona o mês das apostas registradas (padrão mês atual)'
-        Top = 32
+        Top = 31
         Width = 100
         BorderSpacing.Left = 5
         BorderSpacing.Right = 10
@@ -862,9 +725,9 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = lbPerfil
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 25
+        Height = 24
         Hint = 'Selecione aqui seu perfil de investidor. '#10#10'GESTÃO POR UNIDADE:'#10'Conservador = banca ÷ 100'#10'Moderado = banca ÷ 70'#10'Agressivo = banca ÷ 40'#10#10'GESTÃO POR PORCENTAGEM:'#10'Conservador = 1% da banca'#10'Moderado = 3% da banca'#10'Agressivo = 5% da banca'
-        Top = 380
+        Top = 375
         Width = 100
         ItemHeight = 0
         Items.Strings = (
@@ -882,10 +745,10 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = chbGestaoVariavel
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 21
+        Height = 23
         Hint = 'Gestão de banca por unidade, é o mais seguro e menos agressivo de se apostar nos perfis moderado e agressivo, no perfil conservador é a mesma coisa que gestão por porcentagem. (Mais detalhes posicione o mouse sobre a caixa de seleção acima).'
-        Top = 443
-        Width = 226
+        Top = 437
+        Width = 243
         BorderSpacing.Top = 10
         Caption = 'Gestão por Unidade (Recomendado)'
         Checked = True
@@ -898,10 +761,10 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = rbGestUn
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 21
+        Height = 23
         Hint = 'Gestão de banca normalmente usada por iniciantes, um pouco mais agressiva, ideal para bancas muito pequenas (Exemplo: R$ 100,00). Não é recomendado usar esse tipo de gestão para bancas maiores.'
-        Top = 464
-        Width = 163
+        Top = 460
+        Width = 176
         Caption = 'Gestão por Porcentagem'
         TabOrder = 6
         OnClick = GestaoUnidadePcent
@@ -911,9 +774,9 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = lbValorBanca
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 17
-        Top = 126
-        Width = 92
+        Height = 16
+        Top = 123
+        Width = 100
         BorderSpacing.Top = 10
         BorderSpacing.Right = 5
         Caption = 'Aporte/Retirada:'
@@ -925,7 +788,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 32
-        Top = 84
+        Top = 81
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         AutoSize = False
@@ -943,7 +806,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 25
-        Top = 293
+        Top = 289
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 5
@@ -958,7 +821,7 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Side = asrBottom
         Left = 5
         Height = 22
-        Top = 185
+        Top = 181
         Width = 83
         BorderSpacing.Top = 10
         BorderSpacing.Right = 5
@@ -974,7 +837,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 41
-        Top = 207
+        Top = 203
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         AutoSize = False
@@ -992,7 +855,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 32
-        Top = 143
+        Top = 139
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         AutoSize = False
@@ -1007,9 +870,9 @@ object formPrincipal: TformPrincipal
         AnchorSideLeft.Control = lbUnidade
         AnchorSideTop.Control = lbUnidade
         AnchorSideTop.Side = asrBottom
-        Left = 150
+        Left = 140
         Height = 32
-        Top = 380
+        Top = 375
         Width = 78
         AutoSize = False
         Caption = 'R$ 0,00'
@@ -1025,7 +888,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 25
-        Top = 323
+        Top = 319
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 5
@@ -1041,7 +904,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 51
-        Top = 528
+        Top = 526
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         AutoSize = False
@@ -1058,7 +921,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 51
-        Top = 602
+        Top = 600
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         AutoSize = False
@@ -1075,7 +938,7 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Control = pcResumo
         Left = 5
         Height = 51
-        Top = 653
+        Top = 651
         Width = 279
         Anchors = [akTop, akLeft, akRight]
         AutoSize = False
@@ -1092,7 +955,7 @@ object formPrincipal: TformPrincipal
         Left = 5
         Height = 23
         Hint = 'Ao ativar, o valor de apostas irá variar de acordo com o lucro/prejuízo, garantindo mais ganhos em seqüências boas e reduzindo as perdas em seqüências ruins.'
-        Top = 410
+        Top = 404
         Width = 175
         BorderSpacing.Top = 5
         Caption = 'Gestão de Banca Variável'
@@ -1102,11 +965,188 @@ object formPrincipal: TformPrincipal
         ValueChecked = '1'
         ValueUnchecked = '0'
       end
+      object pbTutorial: TPaintBox
+        Left = 176
+        Height = 106
+        Top = 8
+        Width = 105
+      end
+      object pnTutorial: TPanel
+        Left = 712
+        Height = 162
+        Top = 603
+        Width = 432
+        ClientHeight = 162
+        ClientWidth = 432
+        TabOrder = 10
+        Visible = False
+        object mmTutorial: TMemo
+          AnchorSideLeft.Control = pnTutorial
+          AnchorSideTop.Control = pnTutorial
+          AnchorSideRight.Control = pnTutorial
+          AnchorSideRight.Side = asrBottom
+          Left = 1
+          Height = 111
+          Top = 1
+          Width = 430
+          Anchors = [akTop, akLeft, akRight]
+          Color = clBackground
+          Lines.Strings = (
+            'mmTutorial'
+          )
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object btnTutorFechar: TBitBtn
+          Left = 344
+          Height = 30
+          Top = 120
+          Width = 75
+          Caption = 'Fechar'
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            000000000000606461A5626665E45E62607A0000000000000000000000000000
+            00005C636077636865E05F6461A1000000000000000000000000000000000000
+            000000000000636765E3B1B9B6FF7B807EED5E64607F00000000000000005E62
+            607D777E7BEDABB3B0FF636764E2000000000000000000000000000000000000
+            0000000000005F6361797E8380EDBAC2BEFF7D827FED5E64627F5E62607D777E
+            7BEDABB3B0FF767C7AED60626075000000000000000000000000000000000000
+            000000000000000000006064627D818683EDBEC6C2FF838986EC7E8482EDABB3
+            B0FF767C7AED5D615F7900000000000000000000000000000000000000000000
+            00000000000000000000000000006066627D878E8AECBAC2BFFFB2BAB7FF7D82
+            80EB5D615F790000000000000000000000000000000000000000000000000000
+            00000000000000000000000000006064627D888F8AECBAC2BFFFB2BAB7FF7C81
+            7FEB5D615F790000000000000000000000000000000000000000000000000000
+            000000000000000000006064627D818683EDBCC4C1FF818784EC7D8481ECABB3
+            B0FF777B7AEC5D615F7900000000000000000000000000000000000000000000
+            0000000000005F6363767D8380EDB8C0BDFF7B7F7EED5E62607A5E626078767B
+            79EDABB3B0FF767C7AED60626072000000000000000000000000000000000000
+            000000000000646865E1B0B8B5FF7A7E7CED5B615F7B00000000000000005E62
+            6078767C7AEDABB3B0FF626866DF000000000000000000000000000000000000
+            0000000000005F6462A4636664E35C6360770000000000000000000000000000
+            00005F635F71636766DE5F6463A3000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000
+          }
+          GlyphShowMode = gsmSystem
+          TabOrder = 1
+        end
+        object btnTutorAvanca: TBitBtn
+          Left = 232
+          Height = 30
+          Top = 120
+          Width = 75
+          Caption = 'Avançar'
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFF42924AFF3C8A4306FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF004292
+            4AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF4292
+            4AFF42924AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF004292
+            4AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
+            9AFF93E89AFF93E89AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF004292
+            4AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
+            9AFF93E89AFF93E89AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF004292
+            4AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF42924AFF4292
+            4AFF42924AFF93E89AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFF42924AFF20622306FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+          }
+          TabOrder = 2
+        end
+        object btnTutorVolta: TBitBtn
+          Left = 112
+          Height = 30
+          Top = 120
+          Width = 75
+          Caption = 'Voltar'
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF002062230642924AFF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF0042924AFF6ABD72FF93E89AFF42924AFF42924AFF42924AFF42924AFF4292
+            4AFF42924AFF42924AFF42924AFF42924AFF42924AFFFFFFFF00FFFFFF004292
+            4AFF6ABD72FF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
+            9AFF93E89AFF93E89AFF93E89AFF93E89AFF42924AFFFFFFFF00FFFFFF004292
+            4AFF6ABD72FF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E89AFF93E8
+            9AFF93E89AFF93E89AFF93E89AFF93E89AFF42924AFFFFFFFF00FFFFFF00FFFF
+            FF0042924AFF6ABD72FF93E89AFF42924AFF42924AFF42924AFF42924AFF4292
+            4AFF42924AFF42924AFF42924AFF42924AFF42924AFFFFFFFF00FFFFFF00FFFF
+            FF00FFFFFF0042924AFF6ABD72FF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF003C8A430642924AFF42924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF0042924AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+          }
+          GlyphShowMode = gsmSystem
+          TabOrder = 3
+        end
+        object btnTutorInicio: TBitBtn
+          Left = 8
+          Height = 30
+          Top = 120
+          Width = 75
+          Caption = 'Início'
+          GlyphShowMode = gsmSystem
+          Kind = bkRetry
+          TabOrder = 4
+        end
+      end
     end
     object tsApostas: TTabSheet
       Caption = 'Apostas'
-      ClientHeight = 764
-      ClientWidth = 1195
+      ClientHeight = 704
+      ClientWidth = 1189
       object grbApostas: TGroupBox
         AnchorSideLeft.Control = tsApostas
         AnchorSideTop.Control = tsApostas
@@ -1114,13 +1154,13 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = grbDetalhesAp
         Left = 0
-        Height = 501
+        Height = 438
         Top = 0
-        Width = 1195
+        Width = 1189
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Apostas'
-        ClientHeight = 482
-        ClientWidth = 1191
+        ClientHeight = 421
+        ClientWidth = 1187
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -1133,10 +1173,10 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbApostas
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 482
+          Height = 421
           Hint = 'Todas as apostas registradas do mês selecionado.'
           Top = 0
-          Width = 1191
+          Width = 1187
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -1213,12 +1253,12 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Control = deFiltroDataInicial
         Left = 0
         Height = 185
-        Top = 501
-        Width = 1195
+        Top = 438
+        Width = 1189
         Anchors = [akLeft, akRight, akBottom]
         Caption = 'Detalhes da Aposta'
-        ClientHeight = 166
-        ClientWidth = 1191
+        ClientHeight = 168
+        ClientWidth = 1187
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -1229,10 +1269,10 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 166
+          Height = 168
           Hint = 'Ao selecionar uma aposta, aparecerá uma tabela com detalhes da aposta, contendo o jogo (campeonato - mandante X visitante) e o método e linha usado na aposta, podendo alterá-los, e a odd e a situação de cada linha, que também podem ser alteradas.'
           Top = 0
-          Width = 1060
+          Width = 1056
           Alignment = taCenter
           Anchors = [akTop, akLeft, akRight, akBottom]
           AutoSize = False
@@ -1246,7 +1286,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 1070
+          Left = 1066
           Height = 25
           Hint = 'Altera todas as linhas da aposta como bem-sucedidas (Green)'
           Top = 90
@@ -1269,7 +1309,7 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 1070
+          Left = 1066
           Height = 25
           Hint = 'Altera todas as linhas da aposta como mal-sucedidas (Red)'
           Top = 125
@@ -1290,8 +1330,8 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = lbSelecioneAposta
           AnchorSideBottom.Side = asrBottom
-          Left = 318
-          Height = 166
+          Left = 314
+          Height = 168
           Hint = 'Tabela com detalhes da aposta. Apenas o método, linha, odd e situação são editáveis.'
           Top = 0
           Width = 377
@@ -1336,7 +1376,7 @@ object formPrincipal: TformPrincipal
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
-          Left = 1070
+          Left = 1066
           Height = 25
           Hint = 'Recurso em desenvolvimento!'
           Top = 55
@@ -1360,9 +1400,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 166
+          Height = 168
           Top = 0
-          Width = 318
+          Width = 314
           Anchors = [akTop, akLeft, akRight, akBottom]
           Font.Height = -13
           Font.Name = 'Sans'
@@ -1377,13 +1417,13 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbDetalhesAp
           AnchorSideBottom.Side = asrBottom
           Left = 688
-          Height = 166
+          Height = 168
           Top = 0
           Width = 360
           Anchors = [akTop, akLeft, akBottom]
           Caption = 'Anotações'
-          ClientHeight = 147
-          ClientWidth = 356
+          ClientHeight = 151
+          ClientWidth = 358
           Font.Height = -13
           Font.Name = 'Sans'
           ParentFont = False
@@ -1396,9 +1436,9 @@ object formPrincipal: TformPrincipal
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Control = btnSalvarAnotacao
             Left = 0
-            Height = 105
+            Height = 108
             Top = 0
-            Width = 356
+            Width = 358
             Anchors = [akTop, akLeft, akRight, akBottom]
             BorderSpacing.Bottom = 5
             Lines.Strings = (
@@ -1415,8 +1455,8 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Side = asrBottom
             Left = 5
             Height = 25
-            Top = 110
-            Width = 346
+            Top = 113
+            Width = 348
             Anchors = [akLeft, akRight]
             BorderSpacing.Left = 5
             BorderSpacing.Right = 5
@@ -1435,7 +1475,7 @@ object formPrincipal: TformPrincipal
           AnchorSideTop.Control = grbDetalhesAp
           AnchorSideRight.Control = grbDetalhesAp
           AnchorSideRight.Side = asrBottom
-          Left = 1070
+          Left = 1066
           Height = 40
           Top = 5
           Width = 116
@@ -1454,10 +1494,10 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = deFiltroDataFinal
-        Left = 965
-        Height = 27
+        Left = 959
+        Height = 28
         Hint = 'Insira aqui a partir de qual data quer filtrar a aposta, podendo ser de meses anteriores.'
-        Top = 696
+        Top = 633
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -1475,10 +1515,10 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = tsApostas
         AnchorSideBottom.Side = asrBottom
-        Left = 965
-        Height = 27
+        Left = 959
+        Height = 28
         Hint = 'Insira aqui a data final na qual quer filtrar as apostas, podendo ser de meses posteriores ao selecionado.'
-        Top = 728
+        Top = 666
         Width = 98
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -1497,10 +1537,10 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = deFiltroDataFinal
         AnchorSideBottom.Side = asrBottom
-        Left = 1069
+        Left = 1063
         Height = 27
         Hint = 'Limpa os filtros de datas e volta a exibir apenas as apostas do mês selecionado.'
-        Top = 728
+        Top = 667
         Width = 118
         Anchors = [akRight, akBottom]
         BorderSpacing.Top = 5
@@ -1515,7 +1555,7 @@ object formPrincipal: TformPrincipal
         Left = 178
         Height = 50
         Hint = 'Remove aposta(s) selecionada(s).'
-        Top = 701
+        Top = 638
         Width = 158
         BorderSpacing.Left = 10
         BorderSpacing.Top = 5
@@ -1532,7 +1572,7 @@ object formPrincipal: TformPrincipal
         Left = 10
         Height = 50
         Hint = 'Abre um janela para criar uma nova aposta'
-        Top = 701
+        Top = 638
         Width = 158
         BorderSpacing.Left = 10
         BorderSpacing.Top = 5
@@ -1547,10 +1587,10 @@ object formPrincipal: TformPrincipal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = deFiltroDataInicial
         AnchorSideBottom.Side = asrBottom
-        Left = 1069
+        Left = 1063
         Height = 27
         Hint = 'Aplica o filtro de datas inseridos nos campos ao lado.'
-        Top = 696
+        Top = 634
         Width = 118
         Anchors = [akRight, akBottom]
         BorderSpacing.Top = 10
@@ -1561,10 +1601,10 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = deFiltroDataInicial
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 894
-        Height = 17
-        Top = 696
-        Width = 63
+        Left = 887
+        Height = 16
+        Top = 633
+        Width = 64
         Anchors = [akTop, akRight]
         Caption = 'Data Inicial'
       end
@@ -1572,18 +1612,18 @@ object formPrincipal: TformPrincipal
         AnchorSideTop.Control = deFiltroDataFinal
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 901
-        Height = 17
-        Top = 728
-        Width = 56
+        Left = 892
+        Height = 16
+        Top = 666
+        Width = 59
         Anchors = [akTop, akRight]
         Caption = 'Data Final'
       end
     end
     object tsControleMetodos: TTabSheet
       Caption = 'Controle de Métodos'
-      ClientHeight = 764
-      ClientWidth = 1195
+      ClientHeight = 704
+      ClientWidth = 1189
       object pcMesMetodos: TPageControl
         AnchorSideLeft.Control = tsControleMetodos
         AnchorSideTop.Control = tsControleMetodos
@@ -1592,28 +1632,28 @@ object formPrincipal: TformPrincipal
         AnchorSideBottom.Control = tsControleMetodos
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 765
+        Height = 704
         Top = 0
-        Width = 1195
-        ActivePage = tsDadosMesMetodos
+        Width = 1189
+        ActivePage = tsGraficosMesMetodos
         Anchors = [akTop, akLeft, akRight, akBottom]
-        TabIndex = 1
+        TabIndex = 0
         TabOrder = 0
         object tsGraficosMesMetodos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 737
-          ClientWidth = 1191
+          ClientHeight = 700
+          ClientWidth = 1179
           object gbListaLinha: TGroupBox
             AnchorSideBottom.Control = pnGraficosMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 426
+            Height = 388
             Top = 312
             Width = 201
             Anchors = [akTop, akLeft, akBottom]
             Caption = 'Linhas'
-            ClientHeight = 407
-            ClientWidth = 197
+            ClientHeight = 371
+            ClientWidth = 199
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -1624,10 +1664,10 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 370
+              Height = 334
               Hint = 'Lista de linhas do método selecionado'
               Top = 0
-              Width = 197
+              Width = 199
               Anchors = [akTop, akLeft, akRight, akBottom]
               Font.Height = -13
               Font.Name = 'Sans'
@@ -1639,10 +1679,10 @@ object formPrincipal: TformPrincipal
             object btnExcluirLinha: TButton
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 117
+              Left = 119
               Height = 24
               Hint = 'Remove linha selecionada'
-              Top = 379
+              Top = 343
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1657,7 +1697,7 @@ object formPrincipal: TformPrincipal
               Left = 8
               Height = 24
               Hint = 'Cria nova linha'
-              Top = 379
+              Top = 343
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Nova Linha'
@@ -1675,8 +1715,8 @@ object formPrincipal: TformPrincipal
             Top = 8
             Width = 201
             Caption = 'Métodos'
-            ClientHeight = 280
-            ClientWidth = 197
+            ClientHeight = 282
+            ClientWidth = 199
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -1688,10 +1728,10 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 240
+              Height = 242
               Hint = 'Lista de métodos para apostar'
               Top = 0
-              Width = 197
+              Width = 199
               Anchors = [akTop, akLeft, akRight, akBottom]
               Font.Height = -13
               Font.Name = 'Sans'
@@ -1705,7 +1745,7 @@ object formPrincipal: TformPrincipal
               Left = 8
               Height = 24
               Hint = 'Cria novo método'
-              Top = 249
+              Top = 251
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Novo Método'
@@ -1717,10 +1757,10 @@ object formPrincipal: TformPrincipal
             object btnExcluirMetodo: TButton
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
-              Left = 117
+              Left = 119
               Height = 24
               Hint = 'Remove método selecionado'
-              Top = 249
+              Top = 251
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1736,14 +1776,14 @@ object formPrincipal: TformPrincipal
             AnchorSideRight.Control = tsGraficosMesMetodos
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
-            Left = 999
+            Left = 987
             Height = 264
             Top = 312
             Width = 192
             Anchors = [akTop, akRight]
             Caption = 'Dados da Linha'
-            ClientHeight = 245
-            ClientWidth = 188
+            ClientHeight = 262
+            ClientWidth = 190
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -1824,14 +1864,14 @@ object formPrincipal: TformPrincipal
             AnchorSideRight.Control = tsGraficosMesMetodos
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Side = asrBottom
-            Left = 999
+            Left = 987
             Height = 272
             Top = 8
             Width = 192
             Anchors = [akTop, akRight]
             Caption = 'Dados do Método'
-            ClientHeight = 253
-            ClientWidth = 188
+            ClientHeight = 270
+            ClientWidth = 190
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -1915,12 +1955,12 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsGraficosMesMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 201
-            Height = 738
+            Height = 700
             Top = 0
-            Width = 798
+            Width = 786
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 738
-            ClientWidth = 798
+            ClientHeight = 696
+            ClientWidth = 782
             TabOrder = 4
             object chrtAcertMetodo: TChart
               Left = 376
@@ -2070,8 +2110,8 @@ object formPrincipal: TformPrincipal
         end
         object tsDadosMesMetodos: TTabSheet
           Caption = 'Dados'
-          ClientHeight = 737
-          ClientWidth = 1191
+          ClientHeight = 700
+          ClientWidth = 1179
           object grbMetodos: TGroupBox
             Left = 0
             Height = 320
@@ -2079,8 +2119,8 @@ object formPrincipal: TformPrincipal
             Top = 8
             Width = 441
             Caption = 'Métodos'
-            ClientHeight = 301
-            ClientWidth = 437
+            ClientHeight = 303
+            ClientWidth = 439
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -2093,9 +2133,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetodos
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 295
+              Height = 303
               Top = 0
-              Width = 437
+              Width = 439
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -2159,8 +2199,8 @@ object formPrincipal: TformPrincipal
             Top = 328
             Width = 441
             Caption = 'Linhas'
-            ClientHeight = 293
-            ClientWidth = 437
+            ClientHeight = 295
+            ClientWidth = 439
             Font.Height = -17
             Font.Name = 'Sans'
             ParentFont = False
@@ -2173,9 +2213,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbLinhas
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 286
+              Height = 295
               Top = 0
-              Width = 437
+              Width = 439
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -2236,8 +2276,8 @@ object formPrincipal: TformPrincipal
             Top = 8
             Width = 497
             Caption = 'Métodos por País'
-            ClientHeight = 213
-            ClientWidth = 493
+            ClientHeight = 215
+            ClientWidth = 495
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -2250,9 +2290,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetPais
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 207
+              Height = 215
               Top = 0
-              Width = 493
+              Width = 495
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -2311,8 +2351,8 @@ object formPrincipal: TformPrincipal
             Top = 240
             Width = 497
             Caption = 'Métodos por Time'
-            ClientHeight = 173
-            ClientWidth = 493
+            ClientHeight = 175
+            ClientWidth = 495
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -2325,9 +2365,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetTime
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 167
+              Height = 175
               Top = 0
-              Width = 493
+              Width = 495
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -2386,8 +2426,8 @@ object formPrincipal: TformPrincipal
             Top = 432
             Width = 497
             Caption = 'Métodos por Competição'
-            ClientHeight = 173
-            ClientWidth = 493
+            ClientHeight = 175
+            ClientWidth = 495
             Font.Height = -16
             Font.Name = 'Sans'
             ParentFont = False
@@ -2400,9 +2440,9 @@ object formPrincipal: TformPrincipal
               AnchorSideBottom.Control = grbMetComp
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 167
+              Height = 175
               Top = 0
-              Width = 493
+              Width = 495
               Anchors = [akTop, akLeft, akRight, akBottom]
               Color = clWindow
               Columns = <              
@@ -2459,16 +2499,16 @@ object formPrincipal: TformPrincipal
     end
     object tsContrTimes: TTabSheet
       Caption = 'Controle de Times'
-      ClientHeight = 764
-      ClientWidth = 1195
+      ClientHeight = 704
+      ClientWidth = 1189
       object grbTimesMenosLucr: TGroupBox
         Left = 696
         Height = 297
         Top = 232
         Width = 376
         Caption = 'Times Menos Assertivos'
-        ClientHeight = 278
-        ClientWidth = 372
+        ClientHeight = 273
+        ClientWidth = 374
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -2481,9 +2521,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbTimesMenosLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 278
+          Height = 273
           Top = 0
-          Width = 372
+          Width = 374
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -2530,8 +2570,8 @@ object formPrincipal: TformPrincipal
         Top = 0
         Width = 376
         Caption = 'Times Mais Assertivos'
-        ClientHeight = 206
-        ClientWidth = 372
+        ClientHeight = 201
+        ClientWidth = 374
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -2544,9 +2584,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbTimesMaisLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 206
+          Height = 201
           Top = 0
-          Width = 372
+          Width = 374
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -2655,8 +2695,8 @@ object formPrincipal: TformPrincipal
         Top = 16
         Width = 464
         Caption = 'Times'
-        ClientHeight = 462
-        ClientWidth = 460
+        ClientHeight = 457
+        ClientWidth = 462
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -2667,10 +2707,10 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 334
+          Height = 329
           Hint = 'Lista de times registrados'
           Top = 32
-          Width = 460
+          Width = 462
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -2711,7 +2751,7 @@ object formPrincipal: TformPrincipal
           TabOrder = 0
         end
         object btnPesquisarTime: TSpeedButton
-          Left = 416
+          Left = 418
           Height = 27
           Top = 0
           Width = 27
@@ -2764,10 +2804,10 @@ object formPrincipal: TformPrincipal
         object edtPesquisarTime: TEdit
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 33
+          Height = 35
           Hint = 'Pesquisa por um time'
           Top = 0
-          Width = 400
+          Width = 402
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 1
         end
@@ -2776,7 +2816,7 @@ object formPrincipal: TformPrincipal
           Left = 120
           Height = 33
           Hint = 'Remove time selecionado'
-          Top = 374
+          Top = 369
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2790,7 +2830,7 @@ object formPrincipal: TformPrincipal
           Left = 8
           Height = 33
           Hint = 'Registra um novo time'
-          Top = 374
+          Top = 369
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo Time'
@@ -2803,16 +2843,16 @@ object formPrincipal: TformPrincipal
     end
     object tsContrPaises: TTabSheet
       Caption = 'Controle de Países'
-      ClientHeight = 764
-      ClientWidth = 1195
+      ClientHeight = 704
+      ClientWidth = 1189
       object grbPaises: TGroupBox
         Left = -2
         Height = 481
         Top = 8
         Width = 464
         Caption = 'Países'
-        ClientHeight = 462
-        ClientWidth = 460
+        ClientHeight = 464
+        ClientWidth = 462
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -2823,10 +2863,10 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 376
+          Height = 378
           Hint = 'Lista de países registrados'
           Top = 32
-          Width = 460
+          Width = 462
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -2867,7 +2907,7 @@ object formPrincipal: TformPrincipal
           TabOrder = 0
         end
         object btnPesquisarPais: TSpeedButton
-          Left = 416
+          Left = 418
           Height = 27
           Top = 0
           Width = 27
@@ -2920,10 +2960,10 @@ object formPrincipal: TformPrincipal
         object edtPesquisarPais: TEdit
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 33
+          Height = 35
           Hint = 'Pesquisa por um país'
           Top = 0
-          Width = 400
+          Width = 402
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 1
         end
@@ -2932,7 +2972,7 @@ object formPrincipal: TformPrincipal
           Left = 120
           Height = 33
           Hint = 'Remove país selecionado'
-          Top = 416
+          Top = 418
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -2946,7 +2986,7 @@ object formPrincipal: TformPrincipal
           Left = 8
           Height = 33
           Hint = 'Registra um novo país'
-          Top = 416
+          Top = 418
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Novo País'
@@ -3025,8 +3065,8 @@ object formPrincipal: TformPrincipal
         Top = 224
         Width = 376
         Caption = 'Países Menos Assertivos'
-        ClientHeight = 278
-        ClientWidth = 372
+        ClientHeight = 280
+        ClientWidth = 374
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -3039,9 +3079,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbPaisesMenosAcert
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 278
+          Height = 280
           Top = 0
-          Width = 372
+          Width = 374
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -3088,8 +3128,8 @@ object formPrincipal: TformPrincipal
         Top = -8
         Width = 376
         Caption = 'Países Mais Assertivos'
-        ClientHeight = 206
-        ClientWidth = 372
+        ClientHeight = 208
+        ClientWidth = 374
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -3102,9 +3142,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbPaisesMaisAcert
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 206
+          Height = 208
           Top = 0
-          Width = 372
+          Width = 374
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -3148,16 +3188,16 @@ object formPrincipal: TformPrincipal
     end
     object tsContrComp: TTabSheet
       Caption = 'Controle de Competições'
-      ClientHeight = 764
-      ClientWidth = 1195
+      ClientHeight = 704
+      ClientWidth = 1189
       object grbComp: TGroupBox
         Left = 8
         Height = 481
         Top = 16
         Width = 464
         Caption = 'Competições'
-        ClientHeight = 462
-        ClientWidth = 460
+        ClientHeight = 464
+        ClientWidth = 462
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -3168,10 +3208,10 @@ object formPrincipal: TformPrincipal
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 376
+          Height = 378
           Hint = 'Lista de competições registradas'
           Top = 32
-          Width = 460
+          Width = 462
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -3213,15 +3253,15 @@ object formPrincipal: TformPrincipal
         end
         object edtPesquisarComp: TEdit
           Left = 8
-          Height = 33
+          Height = 35
           Hint = 'Pesquisa por uma competição registrada'
           Top = 0
-          Width = 400
+          Width = 402
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 1
         end
         object btnPesquisarComp: TSpeedButton
-          Left = 416
+          Left = 418
           Height = 27
           Top = 0
           Width = 27
@@ -3276,7 +3316,7 @@ object formPrincipal: TformPrincipal
           Left = 8
           Height = 33
           Hint = 'Registra uma nova competição'
-          Top = 416
+          Top = 418
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Nova Comp.'
@@ -3290,7 +3330,7 @@ object formPrincipal: TformPrincipal
           Left = 120
           Height = 33
           Hint = 'Remove competição selecionada'
-          Top = 416
+          Top = 418
           Width = 104
           Anchors = [akLeft, akBottom]
           Caption = 'Excluir Seleção'
@@ -3368,8 +3408,8 @@ object formPrincipal: TformPrincipal
         Top = 232
         Width = 376
         Caption = 'Competições Menos Assertivas'
-        ClientHeight = 278
-        ClientWidth = 372
+        ClientHeight = 280
+        ClientWidth = 374
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -3382,9 +3422,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbCompMenosLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 278
+          Height = 280
           Top = 0
-          Width = 372
+          Width = 374
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -3431,8 +3471,8 @@ object formPrincipal: TformPrincipal
         Top = 0
         Width = 376
         Caption = 'Competições Mais Assertivas'
-        ClientHeight = 206
-        ClientWidth = 372
+        ClientHeight = 208
+        ClientWidth = 374
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -3445,9 +3485,9 @@ object formPrincipal: TformPrincipal
           AnchorSideBottom.Control = grbCompMaisLucr
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 206
+          Height = 208
           Top = 0
-          Width = 372
+          Width = 374
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clWindow
           Columns = <          
@@ -3492,8 +3532,8 @@ object formPrincipal: TformPrincipal
   end
   object BarraStatus: TStatusBar
     Left = 0
-    Height = 21
-    Top = 792
+    Height = 18
+    Top = 734
     Width = 1199
     Panels = <    
       item
@@ -3508,8 +3548,8 @@ object formPrincipal: TformPrincipal
     AnchorSideBottom.Control = BarraStatus
     AnchorSideBottom.Side = asrBottom
     Left = 941
-    Height = 15
-    Top = 796
+    Height = 12
+    Top = 738
     Width = 236
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Top = 4
@@ -3938,7 +3978,8 @@ object formPrincipal: TformPrincipal
       ''
       '  IFNULL((SELECT BI.Banca FROM BancaInicial BI), 0) AS BancaPrimeira,'
       ''
-      '  IFNULL((SELECT SUM(B3.Aporte) FROM Banca B3 WHERE B3.Mês <= B2.Mês AND B3.Ano <= B2.Ano), 0) AS TotalAportes'
+      '  IFNULL((SELECT SUM(B3.Aporte) FROM Banca B3 WHERE B3.Mês <= B2.Mês AND B3.Ano = B2.Ano), 0) +'
+      '  IFNULL((SELECT SUM(B4.Aporte) FROM Banca B4 WHERE B4.Ano < B2.Ano), 0) AS TotalAportes'
       ' FROM Banca B2'
       ' WHERE B2.Mês = :mesSelec AND B2.Ano = :anoSelec)'
       ''
@@ -6605,7 +6646,7 @@ object formPrincipal: TformPrincipal
       '    SELECT'
       '        B.Ano,'
       '        B.Mês,'
-      '        (SELECT SUM(Aporte) FROM Banca B2 WHERE B2.Mês = B.Mês) AS AporteMes,'
+      '        IFNULL((SELECT SUM(Aporte) FROM Banca B2 WHERE B2.Mês = B.Mês), 0) AS AporteMes,'
       '        IFNULL(SUM(A.Lucro), 0) AS LucroMes'
       '    FROM'
       '        Banca B'
@@ -6613,9 +6654,8 @@ object formPrincipal: TformPrincipal
       '        (SELECT strftime(''%Y'', Data) AS Ano, strftime(''%m'', Data) AS Mês, Lucro'
       '         FROM Apostas) A'
       '        ON A.Ano = B.Ano AND A.Mês = B.Mês'
-      '    GROUP BY'
-      '        B.Ano, B.Mês'
-      '),'
+      '    GROUP BY B.Mês, B.Ano),'
+      ''
       'SomaAnual AS ('
       '    SELECT'
       '        Ano,'
@@ -6627,15 +6667,14 @@ object formPrincipal: TformPrincipal
       '    FROM'
       '        Meses'
       '    GROUP BY'
-      '        Ano'
-      ')'
+      '        Ano)'
       'SELECT'
       '    SA.Ano,'
       '    (SELECT Banca FROM BancaInicial) AS ValorInicial,'
       '    SA.TotalAportes AS Aporte,'
       '    SA.TotalLucros AS Lucro,'
       '    SA.TotalLucros / ((SELECT Banca FROM BancaInicial) + SA.TotalAportes) * 100'
-      '    AS LuroPcent,'
+      '    AS LucroPcent,'
       '    SA.MesesGreen AS Green,'
       '    SA.MesesRed AS Red,'
       '    SA.MesesNeutro AS Neutro'
@@ -6646,88 +6685,6 @@ object formPrincipal: TformPrincipal
     Macros = <>
     Left = 377
     Top = 458
-    object qrTodosAnosAno: TLargeintField
-      FieldKind = fkData
-      FieldName = 'Ano'
-      Index = 0
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-    end
-    object qrTodosAnosValorInicial: TBCDField
-      FieldKind = fkData
-      FieldName = 'ValorInicial'
-      Index = 1
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = 9
-      Currency = False
-      MaxValue = 0
-      MinValue = 0
-      Size = 2
-    end
-    object qrTodosAnosAporte: TFloatField
-      FieldKind = fkData
-      FieldName = 'Aporte'
-      Index = 2
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      Precision = -1
-    end
-    object qrTodosAnosLucro: TFloatField
-      FieldKind = fkData
-      FieldName = 'Lucro'
-      Index = 3
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      DisplayFormat = 'R$ 0.00'
-      Precision = -1
-    end
-    object qrTodosAnosGreen: TLargeintField
-      FieldKind = fkData
-      FieldName = 'Green'
-      Index = 4
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-    end
-    object qrTodosAnosRed: TLargeintField
-      FieldKind = fkData
-      FieldName = 'Red'
-      Index = 5
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-    end
-    object qrTodosAnosNeutro: TLargeintField
-      FieldKind = fkData
-      FieldName = 'Neutro'
-      Index = 6
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-    end
-    object qrTodosAnosLuroPcent: TFloatField
-      FieldKind = fkData
-      FieldName = 'LuroPcent'
-      Index = 7
-      LookupCache = False
-      ProviderFlags = [pfInUpdate, pfInWhere]
-      ReadOnly = False
-      Required = False
-      DisplayFormat = '0.00%'
-      Precision = -1
-    end
   end
   object dsTodosAnos: TDataSource
     DataSet = qrTodosAnos

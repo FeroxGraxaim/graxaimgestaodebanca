@@ -35,7 +35,7 @@ var
 implementation
 
 uses untMain, untUpdate, untApostas, untPainel, untDatabase, untMultipla,
-  untControleMetodos, untControleTimes, untPaises, untContrComp;
+  untControleMetodos, untControleTimes, untPaises, untContrComp, untTutorial;
 
   {$R *.lfm}
 
@@ -70,9 +70,15 @@ begin
     writeln('Iniciando o programa');
     Application.ProcessMessages;
     progresso.Invalidate;
-    sleep(50);
+    //sleep(100);
 
     //formPrincipal.PosAtualizacao;
+
+    //Definindo eventos do tutorial
+    btnTutorFechar.OnClick := @Tutorial.CliqueBotao;
+    btnTutorAvanca.OnClick := @Tutorial.CliqueBotao;
+    btnTutorVolta.OnClick := @Tutorial.CliqueBotao;
+    btnTutorInicio.OnClick := @Tutorial.CliqueBotao;
 
     //Definindo eventos do painel
     writeln('Atribuindo eventos');
@@ -92,7 +98,7 @@ begin
 
     lbProgresso.Caption := 'Atribuindo eventos de apostas';
     Application.ProcessMessages;
-    sleep(50);
+    //sleep(100);
     progresso.Invalidate;
 
     //Definindo eventos das Apostas
@@ -178,7 +184,7 @@ begin
 
     progresso.Position := 20;
     Application.ProcessMessages;
-    sleep(50);
+    //sleep(50);
     progresso.Invalidate;
 
     if conectBancoDados.Connected then conectBancoDados.Close;
@@ -193,7 +199,7 @@ begin
     progresso.Position  := 40;
     lbProgresso.Caption := 'Definindo variáveis';
     Application.ProcessMessages;
-    sleep(50);
+    //sleep(100);
     progresso.Invalidate;
 
     CarregaConfig;
@@ -214,7 +220,7 @@ begin
     progresso.Position  := 60;
     lbProgresso.Caption := 'Atribuindo procedimentos do painel principal';
     Application.ProcessMessages;
-    sleep(50);
+    //sleep(100);
     progresso.Invalidate;
     @EventosPainel.PreencherComboBox;
     lbProgresso.Caption := 'Preenchidos ComboBoxes';
@@ -256,12 +262,13 @@ begin
     progresso.Position  := 80;
     lbProgresso.Caption := 'Atribuindo procedimentos de apostas';
     Application.ProcessMessages;
-    sleep(50);
+    //sleep(100);
     progresso.Invalidate;
-    @EventosApostas.AtualizaApostas;
+    //@EventosApostas.AtualizaApostas;
 
     //Procedimentos de métodos
 
+    lbProgresso.Caption := 'Carregando métodos';
     @EventosMetodos.CarregaMetodos;
 
     //Procedimentos das múltiplas
@@ -271,6 +278,7 @@ begin
       @EventosMultiplas.CarregaContadorNovaMultipla;
     end;
 
+    lbProgresso.Caption := 'Lendo dados da banca';
     if not InserirNaBanca then
       MessageDlg('Erro', 'Erro ao atualizar informações sobre a banca.', mtError,
         [mbOK], 0);
@@ -280,7 +288,7 @@ begin
     lbProgresso.Caption := 'Carregamento concluído, iniciando o programa';
     writeln('Movida barra de progresso');
     Application.ProcessMessages;
-    sleep(50);
+    //sleep(100);
     progresso.Invalidate;
   end;
   Screen.Cursor := crDefault;
@@ -289,7 +297,7 @@ begin
   VerificarAtualizacoes(currentVersion);
   progresso.Position := 100;
   Application.ProcessMessages;
-  //sleep(50);
+  //sleep(100);
   progresso.Invalidate;
   Close;
 end;

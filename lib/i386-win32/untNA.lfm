@@ -18,8 +18,8 @@ object formNovaAposta: TformNovaAposta
     Height = 376
     Top = 0
     Width = 728
-    ActivePage = tsSimples
-    TabIndex = 0
+    ActivePage = tsMultipla
+    TabIndex = 1
     TabOrder = 0
     OnChange = pcApostasChange
     OnChanging = pcApostasChanging
@@ -424,7 +424,7 @@ object formNovaAposta: TformNovaAposta
         BorderSpacing.Right = 20
         BorderSpacing.Bottom = 2
         Caption = 'Métodos/Linhas do Jogo Selecionado'
-        ClientHeight = 242
+        ClientHeight = 236
         ClientWidth = 338
         Font.Height = -16
         Font.Name = 'Sans'
@@ -438,7 +438,7 @@ object formNovaAposta: TformNovaAposta
           AnchorSideBottom.Control = grbNovaLinha1
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 242
+          Height = 236
           Top = 0
           Width = 338
           Anchors = [akTop, akLeft, akRight, akBottom]

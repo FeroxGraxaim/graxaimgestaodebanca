@@ -529,7 +529,7 @@ INSERT INTO "Times" ("Selecao","Time","País","Mandante","Visitante","Greens","P
  (0,'Botafogo SP','Brasil',0,0,0,0,0),
  (0,'LDU Quito','Equador',0,0,0,0,0),
  (0,'Avaí','Brasil',0,0,0,0,0);
-INSERT INTO "ControleVersao" ("Versao") VALUES (25);
+INSERT INTO "ControleVersao" ("Versao") VALUES (26);
 INSERT INTO "Competicoes" ("Cod_Comp","Selecao","Competicao","País","Mercados","Green","Red","P/L","Total") VALUES (1,'False','Brasileirão Série A','Brasil',32,0,0,0,0),
  (2,'False','Brasileirão Série B','Brasil',5,0,0,0,0),
  (3,'False','Eurocopa','Europa',2,0,0,0,0),
@@ -718,7 +718,6 @@ INSERT INTO "Linhas" ("Cod_Linha","Nome","Cod_Metodo") VALUES (30,'Europeu -3',4
  (179,'- 2,5 Gols Fora',16);
  INSERT INTO ConfigPrograma DEFAULT VALUES;
  
-DROP TRIGGER IF EXISTS "Atualiza Apostas";
 CREATE TRIGGER IF NOT EXISTS "Atualiza Apostas" 
 AFTER UPDATE ON Mercados 
 FOR EACH ROW 
@@ -734,7 +733,10 @@ BEGIN
 	AND Cashout = 0  
 	AND EXISTS (SELECT 1 FROM Mercados 
 			    WHERE Cod_Aposta = NEW.Cod_Aposta 
-				AND Mercados.Status = 'Meio Red');
+				AND Mercados.Status = 'Meio Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Red');
 				
   UPDATE Apostas SET Status = 'Green' 
     WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 

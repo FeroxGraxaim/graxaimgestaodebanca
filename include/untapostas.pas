@@ -531,7 +531,6 @@ end;
 
 procedure TEventosApostas.AtualizaApostas;
 var
-  Estrategias: TStringList;
   Situacao: TStringList;
   Competicao: TStringList;
   Time: TStringList;
@@ -550,17 +549,17 @@ begin
     end;
 
     //Criando as StringLists
-    Estrategias := TStringList.Create;
     Situacao := TStringList.Create;
     Competicao := TStringList.Create;
     Time    := TStringList.Create;
     Unidade := TStringList.Create;
     //Criando lista de situações da coluna "Situação"
-    while not qrSituacao.EOF do
-    begin
-      Situacao.Add(qrSituacao.FieldByName('Status').AsString);
-      qrSituacao.Next;
-    end;
+      Situacao.Add('Pré-live');
+      Situacao.Add('Green');
+      Situacao.Add('Red');
+      Situacao.Add('Anulada');
+      Situacao.Add('Meio Green');
+      Situacao.Add('Meio Red');
     //Criando lista de competições da coluna "Competição"
     with TSQLQuery.Create(nil) do
     try

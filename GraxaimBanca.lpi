@@ -17,8 +17,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
-      <RevisionNr Value="4"/>
-      <BuildNr Value="31"/>
+      <RevisionNr Value="5"/>
+      <BuildNr Value="32"/>
       <Language Value="0416"/>
       <StringTable Comments="Sistema de gestão de banca para apostas esportivas" CompanyName="Ferox Graxaim" OriginalFilename="GraxaimBanca" ProductName="Graxaim Gestão de Banca" ProductVersion="0.6"/>
     </VersionInfo>
@@ -230,6 +230,14 @@
         <Filename Value="include/unttutorial.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="untTutorial"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include/untmetodolinha.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formMetodoLinha"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="untMetodoLinha"/>
       </Unit>
     </Units>
   </ProjectOptions>

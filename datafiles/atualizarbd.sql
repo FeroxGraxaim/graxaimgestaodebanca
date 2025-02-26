@@ -74,7 +74,8 @@ INSERT INTO NovaMercados SELECT * FROM Mercados;
 DROP TABLE Mercados;
 ALTER TABLE NovaMercados RENAME TO Mercados;
 
-CREATE TRIGGER IF NOT EXISTS "Atualiza Apostas" 
+DROP TRIGGER IF EXISTS "Atualiza Apostas";
+CREATE TRIGGER "Atualiza Apostas" 
 AFTER UPDATE ON Mercados 
 FOR EACH ROW 
 BEGIN 
@@ -89,7 +90,10 @@ BEGIN
 	AND Cashout = 0  
 	AND EXISTS (SELECT 1 FROM Mercados 
 			    WHERE Cod_Aposta = NEW.Cod_Aposta 
-				AND Mercados.Status = 'Meio Red');
+				AND Mercados.Status = 'Meio Red')
+	AND NOT EXISTS (SELECT 1 FROM Mercados 
+			    WHERE Cod_Aposta = NEW.Cod_Aposta 
+				AND Mercados.Status = 'Red');
 				
   UPDATE Apostas SET Status = 'Green' 
     WHERE Cod_Aposta = NEW.Cod_Aposta AND Cashout = 0 
@@ -160,6 +164,7 @@ BEGIN
 					AND Mercados.Status = 'Anulada');
 END;
 
+
 CREATE TRIGGER IF NOT EXISTS "Cashout" 
 AFTER UPDATE ON Apostas 
 FOR EACH ROW 
@@ -170,4 +175,4 @@ BEGIN
   AND Cashout = 1;
 END;
 
-UPDATE ControleVersao SET Versao = 25;
+UPDATE ControleVersao SET Versao = 26;

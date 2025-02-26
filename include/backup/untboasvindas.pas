@@ -85,6 +85,7 @@ begin
             Edit;
             Checked := AsBoolean;
             Post;
+            ApplyUpdates;
             CommitRetaining;
           except
             Cancel;

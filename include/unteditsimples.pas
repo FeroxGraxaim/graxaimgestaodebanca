@@ -42,8 +42,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure ClicarBotaoColuna(Sender: TObject);
     procedure grdEditarApostaEditingDone(Sender: TObject);
-    procedure MudarJogo;
-    procedure VerificaRegistros;
+    function MudarJogo: boolean;
+    function VerificaRegistros: boolean;
     procedure AtualizaMetodoELinha(Sender: TObject);
     procedure SalvarAoClicar(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
@@ -243,37 +243,39 @@ begin
   end;
 end;
 
-procedure TformEditSimples.MudarJogo;
+function TformEditSimples.MudarJogo: boolean;
 begin
   with formPrincipal do
     with transactionBancoDados do
       with TSQLQuery.Create(nil) do
-      try
-        DataBase := conectBancoDados;
-        SQL.Text :=
-          'UPDATE Jogo SET                                        ' +
-          'Cod_Comp = (SELECT Cod_Comp From Competicoes WHERE     ' +
-          'Competicoes.Competicao = :Comp),                       ' +
-          'Mandante = :mandante,                                  ' +
-          'Visitante = :visitante                                 ' +
-          'WHERE (SELECT Cod_Aposta FROM Mercados WHERE           ' +
-          'Mercados.Cod_Jogo = Jogo.Cod_Jogo) = :CodAposta        ';
-        ParamByName('Comp').AsString := cbCompeticao.Text;
-        ParamByName('mandante').AsString := cbMandante.Text;
-        ParamByName('visitante').AsString := cbVisitante.Text;
-        ParamByName('CodAposta').AsInteger := CodAposta;
-        ExecSQL;
-        CommitRetaining;
-        Free;
-      except
-        on E: Exception do
-        begin
-          Cancel;
-          RollbackRetaining;
-          writeln('Erro: ' + E.Message + ' Código SQL: ' + SQL.Text);
-          Free;
-          GlobalExcecao := True;
+      begin
+        try
+          DataBase := conectBancoDados;
+          SQL.Text :=
+            'UPDATE Jogo SET                                        ' +
+            'Cod_Comp = (SELECT Cod_Comp From Competicoes WHERE     ' +
+            'Competicoes.Competicao = :Comp),                       ' +
+            'Mandante = :mandante,                                  ' +
+            'Visitante = :visitante                                 ' +
+            'WHERE (SELECT Cod_Aposta FROM Mercados WHERE           ' +
+            'Mercados.Cod_Jogo = Jogo.Cod_Jogo) = :CodAposta        ';
+          ParamByName('Comp').AsString := cbCompeticao.Text;
+          ParamByName('mandante').AsString := cbMandante.Text;
+          ParamByName('visitante').AsString := cbVisitante.Text;
+          ParamByName('CodAposta').AsInteger := CodAposta;
+          ExecSQL;
+          CommitRetaining;
+          Result := True;
+        except
+          on E: Exception do
+          begin
+            Cancel;
+            RollbackRetaining;
+            writeln('Erro: ' + E.Message + ' Código SQL: ' + SQL.Text);
+            Result := False;
+          end;
         end;
+        Free;
       end;
 end;
 
@@ -305,42 +307,34 @@ end;
 
 procedure TformEditSimples.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 label
-  Cancelar, AbortFech, SairSemSalvar;
+  AbortFech, SairSemSalvar;
 begin
   with formPrincipal do
   begin
-    GlobalExcecao := False;
-    Nao := False;
-
-    if not Ok then goto Cancelar;
-
-    VerificaRegistros;
-    if Nao then goto AbortFech;
-    MudarJogo;
-    if GlobalExcecao then
-    begin
-      MessageDlg('Erro ao salvar alterações, tente novamente.', mtError, [mbOK], 0);
-      goto SairSemSalvar;
-    end;
-    Exit;
-
-    Cancelar:
-
+    if Ok then begin
+      if not VerificaRegistros then goto AbortFech;
+      if not MudarJogo then
+      begin
+        MessageDlg('Erro ao salvar alterações, tente novamente.', mtError,
+        [mbOK], 0);
+        goto SairSemSalvar;
+      end;
+      Exit;
+    end
+    else begin
       if MessageDlg('Confirmação',
-      'Tem certeza que deseja cancelar a edição da aposta?',
-      mtConfirmation, [mbYes, mbNo], 0) = mrNo then goto AbortFech
+        'Tem certeza que deseja cancelar a edição da aposta?',
+        mtConfirmation, [mbYes, mbNo], 0) = mrNo then begin
+        AbortFech:
+        CloseAction := caNone;
+        Exit;
+      end
       else
       begin
-
-      SairSemSalvar:
-
+        SairSemSalvar:
         transactionBancoDados.RollbackRetaining;
-        Exit;
       end;
-
-    AbortFech:
-
-      CloseAction := caNone;
+    end;
   end;
 end;
 
@@ -380,14 +374,17 @@ begin
     end;
 end;
 
-procedure TformEditSimples.VerificaRegistros;
+function TformEditSimples.VerificaRegistros: boolean;
 var
   NomePais, ComparaMandante, ComparaVisitante, ComparaCampeonato: string;
   MandanteExiste, VisitanteExiste, PaisExiste, CampeonatoExiste, Multipla: boolean;
+label
+  DigitarPais;
 begin
+  writeln('Verificando Registros');
+  Result := False;
   with formPrincipal do
   begin
-    Nao := False;
     with TSQLQuery.Create(nil) do
     begin
       try
@@ -396,97 +393,94 @@ begin
         ComparaCampeonato := cbCompeticao.Text;
         ParamByName('comp').AsString := ComparaCampeonato;
         Open;
-        if FieldByName('Competicao').AsString = ComparaCampeonato then
-          CampeonatoExiste := True
-        else
-          CampeonatoExiste := False;
+        CampeonatoExiste := (FieldByName('Competicao').AsString =
+          ComparaCampeonato);
         Close;
         SQL.Text := 'SELECT Time FROM Times WHERE Time = :mandante';
         ComparaMandante := cbMandante.Text;
         ParamByName('mandante').AsString := ComparaMandante;
         Open;
-        if FieldByName('Time').AsString = ComparaMandante then
-          MandanteExiste := True
-        else
-          MandanteExiste := False;
+        MandanteExiste := (FieldByName('Time').AsString = ComparaMandante);
         Close;
         SQL.Text := 'SELECT Time FROM Times WHERE Time = :visitante';
         ParamByName('visitante').AsString := cbVisitante.Text;
         Open;
         ComparaVisitante := cbVisitante.Text;
 
-        if ComparaVisitante = FieldByName('Time').AsString then
-          VisitanteExiste := True
-        else
-          VisitanteExiste := False;
+        VisitanteExiste := (ComparaVisitante = FieldByName('Time').AsString);
 
         if not CampeonatoExiste or not MandanteExiste or not VisitanteExiste then
-        begin
           if MessageDlg(
             'Há time(s)/Competição inserido(s) que não está(ão) no banco de dados, ' +
             'ou houve um erro de digitação. Caso tenha digitado corretamente, deseja ' +
             'registrá-lo(s) no banco de dados agora?', mtConfirmation, [mbYes, mbNo], 0) =
             mrYes then
           begin
-            if InputQuery('Inserir Dados',
-              'Digite CORRETAMENTE o país do time/campeonato:', NomePais) then
-            begin
-              Close;
-              SQL.Text := 'SELECT País FROM Países WHERE País = :país';
-              ParamByName('país').AsString := NomePais;
-              Open;
-              if NomePais <> FieldByName('País').AsString then
-              begin
-                if MessageDlg(
-                  'País não encontrado no banco de dados. Deseja registrá-lo agora?',
-                  mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+            DigitarPais:
+              if not CampeonatoExiste then
+                if InputQuery('Inserir Dados', 'Digite CORRETAMENTE o país do ' +
+                'campeonato:', NomePais) then
                 begin
                   Close;
-                  SQL.Text := 'INSERT INTO Países (País) VALUES (:país)';
+                  SQL.Text := 'SELECT País FROM Países WHERE País = :país';
                   ParamByName('país').AsString := NomePais;
-                  ExecSQL;
+                  Open;
+                  if NomePais <> FieldByName('País').AsString then
+                    if MessageDlg(
+                    'País não encontrado no banco de dados. Deseja registrá-lo agora?',
+                    mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+                    begin
+                      Close;
+                      SQL.Text := 'INSERT INTO Países (País) VALUES (:país)';
+                      ParamByName('país').AsString := NomePais;
+                      ExecSQL;
+                    end
+                    else
+                      goto DigitarPais;
+                  if not CampeonatoExiste then
+                  begin
+                    Close;
+                    SQL.Text :=
+                      'INSERT INTO Competicoes (País, Competicao) VALUES (:pais, :comp)';
+                    ParamByName('pais').AsString := NomePais;
+                    ParamByName('comp').AsString := ComparaCampeonato;
+                    ExecSQL;
+                  end;
+                  if not MandanteExiste then
+                  begin
+                    Close;
+                    SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
+                    ParamByName('time').AsString := ComparaMandante;
+                    ExecSQL;
+                  end;
+                  if not VisitanteExiste then
+                  begin
+                    Close;
+                    SQL.Text := 'INSERT INTO Times (Time) VALUES (:time)';
+                    ParamByName('time').AsString := ComparaVisitante;
+                    ExecSQL;
+                  end;
+                end
+                else begin
+                  Result := False;
+                  transactionBancoDados.RollbackRetaining;
+                  Exit;
                 end;
-              end;
-              if not CampeonatoExiste then
-              begin
-                Close;
-                SQL.Text :=
-                  'INSERT INTO Competicoes (País, Competicao) VALUES (:pais, :comp)';
-                ParamByName('pais').AsString := NomePais;
-                ParamByName('comp').AsString := ComparaCampeonato;
-                ExecSQL;
-              end;
-              if not MandanteExiste then
-              begin
-                Close;
-                SQL.Text := 'INSERT INTO Times (País, Time) VALUES (:pais, :time)';
-                ParamByName('pais').AsString := NomePais;
-                ParamByName('time').AsString := ComparaMandante;
-                ExecSQL;
-              end;
-              if not VisitanteExiste then
-              begin
-                Close;
-                SQL.Text := 'INSERT INTO Times (País, Time) VALUES (:pais, :time)';
-                ParamByName('pais').AsString := NomePais;
-                ParamByName('time').AsString := ComparaVisitante;
-                ExecSQL;
-              end;
-            end
-            else
-              Nao := True;
             transactionBancoDados.CommitRetaining;
+            Result := True;
           end
           else
-            Nao := True;
-        end;
+            Result := False
+        else
+          Result   := True;
       except
         on E: Exception do
         begin
+          MessageDlg('Erro', 'Ocorreu um erro: ' + sLineBreak +
+            E.Message, mtError, [mbOK], 0);
           Cancel;
-          writeln('Erro: ' + E.Message);
           transactionBancoDados.RollbackRetaining;
-          GlobalExcecao := True;
+          Result := False;
         end;
       end;
       Free;

@@ -63,8 +63,9 @@ type
     procedure ClicarBotaoColuna(Sender: TObject);
   private
     Ok, GlobalExcecao, Nao: boolean;
-    procedure VerificaRegistros;
+    function VerificaRegistros: boolean;
     procedure CarregaJogos;
+    function MultiplosJogos: Boolean;
   public
 
   end;
@@ -208,7 +209,7 @@ begin
     popupLinhas.Items.Clear;
 
     with grdLinhas do
-    ColunaAtual := Columns.ColumnByFieldName(SelectedField.FieldName);
+      ColunaAtual := Columns.ColumnByFieldName(SelectedField.FieldName);
 
     case ColunaAtual.FieldName of
       'Método':
@@ -330,6 +331,23 @@ begin
   lsbJogosClick(nil);
 end;
 
+function TformEditMult.MultiplosJogos: Boolean;
+begin
+  Result := False;
+  with TSQLQuery.Create(nil) do
+  try
+    DataBase := formPrincipal.conectBancoDados;
+    SQL.Text := 'SELECT COUNT(*) FROM Jogo J LEFT JOIN Mercados M ON ' +
+      'M.Cod_Jogo = J.Cod_Jogo WHERE M.Cod_Aposta = :cod';
+    ParamByName('cod').AsInteger := GlobalCodAposta;
+    Open;
+    if not IsEmpty then
+      Result := (FIelds[1].AsInteger > 1);
+  finally
+    Free;
+  end;
+end;
+
 procedure TformEditMult.btnAlterarClick(Sender: TObject);
 begin
   with formPrincipal do
@@ -431,54 +449,41 @@ end;
 
 procedure TformEditMult.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 label
-  Cancelar, AbortFech, SairSemSalvar, Fim;
+  Abortar, Fim;
 begin
   with formPrincipal do
-  begin
-    GlobalExcecao := False;
-    Nao := False;
-
-    if not Ok then goto Cancelar;
-
-    VerificaRegistros;
-    if Nao then goto AbortFech;
-
-    if GlobalExcecao then
+    with transactionBancoDados do
     begin
-      MessageDlg('Erro ao salvar alterações, tente novamente.', mtError, [mbOK], 0);
-      goto SairSemSalvar;
+      if not Ok then
+        if MessageDlg('Confirmação',
+          'Tem certeza que deseja cancelar a edição da aposta?',
+          mtConfirmation, [mbYes, mbNo], 0) = mrNo then goto Abortar
+        else begin
+          RollbackRetaining;
+          goto Fim;
+        end;
+
+      if not VerificaRegistros then
+      goto Abortar;
+
+      if not MultiplosJogos then
+      begin
+        MessageDlg('Erro', 'Não é possível fazer aposta múltipla com apenas ' +
+        'um jogo!', mtError, [mbOk], 0);
+        Abortar:
+        begin
+          CloseAction := caNone;
+          Exit;
+        end;
+      end;
+      CommitRetaining;
+
+      Fim:
+      begin
+        ListaJogo.Free;
+        InfoJogo.Free;
+      end;
     end;
-
-    transactionBancoDados.CommitRetaining;
-    goto Fim;
-
-    Cancelar:
-
-      writeln('Cancelando');
-    if MessageDlg('Confirmação',
-      'Tem certeza que deseja cancelar a edição da aposta?',
-      mtConfirmation, [mbYes, mbNo], 0) = mrNo then goto AbortFech
-    else
-    begin
-
-      SairSemSalvar:
-
-        writeln('Fechando sem salvar');
-      transactionBancoDados.RollbackRetaining;
-      goto Fim;
-    end;
-
-    AbortFech:
-
-      writeln('Abortando fechamento');
-    CloseAction := caNone;
-    Exit;
-  end;
-
-  Fim:
-
-    ListaJogo.Free;
-  InfoJogo.Free;
 end;
 
 procedure TformEditMult.btnNovaLinhaClick(Sender: TObject);
@@ -550,15 +555,14 @@ begin
   end;
 end;
 
-procedure TformEditMult.VerificaRegistros;
+function TformEditMult.VerificaRegistros: boolean;
 var
   NomePais, ComparaMandante, ComparaVisitante, ComparaCampeonato: string;
   MandanteExiste, VisitanteExiste, PaisExiste, CampeonatoExiste, Multipla: boolean;
   i, Contagem: integer;
 begin
+  Result := True;
   with formPrincipal do
-  begin
-    Nao := False;
     with TSQLQuery.Create(nil) do
     begin
       try
@@ -596,7 +600,6 @@ begin
             VisitanteExiste := False;
 
           if not CampeonatoExiste or not MandanteExiste or not VisitanteExiste then
-          begin
             if MessageDlg(
               'Há time(s)/Competição inserido(s) que não está(ão) no banco de dados, ' +
               'ou houve um erro de digitação. Caso tenha digitado corretamente, deseja ' +
@@ -604,7 +607,7 @@ begin
               mrYes then
             begin
               if InputQuery('Inserir Dados',
-                'Digite CORRETAMENTE o país do time/campeonato:', NomePais) then
+                'Digite CORRETAMENTE o país do campeonato:', NomePais) then
               begin
                 Close;
                 SQL.Text := 'SELECT País FROM Países WHERE País = :país';
@@ -648,12 +651,11 @@ begin
                   ExecSQL;
                 end;
               end;
-
+              Result := True;
             end
             else
-              Nao := True;
-            transactionBancoDados.CommitRetaining;
-          end;
+              Result := False;
+          transactionBancoDados.CommitRetaining;
           qrJogo.Next;
         end;
       except
@@ -662,12 +664,11 @@ begin
           Cancel;
           writeln('Erro: ' + E.Message);
           transactionBancoDados.RollbackRetaining;
-          GlobalExcecao := True;
+          Result := False;
         end;
       end;
       Free;
     end;
-  end;
 end;
 
 end.

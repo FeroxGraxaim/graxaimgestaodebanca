@@ -100,7 +100,7 @@ begin
       ParamByName('time').AsString := edtPesquisarTime.Text + '%';
       Open;
       pesquisa := FieldByName('Time').AsString;
-      qrTimes.('Time', pesquisa, []);
+      qrTimes.Locate('Time', pesquisa, []);
     finally
       Free;
     end;

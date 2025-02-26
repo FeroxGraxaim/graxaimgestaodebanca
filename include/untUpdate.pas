@@ -67,7 +67,7 @@ label
   Procurar, Fim;
 begin
   writeln('Verificando atualizações...');
-  currentVersion := '0.6.4.31';
+  currentVersion := '0.6.5.32';
   Result := '';
   if AceitaPreRelease then apiUrl := UltimaPreRelease
   else
@@ -141,20 +141,19 @@ begin
       end;
     end;
     Fim:
+
+    json.Free;
+    response.Free;
+    httpClient.Free;
   except
     on E: Exception do
     begin
       writeln('Erro ao fazer a solicitação HTTP: ' + E.Message);
-      response.Free;
-      httpClient.Free;
       writeln('Erro: ' + E.Message);
       MessageDlg('Não foi possível verificar se há atualizações, verifique a ' +
         'conexão e tente novamente.', mtError, [mbOK], 0);
     end;
   end;
-  json.Free;
-  response.Free;
-  httpClient.Free;
 end;
 
 function UltimaPreRelease: string;

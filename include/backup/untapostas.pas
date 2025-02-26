@@ -127,8 +127,6 @@ begin
       Open;
       if not IsEmpty then
         Dado := FieldByName('Anotacoes').AsString;
-      Dado   := StringReplace(Dado, #13#10, '', [rfReplaceAll]);
-      Dado   := StringReplace(Dado, #10, '', [rfReplaceAll]);
     finally
       Free;
     end;
@@ -558,11 +556,12 @@ begin
     Time    := TStringList.Create;
     Unidade := TStringList.Create;
     //Criando lista de situações da coluna "Situação"
-    while not qrSituacao.EOF do
-    begin
-      Situacao.Add(qrSituacao.FieldByName('Status').AsString);
-      qrSituacao.Next;
-    end;
+      Situacao.Add('Pré-live');
+      Situacao.Add('Green');
+      Situacao.Add('Red');
+      Situacao.Add('Anulada');
+      Situacao.Add('Meio Green');
+      Situacao.Add('Meio Red');
     //Criando lista de competições da coluna "Competição"
     with TSQLQuery.Create(nil) do
     try
