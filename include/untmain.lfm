@@ -1635,24 +1635,24 @@ object formPrincipal: TformPrincipal
         Height = 704
         Top = 0
         Width = 1189
-        ActivePage = tsGraficosMesMetodos
+        ActivePage = tsDadosMesMetodos
         Anchors = [akTop, akLeft, akRight, akBottom]
-        TabIndex = 0
+        TabIndex = 1
         TabOrder = 0
         object tsGraficosMesMetodos: TTabSheet
           Caption = 'Gráficos'
-          ClientHeight = 700
+          ClientHeight = 671
           ClientWidth = 1179
           object gbListaLinha: TGroupBox
             AnchorSideBottom.Control = pnGraficosMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 0
-            Height = 388
+            Height = 359
             Top = 312
             Width = 201
             Anchors = [akTop, akLeft, akBottom]
             Caption = 'Linhas'
-            ClientHeight = 371
+            ClientHeight = 342
             ClientWidth = 199
             Font.Height = -16
             Font.Name = 'Sans'
@@ -1664,7 +1664,7 @@ object formPrincipal: TformPrincipal
               AnchorSideRight.Side = asrBottom
               AnchorSideBottom.Side = asrBottom
               Left = 0
-              Height = 334
+              Height = 305
               Hint = 'Lista de linhas do método selecionado'
               Top = 0
               Width = 199
@@ -1682,7 +1682,7 @@ object formPrincipal: TformPrincipal
               Left = 119
               Height = 24
               Hint = 'Remove linha selecionada'
-              Top = 343
+              Top = 314
               Width = 67
               Anchors = [akRight, akBottom]
               Caption = 'Remover'
@@ -1697,7 +1697,7 @@ object formPrincipal: TformPrincipal
               Left = 8
               Height = 24
               Hint = 'Cria nova linha'
-              Top = 343
+              Top = 314
               Width = 88
               Anchors = [akLeft, akBottom]
               Caption = 'Nova Linha'
@@ -1955,11 +1955,11 @@ object formPrincipal: TformPrincipal
             AnchorSideBottom.Control = tsGraficosMesMetodos
             AnchorSideBottom.Side = asrBottom
             Left = 201
-            Height = 700
+            Height = 671
             Top = 0
             Width = 786
             Anchors = [akTop, akLeft, akRight, akBottom]
-            ClientHeight = 696
+            ClientHeight = 667
             ClientWidth = 782
             TabOrder = 4
             object chrtAcertMetodo: TChart
@@ -2110,7 +2110,7 @@ object formPrincipal: TformPrincipal
         end
         object tsDadosMesMetodos: TTabSheet
           Caption = 'Dados'
-          ClientHeight = 700
+          ClientHeight = 671
           ClientWidth = 1179
           object grbMetodos: TGroupBox
             Left = 0
@@ -5779,9 +5779,11 @@ object formPrincipal: TformPrincipal
       'FROM'
       'Países p'
       'LEFT JOIN'
-      'Times t ON t.País = p.País'
+      'Competicoes C ON C.País = p.País'
       'LEFT JOIN'
-      'Jogo j ON t.Time = j.Mandante OR j.Visitante'
+      'Jogo j ON j.Cod_Comp = C.Cod_Comp'
+      'LEFT JOIN'
+      'Times t ON t.Time = j.Mandante OR j.Visitante'
       'LEFT JOIN'
       'Mercados m ON j.Cod_Jogo = m.Cod_Jogo'
       'LEFT JOIN'
@@ -5865,9 +5867,11 @@ object formPrincipal: TformPrincipal
       'FROM'
       'Países p'
       'LEFT JOIN'
-      'Times t ON t.País = p.País'
+      'Competicoes C ON C.País = p.País'
       'LEFT JOIN'
-      'Jogo j ON t.Time = j.Mandante OR j.Visitante'
+      'Jogo j ON j.Cod_Comp = C.Cod_Comp'
+      'LEFT JOIN'
+      'Times t ON t.Time = j.Mandante OR j.Visitante'
       'LEFT JOIN'
       'Mercados m ON j.Cod_Jogo = m.Cod_Jogo'
       'LEFT JOIN'

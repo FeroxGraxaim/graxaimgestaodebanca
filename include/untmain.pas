@@ -470,7 +470,7 @@ end;
 
 procedure TformPrincipal.FormActivate(Sender: TObject);
 begin
-  //tsPainel.Show;
+  tsPainel.Show;
   Application.ProcessMessages;
   if ExibirBoasVindas then
   with TformBoasVindas.Create(nil) do try

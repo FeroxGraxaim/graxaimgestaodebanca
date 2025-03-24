@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, SQLDB, DB, Forms, Controls, Graphics, Dialogs, LCLType,
   ActnList, StdCtrls, DBCtrls, EditBtn, DBGrids, Menus, ComCtrls, Buttons,
-  StrUtils, Grids;
+  StrUtils, Grids, fncGerais;
 
 type
 
@@ -650,19 +650,42 @@ begin
 end;
 
 procedure TformNovaAposta.HabilitarBotaoOk;
+var
+  Data, Competicao, Mandante, Visitante, Valor, Odd: string;
+  vMetodo, vLinha, vSituacao: variant;
 begin
-  if not GlobalMultipla then
-    btnOk.Enabled := ((deAposta.Text <> '') and (cbCompeticao.Text <> '') and
-      (cbMandante.Text <> '') and (cbVisitante.Text <> '') and
-      (edtValor.Text <> '') and (Odd <> 0) and not
-      qrNovaAposta.FieldByName('Método').IsNull and not
-      qrNovaAposta.FieldByName('Linha').IsNull and not
-      qrNovaAposta.FieldByName('Situacao').IsNull)
-  else
-    btnOk.Enabled := ((deApostaMult.Text <> '') and (edtValorMult.Text <> '') and
-      (Odd <> 0) and not qrLinhaMultipla.FieldByName('Método').IsNull and
-      not qrLinhaMultipla.FieldByName('Linha').IsNull and not
-      qrLinhaMultipla.FieldByName('Situacao').IsNull);
+  if not GlobalMultipla then begin
+    Data := deAposta.Text;
+    Competicao := cbCompeticao.Text;
+    Mandante := cbMandante.Text;
+    Visitante := cbVisitante.Text;
+    Valor := edtValor.Text;
+
+    with qrNovaAposta do
+    begin
+      vLinha    := FieldByName('Linha').Value;
+      vSituacao := FieldByName('Situacao').AsVariant;
+    end;
+
+    btnOk.Enabled := (Concat(Data, Competicao, Mandante, Visitante, Valor, Odd) <>
+      '') and CamposNaoNulos([vLinha, vSituacao]);
+  end
+  else begin
+    Data := deApostaMult.Text;
+    Competicao := cbCompMult.Text;
+    Mandante := cbMandanteMult.Text;
+    Visitante := cbVisitanteMult.Text;
+    Valor := edtValorMult.Text;
+
+    with qrLinhaMultipla do
+    begin
+      vMetodo   := FieldByName('Método').Value;
+      vLinha    := FieldByName('Linha').Value;
+      vSituacao := FieldByName('Situacao').Value;
+    end;
+    btnOk.Enabled := (Concat(Data, Competicao, Mandante, Visitante, Valor, Odd) <>
+      '') and CamposNaoNulos([vMetodo, vLinha, vSituacao]);
+  end;
 end;
 
 procedure TformNovaAposta.AtualizaMetodoLinha(Sender: TObject);

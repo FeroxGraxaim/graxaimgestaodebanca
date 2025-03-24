@@ -13,6 +13,7 @@ object formNovaAposta: TformNovaAposta
   OnShow = FormShow
   Position = poMainFormCenter
   ShowHint = True
+  LCLVersion = '3.4.0.0'
   object pcApostas: TPageControl
     Left = 0
     Height = 376
@@ -25,8 +26,8 @@ object formNovaAposta: TformNovaAposta
     object tsSimples: TTabSheet
       Hint = 'Cria aposta de bilhete simples'
       Caption = 'Bilhete Simples'
-      ClientHeight = 349
-      ClientWidth = 724
+      ClientHeight = 343
+      ClientWidth = 718
       OnMouseDown = LimparControle
       OnShow = tsSimplesShow
       object grbNovaLinha: TGroupBox
@@ -36,8 +37,8 @@ object formNovaAposta: TformNovaAposta
         Top = 8
         Width = 352
         Caption = 'Métodos/Linhas da Aposta'
-        ClientHeight = 271
-        ClientWidth = 348
+        ClientHeight = 279
+        ClientWidth = 350
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False
@@ -310,8 +311,8 @@ object formNovaAposta: TformNovaAposta
     object tsMultipla: TTabSheet
       Hint = 'Cria aposta de múltiplos jogos'
       Caption = 'Múltipla'
-      ClientHeight = 349
-      ClientWidth = 724
+      ClientHeight = 343
+      ClientWidth = 718
       OnMouseDown = LimparControle
       OnShow = tsMultiplaShow
       object deApostaMult: TDateEdit
@@ -418,8 +419,8 @@ object formNovaAposta: TformNovaAposta
         BorderSpacing.Left = 15
         BorderSpacing.Right = 20
         Caption = 'Métodos/Linhas do Jogo Selecionado'
-        ClientHeight = 235
-        ClientWidth = 338
+        ClientHeight = 243
+        ClientWidth = 340
         Font.Height = -16
         Font.Name = 'Sans'
         ParentFont = False

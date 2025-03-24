@@ -125,12 +125,14 @@ begin
       SQL.Text := 'SELECT Anotacoes FROM Apostas WHERE Cod_Aposta = :cod';
       ParamByName('cod').AsInteger := GlobalCodAposta;
       Open;
-      if not IsEmpty then
+      if not IsEmpty then begin
         Dado := FieldByName('Anotacoes').AsString;
+        Result := (Trim(Dado) = AnotacaoNaoSalva);
+      end
+      else Result := true;
     finally
       Free;
     end;
-    Result := (Trim(Dado) = AnotacaoNaoSalva);
   end;
 end;
 

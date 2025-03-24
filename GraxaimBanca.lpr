@@ -13,7 +13,8 @@ uses
   Forms, tachartlazaruspkg, lazdbexport, anchordockpkg, untMain, untApostas,
   untDatabase, untNA, untPainel, untSobre, untSplash, untUpdate,
   untControleMetodos, untControleTimes, untPaises, untContrComp, untEditSimples,
-  untEditMult, untSalvarDados, untBoasVindas, untConfig, untTutorial, untMetodoLinha;
+  untEditMult, untSalvarDados, untBoasVindas, untConfig, untTutorial,
+  untMetodoLinha, FncGerais;
 
 {$R *.res}
 
